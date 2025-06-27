@@ -1,460 +1,1322 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>香港8日自由行</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Serene Neutrals -->
-    <!-- Application Structure Plan: A single-page application (SPA) with a fixed top navigation bar for seamless switching between content sections (行程總覽, 每日行程, 美食地圖, 行前準備, 花費總結). This structure is chosen for clarity, allowing the user to access all key information without reloading. '行程總覽' acts as a dashboard. '每日行程' uses a vertical timeline. '美食地圖' is a filterable grid. '行前準備' is a checklist. The new '花費總結' tab provides a data-driven overview of the trip's budget success using charts and tables. -->
-    <!-- Visualization & Content Choices: 
-        - Report Info: Total trip cost breakdown. Goal: Show overall spending structure. Viz: Pie Chart (Chart.js). Interaction: Tooltips on hover. Justification: A pie chart is ideal for showing proportional parts of a whole, clearly illustrating where the money went.
-        - Report Info: Local spending breakdown. Goal: Differentiate essential vs. non-essential costs. Viz: Pie Chart (Chart.js). Interaction: Tooltips. Justification: This chart highlights the success of the "budget challenge" by showing how much was dedicated to necessities versus splurges.
-        - Report Info: Detailed daily spending log. Goal: Provide granular data. Presentation: HTML Table. Justification: A table is the clearest way to present detailed, row-by-row numerical data for those interested in the specifics.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #F8F7F4;
-            color: #3E4E50;
-        }
-        :root {
-            --bg-color: #F8F7F4;
-            --text-color: #3E4E50;
-            --primary-accent: #6B7A8F;
-            --secondary-accent: #D5A08C;
-            --card-bg: #FFFFFF;
-            --border-color: #E0E0E0;
-        }
-        .nav-link {
-            transition: color 0.3s, border-bottom-color 0.3s;
-            border-bottom: 2px solid transparent;
-        }
-        .nav-link.active {
-            color: var(--primary-accent);
-            border-bottom-color: var(--primary-accent);
-            font-weight: 700;
-        }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            top: 1.25rem;
-            left: -0.4rem;
-            width: 0.8rem;
-            height: 0.8rem;
-            background-color: var(--secondary-accent);
-            border: 2px solid var(--card-bg);
-            border-radius: 50%;
-            z-index: 1;
-        }
-        .timeline-connector {
-            position: absolute;
-            top: 1.25rem;
-            left: 0;
-            bottom: 0;
-            width: 2px;
-            background-color: var(--border-color);
-        }
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+        background-color: #f8f7f4;
+        color: #3e4e50;
+      }
+      :root {
+        --bg-color: #f8f7f4;
+        --text-color: #3e4e50;
+        --primary-accent: #6b7a8f;
+        --secondary-accent: #d5a08c;
+        --card-bg: #ffffff;
+        --border-color: #e0e0e0;
+      }
+      .nav-link {
+        transition: color 0.3s, border-bottom-color 0.3s;
+        border-bottom: 2px solid transparent;
+      }
+      .nav-link.active {
+        color: var(--primary-accent);
+        border-bottom-color: var(--primary-accent);
+        font-weight: 700;
+      }
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        top: 1.25rem;
+        left: -0.4rem;
+        width: 0.8rem;
+        height: 0.8rem;
+        background-color: var(--secondary-accent);
+        border: 2px solid var(--card-bg);
+        border-radius: 50%;
+        z-index: 1;
+      }
+      .timeline-connector {
+        position: absolute;
+        top: 1.25rem;
+        left: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: var(--border-color);
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 300px;
+        max-height: 400px;
+      }
+      @media (min-width: 768px) {
         .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
+          height: 350px;
         }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-        /* Gemini Modal */
-        #gemini-modal {
-            transition: opacity 0.3s ease;
-        }
-        .gemini-btn {
-            background-color: var(--primary-accent);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 9999px;
-            font-weight: 500;
-            transition: all 0.2s;
-            font-size: 0.875rem;
-        }
-         .gemini-btn:hover {
-            opacity: 0.9;
-        }
-        .gemini-info-btn {
-             background-color: transparent;
-             color: var(--secondary-accent);
-             border: 1px solid var(--secondary-accent);
-             padding: 2px 8px;
-             border-radius: 9999px;
-             font-size: 0.75rem;
-             margin-left: 8px;
-        }
-         .gemini-info-btn:hover {
-            background-color: rgba(213, 160, 140, 0.1);
-        }
+      }
+      /* Gemini Modal */
+      #gemini-modal {
+        transition: opacity 0.3s ease;
+      }
+      .gemini-btn {
+        background-color: var(--primary-accent);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 9999px;
+        font-weight: 500;
+        transition: all 0.2s;
+        font-size: 0.875rem;
+      }
+      .gemini-btn:hover {
+        opacity: 0.9;
+      }
+      .gemini-info-btn {
+        background-color: transparent;
+        color: var(--secondary-accent);
+        border: 1px solid var(--secondary-accent);
+        padding: 2px 8px;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        margin-left: 8px;
+      }
+      .gemini-info-btn:hover {
+        background-color: rgba(213, 160, 140, 0.1);
+      }
     </style>
-</head>
-<body class="bg-gray-50">
-
+  </head>
+  <body class="bg-gray-50">
     <div id="app" class="container mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-[color:var(--primary-accent)]">香港8日自由行</h1>
-            <p class="text-lg text-gray-600 mt-2">為您量身打造的深度探索之旅</p>
-        </header>
+      <header class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-[color:var(--primary-accent)]">
+          香港8日自由行
+        </h1>
+        <p class="text-lg text-gray-600 mt-2">為您量身打造的深度探索之旅</p>
+      </header>
 
-        <nav id="main-nav" class="sticky top-0 z-20 bg-[color:var(--bg-color)]/80 backdrop-blur-sm mb-8 py-2 border-b border-[color:var(--border-color)]">
-            <div class="flex justify-center items-center space-x-4 sm:space-x-8 text-sm sm:text-base flex-wrap">
-                <button data-target="overview" class="nav-link p-2">行程總覽</button>
-                <button data-target="daily-itinerary" class="nav-link p-2">每日行程</button>
-                <button data-target="food-map" class="nav-link p-2">美食地圖</button>
-                <button data-target="spending-summary" class="nav-link p-2">花費總結</button>
-                <button data-target="preparation" class="nav-link p-2">行前準備</button>
+      <nav
+        id="main-nav"
+        class="sticky top-0 z-20 bg-[color:var(--bg-color)]/80 backdrop-blur-sm mb-8 py-2 border-b border-[color:var(--border-color)]"
+      >
+        <div
+          class="flex justify-center items-center space-x-4 sm:space-x-8 text-sm sm:text-base flex-wrap"
+        >
+          <button data-target="overview" class="nav-link p-2">行程總覽</button>
+          <button data-target="daily-itinerary" class="nav-link p-2">
+            每日行程
+          </button>
+          <button data-target="food-map" class="nav-link p-2">美食地圖</button>
+          <button data-target="spending-summary" class="nav-link p-2">
+            花費總結
+          </button>
+          <button data-target="st7-summary" class="nav-link p-2">ST7</button>
+          <button data-target="preparation" class="nav-link p-2">
+            行前準備
+          </button>
+        </div>
+      </nav>
+
+      <main id="content-container">
+        <!-- Sections will be here -->
+        <section id="overview" class="content-section">
+          <div class="bg-[color:var(--card-bg)] p-6 rounded-xl shadow-sm">
+            <h2
+              class="text-2xl font-bold text-[color:var(--primary-accent)] mb-4"
+            >
+              旅程核心資訊
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <div>
+                  <h3 class="font-semibold text-lg">✈️ 航班資訊</h3>
+                  <p>去程: 2025/06/18 UO115 (17:40 桃園 → 19:35 香港)</p>
+                  <p>回程: 2025/06/25 UO114 (14:55 香港 → 16:45 桃園)</p>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-lg">🏠 住宿資訊</h3>
+                  <p>觀塘港鐵站附近的朋友家</p>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-lg">📝 行程風格</h3>
+                  <p>
+                    隨性、漫步、享受自然與建築，結合藝文與美食的深度之旅，嚴格遵守預算限制。
+                  </p>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-lg">🌦️ 天氣提醒 (更新)</h3>
+                  <p>
+                    未來數日為典型夏季天氣：炎熱、潮濕，偶有驟雨及雷暴。行程已據此調整，增加彈性。
+                  </p>
+                </div>
+              </div>
+              <div>
+                <h3 class="font-semibold text-lg text-center mb-2">
+                  機場交通比較 (前往觀塘)
+                </h3>
+                <div class="chart-container">
+                  <canvas id="transportationChart"></canvas>
+                </div>
+                <p class="text-xs text-center text-gray-500 mt-2">
+                  此圖表比較了從機場到觀塘的幾種交通方式。搭乘城巴A22路線最具性價比，能以最低成本到達，非常適合預算有限的旅客。
+                </p>
+              </div>
             </div>
-        </nav>
+          </div>
+        </section>
 
-        <main id="content-container">
-            <!-- Sections will be here -->
-            <section id="overview" class="content-section">
-                <div class="bg-[color:var(--card-bg)] p-6 rounded-xl shadow-sm">
-                    <h2 class="text-2xl font-bold text-[color:var(--primary-accent)] mb-4">旅程核心資訊</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-4">
-                            <div>
-                                <h3 class="font-semibold text-lg">✈️ 航班資訊</h3>
-                                <p>去程: 2025/06/18 UO115 (17:40 桃園 → 19:35 香港)</p>
-                                <p>回程: 2025/06/25 UO114 (14:55 香港 → 16:45 桃園)</p>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold text-lg">🏠 住宿資訊</h3>
-                                <p>觀塘港鐵站附近的朋友家</p>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold text-lg">📝 行程風格</h3>
-                                <p>隨性、漫步、享受自然與建築，結合藝文與美食的深度之旅，嚴格遵守預算限制。</p>
-                            </div>
-                             <div>
-                                <h3 class="font-semibold text-lg">🌦️ 天氣提醒 (更新)</h3>
-                                <p>未來數日為典型夏季天氣：炎熱、潮濕，偶有驟雨及雷暴。行程已據此調整，增加彈性。</p>
-                            </div>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-lg text-center mb-2">機場交通比較 (前往觀塘)</h3>
-                            <div class="chart-container">
-                                <canvas id="transportationChart"></canvas>
-                            </div>
-                            <p class="text-xs text-center text-gray-500 mt-2">此圖表比較了從機場到觀塘的幾種交通方式。搭乘城巴A22路線最具性價比，能以最低成本到達，非常適合預算有限的旅客。</p>
-                        </div>
-                    </div>
+        <section id="daily-itinerary" class="content-section hidden">
+          <div
+            class="flex justify-center flex-wrap gap-2 mb-6"
+            id="day-tabs-container"
+          ></div>
+          <div id="itinerary-content"></div>
+        </section>
+
+        <section id="food-map" class="content-section hidden">
+          <div class="text-center mb-6">
+            <h2
+              class="text-2xl font-bold text-[color:var(--primary-accent)] mb-2"
+            >
+              香港平價美食地圖
+            </h2>
+            <p class="text-gray-600">
+              為您精選符合預算(日均HKD
+              100)且報告中提及的道地美食，點擊店名可查看地圖。
+            </p>
+            <div
+              id="food-filters"
+              class="mt-4 flex justify-center gap-2 flex-wrap"
+            >
+              <button class="food-filter-btn active" data-category="all">
+                全部
+              </button>
+              <button class="food-filter-btn" data-category="點心">點心</button>
+              <button class="food-filter-btn" data-category="粉麵">粉麵</button>
+              <button class="food-filter-btn" data-category="茶餐廳">
+                茶餐廳
+              </button>
+              <button class="food-filter-btn" data-category="特色小食">
+                特色小食
+              </button>
+            </div>
+          </div>
+          <div
+            id="food-list"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          ></div>
+        </section>
+
+        <section id="spending-summary" class="content-section hidden">
+          <div class="bg-[color:var(--card-bg)] p-6 rounded-xl shadow-sm">
+            <h2
+              class="text-2xl font-bold text-center text-[color:var(--primary-accent)] mb-2"
+            >
+              窮遊實驗成果報告
+            </h2>
+            <p class="text-center text-gray-600 mb-8">
+              這次的挑戰是想看看P人旅行的極限到底在哪裡。以下是8天7夜最真實的數據紀錄！
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div class="text-center">
+                <h3 class="text-xl font-semibold mb-4">旅程總開銷分析 (NTD)</h3>
+                <div class="chart-container">
+                  <canvas id="totalSpendingChart"></canvas>
                 </div>
-            </section>
-
-            <section id="daily-itinerary" class="content-section hidden">
-                <div class="flex justify-center flex-wrap gap-2 mb-6" id="day-tabs-container"></div>
-                <div id="itinerary-content"></div>
-            </section>
-
-            <section id="food-map" class="content-section hidden">
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl font-bold text-[color:var(--primary-accent)] mb-2">香港平價美食地圖</h2>
-                    <p class="text-gray-600">為您精選符合預算(日均HKD 100)且報告中提及的道地美食，點擊店名可查看地圖。</p>
-                    <div id="food-filters" class="mt-4 flex justify-center gap-2 flex-wrap">
-                        <button class="food-filter-btn active" data-category="all">全部</button>
-                        <button class="food-filter-btn" data-category="點心">點心</button>
-                        <button class="food-filter-btn" data-category="粉麵">粉麵</button>
-                        <button class="food-filter-btn" data-category="茶餐廳">茶餐廳</button>
-                        <button class="food-filter-btn" data-category="特色小食">特色小食</button>
-                    </div>
+                <p class="mt-4 text-lg">
+                  總花費:
+                  <span class="font-bold text-[color:var(--secondary-accent)]"
+                    >NT$ 6,327</span
+                  >
+                </p>
+                <p class="text-sm text-gray-500">住宿感謝無價的友情！</p>
+              </div>
+              <div class="text-center">
+                <h3 class="text-xl font-semibold mb-4">當地消費分析 (HKD)</h3>
+                <div class="chart-container">
+                  <canvas id="localSpendingChart"></canvas>
                 </div>
-                <div id="food-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-            </section>
-            
-            <section id="spending-summary" class="content-section hidden">
-                 <div class="bg-[color:var(--card-bg)] p-6 rounded-xl shadow-sm">
-                    <h2 class="text-2xl font-bold text-center text-[color:var(--primary-accent)] mb-2">窮遊實驗成果報告</h2>
-                    <p class="text-center text-gray-600 mb-8">這次的挑戰是想看看P人旅行的極限到底在哪裡。以下是8天7夜最真實的數據紀錄！</p>
-                    
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                        <div class="text-center">
-                            <h3 class="text-xl font-semibold mb-4">旅程總開銷分析 (NTD)</h3>
-                            <div class="chart-container">
-                                <canvas id="totalSpendingChart"></canvas>
-                            </div>
-                            <p class="mt-4 text-lg">總花費: <span class="font-bold text-[color:var(--secondary-accent)]">NT$ 6,327</span></p>
-                            <p class="text-sm text-gray-500">住宿感謝無價的友情！</p>
-                        </div>
-                        <div class="text-center">
-                            <h3 class="text-xl font-semibold mb-4">當地消費分析 (HKD)</h3>
-                             <div class="chart-container">
-                                <canvas id="localSpendingChart"></canvas>
-                            </div>
-                            <p class="mt-4 text-lg">當地總消費: <span class="font-bold text-[color:var(--secondary-accent)]">HK$ 897</span></p>
-                            <p class="text-sm text-gray-500">超過85%的花費都用在刀口上！</p>
-                        </div>
-                    </div>
+                <p class="mt-4 text-lg">
+                  當地總消費:
+                  <span class="font-bold text-[color:var(--secondary-accent)]"
+                    >HK$ 897</span
+                  >
+                </p>
+                <p class="text-sm text-gray-500">超過85%的花費都用在刀口上！</p>
+              </div>
+            </div>
 
-                    <div class="mt-12 overflow-x-auto">
-                        <h3 class="text-xl font-semibold text-center mb-4">每日花費細項</h3>
-                        <table class="w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3">日期</th>
-                                    <th scope="col" class="px-6 py-3">當日花費 (HKD)</th>
-                                    <th scope="col" class="px-6 py-3">當日預算 (HKD)</th>
-                                    <th scope="col" class="px-6 py-3">當日結餘 (HKD)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">Day 1</td><td class="px-6 py-4">$69.00</td><td class="px-6 py-4">$100.00</td><td class="px-6 py-4 text-green-600">$31.00</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">Day 2</td><td class="px-6 py-4">$51.80</td><td class="px-6 py-4">$100.00</td><td class="px-6 py-4 text-green-600">$48.20</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">Day 3</td><td class="px-6 py-4">$48.00</td><td class="px-6 py-4">$100.00</td><td class="px-6 py-4 text-green-600">$52.00</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">Day 4</td><td class="px-6 py-4">$49.00</td><td class="px-6 py-4">$100.00</td><td class="px-6 py-4 text-green-600">$51.00</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">Day 5</td><td class="px-6 py-4">$349.50</td><td class="px-6 py-4">$400.00</td><td class="px-6 py-4 text-green-600">$50.50</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">Day 6</td><td class="px-6 py-4">$69.20</td><td class="px-6 py-4">$100.00</td><td class="px-6 py-4 text-green-600">$30.80</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">Day 7</td><td class="px-6 py-4">$220.90</td><td class="px-6 py-4">$150.00</td><td class="px-6 py-4 text-red-600">-$70.90</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">Day 8</td><td class="px-6 py-4">$39.60</td><td class="px-6 py-4">$100.00</td><td class="px-6 py-4 text-green-600">$60.40</td></tr>
-                            </tbody>
-                            <tfoot>
-                                <tr class="font-semibold text-gray-900 bg-white">
-                                    <td class="px-6 py-3 text-base">總計</td>
-                                    <td class="px-6 py-3">$897.00</td>
-                                    <td class="px-6 py-3">$1,150.00</td>
-                                    <td class="px-6 py-3 text-green-600">$253.00</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                    
-                    <div class="mt-12 overflow-x-auto">
-                        <h3 class="text-xl font-semibold text-center mb-4">詳細交易紀錄</h3>
-                        <table class="w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3">日期</th>
-                                    <th scope="col" class="px-6 py-3">項目</th>
-                                    <th scope="col" class="px-6 py-3">港幣 (HKD)</th>
-                                    <th scope="col" class="px-6 py-3">台幣 (NTD)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-18</td><td class="px-6 py-4">A29公車 機場 到 觀塘</td><td class="px-6 py-4">$44.00</td><td class="px-6 py-4">NT$167.00</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-18</td><td class="px-6 py-4">麥當勞 起司堡+飲料優惠</td><td class="px-6 py-4">$25.00</td><td class="px-6 py-4">NT$95.00</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-19</td><td class="px-6 py-4">619公車 觀塘 到 中環</td><td class="px-6 py-4">$12.90</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-19</td><td class="px-6 py-4">港島叮叮車 上環 到 鰂魚涌</td><td class="px-6 py-4">$3.30</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-19</td><td class="px-6 py-4">地鐵 鰂魚涌 到 觀塘</td><td class="px-6 py-4">$10.60</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-19</td><td class="px-6 py-4">麥當勞 辣鳳梨堡+飲料優惠</td><td class="px-6 py-4">$25.00</td><td class="px-6 py-4">NT$94.00</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-20</td><td class="px-6 py-4">麥當勞 早餐+飲料優惠</td><td class="px-6 py-4">$25.00</td><td class="px-6 py-4">NT$95.00</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-20</td><td class="px-6 py-4">麥當勞 早餐+飲料優惠</td><td class="px-6 py-4">$23.00</td><td class="px-6 py-4">NT$87.00</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-21</td><td class="px-6 py-4">麥當勞 早餐+飲料優惠</td><td class="px-6 py-4">$25.00</td><td class="px-6 py-4">NT$95.00</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-21</td><td class="px-6 py-4">7-11 消化餅*2</td><td class="px-6 py-4">$24.00</td><td class="px-6 py-4">NT$91.00</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-22</td><td class="px-6 py-4">W2公車 觀塘 到 九龍佑寧堂</td><td class="px-6 py-4">$6.40</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-22</td><td class="px-6 py-4">澳洲牛奶公司 早餐套餐*2 (還上次Misaki錢)</td><td class="px-6 py-4">$100.00</td><td class="px-6 py-4">NT$380.00</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-22</td><td class="px-6 py-4">E23公車 吳松街佐敦道 到 東涌</td><td class="px-6 py-4">$14.50</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-22</td><td class="px-6 py-4">東涌360纜車 來回</td><td class="px-6 py-4">$200.00</td><td class="px-6 py-4">NT$760.00</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-22</td><td class="px-6 py-4">麥當勞 香芋*2 (請Misaki)</td><td class="px-6 py-4">$10.00</td><td class="px-6 py-4">NT$38.00</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-22</td><td class="px-6 py-4">E22公車 東涌 到 觀塘</td><td class="px-6 py-4">$18.60</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-23</td><td class="px-6 py-4">麥當勞 早餐+折$5券</td><td class="px-6 py-4">$33.00</td><td class="px-6 py-4">NT$125.00</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-23</td><td class="px-6 py-4">麥當勞 早餐+飲料優惠</td><td class="px-6 py-4">$19.00</td><td class="px-6 py-4">NT$72.00</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-23</td><td class="px-6 py-4">215x公車 觀塘 到 西九</td><td class="px-6 py-4">$8.60</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-23</td><td class="px-6 py-4">215x公車 西九 到 觀塘</td><td class="px-6 py-4">$8.60</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-24</td><td class="px-6 py-4">40公車 觀塘 到 長沙灣(深水埗)</td><td class="px-6 py-4">$10.10</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-24</td><td class="px-6 py-4">104公車 石硤尾 到 中環</td><td class="px-6 py-4">$12.90</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-24</td><td class="px-6 py-4">bakehouse sourdough egg tart + scone</td><td class="px-6 py-4">$32.50</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-24</td><td class="px-6 py-4">15公車 中環 到 太平山 (上山)</td><td class="px-6 py-4">$13.00</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-24</td><td class="px-6 py-4">1公車 太平山 到 中環 (下山)</td><td class="px-6 py-4">$11.50</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-24</td><td class="px-6 py-4">candylicious 巧克力*3</td><td class="px-6 py-4">$85.00</td><td class="px-6 py-4">NT$323.00</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-24</td><td class="px-6 py-4">619x公車 中環 到 觀塘</td><td class="px-6 py-4">$12.90</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-24</td><td class="px-6 py-4">權發小廚 兩餸飯</td><td class="px-6 py-4">$43.00</td><td class="px-6 py-4">NT$163.00</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-25</td><td class="px-6 py-4">麥當勞 早餐套餐優惠</td><td class="px-6 py-4">$20.00</td><td class="px-6 py-4">NT$76.00</td></tr>
-                                <tr class="bg-gray-50 border-b"><td class="px-6 py-4">2025-06-25</td><td class="px-6 py-4">麥當勞 點數換$1奶昔</td><td class="px-6 py-4">$1.00</td><td class="px-6 py-4">-</td></tr>
-                                <tr class="bg-white border-b"><td class="px-6 py-4">2025-06-25</td><td class="px-6 py-4">A29公車 觀塘 到 機場</td><td class="px-6 py-4">$18.60</td><td class="px-6 py-4">NT$70.00</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+            <div class="mt-12 overflow-x-auto">
+              <h3 class="text-xl font-semibold text-center mb-4">
+                每日花費細項
+              </h3>
+              <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">日期</th>
+                    <th scope="col" class="px-6 py-3">當日花費 (HKD)</th>
+                    <th scope="col" class="px-6 py-3">當日預算 (HKD)</th>
+                    <th scope="col" class="px-6 py-3">當日結餘 (HKD)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">Day 1</td>
+                    <td class="px-6 py-4">$69.00</td>
+                    <td class="px-6 py-4">$100.00</td>
+                    <td class="px-6 py-4 text-green-600">$31.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">Day 2</td>
+                    <td class="px-6 py-4">$51.80</td>
+                    <td class="px-6 py-4">$100.00</td>
+                    <td class="px-6 py-4 text-green-600">$48.20</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">Day 3</td>
+                    <td class="px-6 py-4">$48.00</td>
+                    <td class="px-6 py-4">$100.00</td>
+                    <td class="px-6 py-4 text-green-600">$52.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">Day 4</td>
+                    <td class="px-6 py-4">$49.00</td>
+                    <td class="px-6 py-4">$100.00</td>
+                    <td class="px-6 py-4 text-green-600">$51.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">Day 5</td>
+                    <td class="px-6 py-4">$349.50</td>
+                    <td class="px-6 py-4">$400.00</td>
+                    <td class="px-6 py-4 text-green-600">$50.50</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">Day 6</td>
+                    <td class="px-6 py-4">$69.20</td>
+                    <td class="px-6 py-4">$100.00</td>
+                    <td class="px-6 py-4 text-green-600">$30.80</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">Day 7</td>
+                    <td class="px-6 py-4">$220.90</td>
+                    <td class="px-6 py-4">$150.00</td>
+                    <td class="px-6 py-4 text-red-600">-$70.90</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">Day 8</td>
+                    <td class="px-6 py-4">$39.60</td>
+                    <td class="px-6 py-4">$100.00</td>
+                    <td class="px-6 py-4 text-green-600">$60.40</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr class="font-semibold text-gray-900 bg-white">
+                    <td class="px-6 py-3 text-base">總計</td>
+                    <td class="px-6 py-3">$897.00</td>
+                    <td class="px-6 py-3">$1,150.00</td>
+                    <td class="px-6 py-3 text-green-600">$253.00</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
 
-            <section id="preparation" class="content-section hidden">
-                <div class="bg-[color:var(--card-bg)] p-6 rounded-xl shadow-sm">
-                    <h2 class="text-2xl font-bold text-[color:var(--primary-accent)] mb-4">行前準備與在地攻略</h2>
-                     <ul class="space-y-4 list-inside">
-                        <li class="flex items-start"><span class="mr-3 text-xl">🐙</span><div><strong class="font-semibold">八達通卡 (Octopus Card):</strong><br>遊港必備。建議購買旅客版，無需押金。MTR車站、便利店均可購買與增值。搭乘交通工具比單程票更便宜。</div></li>
-                        <li class="flex items-start"><span class="mr-3 text-xl">🚶‍♂️</span><div><strong class="font-semibold">交通禮儀:</strong><br>手扶梯靠右站立，左側為行走通道。先下後上，進入車廂後往中間移動。巴士到站前需按鈴。</div></li>
-                        <li class="flex items-start"><span class="mr-3 text-xl">🤫</span><div><strong class="font-semibold">公共場合禮儀:</strong><br>車廂內保持安靜，請勿飲食。優先將座位讓給有需要的人。</div></li>
-                        <li class="flex items-start"><span class="mr-3 text-xl">💰</span><div><strong class="font-semibold">平價美食指南:</strong><br>多加利用「茶餐廳」與「兩餸飯」，它們是香港道地且經濟實惠的選擇，能讓您在預算內品嚐在地風味。</div></li>
-                        <li class="flex items-start"><span class="mr-3 text-xl">🔌</span><div><strong class="font-semibold">基本用品:</strong><br>英規三角轉接頭、雨具、舒適的鞋子、薄外套 (室內冷氣強)、個人藥品。</div></li>
-                    </ul>
+            <div class="mt-12 overflow-x-auto">
+              <h3 class="text-xl font-semibold text-center mb-4">
+                詳細交易紀錄
+              </h3>
+              <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">日期</th>
+                    <th scope="col" class="px-6 py-3">項目</th>
+                    <th scope="col" class="px-6 py-3">港幣 (HKD)</th>
+                    <th scope="col" class="px-6 py-3">台幣 (NTD)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-18</td>
+                    <td class="px-6 py-4">A29公車 機場 到 觀塘</td>
+                    <td class="px-6 py-4">$44.00</td>
+                    <td class="px-6 py-4">NT$167.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-18</td>
+                    <td class="px-6 py-4">麥當勞 起司堡+飲料優惠</td>
+                    <td class="px-6 py-4">$25.00</td>
+                    <td class="px-6 py-4">NT$95.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-19</td>
+                    <td class="px-6 py-4">619公車 觀塘 到 中環</td>
+                    <td class="px-6 py-4">$12.90</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-19</td>
+                    <td class="px-6 py-4">港島叮叮車 上環 到 鰂魚涌</td>
+                    <td class="px-6 py-4">$3.30</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-19</td>
+                    <td class="px-6 py-4">地鐵 鰂魚涌 到 觀塘</td>
+                    <td class="px-6 py-4">$10.60</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-19</td>
+                    <td class="px-6 py-4">麥當勞 辣鳳梨堡+飲料優惠</td>
+                    <td class="px-6 py-4">$25.00</td>
+                    <td class="px-6 py-4">NT$94.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-20</td>
+                    <td class="px-6 py-4">麥當勞 早餐+飲料優惠</td>
+                    <td class="px-6 py-4">$25.00</td>
+                    <td class="px-6 py-4">NT$95.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-20</td>
+                    <td class="px-6 py-4">麥當勞 早餐+飲料優惠</td>
+                    <td class="px-6 py-4">$23.00</td>
+                    <td class="px-6 py-4">NT$87.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-21</td>
+                    <td class="px-6 py-4">麥當勞 早餐+飲料優惠</td>
+                    <td class="px-6 py-4">$25.00</td>
+                    <td class="px-6 py-4">NT$95.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-21</td>
+                    <td class="px-6 py-4">7-11 消化餅*2</td>
+                    <td class="px-6 py-4">$24.00</td>
+                    <td class="px-6 py-4">NT$91.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-22</td>
+                    <td class="px-6 py-4">W2公車 觀塘 到 九龍佑寧堂</td>
+                    <td class="px-6 py-4">$6.40</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-22</td>
+                    <td class="px-6 py-4">
+                      澳洲牛奶公司 早餐套餐*2 (還上次Misaki錢)
+                    </td>
+                    <td class="px-6 py-4">$100.00</td>
+                    <td class="px-6 py-4">NT$380.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-22</td>
+                    <td class="px-6 py-4">E23公車 吳松街佐敦道 到 東涌</td>
+                    <td class="px-6 py-4">$14.50</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-22</td>
+                    <td class="px-6 py-4">東涌360纜車 來回</td>
+                    <td class="px-6 py-4">$200.00</td>
+                    <td class="px-6 py-4">NT$760.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-22</td>
+                    <td class="px-6 py-4">麥當勞 香芋*2 (請Misaki)</td>
+                    <td class="px-6 py-4">$10.00</td>
+                    <td class="px-6 py-4">NT$38.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-22</td>
+                    <td class="px-6 py-4">E22公車 東涌 到 觀塘</td>
+                    <td class="px-6 py-4">$18.60</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-23</td>
+                    <td class="px-6 py-4">麥當勞 早餐+折$5券</td>
+                    <td class="px-6 py-4">$33.00</td>
+                    <td class="px-6 py-4">NT$125.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-23</td>
+                    <td class="px-6 py-4">麥當勞 早餐+飲料優惠</td>
+                    <td class="px-6 py-4">$19.00</td>
+                    <td class="px-6 py-4">NT$72.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-23</td>
+                    <td class="px-6 py-4">215x公車 觀塘 到 西九</td>
+                    <td class="px-6 py-4">$8.60</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-23</td>
+                    <td class="px-6 py-4">215x公車 西九 到 觀塘</td>
+                    <td class="px-6 py-4">$8.60</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-24</td>
+                    <td class="px-6 py-4">40公車 觀塘 到 長沙灣(深水埗)</td>
+                    <td class="px-6 py-4">$10.10</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-24</td>
+                    <td class="px-6 py-4">104公車 石硤尾 到 中環</td>
+                    <td class="px-6 py-4">$12.90</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-24</td>
+                    <td class="px-6 py-4">
+                      bakehouse sourdough egg tart + scone
+                    </td>
+                    <td class="px-6 py-4">$32.50</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-24</td>
+                    <td class="px-6 py-4">15公車 中環 到 太平山 (上山)</td>
+                    <td class="px-6 py-4">$13.00</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-24</td>
+                    <td class="px-6 py-4">1公車 太平山 到 中環 (下山)</td>
+                    <td class="px-6 py-4">$11.50</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-24</td>
+                    <td class="px-6 py-4">candylicious 巧克力*3</td>
+                    <td class="px-6 py-4">$85.00</td>
+                    <td class="px-6 py-4">NT$323.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-24</td>
+                    <td class="px-6 py-4">619x公車 中環 到 觀塘</td>
+                    <td class="px-6 py-4">$12.90</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-24</td>
+                    <td class="px-6 py-4">權發小廚 兩餸飯</td>
+                    <td class="px-6 py-4">$43.00</td>
+                    <td class="px-6 py-4">NT$163.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-25</td>
+                    <td class="px-6 py-4">麥當勞 早餐套餐優惠</td>
+                    <td class="px-6 py-4">$20.00</td>
+                    <td class="px-6 py-4">NT$76.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-06-25</td>
+                    <td class="px-6 py-4">麥當勞 點數換$1奶昔</td>
+                    <td class="px-6 py-4">$1.00</td>
+                    <td class="px-6 py-4">-</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-06-25</td>
+                    <td class="px-6 py-4">A29公車 觀塘 到 機場</td>
+                    <td class="px-6 py-4">$18.60</td>
+                    <td class="px-6 py-4">NT$70.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="st7-summary" class="content-section hidden">
+          <div class="bg-[color:var(--card-bg)] p-6 rounded-xl shadow-sm">
+            <h2
+              class="text-2xl font-bold text-center text-[color:var(--primary-accent)] mb-2"
+            >
+              ST7 窮遊實驗成果報告
+            </h2>
+            <p class="text-center text-gray-600 mb-8">
+              這次的挑戰是想看看P人旅行的極限到底在哪裡。以下是4天3夜最真實的數據紀錄！
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div class="text-center">
+                <h3 class="text-xl font-semibold mb-4">旅程總開銷分析 (NTD)</h3>
+                <div class="chart-container">
+                  <canvas id="st7TotalSpendingChart"></canvas>
                 </div>
-            </section>
-        </main>
+                <p class="mt-4 text-lg">
+                  總花費:
+                  <span class="font-bold text-[color:var(--secondary-accent)]"
+                    >NT$ 9,132</span
+                  >
+                </p>
+                <p class="text-sm text-gray-500">住宿感謝無價的友情！</p>
+              </div>
+              <div class="text-center">
+                <h3 class="text-xl font-semibold mb-4">當地消費分析 (HKD)</h3>
+                <div class="chart-container">
+                  <canvas id="st7LocalSpendingChart"></canvas>
+                </div>
+                <p class="mt-4 text-lg">
+                  當地總消費:
+                  <span class="font-bold text-[color:var(--secondary-accent)]"
+                    >HK$ 1,008.80</span
+                  >
+                </p>
+                <p class="text-sm text-gray-500">超過54%的花費都用在刀口上！</p>
+              </div>
+            </div>
+
+            <div class="mt-12 overflow-x-auto">
+              <h3 class="text-xl font-semibold text-center mb-4">
+                每日花費細項
+              </h3>
+              <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">日期</th>
+                    <th scope="col" class="px-6 py-3">當日花費 (HKD)</th>
+                    <th scope="col" class="px-6 py-3">當日預算 (HKD)</th>
+                    <th scope="col" class="px-6 py-3">當日結餘 (HKD)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">Day 1</td>
+                    <td class="px-6 py-4">$106.00</td>
+                    <td class="px-6 py-4">$150.00</td>
+                    <td class="px-6 py-4 text-green-600">$44.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">Day 2</td>
+                    <td class="px-6 py-4">$189.80</td>
+                    <td class="px-6 py-4">$200.00</td>
+                    <td class="px-6 py-4 text-green-600">$10.20</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">Day 3</td>
+                    <td class="px-6 py-4">$549.50</td>
+                    <td class="px-6 py-4">$300.00</td>
+                    <td class="px-6 py-4 text-red-600">-$249.50</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">Day 4</td>
+                    <td class="px-6 py-4">$163.50</td>
+                    <td class="px-6 py-4">$150.00</td>
+                    <td class="px-6 py-4 text-red-600">-$13.50</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr class="font-semibold text-gray-900 bg-white">
+                    <td class="px-6 py-3 text-base">總計</td>
+                    <td class="px-6 py-3">$1,008.80</td>
+                    <td class="px-6 py-3">$800.00</td>
+                    <td class="px-6 py-3 text-red-600">-$208.80</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <div class="mt-12 overflow-x-auto">
+              <h3 class="text-xl font-semibold text-center mb-4">
+                詳細交易紀錄
+              </h3>
+              <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">日期</th>
+                    <th scope="col" class="px-6 py-3">項目</th>
+                    <th scope="col" class="px-6 py-3">港幣 (HKD)</th>
+                    <th scope="col" class="px-6 py-3">台幣 (NTD)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-03-26</td>
+                    <td class="px-6 py-4">A29公車 機場 到 觀塘</td>
+                    <td class="px-6 py-4">$44.00</td>
+                    <td class="px-6 py-4">NT$187.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-03-26</td>
+                    <td class="px-6 py-4">麥當勞</td>
+                    <td class="px-6 py-4">$62.00</td>
+                    <td class="px-6 py-4">NT$264.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-03-27</td>
+                    <td class="px-6 py-4">麥當勞</td>
+                    <td class="px-6 py-4">$43.50</td>
+                    <td class="px-6 py-4">NT$185.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-03-27</td>
+                    <td class="px-6 py-4">219x 公車 觀塘 到 尖沙咀</td>
+                    <td class="px-6 py-4">$8.60</td>
+                    <td class="px-6 py-4">NT$36.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-03-27</td>
+                    <td class="px-6 py-4">hashtag B 蛋塔*2</td>
+                    <td class="px-6 py-4">$50.00</td>
+                    <td class="px-6 py-4">NT$213.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-03-27</td>
+                    <td class="px-6 py-4">215x 公車 尖沙咀 到 觀塘</td>
+                    <td class="px-6 py-4">$8.60</td>
+                    <td class="px-6 py-4">NT$36.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-03-27</td>
+                    <td class="px-6 py-4">7-11 三明治</td>
+                    <td class="px-6 py-4">$17.00</td>
+                    <td class="px-6 py-4">NT$72.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-03-27</td>
+                    <td class="px-6 py-4">迪卡儂 速乾浴巾</td>
+                    <td class="px-6 py-4">$69.00</td>
+                    <td class="px-6 py-4">NT$294.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-03-27</td>
+                    <td class="px-6 py-4">1A 公車 旺角 到 觀塘</td>
+                    <td class="px-6 py-4">$8.20</td>
+                    <td class="px-6 py-4">NT$35.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-03-28</td>
+                    <td class="px-6 py-4">
+                      前一日地鐵*2 觀塘-金鐘 15.8 金鍾-旺角東 12.9
+                    </td>
+                    <td class="px-6 py-4">$28.70</td>
+                    <td class="px-6 py-4">NT$122.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-03-28</td>
+                    <td class="px-6 py-4">1A 公車 觀塘 到 太子</td>
+                    <td class="px-6 py-4">$7.90</td>
+                    <td class="px-6 py-4">NT$33.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-03-28</td>
+                    <td class="px-6 py-4">機票選位</td>
+                    <td class="px-6 py-4">$50.00</td>
+                    <td class="px-6 py-4">NT$213.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-03-28</td>
+                    <td class="px-6 py-4">雞蛋仔 & 檸檬茶</td>
+                    <td class="px-6 py-4">$49.00</td>
+                    <td class="px-6 py-4">NT$209.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-03-28</td>
+                    <td class="px-6 py-4">1A 公車 九龍 到 觀塘</td>
+                    <td class="px-6 py-4">$8.20</td>
+                    <td class="px-6 py-4">NT$35.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-03-28</td>
+                    <td class="px-6 py-4">電影 香港四徑大步走</td>
+                    <td class="px-6 py-4">$90.00</td>
+                    <td class="px-6 py-4">NT$384.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-03-28</td>
+                    <td class="px-6 py-4">Uniqulo bratop airsim*2</td>
+                    <td class="px-6 py-4">$298.00</td>
+                    <td class="px-6 py-4">NT$1,273.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-03-28</td>
+                    <td class="px-6 py-4">
+                      KFC 雞扒家鄉雞皇桶飯餐 馬鈴薯泥 蛋塔
+                    </td>
+                    <td class="px-6 py-4">$56.00</td>
+                    <td class="px-6 py-4">NT$239.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-03-28</td>
+                    <td class="px-6 py-4">circle k 零食*3</td>
+                    <td class="px-6 py-4">$25.50</td>
+                    <td class="px-6 py-4">NT$109.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-03-29</td>
+                    <td class="px-6 py-4">地鐵 牛頭角 到 旺角</td>
+                    <td class="px-6 py-4">$9.20</td>
+                    <td class="px-6 py-4">NT$39.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-03-29</td>
+                    <td class="px-6 py-4">公車 旺角 到 尖沙咀港口</td>
+                    <td class="px-6 py-4">$5.80</td>
+                    <td class="px-6 py-4">NT$25.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-03-29</td>
+                    <td class="px-6 py-4">船 尖沙咀 到 中環</td>
+                    <td class="px-6 py-4">$6.50</td>
+                    <td class="px-6 py-4">NT$28.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-03-29</td>
+                    <td class="px-6 py-4">船 灣仔 到 尖沙咀</td>
+                    <td class="px-6 py-4">$6.50</td>
+                    <td class="px-6 py-4">NT$28.00</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-6 py-4">2025-03-29</td>
+                    <td class="px-6 py-4">公車 A10 西九龍 到 機場</td>
+                    <td class="px-6 py-4">$34.60</td>
+                    <td class="px-6 py-4">NT$148.00</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-6 py-4">2025-03-29</td>
+                    <td class="px-6 py-4">機場 御飯糰</td>
+                    <td class="px-6 py-4">$22.00</td>
+                    <td class="px-6 py-4">NT$94.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="preparation" class="content-section hidden">
+          <div class="bg-[color:var(--card-bg)] p-6 rounded-xl shadow-sm">
+            <h2
+              class="text-2xl font-bold text-[color:var(--primary-accent)] mb-4"
+            >
+              行前準備與在地攻略
+            </h2>
+            <ul class="space-y-4 list-inside">
+              <li class="flex items-start">
+                <span class="mr-3 text-xl">🐙</span>
+                <div>
+                  <strong class="font-semibold">八達通卡 (Octopus Card):</strong
+                  ><br />遊港必備。建議購買旅客版，無需押金。MTR車站、便利店均可購買與增值。搭乘交通工具比單程票更便宜。
+                </div>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-3 text-xl">🚶‍♂️</span>
+                <div>
+                  <strong class="font-semibold">交通禮儀:</strong
+                  ><br />手扶梯靠右站立，左側為行走通道。先下後上，進入車廂後往中間移動。巴士到站前需按鈴。
+                </div>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-3 text-xl">🤫</span>
+                <div>
+                  <strong class="font-semibold">公共場合禮儀:</strong
+                  ><br />車廂內保持安靜，請勿飲食。優先將座位讓給有需要的人。
+                </div>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-3 text-xl">💰</span>
+                <div>
+                  <strong class="font-semibold">平價美食指南:</strong
+                  ><br />多加利用「茶餐廳」與「兩餸飯」，它們是香港道地且經濟實惠的選擇，能讓您在預算內品嚐在地風味。
+                </div>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-3 text-xl">🔌</span>
+                <div>
+                  <strong class="font-semibold">基本用品:</strong
+                  ><br />英規三角轉接頭、雨具、舒適的鞋子、薄外套
+                  (室內冷氣強)、個人藥品。
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+      </main>
     </div>
 
     <!-- Gemini Modal -->
-    <div id="gemini-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden opacity-0">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div class="p-4 sm:p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 id="gemini-modal-title" class="text-xl font-bold text-[color:var(--primary-accent)]">✨ AI 助理</h3>
-                    <button id="gemini-modal-close" class="text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
-                </div>
-                <div id="gemini-modal-content" class="text-gray-700">
-                    <!-- Content generated by Gemini will be injected here -->
-                </div>
-            </div>
+    <div
+      id="gemini-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden opacity-0"
+    >
+      <div
+        class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+      >
+        <div class="p-4 sm:p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3
+              id="gemini-modal-title"
+              class="text-xl font-bold text-[color:var(--primary-accent)]"
+            >
+              ✨ AI 助理
+            </h3>
+            <button
+              id="gemini-modal-close"
+              class="text-gray-400 hover:text-gray-700 text-2xl"
+            >
+              &times;
+            </button>
+          </div>
+          <div id="gemini-modal-content" class="text-gray-700">
+            <!-- Content generated by Gemini will be injected here -->
+          </div>
         </div>
+      </div>
     </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const itineraryData = {
-        "Day 1 (Wed, Jun 18)": [
-            { time: '19:35', icon: '✈️', title: '抵達香港國際機場', duration: '約1小時', transport: '辦理入境、領取行李', details: '購買八達通卡，為旅程做好準備。', mapLink: 'https://www.google.com/maps/place/Hong+Kong+International+Airport+(HKG)/' },
-            { time: '20:30', icon: '🚌', title: '前往觀塘', duration: '約60-75分鐘', transport: '搭乘城巴A22，於觀塘市中心下車', price: 'HKD 40.80', details: '這是前往觀塘最經濟實惠的直達巴士路線。', mapLink: 'https://www.google.com/maps/search/?api=1&query=Airport+Ground+Transportation+Centre' },
-            { time: '21:45', icon: '🏠', title: '抵達朋友家 & 晚餐', duration: '---', transport: '步行', details: '安頓行李，可在觀塘apm商場或附近便利店簡單用餐，早點休息。', mapLink: 'https://www.google.com/maps/place/Kwun+Tong+Station/' },
-        ],
-        "Day 2 (Thu, Jun 19)": [
-            { time: '10:00', icon: '🏛️', title: '中環古蹟與藝術區探索', duration: '約3小時', transport: '港鐵 (觀塘 → 中環) 約 HKD 15.50', price: '免費', details: '參觀「大館」，由前中區警署建築群活化而成。接著步行至「PMQ元創方」，感受在地設計師的創意活力。', mapLink: 'https://www.google.com/maps/place/Tai+Kwun' },
-            { time: '13:00', icon: '🍜', title: '午餐 @ 中環老字號', duration: '約1小時', transport: '步行', price: '約 HKD 70-100', details: '可選「九記牛腩」的清湯牛腩，或在「蘭芳園」品嚐絲襪奶茶與豬扒包。', mapLink: 'https://www.google.com/maps/search/?api=1&query=Kau+Kee+Restaurant+Central' },
-            { time: '15:00', icon: '🏮', title: '上環文化散策', duration: '約2小時', transport: '步行', price: '免費', details: '沿荷李活道尋訪古董店，參觀香火鼎盛的「文武廟」，並在俗稱「貓街」的摩羅上街尋寶。', mapLink: 'https://www.google.com/maps/place/Man+Mo+Temple' },
-            { time: '17:00', icon: '🚎', title: '叮叮車港島遊', duration: '約30分鐘', transport: '電車 (往銅鑼灣方向) HKD 3.30', price: 'HKD 3.30', details: '坐上電車上層，以緩慢步調欣賞港島的街景。', mapLink: 'https://www.google.com/maps/search/?api=1&query=ding+ding+tram+central' },
-        ],
-        "Day 3 (Fri, Jun 20)": [
-            { time: '10:00', icon: '🛍️', title: '深水埗市場漫遊', duration: '約3小時', transport: '港鐵 (觀塘 → 深水埗) 約 HKD 11.80', price: '免費', details: '探索鴨寮街(電子產品)、福榮街(玩具)及基隆街(布料)，感受最真實的在地市集與街頭藝術。', mapLink: 'https://www.google.com/maps/place/Sham+Shui+Po' },
-            { time: '13:00', icon: 'Michelin Star', title: '午餐 @ 添好運', duration: '約1小時', transport: '步行', price: '約 HKD 60-90', details: '品嚐全世界最平價的米其林一星點心。推薦：酥皮焗叉燒包、香滑馬拉糕。', mapLink: 'https://www.google.com/maps/search/?api=1&query=Tim+Ho+Wan+Sham+Shui+Po' },
-            { time: '15:00', icon: '🎬', title: '旺角潮流文化探索', duration: '約4小時', transport: '港鐵 (深水埗 → 旺角) 約 HKD 5.20', price: '免費', details: '天氣好可逛金魚街、女人街，感受熱鬧街頭。如下雨，可躲進大型商場朗豪坊，或到樓上的特色咖啡店休息。', mapLink: 'https://www.google.com/maps/place/Mong+Kok' },
-            { time: '19:00', icon: '🌃', title: '晚餐 @ 廟街', duration: '約1.5小時', transport: '港鐵 (旺角 → 油麻地) 約 HKD 5.20', price: '約 HKD 70-100', details: '深入廟街夜市周邊的食肆，品嚐煲仔飯等大排檔風味美食。', mapLink: 'https://www.google.com/maps/search/?api=1&query=Temple+Street+Night+Market' }
-        ],
-        "Day 4 (Sat, Jun 21)": [
-             { time: '上午', icon: '❤️', title: '朋友日 (早餐)', duration: '約1.5小時', transport: '港鐵 (觀塘 → 佐敦) 約 HKD 9.50', price: '約 HKD 50', details: '與朋友相約在佐敦「澳洲牛奶公司」，體驗地道港式早餐。做好排隊的心理準備！', mapLink: 'https://www.google.com/maps/search/?api=1&query=Australia+Dairy+Company' },
-             { time: '下午', icon: '🤔', title: '彈性行程 (與朋友)', duration: '---', transport: '---', price: '---', details: '根據天氣決定：<br><b>晴天備案：</b>搭巴士到南區的赤柱市集，享受海邊小鎮的悠閒氛圍。<br><b>雨天備案：</b>前往九龍塘又一城，這是一個大型商場，有電影院、溜冰場和各種商店，可以輕鬆度過一個下午。', mapLink: 'https://www.google.com/maps/place/Hong+Kong' },
-        ],
-        "Day 5 (Sun, Jun 22)": [
-             { time: '全日', icon: '🏞️', title: '朋友日 (昂坪高原)', duration: '約7-8小時', transport: '港鐵 (觀塘 → 東涌) 約 HKD 24.90', price: '巴士 HKD 74.00 (假日來回)', details: '與朋友同遊大嶼山。搭乘新大嶼山巴士23號上山，參拜天壇大佛、寶蓮禪寺，並在心經簡林中漫步。請注意巴士班次，預留充足時間下山。', mapLink: 'https://www.google.com/maps/place/Ngong+Ping' },
-        ],
-        "Day 6 (Mon, Jun 23)": [
-            { time: '10:30', icon: '🏛️', title: '香港文化博物館', duration: '約4小時', transport: '港鐵 (觀塘 → 大圍) 約 HKD 9.50', price: '免費 (常設展覽)', details: '館藏豐富，金庸館、粵劇文物館及香港流行文化展都值得花時間細看，是絕佳的雨天備案。', mapLink: 'https://www.google.com/maps/place/Hong+Kong+Heritage+Museum' },
-            { time: '15:00', icon: '🌳', title: '鑽石山尋幽', duration: '約2.5小時', transport: '港鐵 (大圍 → 鑽石山) 約 HKD 5.10', price: '免費', details: '參觀仿唐代木構建築的「志蓮淨苑」，並在相鄰的「南蓮園池」中享受片刻寧靜。', mapLink: 'https://www.google.com/maps/place/Chi+Lin+Nunnery' },
-            { time: '18:00', icon: '🇹🇭', title: '晚餐 @ 九龍城', duration: '約2小時', transport: '巴士/小巴 (鑽石山 → 九龍城) 約 HKD 6', price: '約 HKD 80-100', details: '探索有「小泰國」之稱的九龍城。推薦「樂園」的沙嗲牛西多士，或「清真牛肉館」的爆漿牛肉餅。', mapLink: 'https://www.google.com/maps/place/Kowloon+City' },
-        ],
-        "Day 7 (Tue, Jun 24)": [
-            { time: '09:00 - 12:00', icon: '🏙️', title: '深水埗的歷史與市井', duration: '約3小時', transport: '從觀塘搭乘巴士 42 號 (約HKD 10.40) 到「長沙灣道遊樂場」站', price: '免費', details: '用最充沛的體力開始你的一天！先挑戰登上主教山，探索百年羅馬式蓄水池，然後下山投入鴨寮街等市場的懷抱。', mapLink: 'https://www.google.com/maps/place/Shek+Kip+Mei+Fresh+Water+Service+Reservoir' },
-            { time: '12:00 - 13:30', icon: '🍔', title: '午餐 & 前往港島', duration: '約1.5小時', transport: '從「深水埗警署」站搭乘過海巴士 905 號 (約HKD 12.10) 到中環', price: '約 HKD 30-50', details: '在深水埗或中環用麥當勞快速解決午餐。巴士上層是欣賞過海風景的最佳位置！', mapLink: 'https://www.google.com/maps/place/Sham+Shui+Po' },
-            { time: '13:30 - 17:00', icon: '⛰️', title: '太平山的日間全景', duration: '約3.5小時', transport: '從中環交易廣場巴士總站，搭乘城巴15號上山 (約HKD 12.80)', price: '免費 (觀景台)', details: '搭乘經典的雙層巴士上山。抵達後，沿盧吉道走一小段，那裡的免費觀景台能拍到最經典的維港白天景色。若感疲累，可在大館稍作休息後再上山。', mapLink: 'https://www.google.com/maps/place/Victoria+Peak'},
-            { time: '17:30 - 20:00', icon: '🌇', title: '紅香爐峰的日落任務', duration: '約2.5小時', transport: '從中環搭乘巴士 10 號 (約HKD 6.50) 到「雲景道」站，開始登山', price: '免費', details: '完成白天的山頂之旅後，挑戰更小眾的夜景秘境！從天后登山約30-40分鐘，在山頂迎接最美的日落和華燈初上。記得帶水和用手機當電筒。', mapLink: 'https://www.google.com/maps/place/Red+Incense+Burner+Summit' }
-        ],
-        "Day 8 (Wed, Jun 25)": [
-            { time: '09:00 - 12:00', icon: '🌳', title: '寧靜的告別與歸途', duration: '約3小時', transport: '從觀塘搭乘巴士 2F 號 (約HKD 5.40) 到「鑽石山站」', details: '帶著背包出門。在志蓮淨苑和南蓮園池度過旅程的最後一個上午。這裡的寧靜和唐代園林建築，會是你香港記憶中一個非常美好的句點。', price: '免費', mapLink: 'https://www.google.com/maps/place/Chi+Lin+Nunnery' },
-            { time: '12:15', icon: '✈️', title: '前往機場', duration: '約70-80分鐘', transport: '從鑽石山站旁的巴士總站，搭乘城巴E22直達機場', price: 'HKD 18.00', details: '這條路線非常方便，讓你不用再拖著行李轉車。預計1:30左右就能抵達機場，時間非常充裕。', mapLink: 'https://www.google.com/maps/search/?api=1&query=Diamond+Hill+Station+Public+Transport+Interchange' },
-        ]
-    };
-
-    const foodData = [
-        { name: '添好運點心專門店', category: '點心', desc: '全球最平價的米其林一星餐廳', mapLink: 'https://www.google.com/maps/search/?api=1&query=Tim+Ho+Wan+Sham+Shui+Po' },
-        { name: '九記牛腩', category: '粉麵', desc: '以清湯牛腩聞名的傳奇麵店', mapLink: 'https://www.google.com/maps/search/?api=1&query=Kau+Kee+Restaurant+Central' },
-        { name: '蘭芳園', category: '茶餐廳', desc: '絲襪奶茶與豬扒包的創始店', mapLink: 'https://www.google.com/maps/search/?api=1&query=Lan+Fong+Yuen+Central' },
-        { name: '澳洲牛奶公司', category: '茶餐廳', desc: '以炒蛋多士和極速服務聞名', mapLink: 'https://www.google.com/maps/search/?api=1&query=Australia+Dairy+Company' },
-        { name: '樂園', category: '茶餐廳', desc: '位於熟食中心，招牌沙嗲牛西多士', mapLink: 'https://www.google.com/maps/search/?api=1&query=Lok+Yuen+Kowloon+City' },
-        { name: '清真牛肉館', category: '特色小食', desc: '必試湯汁滿溢的牛肉餅', mapLink: 'https://www.google.com/maps/search/?api=1&query=Islam+Food+Kowloon+City' },
-        { name: 'Bakehouse', category: '特色小食', desc: '新派烘焙店，以酸種蛋撻聞名', mapLink: 'https://www.google.com/maps/search/?api=1&query=Bakehouse+Central' },
-    ];
-
-    // --- Gemini API ---
-    const API_KEY = ""; // Leave blank
-    const API_URL_TEXT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
-    
-    async function callGemini(prompt, schema = null) {
-        const payload = {
-            contents: [{ role: "user", parts: [{ text: prompt }] }],
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const itineraryData = {
+          "Day 1 (Wed, Jun 18)": [
+            {
+              time: "19:35",
+              icon: "✈️",
+              title: "抵達香港國際機場",
+              duration: "約1小時",
+              transport: "辦理入境、領取行李",
+              details: "購買八達通卡，為旅程做好準備。",
+              mapLink:
+                "https://www.google.com/maps/place/Hong+Kong+International+Airport+(HKG)/",
+            },
+            {
+              time: "20:30",
+              icon: "🚌",
+              title: "前往觀塘",
+              duration: "約60-75分鐘",
+              transport: "搭乘城巴A22，於觀塘市中心下車",
+              price: "HKD 40.80",
+              details: "這是前往觀塘最經濟實惠的直達巴士路線。",
+              mapLink:
+                "https://www.google.com/maps/search/?api=1&query=Airport+Ground+Transportation+Centre",
+            },
+            {
+              time: "21:45",
+              icon: "🏠",
+              title: "抵達朋友家 & 晚餐",
+              duration: "---",
+              transport: "步行",
+              details:
+                "安頓行李，可在觀塘apm商場或附近便利店簡單用餐，早點休息。",
+              mapLink: "https://www.google.com/maps/place/Kwun+Tong+Station/",
+            },
+          ],
+          "Day 2 (Thu, Jun 19)": [
+            {
+              time: "10:00",
+              icon: "🏛️",
+              title: "中環古蹟與藝術區探索",
+              duration: "約3小時",
+              transport: "港鐵 (觀塘 → 中環) 約 HKD 15.50",
+              price: "免費",
+              details:
+                "參觀「大館」，由前中區警署建築群活化而成。接著步行至「PMQ元創方」，感受在地設計師的創意活力。",
+              mapLink: "https://www.google.com/maps/place/Tai+Kwun",
+            },
+            {
+              time: "13:00",
+              icon: "🍜",
+              title: "午餐 @ 中環老字號",
+              duration: "約1小時",
+              transport: "步行",
+              price: "約 HKD 70-100",
+              details:
+                "可選「九記牛腩」的清湯牛腩，或在「蘭芳園」品嚐絲襪奶茶與豬扒包。",
+              mapLink:
+                "https://www.google.com/maps/search/?api=1&query=Kau+Kee+Restaurant+Central",
+            },
+            {
+              time: "15:00",
+              icon: "🏮",
+              title: "上環文化散策",
+              duration: "約2小時",
+              transport: "步行",
+              price: "免費",
+              details:
+                "沿荷李活道尋訪古董店，參觀香火鼎盛的「文武廟」，並在俗稱「貓街」的摩羅上街尋寶。",
+              mapLink: "https://www.google.com/maps/place/Man+Mo+Temple",
+            },
+            {
+              time: "17:00",
+              icon: "🚎",
+              title: "叮叮車港島遊",
+              duration: "約30分鐘",
+              transport: "電車 (往銅鑼灣方向) HKD 3.30",
+              price: "HKD 3.30",
+              details: "坐上電車上層，以緩慢步調欣賞港島的街景。",
+              mapLink:
+                "https://www.google.com/maps/search/?api=1&query=ding+ding+tram+central",
+            },
+          ],
+          "Day 3 (Fri, Jun 20)": [
+            {
+              time: "10:00",
+              icon: "🛍️",
+              title: "深水埗市場漫遊",
+              duration: "約3小時",
+              transport: "港鐵 (觀塘 → 深水埗) 約 HKD 11.80",
+              price: "免費",
+              details:
+                "探索鴨寮街(電子產品)、福榮街(玩具)及基隆街(布料)，感受最真實的在地市集與街頭藝術。",
+              mapLink: "https://www.google.com/maps/place/Sham+Shui+Po",
+            },
+            {
+              time: "13:00",
+              icon: "Michelin Star",
+              title: "午餐 @ 添好運",
+              duration: "約1小時",
+              transport: "步行",
+              price: "約 HKD 60-90",
+              details:
+                "品嚐全世界最平價的米其林一星點心。推薦：酥皮焗叉燒包、香滑馬拉糕。",
+              mapLink:
+                "https://www.google.com/maps/search/?api=1&query=Tim+Ho+Wan+Sham+Shui+Po",
+            },
+            {
+              time: "15:00",
+              icon: "🎬",
+              title: "旺角潮流文化探索",
+              duration: "約4小時",
+              transport: "港鐵 (深水埗 → 旺角) 約 HKD 5.20",
+              price: "免費",
+              details:
+                "天氣好可逛金魚街、女人街，感受熱鬧街頭。如下雨，可躲進大型商場朗豪坊，或到樓上的特色咖啡店休息。",
+              mapLink: "https://www.google.com/maps/place/Mong+Kok",
+            },
+            {
+              time: "19:00",
+              icon: "🌃",
+              title: "晚餐 @ 廟街",
+              duration: "約1.5小時",
+              transport: "港鐵 (旺角 → 油麻地) 約 HKD 5.20",
+              price: "約 HKD 70-100",
+              details: "深入廟街夜市周邊的食肆，品嚐煲仔飯等大排檔風味美食。",
+              mapLink:
+                "https://www.google.com/maps/search/?api=1&query=Temple+Street+Night+Market",
+            },
+          ],
+          "Day 4 (Sat, Jun 21)": [
+            {
+              time: "上午",
+              icon: "❤️",
+              title: "朋友日 (早餐)",
+              duration: "約1.5小時",
+              transport: "港鐵 (觀塘 → 佐敦) 約 HKD 9.50",
+              price: "約 HKD 50",
+              details:
+                "與朋友相約在佐敦「澳洲牛奶公司」，體驗地道港式早餐。做好排隊的心理準備！",
+              mapLink:
+                "https://www.google.com/maps/search/?api=1&query=Australia+Dairy+Company",
+            },
+            {
+              time: "下午",
+              icon: "🤔",
+              title: "彈性行程 (與朋友)",
+              duration: "---",
+              transport: "---",
+              price: "---",
+              details:
+                "根據天氣決定：<br><b>晴天備案：</b>搭巴士到南區的赤柱市集，享受海邊小鎮的悠閒氛圍。<br><b>雨天備案：</b>前往九龍塘又一城，這是一個大型商場，有電影院、溜冰場和各種商店，可以輕鬆度過一個下午。",
+              mapLink: "https://www.google.com/maps/place/Hong+Kong",
+            },
+          ],
+          "Day 5 (Sun, Jun 22)": [
+            {
+              time: "全日",
+              icon: "🏞️",
+              title: "朋友日 (昂坪高原)",
+              duration: "約7-8小時",
+              transport: "港鐵 (觀塘 → 東涌) 約 HKD 24.90",
+              price: "巴士 HKD 74.00 (假日來回)",
+              details:
+                "與朋友同遊大嶼山。搭乘新大嶼山巴士23號上山，參拜天壇大佛、寶蓮禪寺，並在心經簡林中漫步。請注意巴士班次，預留充足時間下山。",
+              mapLink: "https://www.google.com/maps/place/Ngong+Ping",
+            },
+          ],
+          "Day 6 (Mon, Jun 23)": [
+            {
+              time: "10:30",
+              icon: "🏛️",
+              title: "香港文化博物館",
+              duration: "約4小時",
+              transport: "港鐵 (觀塘 → 大圍) 約 HKD 9.50",
+              price: "免費 (常設展覽)",
+              details:
+                "館藏豐富，金庸館、粵劇文物館及香港流行文化展都值得花時間細看，是絕佳的雨天備案。",
+              mapLink:
+                "https://www.google.com/maps/place/Hong+Kong+Heritage+Museum",
+            },
+            {
+              time: "15:00",
+              icon: "🌳",
+              title: "鑽石山尋幽",
+              duration: "約2.5小時",
+              transport: "港鐵 (大圍 → 鑽石山) 約 HKD 5.10",
+              price: "免費",
+              details:
+                "參觀仿唐代木構建築的「志蓮淨苑」，並在相鄰的「南蓮園池」中享受片刻寧靜。",
+              mapLink: "https://www.google.com/maps/place/Chi+Lin+Nunnery",
+            },
+            {
+              time: "18:00",
+              icon: "🇹🇭",
+              title: "晚餐 @ 九龍城",
+              duration: "約2小時",
+              transport: "巴士/小巴 (鑽石山 → 九龍城) 約 HKD 6",
+              price: "約 HKD 80-100",
+              details:
+                "探索有「小泰國」之稱的九龍城。推薦「樂園」的沙嗲牛西多士，或「清真牛肉館」的爆漿牛肉餅。",
+              mapLink: "https://www.google.com/maps/place/Kowloon+City",
+            },
+          ],
+          "Day 7 (Tue, Jun 24)": [
+            {
+              time: "09:00 - 12:00",
+              icon: "🏙️",
+              title: "深水埗的歷史與市井",
+              duration: "約3小時",
+              transport:
+                "從觀塘搭乘巴士 42 號 (約HKD 10.40) 到「長沙灣道遊樂場」站",
+              price: "免費",
+              details:
+                "用最充沛的體力開始你的一天！先挑戰登上主教山，探索百年羅馬式蓄水池，然後下山投入鴨寮街等市場的懷抱。",
+              mapLink:
+                "https://www.google.com/maps/place/Shek+Kip+Mei+Fresh+Water+Service+Reservoir",
+            },
+            {
+              time: "12:00 - 13:30",
+              icon: "🍔",
+              title: "午餐 & 前往港島",
+              duration: "約1.5小時",
+              transport:
+                "從「深水埗警署」站搭乘過海巴士 905 號 (約HKD 12.10) 到中環",
+              price: "約 HKD 30-50",
+              details:
+                "在深水埗或中環用麥當勞快速解決午餐。巴士上層是欣賞過海風景的最佳位置！",
+              mapLink: "https://www.google.com/maps/place/Sham+Shui+Po",
+            },
+            {
+              time: "13:30 - 17:00",
+              icon: "⛰️",
+              title: "太平山的日間全景",
+              duration: "約3.5小時",
+              transport:
+                "從中環交易廣場巴士總站，搭乘城巴15號上山 (約HKD 12.80)",
+              price: "免費 (觀景台)",
+              details:
+                "搭乘經典的雙層巴士上山。抵達後，沿盧吉道走一小段，那裡的免費觀景台能拍到最經典的維港白天景色。若感疲累，可在大館稍作休息後再上山。",
+              mapLink: "https://www.google.com/maps/place/Victoria+Peak",
+            },
+            {
+              time: "17:30 - 20:00",
+              icon: "🌇",
+              title: "紅香爐峰的日落任務",
+              duration: "約2.5小時",
+              transport:
+                "從中環搭乘巴士 10 號 (約HKD 6.50) 到「雲景道」站，開始登山",
+              price: "免費",
+              details:
+                "完成白天的山頂之旅後，挑戰更小眾的夜景秘境！從天后登山約30-40分鐘，在山頂迎接最美的日落和華燈初上。記得帶水和用手機當電筒。",
+              mapLink:
+                "https://www.google.com/maps/place/Red+Incense+Burner+Summit",
+            },
+          ],
+          "Day 8 (Wed, Jun 25)": [
+            {
+              time: "09:00 - 12:00",
+              icon: "🌳",
+              title: "寧靜的告別與歸途",
+              duration: "約3小時",
+              transport: "從觀塘搭乘巴士 2F 號 (約HKD 5.40) 到「鑽石山站」",
+              details:
+                "帶著背包出門。在志蓮淨苑和南蓮園池度過旅程的最後一個上午。這裡的寧靜和唐代園林建築，會是你香港記憶中一個非常美好的句點。",
+              price: "免費",
+              mapLink: "https://www.google.com/maps/place/Chi+Lin+Nunnery",
+            },
+            {
+              time: "12:15",
+              icon: "✈️",
+              title: "前往機場",
+              duration: "約70-80分鐘",
+              transport: "從鑽石山站旁的巴士總站，搭乘城巴E22直達機場",
+              price: "HKD 18.00",
+              details:
+                "這條路線非常方便，讓你不用再拖著行李轉車。預計1:30左右就能抵達機場，時間非常充裕。",
+              mapLink:
+                "https://www.google.com/maps/search/?api=1&query=Diamond+Hill+Station+Public+Transport+Interchange",
+            },
+          ],
         };
 
-        if (schema) {
-            payload.generationConfig = {
-                responseMimeType: "application/json",
-                responseSchema: schema
-            };
-        }
+        const foodData = [
+          {
+            name: "添好運點心專門店",
+            category: "點心",
+            desc: "全球最平價的米其林一星餐廳",
+            mapLink:
+              "https://www.google.com/maps/search/?api=1&query=Tim+Ho+Wan+Sham+Shui+Po",
+          },
+          {
+            name: "九記牛腩",
+            category: "粉麵",
+            desc: "以清湯牛腩聞名的傳奇麵店",
+            mapLink:
+              "https://www.google.com/maps/search/?api=1&query=Kau+Kee+Restaurant+Central",
+          },
+          {
+            name: "蘭芳園",
+            category: "茶餐廳",
+            desc: "絲襪奶茶與豬扒包的創始店",
+            mapLink:
+              "https://www.google.com/maps/search/?api=1&query=Lan+Fong+Yuen+Central",
+          },
+          {
+            name: "澳洲牛奶公司",
+            category: "茶餐廳",
+            desc: "以炒蛋多士和極速服務聞名",
+            mapLink:
+              "https://www.google.com/maps/search/?api=1&query=Australia+Dairy+Company",
+          },
+          {
+            name: "樂園",
+            category: "茶餐廳",
+            desc: "位於熟食中心，招牌沙嗲牛西多士",
+            mapLink:
+              "https://www.google.com/maps/search/?api=1&query=Lok+Yuen+Kowloon+City",
+          },
+          {
+            name: "清真牛肉館",
+            category: "特色小食",
+            desc: "必試湯汁滿溢的牛肉餅",
+            mapLink:
+              "https://www.google.com/maps/search/?api=1&query=Islam+Food+Kowloon+City",
+          },
+          {
+            name: "Bakehouse",
+            category: "特色小食",
+            desc: "新派烘焙店，以酸種蛋撻聞名",
+            mapLink:
+              "https://www.google.com/maps/search/?api=1&query=Bakehouse+Central",
+          },
+        ];
 
-        try {
+        // --- Gemini API ---
+        const API_KEY = ""; // Leave blank
+        const API_URL_TEXT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+
+        async function callGemini(prompt, schema = null) {
+          const payload = {
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+          };
+
+          if (schema) {
+            payload.generationConfig = {
+              responseMimeType: "application/json",
+              responseSchema: schema,
+            };
+          }
+
+          try {
             const response = await fetch(API_URL_TEXT, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
             });
             if (!response.ok) {
-                throw new Error(`API call failed with status: ${response.status}`);
+              throw new Error(
+                `API call failed with status: ${response.status}`
+              );
             }
             const result = await response.json();
-             if (result.candidates && result.candidates.length > 0 &&
-                result.candidates[0].content && result.candidates[0].content.parts &&
-                result.candidates[0].content.parts.length > 0) {
-                return result.candidates[0].content.parts[0].text;
+            if (
+              result.candidates &&
+              result.candidates.length > 0 &&
+              result.candidates[0].content &&
+              result.candidates[0].content.parts &&
+              result.candidates[0].content.parts.length > 0
+            ) {
+              return result.candidates[0].content.parts[0].text;
             } else {
-                throw new Error("Invalid response structure from API");
+              throw new Error("Invalid response structure from API");
             }
-        } catch (error) {
+          } catch (error) {
             console.error("Gemini API Error:", error);
             return null;
+          }
         }
-    }
 
+        // --- Modal ---
+        const modal = document.getElementById("gemini-modal");
+        const modalTitle = document.getElementById("gemini-modal-title");
+        const modalContent = document.getElementById("gemini-modal-content");
+        const modalCloseBtn = document.getElementById("gemini-modal-close");
 
-    // --- Modal ---
-    const modal = document.getElementById('gemini-modal');
-    const modalTitle = document.getElementById('gemini-modal-title');
-    const modalContent = document.getElementById('gemini-modal-content');
-    const modalCloseBtn = document.getElementById('gemini-modal-close');
+        function showModal(title, content) {
+          modalTitle.textContent = title;
+          modalContent.innerHTML = content;
+          modal.classList.remove("hidden");
+          setTimeout(() => modal.classList.remove("opacity-0"), 10);
+        }
 
-    function showModal(title, content) {
-        modalTitle.textContent = title;
-        modalContent.innerHTML = content;
-        modal.classList.remove('hidden');
-        setTimeout(() => modal.classList.remove('opacity-0'), 10);
-    }
+        function hideModal() {
+          modal.classList.add("opacity-0");
+          setTimeout(() => modal.classList.add("hidden"), 300);
+        }
 
-    function hideModal() {
-        modal.classList.add('opacity-0');
-        setTimeout(() => modal.classList.add('hidden'), 300);
-    }
-
-    modalCloseBtn.addEventListener('click', hideModal);
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+        modalCloseBtn.addEventListener("click", hideModal);
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
             hideModal();
-        }
-    });
+          }
+        });
 
-    // --- RENDER FUNCTIONS ---
-    function renderItinerary() {
-        const itineraryContainer = document.getElementById('itinerary-content');
-        const dayTabsContainer = document.getElementById('day-tabs-container');
-        itineraryContainer.innerHTML = '';
-        dayTabsContainer.innerHTML = '';
+        // --- RENDER FUNCTIONS ---
+        function renderItinerary() {
+          const itineraryContainer =
+            document.getElementById("itinerary-content");
+          const dayTabsContainer =
+            document.getElementById("day-tabs-container");
+          itineraryContainer.innerHTML = "";
+          dayTabsContainer.innerHTML = "";
 
-        Object.keys(itineraryData).forEach((day, index) => {
-            const dayTab = document.createElement('button');
+          Object.keys(itineraryData).forEach((day, index) => {
+            const dayTab = document.createElement("button");
             dayTab.textContent = day;
-            dayTab.className = `day-tab-btn px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-300 ${index === 0 ? 'active' : ''}`;
+            dayTab.className = `day-tab-btn px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-300 ${
+              index === 0 ? "active" : ""
+            }`;
             dayTab.dataset.day = day;
             dayTabsContainer.appendChild(dayTab);
 
-            const dayId = day.replace(/[\s(),]/g, '-');
-            const dayContent = document.createElement('div');
+            const dayId = day.replace(/[\s(),]/g, "-");
+            const dayContent = document.createElement("div");
             dayContent.id = dayId;
-            dayContent.className = `day-content ${index !== 0 ? 'hidden' : ''}`;
-            
-            let timelineHTML = '';
-            
-            if (day.toLowerCase().indexOf('friend') === -1 && day.toLowerCase().indexOf('day-1') === -1) {
-                timelineHTML += `
+            dayContent.className = `day-content ${index !== 0 ? "hidden" : ""}`;
+
+            let timelineHTML = "";
+
+            if (
+              day.toLowerCase().indexOf("friend") === -1 &&
+              day.toLowerCase().indexOf("day-1") === -1
+            ) {
+              timelineHTML += `
                     <div class="text-center mb-6">
                         <button class="gemini-alt-plan-btn gemini-btn" data-day-plan-key="${day}">✨ 建議一個替代方案</button>
                     </div>
@@ -463,16 +1325,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
             timelineHTML += '<div class="relative pl-8">';
             itineraryData[day].forEach((item, itemIndex) => {
-                const priceInfo = item.price ? `<p><strong>門票/預算:</strong> <span class="text-green-700 font-semibold">${item.price}</span></p>` : '';
-                const tellMeMoreBtn = ['中環古蹟與藝術區探索', '上環文化散策', '深水埗的歷史與市井', '旺角潮流文化探索', '香港文化博物館', '鑽石山尋幽', '太平山的日間全景', '紅香爐峰的日落任務'].includes(item.title)
-                    ? `<button class="gemini-info-btn" data-topic="${item.title}">✨ 告訴我更多</button>` : '';
+              const priceInfo = item.price
+                ? `<p><strong>門票/預算:</strong> <span class="text-green-700 font-semibold">${item.price}</span></p>`
+                : "";
+              const tellMeMoreBtn = [
+                "中環古蹟與藝術區探索",
+                "上環文化散策",
+                "深水埗的歷史與市井",
+                "旺角潮流文化探索",
+                "香港文化博物館",
+                "鑽石山尋幽",
+                "太平山的日間全景",
+                "紅香爐峰的日落任務",
+              ].includes(item.title)
+                ? `<button class="gemini-info-btn" data-topic="${item.title}">✨ 告訴我更多</button>`
+                : "";
 
-                timelineHTML += `
+              timelineHTML += `
                     <div class="timeline-item relative mb-8">
-                        ${itemIndex < itineraryData[day].length - 1 ? '<div class="timeline-connector"></div>' : ''}
+                        ${
+                          itemIndex < itineraryData[day].length - 1
+                            ? '<div class="timeline-connector"></div>'
+                            : ""
+                        }
                         <div class="p-4 bg-[color:var(--card-bg)] rounded-lg shadow-sm border border-[color:var(--border-color)]">
                              <div class="flex justify-between items-center">
-                                <p class="font-bold text-lg text-[color:var(--primary-accent)]">${item.icon} ${item.title}</p>
+                                <p class="font-bold text-lg text-[color:var(--primary-accent)]">${
+                                  item.icon
+                                } ${item.title}</p>
                                 ${tellMeMoreBtn}
                             </div>
                             <div class="text-sm text-gray-600 mt-2 space-y-1">
@@ -481,192 +1361,332 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <p><strong>交通:</strong> ${item.transport}</p>
                                 ${priceInfo}
                                 <p>${item.details}</p>
-                                <a href="${item.mapLink}" target="_blank" class="text-[color:var(--secondary-accent)] hover:underline font-semibold inline-block mt-1">在 Google 地圖上查看 ↗</a>
+                                <a href="${
+                                  item.mapLink
+                                }" target="_blank" class="text-[color:var(--secondary-accent)] hover:underline font-semibold inline-block mt-1">在 Google 地圖上查看 ↗</a>
                             </div>
                         </div>
                     </div>
                 `;
             });
-            timelineHTML += '</div>';
+            timelineHTML += "</div>";
             dayContent.innerHTML = timelineHTML;
             itineraryContainer.appendChild(dayContent);
-        });
+          });
 
-        const style = document.createElement('style');
-        style.innerHTML = `.day-tab-btn { background-color: #e2e8f0; color: #4a5568; } .day-tab-btn.active { background-color: var(--primary-accent); color: white; }`;
-        document.head.appendChild(style);
-    }
-    
-    function renderFoodMap(category = 'all') {
-        const foodList = document.getElementById('food-list');
-        foodList.innerHTML = '';
-        const filteredData = category === 'all' ? foodData : foodData.filter(item => item.category === category);
-        filteredData.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'food-card bg-[color:var(--card-bg)] p-4 rounded-lg shadow-sm border border-[color:var(--border-color)] transition-transform duration-300 hover:scale-105';
+          const style = document.createElement("style");
+          style.innerHTML = `.day-tab-btn { background-color: #e2e8f0; color: #4a5568; } .day-tab-btn.active { background-color: var(--primary-accent); color: white; }`;
+          document.head.appendChild(style);
+        }
+
+        function renderFoodMap(category = "all") {
+          const foodList = document.getElementById("food-list");
+          foodList.innerHTML = "";
+          const filteredData =
+            category === "all"
+              ? foodData
+              : foodData.filter((item) => item.category === category);
+          filteredData.forEach((item) => {
+            const card = document.createElement("div");
+            card.className =
+              "food-card bg-[color:var(--card-bg)] p-4 rounded-lg shadow-sm border border-[color:var(--border-color)] transition-transform duration-300 hover:scale-105";
             card.dataset.category = item.category;
             card.innerHTML = `<a href="${item.mapLink}" target="_blank" class="text-xl font-bold text-[color:var(--primary-accent)] hover:text-[color:var(--secondary-accent)]">${item.name}</a><p class="text-gray-500 text-sm my-2">${item.desc}</p><span class="inline-block bg-blue-100 text-[color:var(--primary-accent)] text-xs font-semibold px-2 py-1 rounded-full">${item.category}</span>`;
             foodList.appendChild(card);
-        });
-    }
-    
-    function renderSpendingSummaryCharts() {
-        // Data based on user's sheet
-        const totalSpendingData = {
-            labels: ['機票 (Flight)', '網路 (Internet)', '當地消費 (Local Spend)'],
-            datasets: [{
+          });
+        }
+
+        function renderSpendingSummaryCharts() {
+          // Data based on user's sheet
+          const totalSpendingData = {
+            labels: [
+              "機票 (Flight)",
+              "網路 (Internet)",
+              "當地消費 (Local Spend)",
+            ],
+            datasets: [
+              {
                 data: [3310, 286, 2731], // Total NT$6,327
-                backgroundColor: ['#6B7A8F', '#D5A08C', '#99B898'],
-            }]
-        };
-        
-        const localSpendingData = {
-            labels: ['必需品 (交通/飲食)', '非必需品 (娛樂/購物)'],
-            datasets: [{
+                backgroundColor: ["#6B7A8F", "#D5A08C", "#99B898"],
+              },
+            ],
+          };
+
+          const localSpendingData = {
+            labels: ["必需品 (交通/飲食)", "非必需品 (娛樂/購物)"],
+            datasets: [
+              {
                 data: [779.5, 117.5], // Total HK$897
-                backgroundColor: ['#6B7A8F', '#D5A08C'],
-            }]
-        };
-        
-        const chartOptions = {
+                backgroundColor: ["#6B7A8F", "#D5A08C"],
+              },
+            ],
+          };
+
+          const chartOptions = {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    position: 'bottom',
-                }
-            }
-        };
+              legend: {
+                position: "bottom",
+              },
+            },
+          };
 
-        const totalCtx = document.getElementById('totalSpendingChart')?.getContext('2d');
-        if(totalCtx) new Chart(totalCtx, { type: 'pie', data: totalSpendingData, options: chartOptions });
-        
-        const localCtx = document.getElementById('localSpendingChart')?.getContext('2d');
-        if(localCtx) new Chart(localCtx, { type: 'pie', data: localSpendingData, options: chartOptions });
-    }
+          const totalCtx = document
+            .getElementById("totalSpendingChart")
+            ?.getContext("2d");
+          if (totalCtx)
+            new Chart(totalCtx, {
+              type: "pie",
+              data: totalSpendingData,
+              options: chartOptions,
+            });
 
-    // --- EVENT LISTENERS ---
-    const mainNav = document.getElementById('main-nav');
-    const contentSections = document.querySelectorAll('.content-section');
-    mainNav.addEventListener('click', (e) => {
-        if (e.target.tagName === 'BUTTON') {
+          const localCtx = document
+            .getElementById("localSpendingChart")
+            ?.getContext("2d");
+          if (localCtx)
+            new Chart(localCtx, {
+              type: "pie",
+              data: localSpendingData,
+              options: chartOptions,
+            });
+        }
+
+        function renderST7SpendingSummaryCharts() {
+          // ST7 Data based on user's sheet
+          const st7TotalSpendingData = {
+            labels: [
+              "機票 (Flight)",
+              "網路卡 (Internet)",
+              "Klook門票 (Tickets)",
+              "當地消費 (Local Spend)",
+            ],
+            datasets: [
+              {
+                data: [3998, 238, 595, 4301], // Total NT$9,132
+                backgroundColor: ["#6B7A8F", "#D5A08C", "#99B898", "#A8D5BA"],
+              },
+            ],
+          };
+
+          const st7LocalSpendingData = {
+            labels: ["必需品 (交通/飲食)", "非必需品 (娛樂/購物)"],
+            datasets: [
+              {
+                data: [551.8, 457], // Total HK$1,008.80
+                backgroundColor: ["#6B7A8F", "#D5A08C"],
+              },
+            ],
+          };
+
+          const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+              },
+            },
+          };
+
+          const st7TotalCtx = document
+            .getElementById("st7TotalSpendingChart")
+            ?.getContext("2d");
+          if (st7TotalCtx)
+            new Chart(st7TotalCtx, {
+              type: "pie",
+              data: st7TotalSpendingData,
+              options: chartOptions,
+            });
+
+          const st7LocalCtx = document
+            .getElementById("st7LocalSpendingChart")
+            ?.getContext("2d");
+          if (st7LocalCtx)
+            new Chart(st7LocalCtx, {
+              type: "pie",
+              data: st7LocalSpendingData,
+              options: chartOptions,
+            });
+        }
+
+        // --- EVENT LISTENERS ---
+        const mainNav = document.getElementById("main-nav");
+        const contentSections = document.querySelectorAll(".content-section");
+        mainNav.addEventListener("click", (e) => {
+          if (e.target.tagName === "BUTTON") {
             const targetId = e.target.dataset.target;
-            mainNav.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-            contentSections.forEach(section => section.id === targetId ? section.classList.remove('hidden') : section.classList.add('hidden'));
-        }
-    });
+            mainNav
+              .querySelectorAll("button")
+              .forEach((btn) => btn.classList.remove("active"));
+            e.target.classList.add("active");
+            contentSections.forEach((section) =>
+              section.id === targetId
+                ? section.classList.remove("hidden")
+                : section.classList.add("hidden")
+            );
+          }
+        });
 
-    const itinerarySection = document.getElementById('daily-itinerary');
-    itinerarySection.addEventListener('click', (e) => {
-        if (e.target.classList.contains('day-tab-btn')) {
+        const itinerarySection = document.getElementById("daily-itinerary");
+        itinerarySection.addEventListener("click", (e) => {
+          if (e.target.classList.contains("day-tab-btn")) {
             const targetDay = e.target.dataset.day;
-            itinerarySection.querySelectorAll('.day-tab-btn').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-            itinerarySection.querySelectorAll('.day-content').forEach(content => content.id === targetDay.replace(/[\s(),]/g, '-') ? content.classList.remove('hidden') : content.classList.add('hidden'));
-        }
-        if (e.target.classList.contains('gemini-info-btn')) {
+            itinerarySection
+              .querySelectorAll(".day-tab-btn")
+              .forEach((btn) => btn.classList.remove("active"));
+            e.target.classList.add("active");
+            itinerarySection
+              .querySelectorAll(".day-content")
+              .forEach((content) =>
+                content.id === targetDay.replace(/[\s(),]/g, "-")
+                  ? content.classList.remove("hidden")
+                  : content.classList.add("hidden")
+              );
+          }
+          if (e.target.classList.contains("gemini-info-btn")) {
             handleTellMeMore(e.target.dataset.topic);
-        }
-        if (e.target.classList.contains('gemini-alt-plan-btn')) {
+          }
+          if (e.target.classList.contains("gemini-alt-plan-btn")) {
             handleAlternativePlan(e.target.dataset.dayPlanKey);
-        }
-    });
+          }
+        });
 
-    const foodFilters = document.getElementById('food-filters');
-    foodFilters.addEventListener('click', (e) => {
-        if (e.target.classList.contains('food-filter-btn')) {
+        const foodFilters = document.getElementById("food-filters");
+        foodFilters.addEventListener("click", (e) => {
+          if (e.target.classList.contains("food-filter-btn")) {
             const category = e.target.dataset.category;
-            foodFilters.querySelectorAll('.food-filter-btn').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
+            foodFilters
+              .querySelectorAll(".food-filter-btn")
+              .forEach((btn) => btn.classList.remove("active"));
+            e.target.classList.add("active");
             renderFoodMap(category);
-        }
-    });
-    
-    // --- Gemini Handlers ---
-    async function handleTellMeMore(topic) {
-        showModal('✨ 正在為您查詢...', '<p class="text-center">請稍候...</p>');
-        const prompt = `As a friendly tour guide, tell me a brief, interesting fact about "${topic}" in Hong Kong for a solo female traveler. Keep it under 60 words and write in Traditional Chinese.`;
-        const response = await callGemini(prompt);
-        if (response) {
-            showModal(`✨ 關於 ${topic}`, `<p>${response.replace(/\n/g, '<br>')}</p>`);
-        } else {
-            showModal('😕 發生錯誤', '<p>抱歉，無法取得資訊。請稍後再試。</p>');
-        }
-    }
+          }
+        });
 
-    async function handleAlternativePlan(dayKey) {
-        showModal('✨ 正在規劃您的專屬行程...', '<p class="text-center">請稍候，AI 助理正在為您客製化新計畫...</p>');
-        const originalPlan = itineraryData[dayKey].map(item => item.title).join(', ');
-        
-        const prompt = `I am a solo female traveler in Hong Kong. My original plan for today was: ${originalPlan}. Please suggest a completely different, full-day alternative itinerary for me. My interests are walking, natural scenery, architecture, movies, bookstores, exhibitions, and museums. The plan should be safe, budget-friendly (mostly free attractions), suitable for rainy weather, and located in a single, easily accessible district (like Kowloon West, or Hong Kong Island's Eastern District). Please respond in Traditional Chinese.`;
+        // --- Gemini Handlers ---
+        async function handleTellMeMore(topic) {
+          showModal(
+            "✨ 正在為您查詢...",
+            '<p class="text-center">請稍候...</p>'
+          );
+          const prompt = `As a friendly tour guide, tell me a brief, interesting fact about "${topic}" in Hong Kong for a solo female traveler. Keep it under 60 words and write in Traditional Chinese.`;
+          const response = await callGemini(prompt);
+          if (response) {
+            showModal(
+              `✨ 關於 ${topic}`,
+              `<p>${response.replace(/\n/g, "<br>")}</p>`
+            );
+          } else {
+            showModal("😕 發生錯誤", "<p>抱歉，無法取得資訊。請稍後再試。</p>");
+          }
+        }
 
-        const schema = {
+        async function handleAlternativePlan(dayKey) {
+          showModal(
+            "✨ 正在規劃您的專屬行程...",
+            '<p class="text-center">請稍候，AI 助理正在為您客製化新計畫...</p>'
+          );
+          const originalPlan = itineraryData[dayKey]
+            .map((item) => item.title)
+            .join(", ");
+
+          const prompt = `I am a solo female traveler in Hong Kong. My original plan for today was: ${originalPlan}. Please suggest a completely different, full-day alternative itinerary for me. My interests are walking, natural scenery, architecture, movies, bookstores, exhibitions, and museums. The plan should be safe, budget-friendly (mostly free attractions), suitable for rainy weather, and located in a single, easily accessible district (like Kowloon West, or Hong Kong Island's Eastern District). Please respond in Traditional Chinese.`;
+
+          const schema = {
             type: "ARRAY",
             items: {
-                type: "OBJECT",
-                properties: {
-                    time: { type: "STRING" },
-                    icon: { type: "STRING" },
-                    title: { type: "STRING" },
-                    details: { type: "STRING" }
-                },
-                required: ["time", "icon", "title", "details"]
-            }
-        };
+              type: "OBJECT",
+              properties: {
+                time: { type: "STRING" },
+                icon: { type: "STRING" },
+                title: { type: "STRING" },
+                details: { type: "STRING" },
+              },
+              required: ["time", "icon", "title", "details"],
+            },
+          };
 
-        const response = await callGemini(prompt, schema);
-        if (response) {
+          const response = await callGemini(prompt, schema);
+          if (response) {
             try {
-                const newPlan = JSON.parse(response);
-                let htmlContent = '<div class="space-y-4">';
-                newPlan.forEach(item => {
-                    htmlContent += `
+              const newPlan = JSON.parse(response);
+              let htmlContent = '<div class="space-y-4">';
+              newPlan.forEach((item) => {
+                htmlContent += `
                         <div class="p-3 bg-gray-100 rounded-lg">
-                            <p class="font-bold">${item.icon || '📍'} ${item.time}: ${item.title}</p>
-                            <p class="text-sm text-gray-600 pl-6">${item.details}</p>
+                            <p class="font-bold">${item.icon || "📍"} ${
+                  item.time
+                }: ${item.title}</p>
+                            <p class="text-sm text-gray-600 pl-6">${
+                              item.details
+                            }</p>
                         </div>
                     `;
-                });
-                htmlContent += '</div>';
-                showModal('✨ 您的專屬替代方案', htmlContent);
+              });
+              htmlContent += "</div>";
+              showModal("✨ 您的專屬替代方案", htmlContent);
             } catch (e) {
-                console.error("Error parsing Gemini JSON:", e);
-                showModal('😕 發生錯誤', '<p>抱歉，無法生成新計畫。API回傳格式有誤。</p>');
+              console.error("Error parsing Gemini JSON:", e);
+              showModal(
+                "😕 發生錯誤",
+                "<p>抱歉，無法生成新計畫。API回傳格式有誤。</p>"
+              );
             }
-        } else {
-            showModal('😕 發生錯誤', '<p>抱歉，無法生成新計畫。請稍後再試。</p>');
+          } else {
+            showModal(
+              "😕 發生錯誤",
+              "<p>抱歉，無法生成新計畫。請稍後再試。</p>"
+            );
+          }
         }
-    }
 
-    // --- INITIALIZATION ---
-    function initializeApp() {
-        mainNav.querySelector('button[data-target="overview"]').classList.add('active');
-        document.getElementById('overview').classList.remove('hidden');
-        renderItinerary();
-        renderFoodMap();
-        renderSpendingSummaryCharts();
+        // --- INITIALIZATION ---
+        function initializeApp() {
+          mainNav
+            .querySelector('button[data-target="overview"]')
+            .classList.add("active");
+          document.getElementById("overview").classList.remove("hidden");
+          renderItinerary();
+          renderFoodMap();
+          renderSpendingSummaryCharts();
+          renderST7SpendingSummaryCharts();
 
-        const foodFilterStyle = document.createElement('style');
-        foodFilterStyle.innerHTML = `.food-filter-btn { background-color: #e2e8f0; color: #4a5568; padding: 0.5rem 1rem; border-radius: 9999px; font-weight: 500; transition: all 0.2s; } .food-filter-btn.active { background-color: var(--secondary-accent); color: white; }`;
-        document.head.appendChild(foodFilterStyle);
+          const foodFilterStyle = document.createElement("style");
+          foodFilterStyle.innerHTML = `.food-filter-btn { background-color: #e2e8f0; color: #4a5568; padding: 0.5rem 1rem; border-radius: 9999px; font-weight: 500; transition: all 0.2s; } .food-filter-btn.active { background-color: var(--secondary-accent); color: white; }`;
+          document.head.appendChild(foodFilterStyle);
 
-        const ctx = document.getElementById('transportationChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
+          const ctx = document
+            .getElementById("transportationChart")
+            .getContext("2d");
+          new Chart(ctx, {
+            type: "bar",
             data: {
-                labels: ['機場快線', '巴士A22(直達)', '的士'],
-                datasets: [
-                    { label: '預估時間 (分鐘)', data: [55, 70, 45], backgroundColor: 'rgba(107, 122, 143, 0.7)' },
-                    { label: '預估費用 (HKD)', data: [110, 40.80, 300], backgroundColor: 'rgba(213, 160, 140, 0.7)' }
-                ]
+              labels: ["機場快線", "巴士A22(直達)", "的士"],
+              datasets: [
+                {
+                  label: "預估時間 (分鐘)",
+                  data: [55, 70, 45],
+                  backgroundColor: "rgba(107, 122, 143, 0.7)",
+                },
+                {
+                  label: "預估費用 (HKD)",
+                  data: [110, 40.8, 300],
+                  backgroundColor: "rgba(213, 160, 140, 0.7)",
+                },
+              ],
             },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
-        });
-    }
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: { y: { beginAtZero: true } },
+            },
+          });
+        }
 
-    initializeApp();
-});
-</script>
-</body>
+        initializeApp();
+      });
+    </script>
+  </body>
 </html>
