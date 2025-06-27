@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Questboard Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", "Noto Sans TC", sans-serif;
+        background-color: #f7f7f9;
+      }
+      /* Pastel Color Palette */
+      .event-tag {
+        width: 4px;
+        border-radius: 4px;
+      }
+      .event-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 9999px;
+      }
+      .event-hike {
+        background-color: #a7f3d0;
+      } /* green-200 */
+      .event-study {
+        background-color: #bfdbfe;
+      } /* blue-200 */
+      .event-work {
+        background-color: #fed7aa;
+      } /* orange-200 */
+      .event-travel {
+        background-color: #e9d5ff;
+      } /* purple-200 */
+      .event-deadline {
+        background-color: #fecaca;
+      } /* red-200 */
+      .event-prep {
+        background-color: #a5f3fc;
+      } /* cyan-200 */
+
+      .tag-hike {
+        background-color: #a7f3d0;
+        border-color: #34d399;
+        color: #065f46;
+      }
+      .tag-study {
+        background-color: #bfdbfe;
+        border-color: #60a5fa;
+        color: #1e40af;
+      }
+      .tag-entertainment {
+        background-color: #e9d5ff;
+        border-color: #c084fc;
+        color: #6b21a8;
+      }
+
+      .event-done .event-text,
+      .task-done .task-title {
+        text-decoration: line-through;
+        opacity: 0.6;
+      }
+
+      .custom-checkbox input {
+        display: none;
+      }
+      .custom-checkbox .checkmark {
+        width: 24px;
+        height: 24px;
+        min-width: 24px;
+        min-height: 24px;
+        border-width: 2px;
+        border-style: solid;
+        border-radius: 6px;
+        display: inline-block;
+        position: relative;
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+      .custom-checkbox input:checked + .checkmark::after {
+        content: "";
+        position: absolute;
+        left: 7px;
+        top: 3px;
+        width: 6px;
+        height: 12px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        transform: rotate(45deg);
+      }
+      .task-checkbox,
+      .subtask-checkbox {
+        min-width: 0;
+        min-height: 0;
+        font-size: 1rem;
+      }
+      .subtask-done {
+        text-decoration: line-through;
+        color: #9ca3af;
+      }
+
+      /* Mobile-first container and modal styles */
+      .max-w-4xl {
+        max-width: 100vw;
+      }
+      @media (min-width: 640px) {
+        .max-w-4xl {
+          max-width: 56rem;
+        }
+      }
+      .rounded-2xl {
+        border-radius: 1.25rem;
+      }
+      .shadow-lg {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+      .overflow-hidden {
+        overflow: hidden;
+      }
+      /* Modal: full screen on mobile */
+      #modal-content {
+        width: 100vw;
+        max-width: 100vw;
+        min-height: 90vh;
+        border-radius: 0.75rem;
+        margin: 0;
+        padding: 1.5rem 1rem;
+      }
+      @media (min-width: 640px) {
+        #modal-content {
+          width: 100%;
+          max-width: 28rem;
+          min-height: unset;
+          padding: 1.5rem 2rem;
+        }
+      }
+      /* Touch targets */
+      .edit-task-btn,
+      .delete-countdown-btn,
+      .edit-countdown-btn {
+        margin-right: 0.5rem;
+      }
+      /* Tab bar sticky on mobile */
+      #tab-nav {
+        position: sticky;
+        top: 0;
+        background: #f1f5f9;
+        z-index: 10;
+      }
+      /* Checklist and countdown vertical stacking */
+      .flex.items-center.p-3 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      @media (min-width: 640px) {
+        .flex.items-center.p-3 {
+          flex-direction: row;
+          align-items: center;
+        }
+      }
+      /* Font sizes */
+      html {
+        font-size: 16px;
+      }
+      @media (max-width: 400px) {
+        html {
+          font-size: 14px;
+        }
+      }
+      /* Increase spacing between buttons and inputs */
+      .space-x-2 > * {
+        margin-right: 0.5rem;
+      }
+      .space-x-2 > *:last-child {
+        margin-right: 0;
+      }
+      /* Modal close button larger */
+      #close-btn {
+        font-size: 2.5rem;
+        min-width: 44px;
+        min-height: 44px;
+      }
+      /* Inputs and buttons larger on mobile */
+      input,
+      select,
+      button {
+        font-size: 1.1rem;
+        padding: 0.75rem 1rem;
+      }
+      @media (min-width: 640px) {
+        input,
+        select,
+        button {
+          font-size: 1rem;
+          padding: 0.5rem 0.75rem;
+        }
+      }
+    </style>
+    <style>
+      /* Tab pill styles */
+      .tab-pill {
+        position: relative;
+        border: none;
+        outline: none;
+        padding: 0.5rem 1.5rem;
+        margin: 0 0.1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 9999px;
+        background: none;
+        transition: color 0.2s, background 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+        z-index: 1;
+      }
+      .tab-pill-inactive {
+        color: #64748b;
+        background: #f1f5f9;
+      }
+      .tab-pill-inactive:hover {
+        background: #e0e7ef;
+        color: #2563eb;
+      }
+      .tab-pill-active {
+        color: #2563eb;
+        background: #fff;
+        box-shadow: 0 2px 8px 0 rgba(37, 99, 235, 0.08);
+        border: 1.5px solid #2563eb;
+        z-index: 2;
+      }
+      @media (max-width: 640px) {
+        .tab-pill {
+          font-size: 0.95rem;
+          padding: 0.4rem 1rem;
+        }
+      }
+    </style>
+    <style>
+      body.dark {
+        background-color: #18181b;
+        color: #e5e7eb;
+      }
+      body.dark .bg-white {
+        background-color: #23232a !important;
+        color: #e5e7eb !important;
+      }
+      body.dark .bg-gray-50 {
+        background-color: #23232a !important;
+      }
+      body.dark .bg-gray-100 {
+        background-color: #26272b !important;
+      }
+      body.dark .border-gray-200 {
+        border-color: #33343a !important;
+      }
+      body.dark .text-gray-800,
+      body.dark .text-gray-700 {
+        color: #e5e7eb !important;
+      }
+      body.dark .text-gray-500 {
+        color: #a1a1aa !important;
+      }
+      body.dark .bg-blue-500 {
+        background-color: #2563eb !important;
+      }
+      body.dark .bg-blue-600 {
+        background-color: #1d4ed8 !important;
+      }
+      body.dark .bg-red-500 {
+        background-color: #ef4444 !important;
+      }
+      body.dark .bg-red-600 {
+        background-color: #dc2626 !important;
+      }
+      body.dark .bg-gray-200 {
+        background-color: #23232a !important;
+      }
+      body.dark .bg-gray-700 {
+        background-color: #23232a !important;
+      }
+      body.dark .tab-pill-active {
+        background: #18181b !important;
+        color: #60a5fa !important;
+        border-color: #60a5fa !important;
+      }
+      body.dark .tab-pill-inactive {
+        background: #23232a !important;
+        color: #a1a1aa !important;
+      }
+      body.dark .tab-pill-inactive:hover {
+        background: #18181b !important;
+        color: #60a5fa !important;
+      }
+    </style>
+  </head>
+  <body class="p-2 sm:p-4 md:p-6">
+    <div
+      class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden"
+    >
+      <!-- Header -->
+      <header class="text-center p-6 border-b border-gray-200 relative">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+          Questboard Portal
+        </h1>
+        <button
+          id="theme-toggle"
+          class="absolute top-6 right-6 bg-gray-200 dark:bg-gray-700 rounded-full p-2 transition-colors"
+          title="Toggle dark mode"
+        >
+          <span id="theme-toggle-icon">🌙</span>
+        </button>
+        <div
+          id="all-countdowns"
+          class="mt-4 flex flex-wrap justify-center gap-1.5"
+        >
+          <!-- Countdown items will be injected here -->
+        </div>
+      </header>
+
+      <!-- Tab Navigation -->
+      <div class="border-b border-gray-200 bg-gray-50">
+        <nav
+          id="tab-nav"
+          class="flex justify-center items-center gap-2 py-2 sm:py-3 px-2 sm:px-4 rounded-xl bg-gray-100 shadow-sm mt-2 mb-2 max-w-2xl mx-auto"
+          aria-label="Tabs"
+        >
+          <!-- Tabs will be injected here -->
+        </nav>
+      </div>
+
+      <!-- Content Area -->
+      <div id="content-area">
+        <!-- Sub Navigation -->
+        <div
+          id="sub-nav-container"
+          class="p-4 flex justify-between items-center border-b border-gray-200"
+        >
+          <button id="prev-btn" class="p-2 rounded-full hover:bg-gray-100">
+            &lt;
+          </button>
+          <div
+            id="nav-title"
+            class="font-semibold text-gray-700 text-center"
+          ></div>
+          <div class="flex items-center space-x-2">
+            <button
+              id="today-btn"
+              class="text-sm font-semibold text-blue-600 hover:bg-blue-50 px-3 py-1 rounded-md"
+            >
+              Today
+            </button>
+            <button id="next-btn" class="p-2 rounded-full hover:bg-gray-100">
+              &gt;
+            </button>
+          </div>
+        </div>
+        <!-- Tab Content -->
+        <div id="tab-content-container" class="p-4">
+          <!-- Content will be injected here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      id="modal"
+      class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 hidden z-50"
+    >
+      <div
+        class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-md transform transition-all scale-95 opacity-0"
+        id="modal-content"
+      >
+        <!-- Modal content is dynamic -->
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // --- DATA ---
+        const events = [
+          {
+            id: 1,
+            title: "香港旅行",
+            type: "Travel",
+            startDate: "2025-06-18",
+            endDate: "2025-06-25",
+            description: "放鬆一下，準備迎接挑戰！",
+          },
+          {
+            id: 2,
+            title: "NLP 期中考",
+            type: "Deadline",
+            startDate: "2025-06-30",
+            endDate: "2025-06-30",
+            description: "Natural Language Processing 的期中考試。",
+          },
+          {
+            id: 3,
+            title: "淡蘭古道南路",
+            type: "Hike",
+            startDate: "2025-07-14",
+            endDate: "2025-07-16",
+            description: "與七月中要入營的朋友完成。時程為建議，可彈性調整。",
+          },
+          {
+            id: 4,
+            title: "碧山巖露營",
+            type: "Hike",
+            startDate: "2025-07-03",
+            endDate: "2025-07-04",
+            description:
+              "過夜一次，選擇天氣好的週一或週四。時程為建議，可彈性調整。",
+          },
+          {
+            id: 5,
+            title: "接案工作",
+            type: "Work",
+            startDate: "2025-08-04",
+            endDate: "2025-08-07",
+            description: "集思 南港7F。",
+          },
+          {
+            id: 6,
+            title: "可能的接案工作",
+            type: "Work",
+            startDate: "2025-08-13",
+            endDate: "2025-08-17",
+            description: "還沒確定，滿力 泌尿科會議展覽。",
+          },
+          {
+            id: 7,
+            title: "FP 考試",
+            type: "Deadline",
+            startDate: "2025-09-01",
+            endDate: "2025-09-02",
+            description: "課業衝刺期的重要考試。",
+          },
+          {
+            id: 8,
+            title: "NLP 考試",
+            type: "Deadline",
+            startDate: "2025-09-16",
+            endDate: "2025-09-17",
+            description: "NLP 的最終考試。",
+          },
+          {
+            id: 9,
+            title: "FP 繳交",
+            type: "Deadline",
+            startDate: "2025-09-15",
+            endDate: "2025-09-15",
+            description: "Final Project 的最終截止日。",
+          },
+          {
+            id: 10,
+            title: "霞喀羅古道",
+            type: "Hike",
+            startDate: "2025-09-18",
+            endDate: "2025-09-19",
+            description: "在白石駐在所過夜。時程為建議，可彈性調整。",
+          },
+          {
+            id: 11,
+            title: "台北大縱走",
+            type: "Hike",
+            startDate: "2025-07-01",
+            endDate: "2025-08-31",
+            description:
+              "利用七、八月的零碎時間，化整為零，逐段完成\n已完成徽章數: 第五段 (7)、第六段 (1)、第八段 (2)\n未完成: 第一段、第二段、第三段、第四段、第六段、第七段、第八段\n一二最後，先走完六七八段，然後再走一二三四段。",
+          },
+          {
+            id: 12,
+            title: "Mobile Dev 作業",
+            type: "Study",
+            startDate: "2025-07-01",
+            endDate: "2025-09-20",
+            description: "趁其他作業空檔先完成下學期作業，在出發前完成即可。",
+          },
+          {
+            id: 13,
+            title: "出發澳洲！",
+            type: "Travel",
+            startDate: "2025-09-22",
+            endDate: "2025-09-22",
+            description: "新的旅程開始！",
+          },
+          {
+            id: 14,
+            title: "FP draft report (0%)",
+            type: "Study",
+            startDate: "2025-08-04",
+            endDate: "2025-08-04",
+            description: "Final Project zero weight assignment",
+          },
+          {
+            id: 15,
+            title: "台南",
+            type: "Travel",
+            startDate: "2025-07-06",
+            endDate: "2025-07-10",
+            description: "台南的行程",
+          },
+          {
+            id: 16,
+            title: "Dinner with 神木",
+            type: "Personal",
+            startDate: "2025-07-01",
+            endDate: "2025-07-01",
+            description: "與神木的晚餐聚會。",
+          },
+          {
+            id: 17,
+            title: "WH Workshop",
+            type: "Personal",
+            startDate: "2025-07-12",
+            endDate: "2025-07-12",
+            description: "參加 WH 工作坊。",
+          },
+        ];
+
+        let checklistTasks = [
+          {
+            id: 101,
+            title: "霞喀羅古道",
+            status: "pending",
+            tag: "戶外",
+            duration: "2天1夜",
+            subtasks: [],
+          },
+          {
+            id: 102,
+            title: "碧山巖露營",
+            status: "pending",
+            tag: "戶外",
+            duration: "1晚",
+            subtasks: ["預約7/3營地"],
+          },
+          {
+            id: 103,
+            title: "淡蘭古道南路",
+            status: "pending",
+            tag: "戶外",
+            duration: "3天2夜",
+            subtasks: ["跟R確定日期", "確認路線"],
+          },
+          {
+            id: 104,
+            title: "台北大縱走",
+            status: "pending",
+            tag: "戶外",
+            duration: "多日",
+            subtasks: [
+              "第六段",
+              "第七段",
+              "第八段",
+              "第三段",
+              "第四段",
+              "第一段",
+              "第二段",
+            ],
+          },
+          {
+            id: 105,
+            title: "完成FP",
+            status: "pending",
+            tag: "學校",
+            duration: "3個月",
+            subtasks: [],
+          },
+          {
+            id: 106,
+            title: "完成NLP",
+            status: "pending",
+            tag: "學校",
+            duration: "2週",
+            subtasks: [],
+          },
+          {
+            id: 107,
+            title: "完成 Mobile Dev 作業",
+            status: "pending",
+            tag: "學校",
+            duration: "4週",
+            subtasks: [
+              "使用Stich製作wireframe",
+              "使用Firebase Studio做出prototype",
+              "使用Task Master + ollama做計畫跟進度追蹤",
+              "使用Cursor做出App",
+            ],
+          },
+        ];
+
+        // Normalize subtasks to always be objects
+        checklistTasks = checklistTasks.map((task) => ({
+          ...task,
+          subtasks: (task.subtasks || []).map((sub, idx) =>
+            typeof sub === "string"
+              ? { id: Date.now() + idx, text: sub, completed: false }
+              : sub
+          ),
+        }));
+
+        const tabs = [
+          { id: "overview", name: "Overview" },
+          { id: "weekly", name: "Week" },
+          { id: "checklist", name: "Checklist" },
+          { id: "countdowns", name: "Countdown" },
+        ];
+
+        let deadlineCountdowns = [
+          { id: 1, name: "✈️ 出發", date: "2025-09-22" },
+          { id: 2, name: "NLP midterm", date: "2025-06-30" },
+          { id: 3, name: "FP exam", date: "2025-09-08" },
+          { id: 4, name: "NLP exam", date: "2025-09-10" },
+          { id: 5, name: "FP project", date: "2025-09-15" },
+        ];
+
+        // Update events array
+        events.forEach((event) => {
+          if (event.title === "出發澳洲！") {
+            event.startDate = "2025-09-22";
+            event.endDate = "2025-09-22";
+          }
+        });
+        // Update deadlineCountdowns
+        deadlineCountdowns.forEach((cd) => {
+          if (cd.name === "✈️ 出發") {
+            cd.date = "2025-09-22";
+          }
+        });
+
+        // Update deadlineCountdowns for NLP exam and FP exam
+        deadlineCountdowns.forEach((cd) => {
+          if (cd.name === "NLP exam") {
+            cd.date = "2025-09-16";
+          }
+          if (cd.name === "FP exam") {
+            cd.date = "2025-09-01";
+          }
+        });
+
+        // Load from localStorage if available
+        loadDataFromLocalStorage();
+
+        // Replace fixed today with a function
+        function getToday() {
+          const now = new Date();
+          return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        }
+
+        // Update initial week and month navigation
+        let currentWeekStartDate = new Date(getToday());
+        const dayOfWeek = getToday().getDay(); // 0=Sun, 1=Mon...
+        currentWeekStartDate.setDate(
+          getToday().getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)
+        ); // Set to Monday
+
+        let currentOverviewMonth = new Date(
+          getToday().getFullYear(),
+          getToday().getMonth(),
+          1
+        );
+
+        let activeView = "weekly";
+        let countdownTimer = null; // Timer for dynamic countdown updates
+
+        const tabNav = document.getElementById("tab-nav");
+        const subNavContainer = document.getElementById("sub-nav-container");
+        const navTitle = document.getElementById("nav-title");
+        const tabContentContainer = document.getElementById(
+          "tab-content-container"
+        );
+        const allCountdownsEl = document.getElementById("all-countdowns");
+        const modal = document.getElementById("modal");
+        const modalContent = document.getElementById("modal-content");
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const todayBtn = document.getElementById("today-btn");
+
+        const tagColorMap = {
+          戶外: "#34d399",
+          學校: "#60a5fa",
+          娛樂: "#c084fc",
+        };
+
+        const eventTypeColorMap = {
+          Hike: "#a7f3d0", // green
+          Study: "#bfdbfe", // blue
+          Work: "#fed7aa", // orange
+          Travel: "#e9d5ff", // purple
+          Deadline: "#fecaca", // salmon
+          Prep: "#a5f3fc", // cyan
+          Personal: "#fde68a", // yellow
+        };
+
+        function parseDate(dateString) {
+          if (!dateString) return null;
+          const [y, m, d] = dateString.split("-").map(Number);
+          return new Date(y, m - 1, d);
+        }
+
+        function getTagClass(tag) {
+          const classMap = {
+            戶外: "tag-hike",
+            學校: "tag-study",
+            娛樂: "tag-entertainment",
+          };
+          return classMap[tag] || "bg-gray-200 border-gray-400 text-gray-800";
+        }
+
+        function getEventTypeHexColor(type) {
+          return eventTypeColorMap[type] || "#d1d5db";
+        }
+
+        function render() {
+          // Clear existing timer if any
+          if (countdownTimer) {
+            clearInterval(countdownTimer);
+            countdownTimer = null;
+          }
+
+          updateAllCountdownsDynamic();
+
+          // Start dynamic countdown timer
+          countdownTimer = setInterval(() => {
+            updateAllCountdownsDynamic();
+            // Also update countdowns page if it's currently active
+            if (activeView === "countdowns") {
+              renderCountdownsPage();
+            }
+          }, 1000);
+
+          renderTabs();
+          renderContentForActiveView();
+          // Theme toggle logic: attach after button is rendered
+          const themeToggleBtn = document.getElementById("theme-toggle");
+          const themeIcon = document.getElementById("theme-toggle-icon");
+          if (themeToggleBtn && themeIcon) {
+            const isDark = document.body.classList.contains("dark");
+            themeIcon.textContent = isDark ? "☀️" : "🌙";
+            themeToggleBtn.onclick = function () {
+              const currentlyDark = document.body.classList.contains("dark");
+              setTheme(!currentlyDark);
+              themeIcon.textContent = !currentlyDark ? "☀️" : "🌙";
+            };
+          }
+        }
+
+        function renderTabs() {
+          tabNav.innerHTML = tabs
+            .map((tab) => {
+              const isActive = tab.id === activeView;
+              return `<button data-view-id="${tab.id}"
+                class="tab-pill ${
+                  isActive ? "tab-pill-active" : "tab-pill-inactive"
+                }"
+                >${tab.name}</button>`;
+            })
+            .join("");
+
+          tabNav.querySelectorAll("button").forEach((button) => {
+            button.addEventListener("click", () => {
+              activeView = button.dataset.viewId;
+              render();
+            });
+          });
+        }
+
+        function renderWeekNav() {
+          const endDate = new Date(currentWeekStartDate);
+          endDate.setDate(currentWeekStartDate.getDate() + 6);
+          const options = { month: "long", day: "numeric" };
+          navTitle.textContent = `${currentWeekStartDate.toLocaleDateString(
+            "en-US",
+            options
+          )} - ${endDate.toLocaleDateString("en-US", options)}`;
+        }
+
+        function renderMonthNav() {
+          navTitle.textContent = `${currentOverviewMonth.toLocaleString(
+            "en-US",
+            { month: "long" }
+          )} ${currentOverviewMonth.getFullYear()}`;
+        }
+
+        function renderContentForActiveView() {
+          subNavContainer.style.display = "flex";
+          if (activeView === "checklist" || activeView === "countdowns") {
+            subNavContainer.style.display = "none";
+            if (activeView === "checklist") renderChecklistPage();
+            if (activeView === "countdowns") renderCountdownsPage();
+          } else if (activeView === "weekly") {
+            renderWeekView();
+            renderWeekNav();
+          } else if (activeView === "overview") {
+            renderMonthView();
+            renderMonthNav();
+          }
+        }
+
+        function renderChecklistPage() {
+          const pendingTasks = checklistTasks.filter(
+            (t) => t.status === "pending"
+          );
+          const completedTasks = checklistTasks.filter(
+            (t) => t.status === "completed"
+          );
+
+          const taskToHtml = (task) => {
+            const tagClasses = getTagClass(task.tag);
+            const tagColor = tagColorMap[task.tag] || "#9ca3af";
+            const isCompleted = task.status === "completed";
+
+            let checkboxStyle = `border-color: ${tagColor};`;
+            if (isCompleted) checkboxStyle += ` background-color: ${tagColor};`;
+
+            const bgColorClass = isCompleted
+              ? tagClasses.split(" ")[0]
+              : "bg-white";
+
+            return `<div class="p-3 rounded-lg border border-gray-200 ${bgColorClass}">
+                        <div class="flex items-start">
+                            <label class="custom-checkbox mt-1">
+                                <input type="checkbox" class="task-checkbox" data-id="${
+                                  task.id
+                                }" ${isCompleted ? "checked" : ""}>
+                                <span class="checkmark" style="${checkboxStyle}"></span>
+                            </label>
+                            <div class="flex-grow ml-3">
+                                <p class="font-semibold task-title ${
+                                  isCompleted ? "task-done" : ""
+                                }">${task.title}</p>
+                                <div class="mt-2 space-y-1">
+                                    ${task.subtasks
+                                      .map(
+                                        (sub) => `
+                                        <label class="flex items-center text-sm text-gray-600">
+                                            <input type="checkbox" class="subtask-checkbox mr-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" data-task-id="${
+                                              task.id
+                                            }" data-subtask-id="${sub.id}" ${
+                                          sub.completed ? "checked" : ""
+                                        }>
+                                            <span class="${
+                                              sub.completed
+                                                ? "subtask-done"
+                                                : ""
+                                            }">${sub.text}</span>
+                                        </label>
+                                    `
+                                      )
+                                      .join("")}
+                                </div>
+                            </div>
+                            <div class="text-right ml-4 flex-shrink-0">
+                                <p class="text-sm font-medium text-gray-700">${
+                                  task.duration || ""
+                                }</p>
+                                <div class="mt-2 space-x-1">
+                                    <button class="edit-task-btn p-1 text-xs hover:bg-gray-200 rounded-full" data-id="${
+                                      task.id
+                                    }">✏️</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+          };
+
+          let html = `
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-700">Task Checklist</h2>
+                        <button id="add-task-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors">Add Task</button>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-600 mb-2">To Do</h3>
+                            <div class="space-y-3">
+                                ${
+                                  pendingTasks.length > 0
+                                    ? pendingTasks.map(taskToHtml).join("")
+                                    : '<p class="text-gray-400 text-sm">No tasks to do</p>'
+                                }
+                            </div>
+                        </div>
+                         <div>
+                            <h3 class="font-semibold text-gray-600 mb-2 mt-6">Completed</h3>
+                            <div class="space-y-3">
+                                ${
+                                  completedTasks.length > 0
+                                    ? completedTasks.map(taskToHtml).join("")
+                                    : '<p class="text-gray-400 text-sm">No completed tasks yet</p>'
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `;
+          tabContentContainer.innerHTML = html;
+          addChecklistEventListeners();
+        }
+
+        function addChecklistEventListeners() {
+          document
+            .getElementById("add-task-btn")
+            .addEventListener("click", () => openChecklistModal());
+          document
+            .querySelectorAll(".task-checkbox")
+            .forEach((cb) =>
+              cb.addEventListener("change", (e) =>
+                toggleTaskStatus(parseInt(e.target.dataset.id))
+              )
+            );
+          document
+            .querySelectorAll(".subtask-checkbox")
+            .forEach((cb) =>
+              cb.addEventListener("change", (e) =>
+                toggleSubtaskStatus(
+                  parseInt(e.target.dataset.taskId),
+                  parseInt(e.target.dataset.subtaskId)
+                )
+              )
+            );
+          document.querySelectorAll(".edit-task-btn").forEach((btn) =>
+            btn.addEventListener("click", (e) => {
+              const task = checklistTasks.find(
+                (t) => t.id === parseInt(e.currentTarget.dataset.id)
+              );
+              openChecklistModal(task);
+            })
+          );
+        }
+
+        function openChecklistModal(task = null) {
+          const isEditing = task !== null;
+          let subtasksHTML = "";
+          if (isEditing) {
+            task.subtasks.forEach((sub) => {
+              subtasksHTML += `<div class="flex items-center mb-2"><input type="text" class="subtask-input flex-grow border-gray-300 rounded-md shadow-sm sm:text-sm" value="${sub.text}"><button type="button" class="remove-subtask-btn ml-2 text-red-500 font-bold"> &times; </button></div>`;
+            });
+          }
+
+          const modalHTML = `
+                     <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold text-gray-800">${
+                          isEditing ? "編輯計畫" : "新增計畫"
+                        }</h3>
+                        <button id="close-btn" class="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button>
+                    </div>
+                    <form id="checklist-form">
+                        <div class="mb-4">
+                            <label for="task-title" class="block text-sm font-medium text-gray-700">標題</label>
+                            <input type="text" id="task-title" value="${
+                              isEditing ? task.title : ""
+                            }" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label for="task-tag" class="block text-sm font-medium text-gray-700">標籤</label>
+                                <select id="task-tag" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                    <option ${
+                                      isEditing && task.tag === "戶外"
+                                        ? "selected"
+                                        : ""
+                                    }>戶外</option>
+                                    <option ${
+                                      isEditing && task.tag === "學校"
+                                        ? "selected"
+                                        : ""
+                                    }>學校</option>
+                                    <option ${
+                                      isEditing && task.tag === "娛樂"
+                                        ? "selected"
+                                        : ""
+                                    }>娛樂</option>
+                                </select>
+                            </div>
+                             <div>
+                                <label for="task-duration" class="block text-sm font-medium text-gray-700">所需時長</label>
+                                <input type="text" id="task-duration" value="${
+                                  isEditing ? task.duration : ""
+                                }" placeholder="例如: 3小時, 2天" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700">子任務</label>
+                            <div id="subtasks-container" class="mt-1 space-y-2">${subtasksHTML}</div>
+                            <button type="button" id="add-subtask-btn" class="mt-2 text-sm text-blue-600 hover:text-blue-800">+ 新增子任務</button>
+                        </div>
+                        <div class="flex justify-end space-x-2">
+                            ${
+                              isEditing
+                                ? `<button type="button" id="delete-task-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition-colors">刪除</button>`
+                                : ""
+                            }
+                            <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors">${
+                              isEditing ? "儲存" : "新增"
+                            }</button>
+                        </div>
+                    </form>
+                `;
+          modalContent.innerHTML = modalHTML;
+          modal.classList.remove("hidden");
+          setTimeout(
+            () => modalContent.classList.remove("scale-95", "opacity-0"),
+            10
+          );
+
+          const subtasksContainer =
+            document.getElementById("subtasks-container");
+          const addSubtask = () => {
+            const div = document.createElement("div");
+            div.className = "flex items-center mb-2";
+            div.innerHTML = `<input type="text" class="subtask-input flex-grow border-gray-300 rounded-md shadow-sm sm:text-sm" value=""><button type="button" class="remove-subtask-btn ml-2 text-red-500 font-bold"> &times; </button>`;
+            div.querySelector(".remove-subtask-btn").onclick = () =>
+              div.remove();
+            subtasksContainer.appendChild(div);
+          };
+
+          document.getElementById("add-subtask-btn").onclick = addSubtask;
+          document
+            .querySelectorAll(".remove-subtask-btn")
+            .forEach(
+              (btn) => (btn.onclick = (e) => e.target.parentElement.remove())
+            );
+
+          modalContent
+            .querySelector("#close-btn")
+            .addEventListener("click", closeModal);
+          modalContent
+            .querySelector("#checklist-form")
+            .addEventListener("submit", (e) => {
+              e.preventDefault();
+              const title = document.getElementById("task-title").value;
+              const tag = document.getElementById("task-tag").value;
+              const duration = document.getElementById("task-duration").value;
+              const subtasks = Array.from(
+                document.querySelectorAll(".subtask-input")
+              )
+                .map((input, i) => ({
+                  id: (isEditing && task.subtasks[i]?.id) || Date.now() + i,
+                  text: input.value,
+                  completed:
+                    (isEditing && task.subtasks[i]?.completed) || false,
+                }))
+                .filter((s) => s.text);
+
+              if (isEditing) {
+                updateTask(task.id, { title, tag, duration, subtasks });
+              } else {
+                addTask({ title, tag, duration, subtasks });
+              }
+            });
+
+          if (isEditing) {
+            document.getElementById("delete-task-btn").onclick = function () {
+              if (window.confirm("確定要刪除此計畫嗎？此操作無法復原。")) {
+                deleteTask(task.id);
+                closeModal();
+              }
+            };
+          }
+        }
+
+        function addTask(taskData) {
+          const newTask = { id: Date.now(), status: "pending", ...taskData };
+          checklistTasks.push(newTask);
+          saveDataToLocalStorage();
+          closeModal();
+          render();
+        }
+
+        function updateTask(id, updatedData) {
+          const taskIndex = checklistTasks.findIndex((t) => t.id === id);
+          if (taskIndex !== -1)
+            checklistTasks[taskIndex] = {
+              ...checklistTasks[taskIndex],
+              ...updatedData,
+            };
+          saveDataToLocalStorage();
+          closeModal();
+          render();
+        }
+
+        function deleteTask(id) {
+          checklistTasks = checklistTasks.filter((t) => t.id !== id);
+          saveDataToLocalStorage();
+          render();
+        }
+
+        function toggleTaskStatus(id) {
+          const task = checklistTasks.find((t) => t.id === id);
+          if (task) {
+            task.status = task.status === "pending" ? "completed" : "pending";
+            saveDataToLocalStorage();
+            render();
+          }
+        }
+
+        function toggleSubtaskStatus(taskId, subtaskId) {
+          const task = checklistTasks.find((t) => t.id === taskId);
+          const subtask = task?.subtasks.find((s) => s.id === subtaskId);
+          if (subtask) {
+            subtask.completed = !subtask.completed;
+            saveDataToLocalStorage();
+            render();
+          }
+        }
+
+        function renderWeekView() {
+          let weekContainerHTML = "<div>";
+          let weekDaysHTML = '<div class="space-y-0">';
+
+          const weekStart = new Date(currentWeekStartDate);
+          weekStart.setHours(0, 0, 0, 0);
+          const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekStart.getDate() + 6);
+          const duration = (e) =>
+            (parseDate(e.endDate) - parseDate(e.startDate)) /
+              (1000 * 60 * 60 * 24) +
+            1;
+
+          const weekLongEvents = events.filter((e) => {
+            const eventStart = parseDate(e.startDate);
+            const eventEnd = parseDate(e.endDate);
+            return (
+              duration(e) >= 10 &&
+              weekStart <= eventEnd &&
+              weekEnd >= eventStart
+            );
+          });
+
+          if (weekLongEvents.length > 0) {
+            weekContainerHTML += `<div class="pb-4 border-b border-gray-200 mb-4">
+                                            <h3 class="font-semibold text-gray-600 mb-2">長期計畫</h3>
+                                            <div class="space-y-2">`;
+            weekLongEvents.forEach((event) => {
+              weekContainerHTML += `<div data-id="${
+                event.id
+              }" class="flex items-center space-x-3 p-2 rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100">
+                                            <div class="event-tag self-stretch" style="background-color: ${getEventTypeHexColor(
+                                              event.type
+                                            )}"></div>
+                                            <p class="font-medium text-gray-800 event-text text-sm">${
+                                              event.title
+                                            }</p>
+                                         </div>`;
+            });
+            weekContainerHTML += `</div></div>`;
+          }
+
+          const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+          for (let i = 0; i < 7; i++) {
+            const day = new Date(currentWeekStartDate);
+            day.setDate(currentWeekStartDate.getDate() + i);
+
+            const shortEvents = events.filter((e) => {
+              const eventStart = parseDate(e.startDate);
+              const eventEnd = parseDate(e.endDate);
+              return duration(e) < 10 && day >= eventStart && day <= eventEnd;
+            });
+
+            const isToday = day.toDateString() === getToday().toDateString();
+            const dayName = dayNames[i];
+
+            weekDaysHTML += `<div class="day-row flex space-x-4 min-h-[4rem] py-4 ${
+              i < 6 ? "border-b border-gray-200" : ""
+            }">
+                        <div class="date-col text-center w-12 flex-shrink-0">
+                            <p class="text-sm font-medium ${
+                              isToday ? "text-blue-600" : "text-gray-500"
+                            }">${dayName}</p>
+                            <div class="h-10 w-10 flex items-center justify-center text-xl font-bold rounded-full ${
+                              isToday
+                                ? "bg-blue-600 text-white"
+                                : "bg-gray-100 text-gray-800"
+                            }">
+                                ${day.getDate()}
+                            </div>
+                        </div>
+                        <div class="day-content flex-grow space-y-2 pt-1">
+                            ${
+                              shortEvents.length > 0
+                                ? shortEvents
+                                    .map((event) => {
+                                      const eventStart = parseDate(
+                                        event.startDate
+                                      );
+                                      const totalDays = duration(event);
+                                      let displayTitle = event.title;
+                                      if (totalDays > 1) {
+                                        const currentDayNumber =
+                                          Math.round(
+                                            (day.getTime() -
+                                              eventStart.getTime()) /
+                                              (1000 * 60 * 60 * 24)
+                                          ) + 1;
+                                        displayTitle = `${event.title} (第 ${currentDayNumber}/${totalDays} 天)`;
+                                      }
+                                      return `<div data-id="${
+                                        event.id
+                                      }" class="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors duration-200">
+                                            <div class="event-tag self-stretch" style="background-color: ${getEventTypeHexColor(
+                                              event.type
+                                            )}"></div>
+                                            <p class="font-medium text-gray-800 event-text">${displayTitle}</p>
+                                        </div>`;
+                                    })
+                                    .join("")
+                                : `<div class="h-12 text-gray-400 flex items-center justify-start text-sm pt-2 pl-3"></div>`
+                            }
+                        </div>
+                    </div>`;
+          }
+          weekDaysHTML += "</div>";
+
+          weekContainerHTML += weekDaysHTML + "</div>";
+          tabContentContainer.innerHTML = weekContainerHTML;
+          tabContentContainer
+            .querySelectorAll("[data-id]")
+            .forEach((el) =>
+              el.addEventListener("click", () =>
+                openEventModal(parseInt(el.dataset.id))
+              )
+            );
+        }
+
+        function renderMonthView() {
+          const month = currentOverviewMonth.getMonth();
+          const year = currentOverviewMonth.getFullYear();
+          const firstDayOfMonth = new Date(year, month, 1).getDay();
+          const firstDayIndex = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+          const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+          let monthHTML = `<div class="grid grid-cols-7 text-center font-semibold text-gray-500 text-xs mb-2">
+                                     ${[
+                                       "Mon",
+                                       "Tue",
+                                       "Wed",
+                                       "Thu",
+                                       "Fri",
+                                       "Sat",
+                                       "Sun",
+                                     ]
+                                       .map((d) => `<div>${d}</div>`)
+                                       .join("")}
+                                 </div>
+                                 <div class="grid grid-cols-7 gap-2">`;
+
+          monthHTML += "<div></div>".repeat(firstDayIndex);
+
+          for (let i = 1; i <= daysInMonth; i++) {
+            const day = new Date(year, month, i);
+            const isToday = day.toDateString() === getToday().toDateString();
+            const dayEvents = events.filter((e) => {
+              const start = parseDate(e.startDate);
+              const end = parseDate(e.endDate);
+              return day >= start && day <= end;
+            });
+            monthHTML += `<div class="day-cell flex flex-col items-center justify-start p-1 rounded-lg hover:bg-gray-100 cursor-pointer" data-date="${day.toISOString()}">
+                        <div class="h-8 w-8 flex items-center justify-center text-sm font-bold rounded-full ${
+                          isToday ? "bg-blue-600 text-white" : ""
+                        }">${i}</div>
+                        <div class="flex space-x-1 mt-1 h-2">
+                            ${dayEvents
+                              .slice(0, 3)
+                              .map(
+                                (e) =>
+                                  `<div class="event-dot" style="background-color: ${getEventTypeHexColor(
+                                    e.type
+                                  )}"></div>`
+                              )
+                              .join("")}
+                        </div>
+                    </div>`;
+          }
+          monthHTML += `</div>`;
+          tabContentContainer.innerHTML = monthHTML;
+          tabContentContainer.querySelectorAll(".day-cell").forEach((cell) =>
+            cell.addEventListener("click", (e) => {
+              const dateStr = e.currentTarget.dataset.date;
+              if (dateStr) openDayModal(new Date(dateStr));
+            })
+          );
+        }
+
+        function renderCountdownsPage() {
+          let html = `<div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-bold text-gray-700">Countdown Manager</h2>
+                                <button id="add-countdown-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors">Add Countdown</button>
+                             </div>
+                             <div class="space-y-3">`;
+
+          const now = new Date();
+          const sortedCountdowns = deadlineCountdowns
+            .map((d) => {
+              const deadlineDate = parseDate(d.date);
+              const diffTime = deadlineDate.getTime() - now.getTime();
+
+              if (diffTime <= 0) {
+                return {
+                  ...d,
+                  daysLeft: Math.floor(diffTime / (1000 * 60 * 60 * 24)),
+                  isOverdue: true,
+                };
+              }
+
+              const daysLeft = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+              const hoursLeft = Math.floor(
+                (diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+              );
+              const minutesLeft = Math.floor(
+                (diffTime % (1000 * 60 * 60)) / (1000 * 60)
+              );
+              const secondsLeft = Math.floor((diffTime % (1000 * 60)) / 1000);
+
+              return {
+                ...d,
+                daysLeft,
+                hoursLeft,
+                minutesLeft,
+                secondsLeft,
+                isOverdue: false,
+              };
+            })
+            .sort((a, b) => a.daysLeft - b.daysLeft);
+
+          sortedCountdowns.forEach((d) => {
+            let timeDisplay;
+            if (d.isOverdue) {
+              timeDisplay = `<span class="text-lg font-bold text-red-600">Overdue ${Math.abs(
+                d.daysLeft
+              )} days</span>`;
+            } else if (d.daysLeft === 0) {
+              timeDisplay = `<span class="text-lg font-bold text-orange-600">${d.hoursLeft}h ${d.minutesLeft}m ${d.secondsLeft}s</span>`;
+            } else if (d.daysLeft === 1) {
+              timeDisplay = `<span class="text-lg font-bold text-orange-600">${d.daysLeft} day</span>`;
+            } else {
+              timeDisplay = `<span class="text-lg font-bold text-blue-600">${d.daysLeft} days</span>`;
+            }
+
+            html += `<div class="flex items-center p-3 rounded-lg bg-gray-50 border border-gray-200">
+                                <div class="flex-grow">
+                                    <p class="font-semibold text-gray-800">${d.name}</p>
+                                    <p class="text-sm text-gray-500">${d.date}</p>
+                                </div>
+                                <div class="text-right mx-4">
+                                    ${timeDisplay}
+                                    <p class="text-xs text-gray-500">remaining</p>
+                                </div>
+                                <div class="space-x-2">
+                                    <button class="edit-countdown-btn p-2 hover:bg-gray-200 rounded-full" data-id="${d.id}">✏️</button>
+                                    <button class="delete-countdown-btn p-2 hover:bg-gray-200 rounded-full" data-id="${d.id}">🗑️</button>
+                                </div>
+                             </div>`;
+          });
+
+          html += "</div>";
+          tabContentContainer.innerHTML = html;
+
+          document
+            .getElementById("add-countdown-btn")
+            .addEventListener("click", () => openCountdownModal());
+          document.querySelectorAll(".edit-countdown-btn").forEach((btn) =>
+            btn.addEventListener("click", (e) => {
+              const id = parseInt(e.currentTarget.dataset.id);
+              const countdown = deadlineCountdowns.find((d) => d.id === id);
+              openCountdownModal(countdown);
+            })
+          );
+          document.querySelectorAll(".delete-countdown-btn").forEach((btn) =>
+            btn.addEventListener("click", (e) => {
+              const id = parseInt(e.currentTarget.dataset.id);
+              deleteCountdown(id);
+            })
+          );
+        }
+
+        function updateAllCountdowns() {
+          const allCountdownItems = deadlineCountdowns
+            .map((d) => {
+              const deadlineDate = parseDate(d.date);
+              const diffTime = deadlineDate.getTime() - getToday().getTime();
+              const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              return { ...d, daysLeft };
+            })
+            .filter((d) => d.daysLeft >= 0)
+            .sort((a, b) => a.daysLeft - b.daysLeft);
+
+          if (allCountdownsEl) {
+            allCountdownsEl.innerHTML = allCountdownItems
+              .map(
+                (d) =>
+                  `<div class="text-xs font-medium bg-gray-100 px-2 py-1.5 rounded-md flex-shrink-0">
+                            ${d.name}: <span class="font-bold text-blue-600">${d.daysLeft} days</span>
+                        </div>`
+              )
+              .join("");
+          }
+        }
+
+        // New function for dynamic countdown with precise timing
+        function updateAllCountdownsDynamic() {
+          const now = new Date();
+          const allCountdownItems = deadlineCountdowns
+            .map((d) => {
+              const deadlineDate = parseDate(d.date);
+              const diffTime = deadlineDate.getTime() - now.getTime();
+
+              if (diffTime <= 0) {
+                return {
+                  ...d,
+                  daysLeft: 0,
+                  hoursLeft: 0,
+                  minutesLeft: 0,
+                  secondsLeft: 0,
+                  isOverdue: true,
+                };
+              }
+
+              const daysLeft = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+              const hoursLeft = Math.floor(
+                (diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+              );
+              const minutesLeft = Math.floor(
+                (diffTime % (1000 * 60 * 60)) / (1000 * 60)
+              );
+              const secondsLeft = Math.floor((diffTime % (1000 * 60)) / 1000);
+
+              return {
+                ...d,
+                daysLeft,
+                hoursLeft,
+                minutesLeft,
+                secondsLeft,
+                isOverdue: false,
+              };
+            })
+            .filter((d) => !d.isOverdue || d.daysLeft >= -7) // Show overdue items for up to 7 days
+            .sort((a, b) => a.daysLeft - b.daysLeft);
+
+          if (allCountdownsEl) {
+            allCountdownsEl.innerHTML = allCountdownItems
+              .map((d) => {
+                let timeDisplay;
+                if (d.isOverdue) {
+                  timeDisplay = `<span class="font-bold text-red-600">Overdue ${Math.abs(
+                    d.daysLeft
+                  )} days</span>`;
+                } else if (d.daysLeft === 0) {
+                  timeDisplay = `<span class="font-bold text-orange-600">${d.hoursLeft}h ${d.minutesLeft}m ${d.secondsLeft}s</span>`;
+                } else if (d.daysLeft === 1) {
+                  timeDisplay = `<span class="font-bold text-orange-600">${d.daysLeft} day</span>`;
+                } else {
+                  timeDisplay = `<span class="font-bold text-blue-600">${d.daysLeft} days</span>`;
+                }
+
+                return `<div class="text-xs font-medium bg-gray-100 px-2 py-1.5 rounded-md flex-shrink-0">
+                          ${d.name}: ${timeDisplay}
+                        </div>`;
+              })
+              .join("");
+          }
+        }
+
+        // Function to format countdown for detailed display
+        function formatCountdown(days, hours, minutes, seconds) {
+          if (days > 0) {
+            return `${days} day${days > 1 ? "s" : ""} ${hours}h ${minutes}m`;
+          } else if (hours > 0) {
+            return `${hours}h ${minutes}m ${seconds}s`;
+          } else if (minutes > 0) {
+            return `${minutes}m ${seconds}s`;
+          } else {
+            return `${seconds}s`;
+          }
+        }
+
+        function openEventModal(eventId) {
+          const event = events.find((e) => e.id === eventId);
+          if (!event) return;
+          const startDate = parseDate(event.startDate);
+          const endDate = parseDate(event.endDate);
+          const modalHTML = `
+                    <div class="flex justify-between items-start"> <h3 class="text-2xl font-bold text-gray-800">${
+                      event.title
+                    }</h3> <button id="close-btn" class="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button> </div>
+                    <p class="text-sm text-gray-500 mt-1 mb-4"> ${
+                      startDate.getTime() === endDate.getTime()
+                        ? startDate.toLocaleDateString("zh-Hant")
+                        : `${startDate.toLocaleDateString(
+                            "zh-Hant"
+                          )} - ${endDate.toLocaleDateString("zh-Hant")}`
+                    } </p>
+                    <p class="text-gray-700 mb-6">${event.description}</p>`;
+          modalContent.innerHTML = modalHTML;
+          modal.classList.remove("hidden");
+          setTimeout(
+            () => modalContent.classList.remove("scale-95", "opacity-0"),
+            10
+          );
+          modalContent
+            .querySelector("#close-btn")
+            .addEventListener("click", closeModal);
+        }
+
+        function openDayModal(date) {
+          const dayEvents = events.filter((e) => {
+            const start = parseDate(e.startDate);
+            const end = parseDate(e.endDate);
+            return date >= start && date <= end;
+          });
+          let modalHTML = `
+                    <div class="flex justify-between items-start mb-4"> <h3 class="text-2xl font-bold text-gray-800">${date.toLocaleDateString(
+                      "zh-Hant",
+                      { month: "long", day: "numeric" }
+                    )}</h3> <button id="close-btn" class="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button> </div>
+                    <div class="space-y-3">
+                        ${
+                          dayEvents.length > 0
+                            ? dayEvents
+                                .map(
+                                  (event) =>
+                                    `<div data-id="${
+                                      event.id
+                                    }" class="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100"> <div class="event-tag self-stretch" style="background-color: ${getEventTypeHexColor(
+                                      event.type
+                                    )}"></div> <p class="font-medium text-gray-800">${
+                                      event.title
+                                    }</p> </div>`
+                                )
+                                .join("")
+                            : `<p class="text-gray-500">本日無行程</p>`
+                        }
+                    </div>`;
+          modalContent.innerHTML = modalHTML;
+          modal.classList.remove("hidden");
+          setTimeout(
+            () => modalContent.classList.remove("scale-95", "opacity-0"),
+            10
+          );
+          modalContent
+            .querySelector("#close-btn")
+            .addEventListener("click", closeModal);
+          modalContent.querySelectorAll("[data-id]").forEach((el) =>
+            el.addEventListener("click", (e) => {
+              closeModal();
+              setTimeout(
+                () => openEventModal(parseInt(e.currentTarget.dataset.id)),
+                250
+              );
+            })
+          );
+        }
+
+        function openCountdownModal(countdown = null) {
+          const isEditing = countdown !== null;
+          const modalHTML = `
+                    <div class="flex justify-between items-start mb-4"> <h3 class="text-2xl font-bold text-gray-800">${
+                      isEditing ? "編輯倒數" : "新增倒數"
+                    }</h3> <button id="close-btn" class="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button> </div>
+                    <form id="countdown-form">
+                        <div class="mb-4"> <label for="countdown-name" class="block text-sm font-medium text-gray-700">名稱</label> <input type="text" id="countdown-name" value="${
+                          isEditing ? countdown.name : ""
+                        }" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required> </div>
+                        <div class="mb-6"> <label for="countdown-date" class="block text-sm font-medium text-gray-700">日期</label> <input type="date" id="countdown-date" value="${
+                          isEditing ? countdown.date : ""
+                        }" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required> </div>
+                        <div class="flex justify-end"> <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors">${
+                          isEditing ? "儲存變更" : "新增"
+                        }</button> </div>
+                    </form>`;
+          modalContent.innerHTML = modalHTML;
+          modal.classList.remove("hidden");
+          setTimeout(
+            () => modalContent.classList.remove("scale-95", "opacity-0"),
+            10
+          );
+          modalContent
+            .querySelector("#close-btn")
+            .addEventListener("click", closeModal);
+          modalContent
+            .querySelector("#countdown-form")
+            .addEventListener("submit", (e) => {
+              e.preventDefault();
+              const name = document.getElementById("countdown-name").value;
+              const date = document.getElementById("countdown-date").value;
+              if (isEditing) updateCountdown(countdown.id, name, date);
+              else addCountdown(name, date);
+            });
+        }
+
+        function addCountdown(name, date) {
+          const newId = Date.now();
+          deadlineCountdowns.push({ id: newId, name, date });
+          saveDataToLocalStorage();
+          closeModal();
+          render();
+        }
+
+        function updateCountdown(id, name, date) {
+          const index = deadlineCountdowns.findIndex((d) => d.id === id);
+          if (index !== -1)
+            deadlineCountdowns[index] = {
+              ...deadlineCountdowns[index],
+              name,
+              date,
+            };
+          saveDataToLocalStorage();
+          closeModal();
+          render();
+        }
+
+        function deleteCountdown(id) {
+          deadlineCountdowns = deadlineCountdowns.filter((d) => d.id !== id);
+          saveDataToLocalStorage();
+          render();
+        }
+
+        function closeModal() {
+          modalContent.classList.add("scale-95", "opacity-0");
+          setTimeout(() => {
+            modal.classList.add("hidden");
+          }, 200);
+        }
+
+        // --- EVENT LISTENERS ---
+        prevBtn.addEventListener("click", () => {
+          if (activeView === "weekly")
+            currentWeekStartDate.setDate(currentWeekStartDate.getDate() - 7);
+          else if (activeView === "overview")
+            currentOverviewMonth.setMonth(currentOverviewMonth.getMonth() - 1);
+          render();
+        });
+        nextBtn.addEventListener("click", () => {
+          if (activeView === "weekly")
+            currentWeekStartDate.setDate(currentWeekStartDate.getDate() + 7);
+          else if (activeView === "overview")
+            currentOverviewMonth.setMonth(currentOverviewMonth.getMonth() + 1);
+          render();
+        });
+        todayBtn.addEventListener("click", () => {
+          const todayForNav = getToday();
+          currentWeekStartDate = new Date(todayForNav);
+          const dayOfWeek = todayForNav.getDay();
+          currentWeekStartDate.setDate(
+            todayForNav.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)
+          );
+          currentOverviewMonth = new Date(
+            todayForNav.getFullYear(),
+            todayForNav.getMonth(),
+            1
+          );
+          render();
+        });
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) closeModal();
+        });
+
+        // --- INITIAL RENDER ---
+        render();
+
+        // Cleanup timer when page is unloaded
+        window.addEventListener("beforeunload", () => {
+          if (countdownTimer) {
+            clearInterval(countdownTimer);
+          }
+        });
+
+        // Theme toggle logic
+        function setTheme(dark) {
+          if (dark) {
+            document.body.classList.add("dark");
+            document.getElementById("theme-toggle-icon").textContent = "☀️";
+            localStorage.setItem("theme", "dark");
+          } else {
+            document.body.classList.remove("dark");
+            document.getElementById("theme-toggle-icon").textContent = "🌙";
+            localStorage.setItem("theme", "light");
+          }
+        }
+        // Apply saved theme on initial load
+        const savedTheme = localStorage.getItem("theme");
+        setTheme(savedTheme === "dark");
+
+        // --- DATA ---
+        function saveDataToLocalStorage() {
+          localStorage.setItem(
+            "checklistTasks",
+            JSON.stringify(checklistTasks)
+          );
+          localStorage.setItem(
+            "deadlineCountdowns",
+            JSON.stringify(deadlineCountdowns)
+          );
+        }
+        function loadDataFromLocalStorage() {
+          const tasks = localStorage.getItem("checklistTasks");
+          const countdowns = localStorage.getItem("deadlineCountdowns");
+          if (tasks) {
+            try {
+              checklistTasks = JSON.parse(tasks);
+            } catch {}
+          }
+          if (countdowns) {
+            try {
+              deadlineCountdowns = JSON.parse(countdowns);
+            } catch {}
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
