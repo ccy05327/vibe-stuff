@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>越南胡志明市・互動式旅遊行程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Application Structure Plan: The SPA uses a top navigation bar to switch between logically separated content sections (Overview, Pre-trip Prep, Transport & Accom., Daily Itinerary, Food Map). This task-oriented structure allows users to easily access specific information without overwhelming them with a single long scroll. The "Overview" acts as a dashboard for quick stats, the "Itinerary" provides a detailed timeline, and the "Food Map" offers interactive filtering, catering to the primary ways a traveler would use such a guide. This design prioritizes usability and clear information hierarchy over mirroring the original report's linear structure. -->
+    <!-- Visualization & Content Choices: 
+    - Budget Breakdown: Goal(Inform) -> Doughnut Chart (Chart.js) with hover tooltips. Justification: Effectively shows parts-of-a-whole for budget composition.
+    - Accommodation/Flights: Goal(Compare) -> Styled HTML cards (Tailwind Grid). Justification: Clear, scannable side-by-side comparison for decision making.
+    - Daily Schedule: Goal(Organize) -> Custom HTML/CSS Vertical Timeline. Justification: An intuitive, chronological presentation of the day's events as requested, with interactive map links for easy navigation.
+    - Food Recommendations: Goal(Organize/Filter) -> Interactive Card Grid with JS filtering. Justification: Empowers users to quickly find specific food types, enhancing usability for a large dataset.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+        background-color: #f8f5f2;
+        color: #4a4a4a;
+      }
+      .nav-link {
+        transition: color 0.3s, border-color 0.3s;
+        border-bottom: 2px solid transparent;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav-link.active,
+      .nav-link:hover {
+        color: #c5a481;
+        border-bottom-color: #c5a481;
+      }
+      .filter-btn {
+        transition: background-color 0.3s, color 0.3s;
+        min-height: 44px;
+      }
+      .filter-btn.active {
+        background-color: #a67b5b;
+        color: white;
+      }
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -2.375rem;
+        top: 0.5rem;
+        width: 1rem;
+        height: 1rem;
+        background-color: #d2b48c;
+        border-radius: 9999px;
+        border: 3px solid #f8f5f2;
+      }
+      .timeline-container::before {
+        content: "";
+        position: absolute;
+        left: -2rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: #e0dace;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 300px;
+        max-height: 400px;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 350px;
+        }
+      }
+      [hidden] {
+        display: none !important;
+      }
+      .timeline-desc-item {
+        display: block;
+        margin-top: 4px;
+      }
+
+      /* Mobile-specific optimizations */
+      @media (max-width: 640px) {
+        .mobile-nav {
+          border-radius: 12px !important;
+          margin: 0.5rem 0 1rem 0 !important;
+        }
+        .mobile-nav ul {
+          display: flex !important;
+          flex-wrap: nowrap !important;
+          overflow-x: auto !important;
+          gap: 0.5rem !important;
+          padding: 0.5rem 0.5rem 0.5rem 0.5rem !important;
+        }
+        .mobile-nav ul > li:first-child {
+          margin-left: 0 !important;
+        }
+        .mobile-nav .nav-link {
+          min-width: 90px !important;
+          padding: 0.75rem 0.5rem !important;
+          font-size: 0.95rem !important;
+          white-space: nowrap !important;
+          flex-shrink: 0 !important;
+          text-align: center;
+        }
+        .mobile-header h1 {
+          font-size: 1.75rem !important;
+          line-height: 2rem !important;
+        }
+        .mobile-header p {
+          font-size: 1rem !important;
+        }
+        .mobile-content {
+          padding: 1rem !important;
+          margin: 0 0.5rem !important;
+        }
+        .mobile-content h2 {
+          font-size: 1.5rem !important;
+        }
+        .mobile-budget-list li {
+          padding: 0.75rem 0 !important;
+          font-size: 0.875rem !important;
+        }
+        .mobile-budget-list .font-mono {
+          font-size: 0.875rem !important;
+        }
+        .mobile-chart {
+          height: 250px !important;
+          margin-top: 1rem !important;
+        }
+      }
+      @media (max-width: 400px) {
+        .mobile-nav ul {
+          gap: 0.25rem !important;
+          padding-left: 0.25rem !important;
+          padding-right: 0.25rem !important;
+        }
+        .mobile-nav .nav-link {
+          min-width: 80px !important;
+          padding: 0.6rem 0.3rem !important;
+          font-size: 0.85rem !important;
+        }
+      }
+      @media (max-width: 350px) {
+        .mobile-nav .nav-link {
+          min-width: 70px !important;
+          font-size: 0.78rem !important;
+          padding: 0.5rem 0.2rem !important;
+        }
+        .mobile-header h1 {
+          font-size: 1.1rem !important;
+        }
+        .mobile-header p {
+          font-size: 0.85rem !important;
+        }
+        .mobile-content {
+          padding: 0.5rem !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+      <header class="py-6 text-center mobile-header">
+        <h1 class="text-4xl font-bold text-[#A67B5B]">
+          西貢慢遊・互動探索指南
+        </h1>
+        <p class="mt-2 text-lg text-gray-600">
+          為您量身打造的六天六夜胡志明市彈性行程
+        </p>
+      </header>
+
+      <nav
+        id="mainNav"
+        class="bg-white/80 backdrop-blur-sm sticky top-0 z-10 shadow-md rounded-lg mt-4 mb-8 mobile-nav"
+        style="overflow-x: auto; -webkit-overflow-scrolling: touch"
+      >
+        <ul
+          class="flex flex-nowrap items-center p-2 gap-2 overflow-x-auto w-full"
+          style="padding-left: 0.5rem; padding-right: 0.5rem; margin: 0"
+        >
+          <li>
+            <a
+              href="#"
+              class="nav-link active py-3 px-4 text-base font-semibold"
+              data-target="overview"
+              style="min-width: 110px; text-align: center"
+              >行程總覽</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              class="nav-link py-3 px-4 text-base font-semibold"
+              data-target="prep"
+              style="min-width: 110px; text-align: center"
+              >行前準備</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              class="nav-link py-3 px-4 text-base font-semibold"
+              data-target="transport"
+              style="min-width: 110px; text-align: center"
+              >交通住宿</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              class="nav-link py-3 px-4 text-base font-semibold"
+              data-target="daily"
+              style="min-width: 110px; text-align: center"
+              >每日行程</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              class="nav-link py-3 px-4 text-base font-semibold"
+              data-target="food"
+              style="min-width: 110px; text-align: center"
+              >美食地圖</a
+            >
+          </li>
+        </ul>
+      </nav>
+
+      <main
+        id="overview"
+        class="content-section bg-white p-6 sm:p-8 rounded-2xl shadow-lg mobile-content"
+      >
+        <h2 class="text-2xl font-bold mb-4 text-[#A67B5B]">
+          住宿選擇決定最終預算！
+        </h2>
+        <p class="text-gray-700 leading-relaxed mb-6">
+          依據不同的住宿選擇，您的基礎總預算將落在 NT$9,300 至 NT$11,400
+          之間，無論如何都遠低於最初的1萬5目標。這代表您擁有極大的彈性資金，可以自由地用於購物或體驗更多活動。
+        </p>
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">
+              每人基礎總預算 (依住宿選擇)
+            </h3>
+            <ul class="space-y-3 text-gray-700 mobile-budget-list">
+              <li class="flex justify-between items-center">
+                <span>✈️ 來回機票 (TPE-SGN)</span>
+                <span class="font-mono font-semibold">NT$ 3,571</span>
+              </li>
+              <li class="flex justify-between items-center">
+                <span>🏨 住宿 (6晚/人)</span>
+                <span class="font-mono font-semibold">NT$ 1,307 ~ 3,339</span>
+              </li>
+              <li class="flex justify-between items-center">
+                <span>📄 越南電子簽證</span>
+                <span class="font-mono font-semibold">NT$ 730</span>
+              </li>
+              <li class="flex justify-between items-center">
+                <span>📱 實體 SIM 卡</span>
+                <span class="font-mono font-semibold">NT$ 135</span>
+              </li>
+              <li class="flex justify-between items-center">
+                <span>🍜 基礎每日花費 (6天)</span>
+                <span class="font-mono font-semibold">NT$ 3,564</span>
+              </li>
+              <li
+                class="border-t pt-3 mt-3 flex justify-between items-center text-lg font-bold"
+              >
+                <span>💰 基礎總預估</span>
+                <span class="font-mono text-[#A67B5B]">NT$ 9,307 起</span>
+              </li>
+            </ul>
+            <p class="mt-4 text-sm text-gray-500">
+              *
+              圖表以最經濟方案計算。若選擇最高價住宿，總預算約NT$11,339，仍有近NT$3,700餘裕。
+            </p>
+          </div>
+          <div class="chart-container mobile-chart">
+            <canvas id="budgetChart"></canvas>
+          </div>
+        </div>
+      </main>
+
+      <main
+        id="prep"
+        class="content-section bg-white p-6 sm:p-8 rounded-2xl shadow-lg"
+        hidden
+      >
+        <h2 class="text-2xl font-bold mb-6 text-[#A67B5B]">行前指揮中心</h2>
+        <div class="space-y-6">
+          <div class="p-4 bg-amber-50 rounded-lg">
+            <h3 class="text-xl font-semibold text-amber-800">
+              📄 關鍵任務：越南電子簽證
+            </h3>
+            <p class="mt-2 text-gray-700">
+              務必透過官方網站
+              <a
+                href="https://evisa.gov.vn"
+                target="_blank"
+                class="text-blue-600 hover:underline font-semibold"
+                >evisa.gov.vn</a
+              >
+              申請，費用為25美元
+              (約NT$730)。請避開收取高額服務費的第三方代辦網站。建議出發前至少三週申請，並將核准的電子簽證列印成紙本隨身攜帶。
+            </p>
+          </div>
+          <div class="p-4 bg-teal-50 rounded-lg">
+            <h3 class="text-xl font-semibold text-teal-800">
+              📱 通訊簡報：SIM卡預先準備
+            </h3>
+            <p class="mt-2 text-gray-700">
+              依您的規劃，SIM卡將在台灣預先購買並設定完成
+              (兩人NT$270，每人NT$135)。這將為您省去抵達機場後尋找及設定的麻煩，實現真正的「落地即上網」，讓您的旅程從一開始就無比順暢。
+            </p>
+          </div>
+          <div class="p-4 bg-green-50 rounded-lg">
+            <h3 class="text-xl font-semibold text-green-800">
+              💵 貨幣與現金建議
+            </h3>
+            <p class="mt-2 text-gray-700">
+              越南多數店家（尤其街頭小吃、傳統市場、小額門票）仍以現金交易為主。Grab可綁定信用卡，多數較具規模的餐廳與咖啡館也可刷卡。
+            </p>
+            <ul class="mt-2 list-disc list-inside text-gray-700 space-y-1">
+              <li>
+                <b>建議兌換金額：</b>建議每人至少兌換
+                <b>3,000,000 VND (約 NT$3,846)</b>
+                的現金，以應付每日的交通、小吃、市集購物與小額門票等開銷。
+              </li>
+              <li>
+                <b>兌換地點：</b
+                >可在台灣的銀行預先兌換，或抵達新山一機場後在合法的換匯櫃檯兌換。
+              </li>
+            </ul>
+          </div>
+          <div class="p-4 bg-sky-50 rounded-lg">
+            <h3 class="text-xl font-semibold text-sky-800">
+              🗓 7公斤的挑戰：打包的藝術
+            </h3>
+            <ul class="mt-2 list-disc list-inside text-gray-700 space-y-1">
+              <li>選擇輕便、快乾、易於混搭的衣物。</li>
+              <li>優先使用固態盥洗用品（如洗髮皂）以節省空間與重量。</li>
+              <li>必備：萬國轉接頭、行動電源、輕便水瓶。</li>
+              <li>技巧：將最重的衣物和鞋子穿在身上登機。</li>
+            </ul>
+          </div>
+        </div>
+      </main>
+
+      <main
+        id="transport"
+        class="content-section bg-white p-6 sm:p-8 rounded-2xl shadow-lg"
+        hidden
+      >
+        <h2 class="text-2xl font-bold mb-6 text-[#A67B5B]">住宿方案決策中心</h2>
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">
+              ✈️ 飛行計畫
+            </h3>
+            <p class="mb-4 text-gray-700">
+              搭乘<span class="font-bold text-[#A67B5B]"
+                >越捷航空(VietJet Air)</span
+              >，並嚴格遵守7公斤手提行李限制，是達成預算目標的關鍵。您的航班時間完美地最大化了在當地的停留時光。
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">
+              🏨 住宿候選清單
+            </h3>
+            <p class="mb-4 text-gray-700">
+              以下是所有住宿選項，均提供兩床房型。請依據您對空間、價格、地點與設施的偏好進行選擇。
+            </p>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="border rounded-lg p-4 flex flex-col">
+                <h4 class="font-bold text-lg">M Village Võ Thị Sáu</h4>
+                <p class="text-sm text-gray-500">
+                  第三郡・機場車程約 25-40 分鐘
+                </p>
+                <p class="mt-2 text-gray-700 flex-grow">
+                  空間最大，提供「兩房一廳」房型，舒適度最高。有免費洗衣，價格也最高。
+                </p>
+                <div class="mt-3 bg-gray-100 p-2 rounded-md text-sm">
+                  <b>機+酒套餐價:</b> NT$6,910<br /><b>住宿費用/人:</b>
+                  <span class="font-semibold text-blue-600">NT$3,339</span>
+                </div>
+              </div>
+              <div class="border rounded-lg p-4 flex flex-col">
+                <h4 class="font-bold text-lg">德譚C中央飯店</h4>
+                <p class="text-sm text-gray-500">
+                  第一郡・機場車程約 25-40 分鐘
+                </p>
+                <p class="mt-2 text-gray-700 flex-grow">
+                  價格最實惠的選項，位於背包客區核心，機能方便，但空間較小。
+                </p>
+                <div class="mt-3 bg-gray-100 p-2 rounded-md text-sm">
+                  <b>機+酒(無窗):</b> NT$4,878 → 住宿/人:
+                  <span class="font-semibold text-blue-600">NT$1,307</span
+                  ><br /><b>機+酒(有窗):</b> NT$5,045 → 住宿/人:
+                  <span class="font-semibold text-blue-600">NT$1,474</span>
+                </div>
+              </div>
+              <div class="border rounded-lg p-4 flex flex-col">
+                <h4 class="font-bold text-lg">尼斯南海飯店</h4>
+                <p class="text-sm text-gray-500">
+                  第一郡・機場車程約 25-40 分鐘
+                </p>
+                <p class="mt-2 text-gray-700 flex-grow">
+                  精品飯店風格，附早餐。在背包客區提供較佳的設計感。
+                </p>
+                <div class="mt-3 bg-gray-100 p-2 rounded-md text-sm">
+                  <b>機+酒(無窗):</b> NT$5,468 → 住宿/人:
+                  <span class="font-semibold text-blue-600">NT$1,897</span
+                  ><br /><b>機+酒(有窗):</b> NT$6,007 → 住宿/人:
+                  <span class="font-semibold text-blue-600">NT$2,436</span>
+                </div>
+              </div>
+              <div class="border rounded-lg p-4 flex flex-col">
+                <h4 class="font-bold text-lg">西貢奈斯西酒店</h4>
+                <p class="text-sm text-gray-500">
+                  第一郡・機場車程約 25-40 分鐘
+                </p>
+                <p class="mt-2 text-gray-700 flex-grow">
+                  地點便利的實惠選項，附早餐，適合追求高CP值的旅人。
+                </p>
+                <div class="mt-3 bg-gray-100 p-2 rounded-md text-sm">
+                  <b>機+酒(無窗):</b> NT$5,795<br /><b>住宿費用/人:</b>
+                  <span class="font-semibold text-blue-600">NT$2,224</span>
+                </div>
+              </div>
+              <div class="border rounded-lg p-4 flex flex-col">
+                <h4 class="font-bold text-lg">加利福尼亞西貢酒店</h4>
+                <p class="text-sm text-gray-500">
+                  第一郡・機場車程約 25-40 分鐘
+                </p>
+                <p class="mt-2 text-gray-700 flex-grow">
+                  亮點是「屋頂泳池」，提供絕佳的放鬆去處，附早餐。
+                </p>
+                <div class="mt-3 bg-gray-100 p-2 rounded-md text-sm">
+                  <b>機+酒(無窗):</b> NT$5,934 → 住宿/人:
+                  <span class="font-semibold text-blue-600">NT$2,363</span
+                  ><br /><b>機+酒(市景):</b> NT$6,492 → 住宿/人:
+                  <span class="font-semibold text-blue-600">NT$2,921</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">
+              🛵 當地交通：Grab是你的好朋友
+            </h3>
+            <p class="mb-4 text-gray-700">
+              在胡志明市，Grab是最高效、經濟的交通方式。單人短程移動時，GrabBike（機車）是穿梭小巷、體驗在地風情的絕佳選擇。<span
+                class="block mt-2 font-semibold text-green-700"
+                >✓ 支付秘訣：建議出發前在 Grab App
+                內綁定信用卡，旅途中所有車資皆可無現金支付，方便又安全。</span
+              >
+            </p>
+          </div>
+        </div>
+      </main>
+
+      <main
+        id="daily"
+        class="content-section bg-white p-6 sm:p-8 rounded-2xl shadow-lg"
+        hidden
+      >
+        <h2 class="text-2xl font-bold mb-4 text-[#A67B5B]">
+          每日行程：六日探索與彈性
+        </h2>
+        <p class="text-gray-700 leading-relaxed mb-6">
+          以下行程圍繞每日主題設計，結合了必訪的核心景點與提供個人空間的「彈性選項」。每個地點都附有地圖連結，並標示了建議的支付方式與雙幣別價格，讓您對預算和現金使用更有掌握。
+        </p>
+        <div
+          id="timeline-nav"
+          class="flex flex-wrap justify-center gap-2 mb-6"
+        ></div>
+
+        <div id="timeline-content"></div>
+      </main>
+
+      <main
+        id="food"
+        class="content-section bg-white p-6 sm:p-8 rounded-2xl shadow-lg"
+        hidden
+      >
+        <h2 class="text-2xl font-bold mb-4 text-[#A67B5B]">
+          美食地圖：一場西貢的味覺之旅
+        </h2>
+        <p class="text-gray-700 leading-relaxed mb-6">
+          從清爽的河粉到酥脆的法式三明治，從熱鬧的街頭美食到充滿歷史感的咖啡館，這裡是您探索西貢美食的起點。使用下方的篩選器快速找到您感興趣的類別，或隨意瀏覽，讓您的味蕾開啟一場冒險。
+        </p>
+        <div id="food-filters" class="flex flex-wrap justify-center gap-2 mb-8">
+          <button
+            data-filter="all"
+            class="filter-btn active font-semibold py-2 px-4 bg-gray-200 text-gray-800 rounded-full"
+          >
+            全部
+          </button>
+          <button
+            data-filter="pho"
+            class="filter-btn font-semibold py-2 px-4 bg-gray-200 text-gray-800 rounded-full"
+          >
+            🍜 河粉
+          </button>
+          <button
+            data-filter="banhmi"
+            class="filter-btn font-semibold py-2 px-4 bg-gray-200 text-gray-800 rounded-full"
+          >
+            🥖 法式三明治
+          </button>
+          <button
+            data-filter="street"
+            class="filter-btn font-semibold py-2 px-4 bg-gray-200 text-gray-800 rounded-full"
+          >
+            🍢 街頭美食
+          </button>
+          <button
+            data-filter="coffee"
+            class="filter-btn font-semibold py-2 px-4 bg-gray-200 text-gray-800 rounded-full"
+          >
+            ☕ 咖啡文化
+          </button>
+        </div>
+        <div
+          id="food-grid"
+          class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+        ></div>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const navLinks = document.querySelectorAll(".nav-link");
+        const contentSections = document.querySelectorAll(".content-section");
+        let budgetChartInstance = null;
+
+        const mainNav = document.getElementById("mainNav");
+        if (mainNav) {
+          mainNav.addEventListener("click", (e) => {
+            if (e.target.tagName === "A") {
+              e.preventDefault();
+              const targetId = e.target.dataset.target;
+
+              contentSections.forEach((section) => {
+                section.hidden = section.id !== targetId;
+              });
+
+              navLinks.forEach((link) => {
+                link.classList.toggle(
+                  "active",
+                  link.dataset.target === targetId
+                );
+              });
+
+              if (targetId === "overview") {
+                renderBudgetChart();
+              }
+              window.scrollTo(0, 0);
+            }
+          });
+        }
+
+        const renderBudgetChart = () => {
+          const budgetCtx = document.getElementById("budgetChart");
+          if (!budgetCtx) return;
+
+          if (budgetChartInstance) {
+            budgetChartInstance.destroy();
+          }
+
+          budgetChartInstance = new Chart(budgetCtx.getContext("2d"), {
+            type: "doughnut",
+            data: {
+              labels: ["機票", "基礎花費", "住宿(最低)", "簽證 & SIM"],
+              datasets: [
+                {
+                  label: "預算分配",
+                  data: [3571, 3564, 1307, 865],
+                  backgroundColor: ["#A67B5B", "#E0DACE", "#C5A481", "#BDB7AB"],
+                  borderColor: "#F8F5F2",
+                  borderWidth: 4,
+                  hoverOffset: 10,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                  labels: {
+                    font: {
+                      family: "'Noto Sans TC', sans-serif",
+                      size: 14,
+                    },
+                    color: "#4A4A4A",
+                  },
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      let label = context.label || "";
+                      if (label) {
+                        label += ": ";
+                      }
+                      if (context.parsed !== null) {
+                        const total = context.dataset.data.reduce(
+                          (acc, value) => acc + value,
+                          0
+                        );
+                        const percentage = (
+                          (context.parsed / total) *
+                          100
+                        ).toFixed(1);
+                        label +=
+                          "NT$ " +
+                          context.parsed.toLocaleString() +
+                          ` (${percentage}%)`;
+                      }
+                      return label;
+                    },
+                  },
+                },
+              },
+            },
+          });
+        };
+
+        renderBudgetChart();
+
+        const timelineData = {
+          day1: {
+            title: "Day 1: 抵達與歷史初探",
+            theme: "無縫接軌與戰爭記憶",
+            items: [
+              {
+                time: "08:35",
+                activity: "抵達新山一機場 (SGN)",
+                desc: '航班 VietJet Air 抵達。<span class="timeline-desc-item">✓ <b>任務:</b> 辦理入境(出示電子簽證)。</span>',
+              },
+              {
+                time: "09:30",
+                activity: "離開機場，前往住宿",
+                desc: '無托運行李，預計45-60分鐘完成入境手續。<span class="timeline-desc-item">🚗 <b>交通:</b> GrabCar (2人) <span class="text-green-600 font-semibold">(綁定信用卡支付)</span></span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 30-45 分鐘</span><span class="timeline-desc-item">💰 <b>費用:</b> 約 120,000 VND (約 NT$154)</span>',
+                map: "https://maps.app.goo.gl/3wA2mP5FQNX9g3fLA",
+              },
+              {
+                time: "10:15",
+                activity: "抵達住宿 & 寄放行李",
+                desc: "先寄放行李（通常下午才能入住），稍作整頓。",
+              },
+              {
+                time: "11:00",
+                activity: "午餐：在地人的法式三明治",
+                desc: '品嚐口味更平衡的 Banh Mi Hong Hoa。<span class="timeline-desc-item">🚶 <b>交通:</b> GrabBike 或 步行</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 10 分鐘</span><span class="timeline-desc-item">💰 <b>預算:</b> 約 45,000 VND (約 NT$58) / 份 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
+                map: "https://maps.app.goo.gl/r5fL29Lw2YxV6wQj8",
+              },
+              {
+                time: "13:00",
+                activity: "戰爭遺跡博物館",
+                desc: '理解現代越南歷史的必訪之地。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 10 分鐘 (建議停留 2-3 小時)</span><span class="timeline-desc-item">💰 <b>門票:</b> 40,000 VND (約 NT$51) / 人 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
+                map: "https://maps.app.goo.gl/jSfrK74WfQfGwgU48",
+              },
+              {
+                time: "16:00",
+                activity: "返回住宿辦理入住",
+                desc: "返回住宿辦理入住手續，稍作休息。",
+              },
+              {
+                time: "18:30",
+                activity: "晚餐：經典河粉",
+                desc: '步行至歷史悠久的 Pho Hoa Pasteur。<span class="timeline-desc-item">🚶 <b>交通:</b> 步行</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 5 分鐘</span><span class="timeline-desc-item">💰 <b>預算:</b> 約 90,000 VND (約 NT$115) / 碗 <span class="text-green-600 font-semibold">(可刷卡)</span></span>',
+                map: "https://maps.app.goo.gl/iXwN4LqB7wL9wH3C7",
+              },
+            ],
+          },
+          day2: {
+            title: "Day 2: 粉紅與金碧輝煌",
+            theme: "宗教與殖民時期建築",
+            items: [
+              {
+                time: "09:30",
+                activity: "新定教堂 (粉紅教堂)",
+                desc: '拍攝夢幻的粉紅色教堂外觀。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 10 分鐘 (建議停留 30-45 分鐘)</span><span class="timeline-desc-item">💰 <b>費用:</b> 免費</span>',
+                map: "https://maps.app.goo.gl/uF1nL5vHk3JqY2q5A",
+              },
+              {
+                time: "11:00",
+                activity: "殖民時期建築巡禮",
+                desc: '步行參觀統一宮、紅教堂及中央郵局。<span class="timeline-desc-item">🚶 <b>交通:</b> 步行或短程 GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 建議停留 2-3 小時</span><span class="timeline-desc-item">💰 <b>門票:</b> 統一宮 40,000 VND (約 NT$51) <span class="text-red-600 font-semibold">(現金為主)</span>，其餘免費</span>',
+                map: "https://maps.app.goo.gl/i6x3eYmU8dYn7m3b6",
+              },
+              {
+                time: "13:30",
+                activity: "午餐：文青咖啡公寓",
+                desc: '前往阮惠街42號咖啡公寓，自選一家咖啡廳享用午餐與飲品。<span class="timeline-desc-item">🚶 <b>交通:</b> 步行</span><span class="timeline-desc-item">💰 <b>預算:</b> 約 150,000 VND (約 NT$192) / 人 <span class="text-green-600 font-semibold">(多數店家可刷卡)</span></span>',
+                map: "https://maps.app.goo.gl/9r9A8d9tJkZqKjbs5",
+              },
+              {
+                time: "17:00",
+                activity: "阮惠街行人廣場",
+                desc: '感受現代西貢的城市活力，欣賞市政廳夜景。<span class="timeline-desc-item">🚶 <b>交通:</b> 步行</span><span class="timeline-desc-item">🕒 <b>時間:</b> 建議停留 1 小時</span><span class="timeline-desc-item">💰 <b>費用:</b> 免費</span>',
+              },
+              {
+                time: "19:00",
+                activity: "晚餐：街頭美食市集",
+                desc: '品嚐多樣化的在地小吃。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 10 分鐘</span><span class="timeline-desc-item">💰 <b>預算:</b> 約 200,000 VND (約 NT$256) / 人 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
+                map: "https://maps.app.goo.gl/tH7zPgy2UvHkS8hM8",
+              },
+            ],
+          },
+          day3: {
+            title: "Day 3: 地底與水上",
+            theme: "戰爭智慧與現代視角",
+            items: [
+              {
+                time: "08:00",
+                activity: "古芝地道半日遊",
+                desc: '深入探索越戰時期的地下網絡。<span class="timeline-desc-item">🚌 <b>交通:</b> 預訂行程包含接送</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 5-6 小時</span><span class="timeline-desc-item">💰 <b>費用:</b> 約 450,000 VND (約 NT$577) / 人 <span class="text-green-600 font-semibold">(線上刷卡預付)</span></span>',
+                map: "https://maps.app.goo.gl/V8YgL5a6984e1mN16",
+              },
+              {
+                time: "13:00",
+                activity: "返回市區 & 午餐",
+                desc: '行程結束後返回市區，稍作休息並享用午餐。<span class="timeline-desc-item">💰 <b>預算:</b> 約 100,000 VND (約 NT$128) / 人 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
+              },
+              {
+                time: "17:00",
+                activity: "西貢水上巴士",
+                desc: '以低廉的價格欣賞日落時分的城市天際線。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike 至碼頭</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 15 分鐘 (單程航行約 45 分鐘)</span><span class="timeline-desc-item">💰 <b>票價:</b> 15,000 VND (約 NT$19) / 趟 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
+                map: "https://maps.app.goo.gl/yC73jSAnkY1HhBvD9",
+              },
+              {
+                time: "19:00",
+                activity: "晚餐：萬劫美食街",
+                desc: '前往平盛郡的萬劫街，此地以密集多樣的小吃攤聞名。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 20 分鐘</span><span class="timeline-desc-item">💰 <b>預算:</b> 約 175,000 VND (約 NT$224) / 人 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
+                map: "https://maps.app.goo.gl/x8o7mP7Jz3s38KxS7",
+              },
+            ],
+          },
+          day4: {
+            title: "Day 4: 市場與創意",
+            theme: "商業與文化",
+            items: [
+              {
+                time: "10:00",
+                activity: "平西市場 (堤岸區)",
+                desc: '體驗比濱城市場更道地的批發市場氛圍。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 25 分鐘 (建議停留 1.5-2 小時)</span><span class="timeline-desc-item">💰 <b>費用:</b> 免費，購物 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
+                map: "https://maps.app.goo.gl/83k7RaxzX8FmBf4s8",
+              },
+              {
+                time: "13:00",
+                activity: "阮文平書街",
+                desc: '在綠樹成蔭的書街尋找片刻寧靜。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 25 分鐘 (建議停留 1 小時)</span><span class="timeline-desc-item">💰 <b>費用:</b> 免費，咖啡店消費 <span class="text-green-600 font-semibold">(可刷卡)</span></span>',
+                map: "https://maps.app.goo.gl/X91Bq23LqG8h5bE28",
+              },
+              {
+                time: "16:00",
+                activity: "【彈性】DIY 工作坊",
+                desc: '參加一場香氛蠟燭或珠寶製作課，親手製作獨特的紀念品。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 15 分鐘 (課程約 2 小時)</span><span class="timeline-desc-item">💰 <b>預算:</b> 約 300,000 - 500,000 VND (約 NT$385-641) / 人 <span class="text-green-600 font-semibold">(多數可刷卡)</span></span>',
+              },
+              {
+                time: "19:00",
+                activity: "晚餐與【彈性】夜生活",
+                desc: '在第一郡用餐後，依預算與心情選擇：裴援街、精釀啤酒廠或屋頂酒吧。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">💰 <b>預算:</b> 晚餐約 150,000 VND (約 NT$192)，夜生活豐儉由人</span>',
+                map: "https://maps.app.goo.gl/vG2h3jV9d6yYmS7b8",
+              },
+            ],
+          },
+          day5: {
+            title: "Day 5: 雙城記",
+            theme: "對比的生活方式",
+            items: [
+              {
+                time: "10:00",
+                activity: "探索草田區 (第二郡)",
+                desc: '參觀寧靜的外籍人士聚居區，在風格獨特的咖啡館享用早午餐。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 25 分鐘</span><span class="timeline-desc-item">💰 <b>預算:</b> 約 250,000 VND (約 NT$321) / 人 <span class="text-green-600 font-semibold">(可刷卡)</span></span>',
+                map: "https://maps.app.goo.gl/fQ8yF6aV6b5Z8zLq6",
+              },
+              {
+                time: "14:00",
+                activity: "在地巷弄探險 (海鮮)",
+                desc: '探索第四郡以蝸牛及貝類聞名的永慶街。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 20 分鐘</span><span class="timeline-desc-item">💰 <b>預算:</b> 約 250,000 VND (約 NT$321) / 人 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
+                map: "https://maps.app.goo.gl/1h47P82fH7T21fQ36",
+              },
+              {
+                time: "19:00",
+                activity: "告別晚宴 (火鍋)",
+                desc: '選擇一頓難忘的晚餐，如充滿樂趣的越式火鍋。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">💰 <b>預算:</b> 約 300,000 VND (約 NT$385) / 人 <span class="text-green-600 font-semibold">(可刷卡)</span></span>',
+              },
+            ],
+          },
+          day6: {
+            title: "Day 6: 悠閒告別日",
+            theme: "咖啡、購物與回憶",
+            items: [
+              {
+                time: "10:00",
+                activity: "最後的咖啡體驗",
+                desc: '拜訪西貢最古老的 Cheo Leo Cafe。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 10 分鐘</span><span class="timeline-desc-item">💰 <b>預算:</b> 約 35,000 VND (約 NT$45) / 杯 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
+                map: "https://maps.app.goo.gl/w95E9rL3n4c82z4s7",
+              },
+              {
+                time: "12:00",
+                activity: "【彈性】濱城市場伴手禮",
+                desc: '進行最後的採買（提醒：殺價是必備技能）。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 15 分鐘</span><span class="timeline-desc-item">💰 <b>預算:</b> 依個人需求 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
+                map: "https://maps.app.goo.gl/R3c5gL5Q4dGq4HqV7",
+              },
+              {
+                time: "14:00",
+                activity: "最後的午餐",
+                desc: '品嚐旅途中最回味的一餐，或嘗試錯過的街頭小吃。<span class="timeline-desc-item">💰 <b>預算:</b> 約 100,000 VND (約 NT$128) / 人 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
+              },
+              {
+                time: "16:00",
+                activity: "【彈性】放鬆時間",
+                desc: '可選擇體驗越式洗頭或足底按摩，為晚上的飛行做準備。<span class="timeline-desc-item">💰 <b>預算:</b> 約 250,000 VND (約 NT$321) / 人 <span class="text-green-600 font-semibold">(可刷卡)</span></span>',
+              },
+              {
+                time: "19:00",
+                activity: "告別晚餐",
+                desc: '享用在越南的最後一頓晚餐 <span class="text-green-600 font-semibold">(可刷卡)</span>。<span class="timeline-desc-item">💰 <b>預算:</b> 約 200,000 VND (約 NT$256) / 人</span>',
+              },
+              {
+                time: "20:30",
+                activity: "出發前往機場",
+                desc: '返回住宿領取行李，預訂Grab前往機場。<span class="timeline-desc-item">🚗 <b>交通:</b> GrabCar <span class="text-green-600 font-semibold">(綁定信用卡支付)</span></span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 45-60 分鐘</span><span class="timeline-desc-item">💰 <b>費用:</b> 約 120,000 VND (約 NT$154)</span>',
+              },
+              {
+                time: "21:15",
+                activity: "抵達機場 & 準備返程",
+                desc: "抵達新山一機場(SGN)，準備辦理登機手續。<br>✈️ <b>航班:</b> 越捷航空 00:15 - 04:55 (技術上為第7天凌晨)",
+              },
+            ],
+          },
+        };
+
+        const timelineNav = document.getElementById("timeline-nav");
+        const timelineContent = document.getElementById("timeline-content");
+
+        if (timelineNav && timelineContent) {
+          Object.keys(timelineData).forEach((day, index) => {
+            const dayNum = index + 1;
+            const button = document.createElement("button");
+            button.className = `filter-btn font-semibold py-2 px-4 bg-gray-200 text-gray-800 rounded-full ${
+              index === 0 ? "active" : ""
+            }`;
+            button.textContent = `Day ${dayNum}`;
+            button.dataset.day = day;
+            timelineNav.appendChild(button);
+          });
+
+          const renderTimeline = (day) => {
+            const data = timelineData[day];
+            timelineContent.innerHTML = `
+                    <div class="p-4 border-l-4 border-amber-300 bg-amber-50 rounded-r-lg mb-6">
+                         <h3 class="text-xl font-bold text-amber-800">${
+                           data.title
+                         }</h3>
+                         <p class="text-amber-700">主題：${data.theme}</p>
+                    </div>
+                    <div class="relative pl-8 timeline-container">
+                        ${data.items
+                          .map(
+                            (item) => `
+                            <div class="relative pl-8 pb-8 timeline-item">
+                                <p class="text-sm text-gray-500">${
+                                  item.time
+                                }</p>
+                                <h4 class="font-semibold text-lg text-gray-800">${
+                                  item.activity
+                                } ${
+                              item.map
+                                ? `<a href="${item.map}" target="_blank" class="inline-block text-blue-500 hover:text-blue-700 ml-2" title="在 Google Maps 上打開">🗺️</a>`
+                                : ""
+                            }</h4>
+                                <div class="text-gray-600">${item.desc}</div>
+                            </div>
+                        `
+                          )
+                          .join("")}
+                    </div>
+                `;
+          };
+
+          timelineNav.addEventListener("click", (e) => {
+            if (e.target.tagName === "BUTTON") {
+              const day = e.target.dataset.day;
+              renderTimeline(day);
+
+              Array.from(timelineNav.children).forEach((btn) =>
+                btn.classList.remove("active")
+              );
+              e.target.classList.add("active");
+            }
+          });
+
+          renderTimeline("day1");
+        }
+
+        const foodData = [
+          {
+            name: "Pho Le",
+            category: "pho",
+            desc: "經典南越風，湯頭濃郁，位於第五郡。",
+            map: "https://maps.app.goo.gl/v6g51Yx1PqT4xG5k7",
+          },
+          {
+            name: "Pho Hoa Pasteur",
+            category: "pho",
+            desc: "歷史悠久的店家，觀光客與在地人都愛，位於第三郡。",
+            map: "https://maps.app.goo.gl/iXwN4LqB7wL9wH3C7",
+          },
+          {
+            name: "Pho Quynh",
+            category: "pho",
+            desc: "背包客首選，深夜營業，湯頭穩定，位於第一郡。",
+            map: "https://maps.app.goo.gl/qL3Q7x2J9Jb6m4vW7",
+          },
+          {
+            name: "Banh Mi Huynh Hoa",
+            category: "banhmi",
+            desc: "肉食愛好者之夢，餡料豐富到誇張，排隊名店。",
+            map: "https://maps.app.goo.gl/cQkLp691N4e13mH6A",
+          },
+          {
+            name: "Banh Mi Hong Hoa",
+            category: "banhmi",
+            desc: "行家之選，被譽為在地人的最愛，口味更平衡。",
+            map: "https://maps.app.goo.gl/r5fL29Lw2YxV6wQj8",
+          },
+          {
+            name: "Banh Mi 37 Nguyen Trai",
+            category: "banhmi",
+            desc: "街頭攤車，以其煙燻味的烤豬肉餅聞名。",
+            map: "https://maps.app.goo.gl/K99P6x8dY8Z7qW5x6",
+          },
+          {
+            name: "Vạn Kiếp Street",
+            category: "street",
+            desc: "平盛郡，美食攤位最密集的街道，可嚐到越式煎餅。",
+            map: "https://maps.app.goo.gl/x8o7mP7Jz3s38KxS7",
+          },
+          {
+            name: "Hồ Thị Kỷ Street",
+            category: "street",
+            desc: "第十郡，結合花市與美食，以柬埔寨風味小吃聞名。",
+            map: "https://maps.app.goo.gl/G6h8s4r9rQjYpWwz6",
+          },
+          {
+            name: "Vĩnh Khánh Street",
+            category: "street",
+            desc: '第四郡，無可爭議的"Ốc"(蝸牛與貝類)之王。',
+            map: "https://maps.app.goo.gl/1h47P82fH7T21fQ36",
+          },
+          {
+            name: "Cheo Leo Cafe",
+            category: "coffee",
+            desc: "第三郡，西貢最古老的咖啡館之一，體驗布袋過濾的傳統風味。",
+            map: "https://maps.app.goo.gl/w95E9rL3n4c82z4s7",
+          },
+          {
+            name: "Things Café",
+            category: "coffee",
+            desc: "第一郡，藏身於老舊公寓的隱秘瑰寶，充滿懷舊氛圍。",
+            map: "https://maps.app.goo.gl/35uB2f5d7Qy6Y6gZ8",
+          },
+          {
+            name: "Maison Marou Cafe",
+            category: "coffee",
+            desc: "第一郡，高檔的「從可可豆到巧克力」店家，熱巧克力是極致享受。",
+            map: "https://maps.app.goo.gl/64C3mXwYkY7pS3aH9",
+          },
+        ];
+
+        const foodGrid = document.getElementById("food-grid");
+        const foodFilters = document.getElementById("food-filters");
+
+        if (foodGrid && foodFilters) {
+          const renderFoodItems = (filter = "all") => {
+            foodGrid.innerHTML = "";
+            const filteredData =
+              filter === "all"
+                ? foodData
+                : foodData.filter((item) => item.category === filter);
+
+            filteredData.forEach((item) => {
+              const card = document.createElement("div");
+              card.className =
+                "bg-gray-50 border rounded-lg p-4 transition-transform transform hover:scale-105";
+              card.innerHTML = `
+                        <h4 class="font-bold text-lg text-gray-800 flex justify-between items-center">
+                            ${item.name}
+                            <a href="${item.map}" target="_blank" class="text-blue-500 hover:text-blue-700 ml-2" title="在 Google Maps 上打開">🗺️</a>
+                        </h4>
+                        <p class="mt-2 text-gray-700">${item.desc}</p>
+                    `;
+              foodGrid.appendChild(card);
+            });
+          };
+
+          foodFilters.addEventListener("click", (e) => {
+            if (e.target.tagName === "BUTTON") {
+              const filter = e.target.dataset.filter;
+              renderFoodItems(filter);
+
+              Array.from(foodFilters.children).forEach((btn) =>
+                btn.classList.remove("active")
+              );
+              e.target.classList.add("active");
+            }
+          });
+
+          renderFoodItems();
+        }
+      });
+    </script>
+  </body>
+</html>
