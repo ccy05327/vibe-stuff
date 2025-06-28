@@ -646,9 +646,11 @@
         timelineContainer.innerHTML = "";
         tableBody.innerHTML = "";
 
-        let lastType = mbtiData[0]?.type;
+        // Reverse order: newest at top
+        const reversedData = [...mbtiData].slice().reverse();
+        let lastType = reversedData[0]?.type;
         let lastDate = null;
-        mbtiData.forEach((item, index) => {
+        reversedData.forEach((item, index) => {
           const side = index % 2 === 0 ? "left" : "right";
           let typeChanged = false;
           if (index > 0 && item.type !== lastType) {
