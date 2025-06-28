@@ -308,7 +308,15 @@
           "This page is password protected. Please enter the password:"
         );
         if (input === null) {
-          window.location = "/";
+          // Redirect to homepage (root on localhost, /vibe-stuff/ on GitHub Pages)
+          if (
+            location.hostname === "localhost" ||
+            location.hostname === "127.0.0.1"
+          ) {
+            window.location = "/";
+          } else {
+            window.location = "/vibe-stuff/";
+          }
         }
         if (input === password) {
           entered = true;
