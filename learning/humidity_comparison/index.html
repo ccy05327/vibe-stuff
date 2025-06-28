@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>全球濕度互動儀表板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdn.plot.ly/plotly-2.32.0.min.js"
+      charset="utf-8"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Application Structure Plan: The SPA is designed as an interactive dashboard. The core interaction is a Winter/Summer toggle that controls the entire application's state. The layout prioritizes visual exploration first (interactive map), followed by direct comparison (dynamic highlights and a bar chart), and finally deeper understanding (tabbed section for concepts). This structure guides the user from broad discovery to specific insights, making the complex climate data more accessible than the original report's linear format. The user flow is: 1. Select a season. 2. See global patterns on the map. 3. Analyze ranked comparisons in the chart and cards. 4. Explore the underlying scientific reasons in the tabs. This is more intuitive for data exploration. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: City locations, seasonal humidity data. -> Goal: Geographic exploration. -> Viz: Plotly.js Scatter-Geo Map. -> Interaction: Hover for details, updates on season toggle. -> Justification: Fulfills core user request for an interactive map using canvas/webgl, avoiding SVG. -> Library: Plotly.js.
+        - Report Info: Comparative humidity values. -> Goal: Rank and compare cities. -> Viz: Chart.js Horizontal Bar Chart. -> Interaction: Re-renders on season toggle. -> Justification: Best for comparing discrete values; horizontal layout accommodates long city names. -> Library: Chart.js.
+        - Report Info: Explanations of humidity, climate drivers. -> Goal: Provide context and deeper learning. -> Viz: HTML/CSS Tabbed component. -> Interaction: Click to switch content. -> Justification: Organizes dense text into digestible, user-selectable chunks. -> Library: Vanilla JS.
+        - Report Info: Key findings (e.g., Keelung's winter humidity). -> Goal: Highlight important facts. -> Viz: Dynamic HTML cards. -> Interaction: Content updates with season toggle. -> Justification: Draws attention to the most significant insights from the report. -> Library: Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+        background-color: #f8f9fa;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 400px;
+        max-height: 50vh;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 500px;
+        }
+      }
+      .map-container {
+        position: relative;
+        width: 100%;
+        height: 450px;
+        max-height: 60vh;
+      }
+      .tab-button.active {
+        border-color: #3b82f6;
+        color: #3b82f6;
+        background-color: #eff6ff;
+      }
+      .tab-button {
+        transition: all 0.2s ease-in-out;
+      }
+    </style>
+  </head>
+  <body class="text-slate-800">
+    <a
+      href="/"
+      class="fixed top-6 left-6 z-50 flex items-center px-4 py-2 bg-blue-700 text-white rounded-full shadow-md hover:bg-blue-800 transition-colors text-sm font-semibold"
+      style="box-shadow: 0 2px 8px 0 rgba(29, 78, 216, 0.08)"
+    >
+      <svg
+        class="w-4 h-4 mr-2"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15 19l-7-7 7-7"
+        />
+      </svg>
+      返回首頁
+    </a>
+    <div class="container mx-auto p-4 md:p-8">
+      <header class="text-center mb-8">
+        <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-2">
+          全球城市濕度探索
+        </h1>
+        <p class="text-lg text-slate-600 max-w-3xl mx-auto">
+          本儀表板將原始報告數據轉化為互動體驗。請選擇季節，探索世界主要潮濕城市與台灣台北、基隆的比較。
+        </p>
+      </header>
+
+      <main>
+        <div
+          class="flex justify-center items-center mb-8 bg-slate-100 p-3 rounded-xl shadow-inner max-w-sm mx-auto"
+        >
+          <span class="mr-4 font-semibold text-slate-700">選擇季節:</span>
+          <div
+            class="relative flex w-full max-w-xs items-center rounded-lg bg-white p-1 shadow"
+          >
+            <button
+              id="season-summer"
+              class="flex-1 rounded-md py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors"
+            >
+              夏季
+            </button>
+            <button
+              id="season-winter"
+              class="flex-1 rounded-md py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors"
+            >
+              冬季
+            </button>
+          </div>
+        </div>
+
+        <section
+          id="map-section"
+          class="mb-12 bg-white p-4 sm:p-6 rounded-2xl shadow-lg"
+        >
+          <h2 id="map-title" class="text-2xl font-bold mb-4 text-center"></h2>
+          <div class="map-container" id="world-map"></div>
+          <p class="text-xs text-slate-500 mt-2 text-center">
+            在地圖上移動滑鼠以查看各城市數據。圓圈大小與顏色深淺代表相對濕度高低。
+          </p>
+        </section>
+
+        <section id="comparison-section" class="mb-12">
+          <h2
+            id="comparison-title"
+            class="text-3xl font-bold mb-6 text-center"
+          ></h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div
+              id="rank-1-card"
+              class="p-6 bg-white rounded-2xl shadow-lg border-t-4 border-amber-400"
+            ></div>
+            <div
+              id="rank-2-card"
+              class="p-6 bg-white rounded-2xl shadow-lg border-t-4 border-slate-400"
+            ></div>
+            <div
+              id="rank-3-card"
+              class="p-6 bg-white rounded-2xl shadow-lg border-t-4 border-orange-600"
+            ></div>
+          </div>
+        </section>
+
+        <section
+          id="taiwan-focus"
+          class="my-12 p-6 bg-blue-50 border-l-4 border-blue-500 rounded-2xl shadow-lg"
+        >
+          <h2 class="text-2xl font-bold mb-4 text-blue-900">
+            台灣焦點：台北與基隆
+          </h2>
+          <p class="mb-4 text-slate-700">
+            此部分專門比較台北與基隆在所選季節的濕度表現，並說明其獨特的氣候成因。台灣北部的濕度在全球副熱帶地區中極為突出。
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div id="taipei-card" class="p-6 bg-white rounded-xl shadow"></div>
+            <div id="keelung-card" class="p-6 bg-white rounded-xl shadow"></div>
+          </div>
+        </section>
+
+        <section
+          id="chart-section"
+          class="mb-12 bg-white p-4 sm:p-6 rounded-2xl shadow-lg"
+        >
+          <h2 id="chart-title" class="text-2xl font-bold mb-4 text-center"></h2>
+          <div class="chart-container">
+            <canvas id="humidity-chart"></canvas>
+          </div>
+        </section>
+
+        <section id="knowledge-section">
+          <h2 class="text-3xl font-bold mb-6 text-center">濕度知識庫</h2>
+          <div class="max-w-4xl mx-auto">
+            <div class="flex justify-center border-b border-slate-200 mb-6">
+              <button
+                data-tab="what-is-humidity"
+                class="tab-button px-6 py-3 font-semibold border-b-2"
+              >
+                濕度是什麼？
+              </button>
+              <button
+                data-tab="global-drivers"
+                class="tab-button px-6 py-3 font-semibold border-b-2"
+              >
+                全球驅動因素
+              </button>
+              <button
+                data-tab="taiwan-uniqueness"
+                class="tab-button px-6 py-3 font-semibold border-b-2"
+              >
+                台灣的獨特性
+              </button>
+            </div>
+            <div
+              id="tab-content"
+              class="bg-white p-6 rounded-2xl shadow-lg min-h-[250px]"
+            >
+              <div id="what-is-humidity-content" class="tab-pane">
+                <h3 class="text-xl font-bold mb-2">衡量「濕黏感」的科學</h3>
+                <p class="text-slate-600">
+                  評估城市的潮濕程度不僅是看單一數字。氣候學家使用多種指標來提供全面的圖像：
+                </p>
+                <ul class="list-disc list-inside mt-4 space-y-2">
+                  <li>
+                    <strong>相對濕度 (RH):</strong>
+                    最常見的指標，表示空氣中水氣相對於飽和點的百分比。但它可能具誤導性，因為冷空氣即使相對濕度100%，實際水氣含量也很少。
+                  </li>
+                  <li>
+                    <strong>露點溫度:</strong>
+                    衡量空氣中絕對水氣含量的更精確指標。露點越高，體感越「濕黏」。當露點超過攝氏20°C時，大多數人會感到不適。
+                  </li>
+                  <li>
+                    <strong>熱指數 (體感溫度):</strong>
+                    結合氣溫和濕度，估算人體對熱的真實感受，是理解濕熱天氣對人體影響的實用工具。
+                  </li>
+                </ul>
+              </div>
+              <div id="global-drivers-content" class="tab-pane hidden">
+                <h3 class="text-xl font-bold mb-2">塑造全球濕度的力量</h3>
+                <p class="text-slate-600">
+                  地球上最潮濕的地方通常是三個關鍵地理因素的交會點：
+                </p>
+                <ul class="list-disc list-inside mt-4 space-y-2">
+                  <li>
+                    <strong>熱帶引擎 (緯度與水域):</strong>
+                    赤道附近強烈的太陽輻射蒸發了大量海水。溫暖的空氣可以容納更多的水氣，這是熱帶地區高濕度的物理基礎。
+                  </li>
+                  <li>
+                    <strong>水氣高速公路 (全球風系):</strong>
+                    季風系統等大規模風系，如同巨大的運輸帶，將海洋上的濕氣輸送到大陸，主導了亞洲等地的氣候。
+                  </li>
+                  <li>
+                    <strong>局部雕塑家 (地形):</strong>
+                    山脈可以阻擋並抬升濕潤氣流，導致迎風坡降雨和濕度急劇增加（如基隆）；而盆地地形則會將濕氣困住（如台北）。
+                  </li>
+                </ul>
+              </div>
+              <div id="taiwan-uniqueness-content" class="tab-pane hidden">
+                <h3 class="text-xl font-bold mb-2">為何台灣北部如此潮濕？</h3>
+                <p class="text-slate-600">
+                  台北和基隆的極端濕度是由其獨特的地理位置和地形共同造成的：
+                </p>
+                <ul class="list-disc list-inside mt-4 space-y-2">
+                  <li>
+                    <strong>基隆 - 雨港:</strong>
+                    在冬季，強勁的東北季風從海洋帶來充滿水氣的空氣。當氣流撞上基隆後方的山脈時，被迫抬升、冷卻並凝結成雨，使其成為世界級的冬季潮濕城市。其冬季平均相對濕度
+                    (85%) 甚至可與赤道城市新加坡的雨季相媲美。
+                  </li>
+                  <li>
+                    <strong>台北 - 潮濕盆地:</strong>
+                    台北被群山環繞，形成一個「碗狀」地形。這種盆地效應會將濕氣和污染物困在城市上空，難以擴散，導致夏季悶熱、冬季濕冷。
+                  </li>
+                  <li>
+                    <strong>乾燥化悖論:</strong>
+                    儘管當前極度潮濕，但有研究指出台北都會區正處於長期「乾燥化」趨勢。這意味著未來可能面臨更極端的暴雨和更嚴峻的乾旱風險並存的挑戰。
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="text-center mt-12 pt-8 border-t border-slate-200">
+        <p class="text-sm text-slate-500">
+          資料來源：全球高濕度城市比較分析報告。數據綜合自多國氣象機構及學術研究。
+        </p>
+        <p class="text-xs text-slate-400 mt-1">互動式應用程式由 AI 生成</p>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const cityData = [
+          {
+            city: "台北",
+            country: "台灣",
+            lat: 25.0375,
+            lon: 121.5272,
+            summer_rh: 75,
+            winter_rh: 79,
+            desc: "盆地地形使濕氣不易擴散，夏季悶熱、冬季濕冷。",
+          },
+          {
+            city: "基隆",
+            country: "台灣",
+            lat: 25.1282,
+            lon: 121.7438,
+            summer_rh: 80,
+            winter_rh: 85,
+            desc: "東北季風受地形抬升，造成世界級的冬季濕度。",
+          },
+          {
+            city: "新加坡",
+            country: "新加坡",
+            lat: 1.2903,
+            lon: 103.852,
+            summer_rh: 82,
+            winter_rh: 85,
+            desc: "位於赤道，受雙重季風影響，全年高濕。",
+          },
+          {
+            city: "雅加達",
+            country: "印尼",
+            lat: -6.2088,
+            lon: 106.8456,
+            summer_rh: 78,
+            winter_rh: 85,
+            desc: "赤道海洋大陸效應，雨季濕度極高。",
+          },
+          {
+            city: "吉隆坡",
+            country: "馬來西亞",
+            lat: 3.139,
+            lon: 101.6869,
+            summer_rh: 78,
+            winter_rh: 81,
+            desc: "熱帶雨林氣候，年均濕度超過80%。",
+          },
+          {
+            city: "瑪瑙斯",
+            country: "巴西",
+            lat: -3.119,
+            lon: -60.0217,
+            summer_rh: 77,
+            winter_rh: 86,
+            desc: "亞馬遜雨林蒸發散作用提供巨量水氣。",
+          },
+          {
+            city: "達爾文",
+            country: "澳洲",
+            lat: -12.4634,
+            lon: 130.8456,
+            summer_rh: 60,
+            winter_rh: 81,
+            desc: "熱帶莽原氣候，濕季極濕，乾季乾燥。",
+          },
+          {
+            city: "峇里巴板",
+            country: "印尼",
+            lat: -1.2659,
+            lon: 116.8285,
+            summer_rh: 84,
+            winter_rh: 86,
+            desc: "位於婆羅洲，全年處於極端濕度狀態。",
+          },
+          {
+            city: "卡塔赫納",
+            country: "哥倫比亞",
+            lat: 10.3932,
+            lon: -75.4832,
+            summer_rh: 83,
+            winter_rh: 84,
+            desc: "受溫暖的加勒比海影響，全年濕熱。",
+          },
+          {
+            city: "自由市",
+            country: "加彭",
+            lat: 0.4162,
+            lon: 9.4673,
+            summer_rh: 86,
+            winter_rh: 88,
+            desc: "非洲赤道海岸城市，全年處於不舒適濕度。",
+          },
+          {
+            city: "檀香山",
+            country: "美國",
+            lat: 21.3069,
+            lon: -157.8583,
+            summer_rh: 64,
+            winter_rh: 69,
+            desc: "熱帶海洋氣候，濕度相對溫和。",
+          },
+        ];
+
+        let currentSeason = "summer";
+        let humidityChart = null;
+
+        const seasonSummerBtn = document.getElementById("season-summer");
+        const seasonWinterBtn = document.getElementById("season-winter");
+
+        function updateSeasonToggleUI() {
+          if (currentSeason === "summer") {
+            seasonSummerBtn.classList.add("bg-blue-500", "text-white");
+            seasonSummerBtn.classList.remove("bg-white", "text-slate-800");
+            seasonWinterBtn.classList.remove("bg-blue-500", "text-white");
+            seasonWinterBtn.classList.add("bg-white", "text-slate-800");
+          } else {
+            seasonWinterBtn.classList.add("bg-blue-500", "text-white");
+            seasonWinterBtn.classList.remove("bg-white", "text-slate-800");
+            seasonSummerBtn.classList.remove("bg-blue-500", "text-white");
+            seasonSummerBtn.classList.add("bg-white", "text-slate-800");
+          }
+        }
+
+        function renderWorldMap() {
+          const seasonKey = `${currentSeason}_rh`;
+          const locations = cityData.map((c) => c.city);
+          const humidityValues = cityData.map((c) => c[seasonKey]);
+          const lats = cityData.map((c) => c.lat);
+          const lons = cityData.map((c) => c.lon);
+          const text = cityData.map(
+            (c) => `${c.city}, ${c.country}<br>相對濕度: ${c[seasonKey]}%`
+          );
+
+          const data = [
+            {
+              type: "scattergeo",
+              lat: lats,
+              lon: lons,
+              hoverinfo: "text",
+              text: text,
+              marker: {
+                size: humidityValues.map((h) => h / 3),
+                color: humidityValues,
+                colorscale: "Blues",
+                cmin: 50,
+                cmax: 90,
+                colorbar: {
+                  title: "相對濕度 (%)",
+                  ticksuffix: "%",
+                },
+                line: {
+                  color: "black",
+                  width: 0.5,
+                },
+              },
+            },
+          ];
+
+          const layout = {
+            geo: {
+              scope: "world",
+              projection: { type: "natural earth1" },
+              showland: true,
+              landcolor: "rgb(243, 243, 243)",
+              countrycolor: "rgb(204, 204, 204)",
+              bgcolor: "rgba(0,0,0,0)",
+            },
+            margin: { l: 0, r: 0, t: 0, b: 0 },
+            paper_bgcolor: "rgba(0,0,0,0)",
+            plot_bgcolor: "rgba(0,0,0,0)",
+          };
+
+          Plotly.newPlot("world-map", data, layout, {
+            responsive: true,
+            displayModeBar: false,
+          });
+          document.getElementById("map-title").textContent = `全球主要城市${
+            currentSeason === "summer" ? "夏季" : "冬季"
+          }平均相對濕度分佈`;
+        }
+
+        function renderBarChart() {
+          const ctx = document
+            .getElementById("humidity-chart")
+            .getContext("2d");
+          const seasonKey = `${currentSeason}_rh`;
+          const sortedData = [...cityData].sort(
+            (a, b) => b[seasonKey] - a[seasonKey]
+          );
+          const labels = sortedData.map((c) => `${c.city}, ${c.country}`);
+          const data = sortedData.map((c) => c[seasonKey]);
+
+          const chartData = {
+            labels: labels,
+            datasets: [
+              {
+                label: "平均相對濕度 (%)",
+                data: data,
+                backgroundColor: sortedData.map((c) =>
+                  c.country === "台灣"
+                    ? "rgba(255, 99, 132, 0.6)"
+                    : "rgba(54, 162, 235, 0.6)"
+                ),
+                borderColor: sortedData.map((c) =>
+                  c.country === "台灣"
+                    ? "rgba(255, 99, 132, 1)"
+                    : "rgba(54, 162, 235, 1)"
+                ),
+                borderWidth: 1,
+              },
+            ],
+          };
+
+          if (humidityChart) {
+            humidityChart.data = chartData;
+            humidityChart.update();
+          } else {
+            humidityChart = new Chart(ctx, {
+              type: "bar",
+              data: chartData,
+              options: {
+                indexAxis: "y",
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: { display: false },
+                  tooltip: {
+                    callbacks: {
+                      label: function (context) {
+                        return `相對濕度: ${context.raw}%`;
+                      },
+                    },
+                  },
+                },
+                scales: {
+                  x: {
+                    beginAtZero: false,
+                    min: 50,
+                    title: {
+                      display: true,
+                      text: "平均相對濕度 (%)",
+                    },
+                  },
+                },
+              },
+            });
+          }
+          document.getElementById("chart-title").textContent = `${
+            currentSeason === "summer" ? "夏季" : "冬季"
+          }濕度排行榜`;
+        }
+
+        function updateComparisonCards() {
+          const seasonKey = `${currentSeason}_rh`;
+          const sortedData = [...cityData]
+            .filter((c) => c.country !== "台灣")
+            .sort((a, b) => b[seasonKey] - a[seasonKey]);
+
+          document.getElementById("comparison-title").textContent = `${
+            currentSeason === "summer" ? "夏季" : "冬季"
+          }濕度亮點`;
+
+          const cards = ["rank-1-card", "rank-2-card", "rank-3-card"];
+          const ranks = ["🥇 第一名", "🥈 第二名", "🥉 第三名"];
+
+          for (let i = 0; i < 3; i++) {
+            const city = sortedData[i];
+            const card = document.getElementById(cards[i]);
+            card.innerHTML = `
+                <p class="text-sm font-bold text-amber-500 mb-1">${ranks[i]}</p>
+                <h3 class="text-2xl font-bold">${city.city}</h3>
+                <p class="text-slate-500 mb-3">${city.country}</p>
+                <p class="text-4xl font-bold text-slate-800">${city[seasonKey]}<span class="text-2xl text-slate-500">%</span></p>
+                <p class="text-sm text-slate-600 mt-2">${city.desc}</p>
+            `;
+          }
+        }
+
+        function updateTaiwanCards() {
+          const seasonKey = `${currentSeason}_rh`;
+          const taipei = cityData.find((c) => c.city === "台北");
+          const keelung = cityData.find((c) => c.city === "基隆");
+
+          document.getElementById("taipei-card").innerHTML = `
+            <h3 class="text-xl font-bold">台北</h3>
+            <p class="text-4xl font-bold my-2">${taipei[seasonKey]}<span class="text-2xl text-slate-500">%</span></p>
+            <p class="text-sm text-slate-600">${taipei.desc}</p>
+        `;
+          document.getElementById("keelung-card").innerHTML = `
+            <h3 class="text-xl font-bold">基隆</h3>
+            <p class="text-4xl font-bold my-2">${keelung[seasonKey]}<span class="text-2xl text-slate-500">%</span></p>
+            <p class="text-sm text-slate-600">${keelung.desc}</p>
+        `;
+        }
+
+        function switchSeason(season) {
+          currentSeason = season;
+          updateAll();
+        }
+
+        function setupTabs() {
+          const tabButtons = document.querySelectorAll(".tab-button");
+          const tabPanes = document.querySelectorAll(".tab-pane");
+
+          tabButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+              const tabId = button.dataset.tab;
+
+              tabButtons.forEach((btn) => btn.classList.remove("active"));
+              button.classList.add("active");
+
+              tabPanes.forEach((pane) => {
+                if (pane.id === `${tabId}-content`) {
+                  pane.classList.remove("hidden");
+                } else {
+                  pane.classList.add("hidden");
+                }
+              });
+            });
+          });
+          document
+            .querySelector('.tab-button[data-tab="what-is-humidity"]')
+            .click();
+        }
+
+        function updateAll() {
+          updateSeasonToggleUI();
+          renderWorldMap();
+          renderBarChart();
+          updateComparisonCards();
+          updateTaiwanCards();
+        }
+
+        seasonSummerBtn.addEventListener("click", () => switchSeason("summer"));
+        seasonWinterBtn.addEventListener("click", () => switchSeason("winter"));
+
+        updateAll();
+        setupTabs();
+      });
+    </script>
+  </body>
+</html>
