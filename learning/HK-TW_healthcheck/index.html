@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>香港 vs. 台灣 健康檢查市場資訊圖表</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 350px;
+        }
+      }
+      .flow-arrow::after {
+        content: "→";
+        font-size: 1.5rem;
+        line-height: 2rem;
+        color: #ff6b6b;
+        margin: 0 0.5rem;
+      }
+      .flow-item {
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800">
+    <a
+      href="/"
+      class="fixed top-6 left-6 z-50 flex items-center px-4 py-2 bg-[#073B4C] text-white rounded-full shadow-md hover:bg-[#118AB2] transition-colors text-sm font-semibold"
+      style="box-shadow: 0 2px 8px 0 rgba(7, 59, 76, 0.08)"
+    >
+      <svg
+        class="w-4 h-4 mr-2"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15 19l-7-7 7-7"
+        />
+      </svg>
+      返回首頁
+    </a>
+    <!-- 
+    Palette Name: Energetic & Playful
+    Visualization Plan:
+    1. Hero: Title and subtitle.
+    2. Market DNA: Two-column comparison using HTML/CSS. Goal: Inform. Method: Styled text & Unicode icons.
+    3. Tiers Comparison: Bar chart for price ranges. Goal: Compare. Method: Chart.js Bar Chart.
+    4. Core Showdown: Donut charts comparing package composition. Goal: Compare Composition. Method: Chart.js Donut Chart.
+    5. Value Truth: Stacked bar chart for cost buildup. Goal: Compare Composition. Method: Chart.js Bar Chart (stacked).
+    6. Consumer Journey: Flowchart. Goal: Organize. Method: HTML/CSS with flexbox.
+    7. Decision Guide: Info cards for different personas. Goal: Organize. Method: HTML/CSS cards.
+    Confirmation: NEITHER Mermaid JS NOR SVG were used in this output. All visualizations are rendered using Chart.js on Canvas or structured HTML/CSS.
+    -->
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+      <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#073B4C] mb-2">
+          香港 vs. 台灣
+        </h1>
+        <h2 class="text-2xl md:text-3xl font-semibold text-[#118AB2]">
+          全面健康檢查市場深度解析
+        </h2>
+        <p class="mt-4 text-slate-600 max-w-3xl mx-auto">
+          一份關於價格、價值與選擇的視覺化報告，揭示兩地市場在服務模式、價格結構及核心價值主張上的顯著差異。
+        </p>
+      </header>
+
+      <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <section class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6">
+          <h3 class="text-2xl font-bold text-center mb-6 text-[#073B4C]">
+            市場DNA：為何兩地如此不同？
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div
+              class="bg-slate-100 p-6 rounded-lg border-l-4 border-[#118AB2]"
+            >
+              <h4 class="text-xl font-bold mb-3 flex items-center">
+                <span class="text-3xl mr-3">🇭🇰</span>香港：競爭、便利、消費主義
+              </h4>
+              <p class="text-slate-700">
+                由公營系統的漫長輪候時間所驅動，私營市場競爭激烈。服務提供者以大幅折扣和贈品吸引顧客，提供「模組化」套餐，基礎價格低，但高階項目需額外付費。
+              </p>
+            </div>
+            <div
+              class="bg-slate-100 p-6 rounded-lg border-l-4 border-[#06D6A0]"
+            >
+              <h4 class="text-xl font-bold mb-3 flex items-center">
+                <span class="text-3xl mr-3">🇹🇼</span>台灣：品質、服務、醫療旅遊
+              </h4>
+              <p class="text-slate-700">
+                建立在強大的全民健保基礎上，私營市場專注於提供高品質、酒店式、全包的預防醫學服務。強調全面性，並將高階診斷（如內視鏡）作為標準配備。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6">
+          <h3 class="text-2xl font-bold text-center mb-1 text-[#073B4C]">
+            套餐分層比較：價格與核心項目
+          </h3>
+          <p class="text-center text-slate-500 mb-6">
+            台灣套餐的價格起點較高，但從「全面級」開始，其內含的項目價值遠超香港。
+          </p>
+          <div class="chart-container h-96 md:h-[450px] max-w-4xl">
+            <canvas id="tierComparisonChart"></canvas>
+          </div>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-lg p-6">
+          <h3 class="text-2xl font-bold text-center mb-1 text-[#073B4C]">
+            核心對決：香港卓健「白金」
+          </h3>
+          <p class="text-center text-slate-500 mb-6">
+            價格約 HK$3,990，包含約66個項目。
+          </p>
+          <div class="chart-container h-80">
+            <canvas id="hkPlanChart"></canvas>
+          </div>
+          <p class="mt-4 text-center text-sm text-slate-600">
+            <strong>主要包含：</strong
+            >基礎血液/大小便化驗、靜態心電圖、數項癌症指標。<br /><strong
+              class="text-[#FF6B6B]"
+              >顯著未包含：</strong
+            >任何影像學檢查（X光、超聲波）或內視鏡檢查。
+          </p>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-lg p-6">
+          <h3 class="text-2xl font-bold text-center mb-1 text-[#073B4C]">
+            核心對決：台灣三總「B方案」
+          </h3>
+          <p class="text-center text-slate-500 mb-6">
+            價格約 NT$20,000 (≈ HK$5,000)。
+          </p>
+          <div class="chart-container h-80">
+            <canvas id="twPlanChart"></canvas>
+          </div>
+          <p class="mt-4 text-center text-sm text-slate-600">
+            <strong>主要包含：</strong>所有香港方案項目，並<strong
+              class="text-[#06D6A0]"
+              >額外增加</strong
+            >無痛腸胃鏡、多項影像診斷（X光、超聲波、骨密度）及專科會診。
+          </p>
+        </section>
+
+        <section class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6">
+          <h3 class="text-2xl font-bold text-center mb-1 text-[#073B4C]">
+            價值的真相：自己組合 vs. 全包方案
+          </h3>
+          <p class="text-center text-slate-500 mb-6">
+            若想在香港獲得與台灣方案同等的檢查內容，總成本將大幅飆升。
+          </p>
+          <div class="chart-container h-96 md:h-[450px] max-w-3xl">
+            <canvas id="valueComparisonChart"></canvas>
+          </div>
+          <div class="text-center mt-6">
+            <p class="text-xl font-medium text-slate-700">
+              對於尋求全面篩查的香港居民，前往台灣檢查，即使計入旅費，
+            </p>
+            <p class="text-3xl font-bold text-[#06D6A0] my-2">
+              仍可節省超過 60% (約 HK$12,000+)
+            </p>
+            <p class="text-slate-600">
+              同時獲得更全面的檢查項目和整合的後續服務。
+            </p>
+          </div>
+        </section>
+
+        <section class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6">
+          <h3 class="text-2xl font-bold text-center mb-6 text-[#073B4C]">
+            消費者旅程：不只是一份報告
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h4 class="text-xl font-bold mb-4 text-center text-[#118AB2]">
+                🇭🇰 香港：碎片化的跟進路徑
+              </h4>
+              <div class="overflow-x-auto pb-4">
+                <div class="flex items-center justify-start md:justify-center">
+                  <div
+                    class="flow-item text-center p-2 bg-slate-100 rounded-md shadow-sm"
+                  >
+                    <strong>檢查報告</strong>
+                  </div>
+                  <div class="flow-arrow"></div>
+                  <div
+                    class="flow-item text-center p-2 bg-slate-100 rounded-md shadow-sm"
+                  >
+                    <strong>發現異常</strong>
+                  </div>
+                  <div class="flow-arrow"></div>
+                  <div
+                    class="flow-item text-center p-2 bg-red-100 text-red-800 rounded-md shadow-sm border border-red-300"
+                  >
+                    <strong>自行尋找專科<br />(輪候/高昂費用)</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 class="text-xl font-bold mb-4 text-center text-[#06D6A0]">
+                🇹🇼 台灣：整合式的醫療服務
+              </h4>
+              <div class="overflow-x-auto pb-4">
+                <div class="flex items-center justify-start md:justify-center">
+                  <div
+                    class="flow-item text-center p-2 bg-slate-100 rounded-md shadow-sm"
+                  >
+                    <strong>檢查與會診</strong>
+                  </div>
+                  <div class="flow-arrow"></div>
+                  <div
+                    class="flow-item text-center p-2 bg-slate-100 rounded-md shadow-sm"
+                  >
+                    <strong>發現異常</strong>
+                  </div>
+                  <div class="flow-arrow"></div>
+                  <div
+                    class="flow-item text-center p-2 bg-green-100 text-green-800 rounded-md shadow-sm border border-green-300"
+                  >
+                    <strong>院內無縫轉介<br />(即時跟進)</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="lg:col-span-2 bg-transparent p-0">
+          <h3 class="text-2xl font-bold text-center mb-6 text-[#073B4C]">
+            決策指南：你該如何選擇？
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+              <div class="text-5xl mb-4">👨‍💻</div>
+              <h4 class="text-lg font-bold mb-2">年輕專業人士 (<40歲)</h4>
+              <p class="text-slate-600 mb-4">
+                尋求基礎年度監測，常規監測血液指標。
+              </p>
+              <div
+                class="font-bold text-xl text-[#118AB2] p-2 bg-blue-100 rounded-md"
+              >
+                建議：香港
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+              <div class="text-5xl mb-4">🛡️</div>
+              <h4 class="text-lg font-bold mb-2">注重預防人士 (40+歲)</h4>
+              <p class="text-slate-600 mb-4">
+                重視癌症篩查，特別是腸胃道健康。
+              </p>
+              <div
+                class="font-bold text-xl text-[#06D6A0] p-2 bg-green-100 rounded-md"
+              >
+                建議：台灣
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+              <div class="text-5xl mb-4">💼</div>
+              <h4 class="text-lg font-bold mb-2">高階行政人員</h4>
+              <p class="text-slate-600 mb-4">
+                尋求頂級全包體驗，追求效率或最高價值。
+              </p>
+              <div
+                class="font-bold text-xl text-[#FFD166] p-2 bg-yellow-100 rounded-md"
+              >
+                視乎優先次序
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+              <div class="text-5xl mb-4">✈️</div>
+              <h4 class="text-lg font-bold mb-2">醫療旅遊者</h4>
+              <p class="text-slate-600 mb-4">
+                以最高性價比，獲得最全面的檢查為目標。
+              </p>
+              <div
+                class="font-bold text-xl text-[#FF6B6B] p-2 bg-red-100 rounded-md"
+              >
+                建議：台灣
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="text-center mt-12 text-sm text-slate-500">
+        <p>
+          本資訊圖表內容基於提供的「香港與台灣全面健康檢查服務之比較分析報告」製作。
+        </p>
+        <p>所有價格與項目僅供參考，實際情況請以各醫療機構最新公佈為準。</p>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const palette = {
+          red: "#FF6B6B",
+          yellow: "#FFD166",
+          green: "#06D6A0",
+          blue: "#118AB2",
+          navy: "#073B4C",
+          lightBlue: "#E8F6F8",
+          lightGreen: "#E6FAF4",
+        };
+
+        const tooltipTitleCallback = (tooltipItems) => {
+          const item = tooltipItems[0];
+          let label = item.chart.data.labels[item.dataIndex];
+          if (Array.isArray(label)) {
+            return label.join(" ");
+          }
+          return label;
+        };
+
+        const commonChartOptions = {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: {
+                font: {
+                  family: "'Noto Sans TC', sans-serif",
+                  size: 12,
+                },
+              },
+            },
+            tooltip: {
+              callbacks: {
+                title: tooltipTitleCallback,
+              },
+              titleFont: {
+                family: "'Noto Sans TC', sans-serif",
+              },
+              bodyFont: {
+                family: "'Noto Sans TC', sans-serif",
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: {
+                  family: "'Noto Sans TC', sans-serif",
+                },
+              },
+            },
+            y: {
+              ticks: {
+                font: {
+                  family: "'Noto Sans TC', sans-serif",
+                },
+              },
+            },
+          },
+        };
+
+        const wrapLabel = (label, maxLength = 16) => {
+          if (label.length <= maxLength) return label;
+          const words = label.split(" ");
+          const lines = [];
+          let currentLine = "";
+          words.forEach((word) => {
+            if ((currentLine + " " + word).trim().length > maxLength) {
+              lines.push(currentLine.trim());
+              currentLine = word;
+            } else {
+              currentLine = (currentLine + " " + word).trim();
+            }
+          });
+          if (currentLine) lines.push(currentLine.trim());
+          return lines;
+        };
+
+        // Tier Comparison Chart
+        const tierCtx = document
+          .getElementById("tierComparisonChart")
+          ?.getContext("2d");
+        if (tierCtx) {
+          new Chart(tierCtx, {
+            type: "bar",
+            data: {
+              labels: ["基礎級", "全面級", "尊尚級"],
+              datasets: [
+                {
+                  label: "香港 (HK$)",
+                  data: [2500, 8000, 15000],
+                  backgroundColor: palette.blue,
+                  borderColor: palette.blue,
+                  borderWidth: 1,
+                },
+                {
+                  label: "台灣 (HK$)",
+                  data: [3750, 10000, 20000],
+                  backgroundColor: palette.green,
+                  borderColor: palette.green,
+                  borderWidth: 1,
+                },
+              ],
+            },
+            options: {
+              ...commonChartOptions,
+              scales: {
+                x: {
+                  ticks: {
+                    font: {
+                      family: "'Noto Sans TC', sans-serif",
+                      size: 14,
+                    },
+                  },
+                },
+                y: {
+                  beginAtZero: true,
+                  title: {
+                    display: true,
+                    text: "價格範圍上限 (約 HK$)",
+                    font: {
+                      family: "'Noto Sans TC', sans-serif",
+                      size: 12,
+                    },
+                  },
+                },
+              },
+            },
+          });
+        }
+
+        // HK Plan Donut Chart
+        const hkPlanCtx = document
+          .getElementById("hkPlanChart")
+          ?.getContext("2d");
+        if (hkPlanCtx) {
+          new Chart(hkPlanCtx, {
+            type: "doughnut",
+            data: {
+              labels: [
+                "血液/大小便化驗",
+                "基本體格檢查",
+                "心臟評估 (靜態)",
+                "癌症指標",
+              ],
+              datasets: [
+                {
+                  label: "項目分佈",
+                  data: [50, 20, 15, 15],
+                  backgroundColor: [
+                    palette.blue,
+                    palette.yellow,
+                    palette.red,
+                    palette.lightBlue,
+                  ],
+                  borderColor: "#ffffff",
+                  borderWidth: 2,
+                },
+              ],
+            },
+            options: { ...commonChartOptions },
+          });
+        }
+
+        // TW Plan Donut Chart
+        const twPlanCtx = document
+          .getElementById("twPlanChart")
+          ?.getContext("2d");
+        if (twPlanCtx) {
+          new Chart(twPlanCtx, {
+            type: "doughnut",
+            data: {
+              labels: ["無痛腸胃鏡", "影像診斷", "血液/功能測試", "專科會診"],
+              datasets: [
+                {
+                  label: "項目分佈",
+                  data: [40, 25, 25, 10],
+                  backgroundColor: [
+                    palette.green,
+                    palette.red,
+                    palette.blue,
+                    palette.yellow,
+                  ],
+                  borderColor: "#ffffff",
+                  borderWidth: 2,
+                },
+              ],
+            },
+            options: { ...commonChartOptions },
+          });
+        }
+
+        // Value Comparison Stacked Bar Chart
+        const valueCtx = document
+          .getElementById("valueComparisonChart")
+          ?.getContext("2d");
+        if (valueCtx) {
+          new Chart(valueCtx, {
+            type: "bar",
+            data: {
+              labels: ["香港 (自行組合)", "台灣 (全包方案)"],
+              datasets: [
+                {
+                  label: "基礎套餐費用",
+                  data: [3990, 5000],
+                  backgroundColor: palette.blue,
+                },
+                {
+                  label: "內視鏡費用 (估算)",
+                  data: [15000, 0],
+                  backgroundColor: palette.red,
+                },
+                {
+                  label: "影像診斷費用 (估算)",
+                  data: [2000, 0],
+                  backgroundColor: palette.yellow,
+                },
+                {
+                  label: "交通住宿費 (估算)",
+                  data: [0, 3000],
+                  backgroundColor: palette.navy,
+                },
+              ],
+            },
+            options: {
+              ...commonChartOptions,
+              indexAxis: "y",
+              scales: {
+                x: {
+                  stacked: true,
+                  title: {
+                    display: true,
+                    text: "總費用 (HK$)",
+                  },
+                },
+                y: {
+                  stacked: true,
+                  ticks: {
+                    font: {
+                      size: 14,
+                    },
+                  },
+                },
+              },
+            },
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

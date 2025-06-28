@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Report: 46,XX DSD with PAR1 Deletion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Clinical Calm -->
+    <!-- Application Structure Plan: The application uses a thematic, tab-based single-page application (SPA) structure. This information architecture was chosen to deconstruct a highly complex, dense scientific report into digestible, interconnected themes: 'Overview', 'The 46,XX Male', 'The PAR1 Region', 'The Combined Condition', 'Differential Diagnosis', and 'Clinical Implications'. This non-linear, guided-exploration model is superior to a linear document for user understanding, allowing users to build foundational knowledge in early tabs before tackling the core synthesis in later tabs. Key interactions include toggling between SRY pathways, an interactive SHROX dosage simulator, and a comparative diagnosis table, all designed to make the data explorable and relationships clear. -->
+    <!-- Visualization & Content Choices: Report data is translated into interactive formats to enhance comprehension. Goal: Compare -> Prevalence of SRY-Positive vs. SRY-Negative cases is shown with a Chart.js bar chart. A JS-powered toggle switches content blocks to compare the pathways directly. Table 3 is an interactive HTML table for comparing multiple conditions. Goal: Relationships -> The 'dual-hit' impact on height is visualized with a comparative Chart.js bar chart. The SHROX gene's dosage-dependent effect is demonstrated with a custom JS-driven interactive diagram, avoiding static images. Goal: Organize -> Tables 1 and 2 are presented as clean, readable HTML tables, with interactive cards for case studies to reveal details on demand. This approach uses Chart.js for quantitative data and custom JS/HTML/CSS for diagrams and qualitative comparisons, fully avoiding SVG and Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 350px;
+        max-height: 40vh;
+      }
+      .nav-button {
+        transition: all 0.3s ease;
+      }
+      .nav-button.active {
+        background-color: #0891b2;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      .content-section {
+        display: none;
+        animation: fadeIn 0.5s;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .info-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+      }
+      .shox-control.active {
+        background-color: #f59e0b;
+        color: white;
+        font-weight: bold;
+      }
+      table th,
+      table td {
+        text-align: left;
+        padding: 12px;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800">
+    <div class="container mx-auto p-4 md:p-8">
+      <header class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-cyan-800">
+          An Interactive Exploration of 46,XX DSD with PAR1 Deletion
+        </h1>
+        <p class="text-slate-600 mt-2">
+          Translating complex genetic research into an understandable format.
+        </p>
+      </header>
+
+      <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+        <button
+          data-target="overview"
+          class="nav-button active font-semibold py-2 px-4 rounded-lg shadow-sm bg-white hover:bg-cyan-100"
+        >
+          Overview
+        </button>
+        <button
+          data-target="xx-male"
+          class="nav-button font-semibold py-2 px-4 rounded-lg shadow-sm bg-white hover:bg-cyan-100"
+        >
+          The 46,XX Male
+        </button>
+        <button
+          data-target="par1-region"
+          class="nav-button font-semibold py-2 px-4 rounded-lg shadow-sm bg-white hover:bg-cyan-100"
+        >
+          The PAR1 Region & SHOX
+        </button>
+        <button
+          data-target="combined"
+          class="nav-button font-semibold py-2 px-4 rounded-lg shadow-sm bg-white hover:bg-cyan-100"
+        >
+          The Combined Condition
+        </button>
+        <button
+          data-target="diagnosis"
+          class="nav-button font-semibold py-2 px-4 rounded-lg shadow-sm bg-white hover:bg-cyan-100"
+        >
+          Differential Diagnosis
+        </button>
+        <button
+          data-target="implications"
+          class="nav-button font-semibold py-2 px-4 rounded-lg shadow-sm bg-white hover:bg-cyan-100"
+        >
+          Clinical Implications
+        </button>
+      </nav>
+
+      <main>
+        <section id="overview" class="content-section" style="display: block">
+          <div class="bg-white p-6 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold text-cyan-700 mb-4">
+              Introduction to a Complex Genetic Landscape
+            </h2>
+            <p class="mb-6 text-slate-600">
+              This application explores 46,XX Testicular Disorder of Sex
+              Development (DSD), a rare condition where individuals with female
+              chromosomes (46,XX) develop a male phenotype. We will delve into
+              its causes, the role of the crucial PAR1 chromosomal region, and
+              the even rarer instance where these two conditions overlap. The
+              goal is to demystify the core concepts from the source report,
+              from the fundamental genetic mechanisms to the real-world clinical
+              implications.
+            </p>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="info-card bg-slate-100 p-6 rounded-lg">
+                <h3 class="font-bold text-xl text-cyan-800">
+                  46,XX Testicular DSD
+                </h3>
+                <p class="text-sm text-slate-500 mb-2">
+                  Also known as XX Male Syndrome
+                </p>
+                <p class="text-4xl font-bold text-amber-600 my-2">
+                  1 in 20,000
+                </p>
+                <p class="text-slate-600">
+                  Estimated incidence in male newborns. It's a rare cause of
+                  primary hypogonadism and male infertility, primarily driven by
+                  the misplacement of the SRY gene or dysregulation of other
+                  genetic pathways.
+                </p>
+              </div>
+              <div class="info-card bg-slate-100 p-6 rounded-lg">
+                <h3 class="font-bold text-xl text-cyan-800">
+                  Pseudoautosomal Region 1 (PAR1)
+                </h3>
+                <p class="text-sm text-slate-500 mb-2">
+                  A bridge between sex chromosomes
+                </p>
+                <p class="text-slate-600 mt-4">
+                  PAR1 is a critical 2.6 Mb region of homology on the X and Y
+                  chromosomes that ensures their proper pairing during meiosis.
+                  It contains dosage-sensitive genes, like
+                  <span class="font-bold">SHOX</span>, that are essential for
+                  normal skeletal development and escape X-inactivation.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="xx-male" class="content-section">
+          <div class="bg-white p-6 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold text-cyan-700 mb-2">
+              Understanding the 46,XX Male
+            </h2>
+            <p class="mb-6 text-slate-600">
+              The development of a male phenotype in a 46,XX individual occurs
+              through two primary genetic pathways. While both result in
+              testicular development, their underlying causes and typical
+              presentations differ significantly. This section allows you to
+              explore and compare these two mechanisms.
+            </p>
+            <div
+              class="flex justify-center mb-6 border border-slate-200 rounded-lg p-1 bg-slate-100 w-fit mx-auto"
+            >
+              <button
+                id="sry-pos-btn"
+                class="sry-toggle-btn active bg-cyan-600 text-white py-2 px-4 rounded-md text-sm font-semibold"
+              >
+                SRY-Positive
+              </button>
+              <button
+                id="sry-neg-btn"
+                class="sry-toggle-btn py-2 px-4 rounded-md text-sm font-semibold text-slate-600"
+              >
+                SRY-Negative
+              </button>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+              <div class="chart-container h-64 md:h-80">
+                <canvas id="sryPrevalenceChart"></canvas>
+              </div>
+              <div id="sry-content"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="par1-region" class="content-section">
+          <div class="bg-white p-6 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold text-cyan-700 mb-2">
+              The SHOX Gene: A Master Regulator of Growth
+            </h2>
+            <p class="mb-6 text-slate-600">
+              Within the PAR1 region lies the
+              <span class="font-bold">Short Stature Homeobox (SHOX)</span> gene,
+              a transcription factor whose protein product is critical for bone
+              development. Normal growth is highly sensitive to SHOX dosage, as
+              it escapes X-inactivation, meaning both biological males and
+              females typically have two active copies. Use the controls below
+              to see how varying the number of functional SHOX copies directly
+              impacts an individual's skeletal phenotype.
+            </p>
+
+            <div class="flex justify-center flex-wrap gap-2 my-6">
+              <button
+                class="shox-control p-2 px-4 rounded-md border"
+                data-copy="0"
+              >
+                0 Copies
+              </button>
+              <button
+                class="shox-control p-2 px-4 rounded-md border"
+                data-copy="1"
+              >
+                1 Copy
+              </button>
+              <button
+                class="shox-control p-2 px-4 rounded-md border active"
+                data-copy="2"
+              >
+                2 Copies (Normal)
+              </button>
+              <button
+                class="shox-control p-2 px-4 rounded-md border"
+                data-copy="3"
+              >
+                3+ Copies
+              </button>
+            </div>
+
+            <div
+              id="shox-display"
+              class="bg-slate-100 p-6 rounded-lg text-center transition-all duration-300"
+            >
+              <h3 id="shox-title" class="text-xl font-bold text-cyan-800"></h3>
+              <div class="my-4 flex justify-center items-center h-24">
+                <div id="shox-diagram" class="flex gap-2"></div>
+              </div>
+              <p
+                id="shox-description"
+                class="text-slate-600 max-w-2xl mx-auto"
+              ></p>
+            </div>
+          </div>
+        </section>
+
+        <section id="combined" class="content-section">
+          <div class="bg-white p-6 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold text-cyan-700 mb-2">
+              Synthesis: The "Dual-Hit" Phenotype
+            </h2>
+            <p class="mb-6 text-slate-600">
+              The existence of a 46,XX male with a PAR1 deletion represents a
+              convergence of two distinct genetic conditions. This combination
+              results in a complex, composite phenotype. The short stature
+              observed in these individuals is particularly pronounced due to a
+              "dual-hit" mechanism: a reduced height baseline from the 46,XX
+              constitution, compounded by the pathological growth failure from
+              <span class="font-bold">SHOX haploinsufficiency</span>.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 class="text-xl font-bold text-cyan-800 mb-4 text-center">
+                  Visualizing the "Dual-Hit" on Stature
+                </h3>
+                <div class="chart-container h-80 md:h-96">
+                  <canvas id="heightComparisonChart"></canvas>
+                </div>
+              </div>
+              <div class="bg-slate-50 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-cyan-800 mb-4">
+                  Verifiable Case Reports
+                </h3>
+                <p class="text-sm text-slate-600 mb-4">
+                  This rare condition is not a theoretical construct. It has
+                  been documented in the medical literature, most notably in
+                  SRY-positive, 46,XX males with Microphthalmia with Linear Skin
+                  Defects (MLS) syndrome, which is caused by deletions in the
+                  Xp22.3 region (encompassing PAR1).
+                </p>
+                <div class="space-y-3">
+                  <div class="p-4 border rounded-lg bg-white">
+                    <p class="font-bold">Anguiano et al., 2003</p>
+                    <p class="text-sm text-slate-500">
+                      Twin brothers with MIDAS/MLS syndrome
+                    </p>
+                    <p class="text-xs mt-2">
+                      <span class="font-semibold">Finding:</span> Confirmed
+                      46,XX, SRY-positive karyotype with an Xp/Yp translocation,
+                      resulting in an Xp22.3 deletion. This is the cornerstone
+                      evidence.
+                    </p>
+                  </div>
+                  <div class="p-4 border rounded-lg bg-white">
+                    <p class="font-bold">Wimplinger et al., 2005 (Review)</p>
+                    <p class="text-sm text-slate-500">Review of 11 MLS cases</p>
+                    <p class="text-xs mt-2">
+                      <span class="font-semibold">Finding:</span> Confirmed that
+                      rare male patients with MLS have a 46,XX karyotype due to
+                      Xp;Yp translocations.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="diagnosis" class="content-section">
+          <div class="bg-white p-6 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold text-cyan-700 mb-2">
+              Interactive Differential Diagnosis
+            </h2>
+            <p class="mb-6 text-slate-600">
+              The feature of short stature caused by
+              <span class="font-bold">SHOX deficiency</span> is a common thread
+              among several different genetic conditions. Differentiating them
+              requires a careful look at the complete karyotype, SRY status, and
+              overall clinical picture. The table below compares the key
+              features to help distinguish these overlapping syndromes. Hover
+              over rows to highlight them.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-max border-collapse">
+                <thead>
+                  <tr class="border-b-2 border-cyan-600 bg-slate-100">
+                    <th>Condition</th>
+                    <th>Karyotype</th>
+                    <th>SRY Status</th>
+                    <th>Phenotypic Sex</th>
+                    <th>Shared SHOX Features</th>
+                    <th>Distinguishing Features</th>
+                  </tr>
+                </thead>
+                <tbody id="diagnosis-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="implications" class="content-section">
+          <div class="bg-white p-6 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold text-cyan-700 mb-2">
+              Clinical and Research Implications
+            </h2>
+            <p class="mb-6 text-slate-600">
+              Understanding this rare genetic intersection has significant
+              consequences for both clinical practice and future scientific
+              inquiry. The key takeaways emphasize the need for advanced
+              diagnostic techniques and highlight areas where more research is
+              critically needed.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-6">
+              <div
+                class="info-card bg-cyan-50 p-6 rounded-lg border-l-4 border-cyan-500"
+              >
+                <h3 class="font-bold text-xl text-cyan-800 mb-3">
+                  Diagnostic Recommendations
+                </h3>
+                <p class="text-slate-700">
+                  For any 46,XX DSD patient presenting with disproportionate
+                  short stature or other syndromic features, a simple karyotype
+                  is insufficient. High-resolution
+                  <span class="font-bold">Chromosomal Microarray (CMA)</span> is
+                  the recommended diagnostic tool. CMA can simultaneously
+                  confirm the XX karyotype while also detecting the
+                  submicroscopic Xp deletion that includes the PAR1/SHOX region.
+                </p>
+              </div>
+              <div
+                class="info-card bg-amber-50 p-6 rounded-lg border-l-4 border-amber-500"
+              >
+                <h3 class="font-bold text-xl text-amber-800 mb-3">
+                  Genetic Counseling
+                </h3>
+                <p class="text-slate-700">
+                  Counseling for families must be multifaceted. It should
+                  address the implications of DSD (infertility, lifelong hormone
+                  management) as well as the full spectrum of issues from the
+                  contiguous gene deletion (e.g., skeletal, ophthalmologic, or
+                  cardiac issues in syndromic cases), providing a complete
+                  picture of the individual's health needs.
+                </p>
+              </div>
+            </div>
+            <div class="mt-6 bg-slate-100 p-6 rounded-lg">
+              <h3 class="font-bold text-xl text-slate-800 mb-3">
+                Avenues for Future Research
+              </h3>
+              <ul class="list-disc list-inside space-y-2 text-slate-600">
+                <li>
+                  <span class="font-semibold">Phenotypic Delineation:</span>
+                  More case studies are needed to understand the full spectrum
+                  of features and how the hormonal environment of a 46,XX male
+                  might modify the SHOX deficiency phenotype.
+                </li>
+                <li>
+                  <span class="font-semibold">X-Inactivation Studies:</span>
+                  Investigating which X chromosome (the one with the deletion or
+                  the one with SRY) is preferentially inactivated could explain
+                  clinical variability.
+                </li>
+                <li>
+                  <span class="font-semibold"
+                    >Identifying Non-Syndromic Cases:</span
+                  >
+                  Increased use of CMA in all DSD workups may uncover
+                  individuals with smaller, isolated PAR1 deletions, refining
+                  our understanding of this condition.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const sryContentData = {
+          positive: {
+            title: "SRY-Positive Pathway (80-90%)",
+            description:
+              "The most common cause, resulting from an aberrant exchange between the X and Y chromosomes during paternal meiosis. A small piece of the Y chromosome containing the SRY gene (the primary switch for male development) is translocated onto an X chromosome. Individuals typically have normal male external genitalia, and diagnosis is often delayed until puberty due to issues like infertility or gynecomastia.",
+          },
+          negative: {
+            title: "SRY-Negative Pathway (10-20%)",
+            description:
+              "Testicular development occurs without the SRY gene due to alterations in a network of other genes. This can be caused by overexpression of male-promoting genes (like SOX9) or loss-of-function of female-promoting genes (like RSPO1). These individuals are much more likely to present with ambiguous genitalia at birth, prompting earlier diagnosis.",
+          },
+        };
+
+        const shoxData = {
+          0: {
+            title: "Nullizygosity (0 Copies)",
+            diagram: `<div class="w-8 h-16 bg-red-200 border-2 border-red-500 rounded"></div><div class="w-8 h-16 bg-red-200 border-2 border-red-500 rounded"></div>`,
+            description:
+              "The complete absence of SHOX protein results in Langer Mesomelic Dysplasia (LMD), a severe skeletal dysplasia with extreme shortening of the limbs.",
+          },
+          1: {
+            title: "Haploinsufficiency (1 Copy)",
+            diagram: `<div class="w-8 h-24 bg-red-200 border-2 border-red-500 rounded"></div><div class="w-8 h-24 bg-slate-300 border-2 border-dashed border-slate-500 rounded"></div>`,
+            description:
+              "One functional copy is insufficient for normal growth, leading to a spectrum of conditions including Léri-Weill Dyschondrosteosis (LWD), characterized by short stature, mesomelia (short forearms/lower legs), and Madelung wrist deformity. This is also the cause of short stature in Turner Syndrome.",
+          },
+          2: {
+            title: "Normal Dosage (2 Copies)",
+            diagram: `<div class="w-8 h-32 bg-green-200 border-2 border-green-500 rounded"></div><div class="w-8 h-32 bg-green-200 border-2 border-green-500 rounded"></div>`,
+            description:
+              "Two functional copies of the SHOX gene ensure normal skeletal growth and development in both 46,XX females and 46,XY males.",
+          },
+          3: {
+            title: "Overdosage (3+ Copies)",
+            diagram: `<div class="w-8 h-40 bg-blue-200 border-2 border-blue-500 rounded"></div><div class="w-8 h-40 bg-blue-200 border-2 border-blue-500 rounded"></div><div class="w-8 h-40 bg-blue-200 border-2 border-blue-500 rounded"></div>`,
+            description:
+              "An excess of SHOX protein can also lead to abnormal growth, contributing to the tall stature seen in conditions like Klinefelter Syndrome (47,XXY) and 47,XYY syndrome.",
+          },
+        };
+
+        const diagnosisData = [
+          {
+            condition: "46,XX Male w/ PAR1 Deletion",
+            karyotype: "46,XX,del(Xp)",
+            sry: "Positive",
+            sex: "Male",
+            shox: "Short stature, mesomelia, Madelung",
+            distinct:
+              "Male phenotype; Two X chromosomes; Often syndromic (e.g., MLS)",
+          },
+          {
+            condition: "45,X Male",
+            karyotype: "45,X,t(Y;auto/X)",
+            sry: "Positive",
+            sex: "Male",
+            shox: "Short stature, mesomelia, Madelung",
+            distinct:
+              "Male phenotype; Monosomy for entire X; Broader Turner stigmata",
+          },
+          {
+            condition: "Turner Syndrome",
+            karyotype: "45,X",
+            sry: "Negative",
+            sex: "Female",
+            shox: "Short stature, mesomelia, Madelung",
+            distinct:
+              "Female phenotype; Streak gonads; Classic Turner stigmata (webbed neck)",
+          },
+          {
+            condition: "Léri-Weill Dyschondrosteosis",
+            karyotype: "46,XX or 46,XY",
+            sry: "Varies",
+            sex: "Female or Male",
+            shox: "Short stature, mesomelia, Madelung",
+            distinct: "Normal gonadal function and fertility; No DSD features",
+          },
+        ];
+
+        const navButtons = document.querySelectorAll(".nav-button");
+        const contentSections = document.querySelectorAll(".content-section");
+
+        navButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const targetId = button.dataset.target;
+
+            navButtons.forEach((btn) => btn.classList.remove("active"));
+            button.classList.add("active");
+
+            contentSections.forEach((section) => {
+              section.style.display =
+                section.id === targetId ? "block" : "none";
+            });
+          });
+        });
+
+        const sryPosBtn = document.getElementById("sry-pos-btn");
+        const sryNegBtn = document.getElementById("sry-neg-btn");
+        const sryContent = document.getElementById("sry-content");
+
+        function updateSryContent(type) {
+          const data = sryContentData[type];
+          sryContent.innerHTML = `
+            <h3 class="text-xl font-bold text-cyan-800 mb-2">${data.title}</h3>
+            <p class="text-slate-600">${data.description}</p>
+        `;
+          if (type === "positive") {
+            sryPosBtn.classList.add("active", "bg-cyan-600", "text-white");
+            sryPosBtn.classList.remove("text-slate-600");
+            sryNegBtn.classList.remove("active", "bg-cyan-600", "text-white");
+            sryNegBtn.classList.add("text-slate-600");
+          } else {
+            sryNegBtn.classList.add("active", "bg-cyan-600", "text-white");
+            sryNegBtn.classList.remove("text-slate-600");
+            sryPosBtn.classList.remove("active", "bg-cyan-600", "text-white");
+            sryPosBtn.classList.add("text-slate-600");
+          }
+        }
+
+        sryPosBtn.addEventListener("click", () => updateSryContent("positive"));
+        sryNegBtn.addEventListener("click", () => updateSryContent("negative"));
+
+        new Chart(document.getElementById("sryPrevalenceChart"), {
+          type: "bar",
+          data: {
+            labels: ["SRY-Positive", "SRY-Negative"],
+            datasets: [
+              {
+                label: "Prevalence in 46,XX DSD",
+                data: [85, 15],
+                backgroundColor: [
+                  "rgba(8, 145, 178, 0.7)",
+                  "rgba(245, 158, 11, 0.7)",
+                ],
+                borderColor: ["rgb(8, 145, 178)", "rgb(245, 158, 11)"],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: "y",
+            scales: {
+              x: {
+                beginAtZero: true,
+                max: 100,
+                ticks: { callback: (value) => value + "%" },
+              },
+            },
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: "Typical Prevalence of DSD Pathways",
+              },
+            },
+          },
+        });
+
+        updateSryContent("positive");
+
+        const shoxControls = document.querySelectorAll(".shox-control");
+        const shoxTitle = document.getElementById("shox-title");
+        const shoxDiagram = document.getElementById("shox-diagram");
+        const shoxDescription = document.getElementById("shox-description");
+
+        function updateShoxDisplay(copyNumber) {
+          const data = shoxData[copyNumber];
+          shoxTitle.textContent = data.title;
+          shoxDiagram.innerHTML = data.diagram;
+          shoxDescription.textContent = data.description;
+
+          shoxControls.forEach((control) => {
+            control.classList.remove("active");
+            if (control.dataset.copy === copyNumber) {
+              control.classList.add("active");
+            }
+          });
+        }
+
+        shoxControls.forEach((control) => {
+          control.addEventListener("click", () => {
+            updateShoxDisplay(control.dataset.copy);
+          });
+        });
+
+        updateShoxDisplay("2");
+
+        new Chart(document.getElementById("heightComparisonChart"), {
+          type: "bar",
+          data: {
+            labels: [
+              "46,XY Male\n(Avg)",
+              "46,XX Female\n(Avg)",
+              "46,XX Male\n(Typical)",
+              "46,XX Male\n+ SHOX Deletion",
+            ],
+            datasets: [
+              {
+                label: "Relative Adult Stature",
+                data: [100, 93, 92, 80],
+                backgroundColor: [
+                  "rgba(21, 128, 61, 0.6)",
+                  "rgba(29, 78, 216, 0.6)",
+                  "rgba(245, 158, 11, 0.6)",
+                  "rgba(220, 38, 38, 0.6)",
+                ],
+                borderColor: [
+                  "rgb(21, 128, 61)",
+                  "rgb(29, 78, 216)",
+                  "rgb(245, 158, 11)",
+                  "rgb(220, 38, 38)",
+                ],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    return `Relative Height: ${context.raw}% of avg 46,XY Male`;
+                  },
+                },
+              },
+            },
+            scales: {
+              y: {
+                ticks: {
+                  display: false,
+                },
+              },
+              x: {
+                ticks: {
+                  font: {
+                    size: 10,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        const diagnosisTableBody = document.getElementById(
+          "diagnosis-table-body"
+        );
+        diagnosisData.forEach((item) => {
+          const row = document.createElement("tr");
+          row.className =
+            "border-b border-slate-200 hover:bg-cyan-50 transition-colors duration-200";
+          row.innerHTML = `
+            <td class="font-semibold text-cyan-800">${item.condition}</td>
+            <td>${item.karyotype}</td>
+            <td><span class="px-2 py-1 text-xs rounded-full ${
+              item.sry === "Positive"
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }">${item.sry}</span></td>
+            <td>${item.sex}</td>
+            <td class="text-sm">${item.shox}</td>
+            <td class="text-sm">${item.distinct}</td>
+        `;
+          diagnosisTableBody.appendChild(row);
+        });
+      });
+    </script>
+  </body>
+</html>
