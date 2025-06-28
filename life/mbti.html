@@ -324,13 +324,14 @@
           <table class="w-full text-left text-xs md:text-xs">
             <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
               <tr>
-                <th class="p-1 rounded-l-lg">Personality Type</th>
+                <th class="p-1 rounded-l-lg">Test Date</th>
+                <th class="p-1">Days Between Tests</th>
+                <th class="p-1">Personality Type</th>
                 <th class="p-1">Energy</th>
                 <th class="p-1">Mind</th>
                 <th class="p-1">Nature</th>
                 <th class="p-1">Tactics</th>
                 <th class="p-1">Identity</th>
-                <th class="p-1 rounded-r-lg">Test Date</th>
               </tr>
             </thead>
             <tbody id="mbtiTableBody" class="divide-y divide-gray-200 text-xs">
@@ -646,6 +647,7 @@
         tableBody.innerHTML = "";
 
         let lastType = mbtiData[0]?.type;
+        let lastDate = null;
         mbtiData.forEach((item, index) => {
           const side = index % 2 === 0 ? "left" : "right";
           let typeChanged = false;
@@ -678,8 +680,18 @@
           if (isMobile) {
             // MBTI code only (e.g., ISTJ-A)
             typeCell = item.type.match(/\(([^)]+)\)/)?.[1] || item.type;
-            // Abbreviate traits (e.g., Intro, Obser, Think, Judg, Turb, Asse)
-            const abbr = (t) => t.slice(0, 5);
+            // Custom abbreviations for mobile
+            const abbrMap = {
+              Introverted: "Intr",
+              Extraverted: "Extr",
+              Observant: "Obse",
+              Intuitive: "Intu",
+              Thinking: "Think",
+              Feeling: "Feel",
+              Judging: "Judg",
+              Prospecting: "Pros",
+            };
+            const abbr = (t) => abbrMap[t] || t.slice(0, 5);
             energyCell = `${item.energy.value}% ${abbr(item.energy.trait)}`;
             mindCell = `${item.mind.value}% ${abbr(item.mind.trait)}`;
             natureCell = `${item.nature.value}% ${abbr(item.nature.trait)}`;
@@ -688,15 +700,26 @@
               item.identity.trait
             )}`;
           }
+          // Calculate days between tests
+          let daysBetween = "—";
+          const thisDate = new Date(item.date);
+          if (lastDate) {
+            const diff = Math.round(
+              (thisDate - lastDate) / (1000 * 60 * 60 * 24)
+            );
+            daysBetween = diff;
+          }
+          lastDate = thisDate;
           const tableRow = `
                 <tr class="hover:bg-gray-50">
+                    <td class="p-1 text-gray-600">${item.date}</td>
+                    <td class="p-1">${daysBetween}</td>
                     <td class="p-1 font-semibold">${typeCell}</td>
                     <td class="p-1">${energyCell}</td>
                     <td class="p-1">${mindCell}</td>
                     <td class="p-1">${natureCell}</td>
                     <td class="p-1">${tacticsCell}</td>
                     <td class="p-1">${identityCell}</td>
-                    <td class="p-1 text-gray-600">${item.date}</td>
                 </tr>`;
           tableBody.innerHTML += tableRow;
         });
@@ -707,6 +730,15 @@
         setupChart();
         populateContent();
         createChartControls();
+      });
+
+      // Dynamically update table on resize (debounced)
+      let resizeTimeout;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          populateContent();
+        }, 150);
       });
     </script>
   </body>
