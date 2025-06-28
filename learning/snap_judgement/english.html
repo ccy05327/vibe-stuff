@@ -43,6 +43,20 @@
     </style>
   </head>
   <body class="text-slate-800">
+    <a
+      href="index.html"
+      class="fixed top-4 left-4 z-50 px-3 py-1.5 rounded-full shadow border flex items-center backdrop-blur-sm transition-all"
+      style="
+        background: #073b4c;
+        color: #fff;
+        border-color: #118ab2;
+        font-size: 1rem;
+      "
+      onmouseover="this.style.background='#118AB2'"
+      onmouseout="this.style.background='#073B4C'"
+    >
+      <span class="mr-2">&#8592;</span> Back
+    </a>
     <header class="bg-[#073B4C] text-white p-8 text-center">
       <h1 class="text-4xl md:text-6xl font-black tracking-tight">
         THE EVALUATIVE MIND
@@ -51,6 +65,36 @@
         Why Your Snap Judgments Are Limiting You & How to Reclaim a Richer Life
       </p>
     </header>
+    <div class="w-full max-w-xl mx-auto my-8">
+      <label class="block text-blue-700 font-semibold mb-2 text-center"
+        >Listen in English</label
+      >
+      <audio
+        id="audioPlayerEN"
+        controls
+        class="w-full rounded shadow border border-blue-100 bg-white"
+      >
+        <source src="(EN) english.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
+      <div class="flex justify-center mt-2">
+        <label for="speedEN" class="mr-2 text-sm text-gray-600">Speed:</label>
+        <select id="speedEN" class="border rounded px-2 py-1 text-sm">
+          <option value="0.75">0.75x</option>
+          <option value="1" selected>1x</option>
+          <option value="1.25">1.25x</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2x</option>
+        </select>
+      </div>
+      <script>
+        const audioEN = document.getElementById("audioPlayerEN");
+        const speedEN = document.getElementById("speedEN");
+        speedEN.addEventListener("change", function () {
+          audioEN.playbackRate = parseFloat(this.value);
+        });
+      </script>
+    </div>
 
     <main class="p-4 md:p-8">
       <section id="intro" class="max-w-4xl mx-auto text-center my-12">
