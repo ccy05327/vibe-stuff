@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>資訊圖表：擺脫速判，擁抱心理富饒的人生</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+        background-color: #f0f4f8;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 300px;
+        max-height: 400px;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 350px;
+        }
+      }
+      .text-shadow {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .card {
+        background-color: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .flowchart-step {
+        background-color: #ffffff;
+        border: 2px solid #075985;
+        color: #075985;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        text-align: center;
+        font-weight: 700;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+      .flowchart-arrow {
+        font-size: 2rem;
+        color: #075985;
+        margin: 0 0.5rem;
+        align-self: center;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-100 text-gray-800">
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+      <header class="text-center my-12">
+        <h1 class="text-4xl md:text-6xl font-black text-sky-900 text-shadow">
+          告別「速判」思維
+        </h1>
+        <p class="text-xl md:text-2xl text-slate-600 mt-4 max-w-3xl mx-auto">
+          一份基於 Lorraine Besser 哲學，通往「心理富饒」人生的視覺指南
+        </p>
+      </header>
+
+      <main>
+        <section id="section1" class="card">
+          <h2 class="text-3xl font-bold text-amber-500 mb-4 text-center">
+            什麼是「速判」？二元思維的陷阱
+          </h2>
+          <p class="text-lg text-slate-700 mb-8 text-center max-w-4xl mx-auto">
+            「速判」是一種不自覺的思維慣性，習慣用「好/壞」或「喜歡/不喜歡」的二元標籤快速評價一切。這種模式雖然高效，卻會讓我們錯失世界的複雜與美好，導致內心世界的貧瘠。
+          </p>
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h3 class="font-bold text-xl text-sky-800 mb-4">速判的代價</h3>
+              <p class="text-slate-600 mb-6">
+                長期依賴速判，會從四個主要層面侵蝕我們的生活品質與成長潛力。
+              </p>
+              <div class="chart-container h-80 md:h-96">
+                <canvas id="costsChart"></canvas>
+              </div>
+            </div>
+            <div class="text-center p-6 bg-amber-50 rounded-lg">
+              <h3 class="font-bold text-xl text-amber-700 mb-4">
+                生活中的速判場景
+              </h3>
+              <ul class="text-left space-y-4 text-slate-700">
+                <li class="flex items-start">
+                  <span class="text-amber-500 mr-3 text-2xl">👎</span>
+                  <div><strong>環境評價：</strong>「這家餐廳裝潢好土。」</div>
+                </li>
+                <li class="flex items-start">
+                  <span class="text-amber-500 mr-3 text-2xl">👎</span>
+                  <div><strong>外在評判：</strong>「那個人穿得好醜。」</div>
+                </li>
+                <li class="flex items-start">
+                  <span class="text-amber-500 mr-3 text-2xl">👎</span>
+                  <div><strong>人物標籤化：</strong>「他這個人好怪。」</div>
+                </li>
+                <li class="flex items-start">
+                  <span class="text-amber-500 mr-3 text-2xl">👍</span>
+                  <div>
+                    <strong>非理性迷戀：</strong
+                    >「這播客主超聰明，他說什麼都對！」
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="section2" class="card">
+          <h2 class="text-3xl font-bold text-cyan-600 mb-2 text-center">
+            Besser 的哲學藍圖：美好人生的三腳凳
+          </h2>
+          <p class="text-lg text-slate-700 mb-8 text-center max-w-4xl mx-auto">
+            哲學家 Lorraine Besser
+            認為，一個完整而美好的生命，如同穩固的三腳凳，需要三個支點共同支撐。多數人只關注前兩者，卻忽略了最關鍵的第三條腿。
+          </p>
+          <div class="grid md:grid-cols-3 gap-8 text-center">
+            <div class="p-6 bg-cyan-50 rounded-lg">
+              <div class="text-5xl mb-4">😊</div>
+              <h3 class="text-2xl font-bold text-cyan-800">快樂 (Happiness)</h3>
+              <p class="text-slate-600 mt-2">
+                源於愉悅的體驗、享樂與積極的情感。
+              </p>
+            </div>
+            <div class="p-6 bg-cyan-50 rounded-lg">
+              <div class="text-5xl mb-4">🎯</div>
+              <h3 class="text-2xl font-bold text-cyan-800">意義 (Meaning)</h3>
+              <p class="text-slate-600 mt-2">
+                源於使命感與目標，如投身事業或服務社群。
+              </p>
+            </div>
+            <div class="p-6 bg-yellow-50 border-4 border-yellow-400 rounded-lg">
+              <div class="text-5xl mb-4">🧠✨</div>
+              <h3 class="text-2xl font-bold text-yellow-800">心理豐富性</h3>
+              <p class="text-slate-600 mt-2">
+                <strong>(Psychological Richness)</strong
+                ><br />源於新穎、複雜、具挑戰性的經驗，是打破常規、拓展視野的關鍵。
+              </p>
+            </div>
+          </div>
+          <div class="mt-10">
+            <h3 class="font-bold text-xl text-sky-800 mb-4 text-center">
+              美好人生的構成
+            </h3>
+            <div class="chart-container h-64 md:h-80">
+              <canvas id="goodLifeChart"></canvas>
+            </div>
+            <p class="text-center text-slate-600 mt-4">
+              一個心理富饒的人，其人生體驗更趨向完整與平衡，而非僅僅追求單一的快樂或意義。
+            </p>
+          </div>
+        </section>
+
+        <section id="section3" class="card">
+          <h2 class="text-3xl font-bold text-rose-600 mb-4 text-center">
+            「速判」的心理學根源：快思 vs. 慢想
+          </h2>
+          <p class="text-lg text-slate-700 mb-8 text-center max-w-4xl mx-auto">
+            諾貝爾獎得主康納曼的「雙系統理論」揭示了速判的成因。我們的大腦有兩種運作模式：「系統一」的直覺快思和「系統二」的邏輯慢想。「速判」正是系統一的自動化產物。
+          </p>
+          <div class="flex flex-col md:flex-row gap-8">
+            <div
+              class="flex-1 p-6 bg-rose-50 rounded-lg border-l-4 border-rose-500"
+            >
+              <h3 class="text-2xl font-bold text-rose-800 mb-3">
+                系統一：快思 (System 1)
+              </h3>
+              <p class="font-bold mb-3">快速、自動、情緒化、不費力</p>
+              <ul class="list-disc list-inside text-slate-700 space-y-2">
+                <li>直覺反應的來源</li>
+                <li>依賴經驗和刻板印象</li>
+                <li>「速判」的主要驅動者</li>
+                <li>例子：「這很糟！」</li>
+              </ul>
+            </div>
+            <div
+              class="flex-1 p-6 bg-sky-50 rounded-lg border-l-4 border-sky-500"
+            >
+              <h3 class="text-2xl font-bold text-sky-800 mb-3">
+                系統二：慢想 (System 2)
+              </h3>
+              <p class="font-bold mb-3">緩慢、審慎、邏輯化、需專注</p>
+              <ul class="list-disc list-inside text-slate-700 space-y-2">
+                <li>負責複雜分析與自我控制</li>
+                <li>本質上比較「懶惰」</li>
+                <li>需要被刻意啟動</li>
+                <li>例子：「這件事有趣在哪？」</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="section4" class="card">
+          <h2 class="text-3xl font-bold text-teal-600 mb-4 text-center">
+            實踐指南：從「好不好」到「有不有趣」
+          </h2>
+          <p class="text-lg text-slate-700 mb-8 text-center max-w-4xl mx-auto">
+            我們無法根除速判，但可以學會「管理」它。關鍵在於有意識地轉換內在提問，從而啟動系統二，打破慣性思維，培養一種擁抱心理豐富性的「有趣心態」。
+          </p>
+
+          <h3 class="text-2xl font-bold text-center text-sky-800 mb-6">
+            核心練習：三步驟攔截速判
+          </h3>
+          <div
+            class="flex flex-col md:flex-row justify-center items-center gap-4"
+          >
+            <div class="flowchart-step">1. 覺察<br />(Awareness)</div>
+            <div class="flowchart-arrow">→</div>
+            <div class="flowchart-step">2. 暫停<br />(Pause)</div>
+            <div class="flowchart-arrow">→</div>
+            <div
+              class="flowchart-step bg-amber-400 border-amber-600 text-amber-900"
+            >
+              3. 提問<br />「這件事有什麼有趣的點？」
+            </div>
+          </div>
+
+          <div class="mt-12 grid md:grid-cols-3 gap-8">
+            <div class="text-center">
+              <div class="text-5xl mb-4">🧘</div>
+              <h4 class="text-xl font-bold text-teal-700 mb-2">
+                練習非評價性覺察
+              </h4>
+              <p class="text-slate-600">
+                僅僅是「注意」當下的發生，不立即貼上「好/壞」標籤，為心靈創造緩衝空間。
+              </p>
+            </div>
+            <div class="text-center">
+              <div class="text-5xl mb-4">🚀</div>
+              <h4 class="text-xl font-bold text-teal-700 mb-2">
+                擁抱新穎與挑戰
+              </h4>
+              <p class="text-slate-600">
+                主動走出舒適圈，探索未知，為大腦提供需要動用「慢想」的環境。
+              </p>
+            </div>
+            <div class="text-center">
+              <div class="text-5xl mb-4">💡</div>
+              <h4 class="text-xl font-bold text-teal-700 mb-2">
+                善用好奇心與創造力
+              </h4>
+              <p class="text-slate-600">
+                即使在單調環境中，也能向內尋求，用想像力和好奇心創造有趣的內在體驗。
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="text-center mt-12 py-8 border-t border-slate-300">
+        <p class="text-slate-500">
+          本資訊圖表內容根據 Lorraine Besser
+          教授的哲學與相關心理學研究綜合而成。
+        </p>
+        <p class="text-sm text-slate-400 mt-2">
+          設計與開發：Canvas Infographics
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      const wrapLabel = (label) => {
+        const maxLength = 16;
+        if (label.length <= maxLength) {
+          return label;
+        }
+        const words = label.split(" ");
+        const lines = [];
+        let currentLine = "";
+        for (const word of words) {
+          if ((currentLine + " " + word).trim().length > maxLength) {
+            lines.push(currentLine.trim());
+            currentLine = word;
+          } else {
+            currentLine = (currentLine + " " + word).trim();
+          }
+        }
+        if (currentLine) {
+          lines.push(currentLine.trim());
+        }
+        return lines;
+      };
+
+      const tooltipTitleCallback = (tooltipItems) => {
+        const item = tooltipItems[0];
+        let label = item.chart.data.labels[item.dataIndex];
+        if (Array.isArray(label)) {
+          return label.join(" ");
+        } else {
+          return label;
+        }
+      };
+
+      const sharedChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: {
+              font: {
+                family: "'Noto Sans TC', sans-serif",
+                size: 14,
+              },
+            },
+          },
+          tooltip: {
+            titleFont: {
+              family: "'Noto Sans TC', sans-serif",
+            },
+            bodyFont: {
+              family: "'Noto Sans TC', sans-serif",
+            },
+            callbacks: {
+              title: tooltipTitleCallback,
+            },
+          },
+        },
+      };
+
+      const colorPalette = {
+        sky: "#075985",
+        amber: "#f59e0b",
+        rose: "#e11d48",
+        cyan: "#0891b2",
+        teal: "#0d9488",
+        slate: "#475569",
+      };
+
+      const costsChartCtx = document
+        .getElementById("costsChart")
+        .getContext("2d");
+      new Chart(costsChartCtx, {
+        type: "bar",
+        data: {
+          labels: [
+            "智識停滯 好奇心喪失",
+            "內在世界萎縮 自我設限",
+            "人際關係的淺薄化",
+            "阻礙個人學習與成長",
+          ].map(wrapLabel),
+          datasets: [
+            {
+              label: "負面影響程度",
+              data: [90, 85, 80, 75],
+              backgroundColor: [
+                colorPalette.rose,
+                colorPalette.amber,
+                colorPalette.sky,
+                colorPalette.teal,
+              ],
+              borderColor: "#ffffff",
+              borderWidth: 2,
+            },
+          ],
+        },
+        options: {
+          ...sharedChartOptions,
+          indexAxis: "y",
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: {
+                display: false,
+              },
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              grid: {
+                display: false,
+              },
+              ticks: {
+                font: {
+                  family: "'Noto Sans TC', sans-serif",
+                  size: 14,
+                },
+              },
+            },
+          },
+          plugins: {
+            ...sharedChartOptions.plugins,
+            legend: {
+              display: false,
+            },
+          },
+        },
+      });
+
+      const goodLifeChartCtx = document
+        .getElementById("goodLifeChart")
+        .getContext("2d");
+      new Chart(goodLifeChartCtx, {
+        type: "doughnut",
+        data: {
+          labels: ["快樂", "意義", "心理豐富性"],
+          datasets: [
+            {
+              data: [30, 30, 40],
+              backgroundColor: [
+                colorPalette.cyan,
+                colorPalette.sky,
+                colorPalette.amber,
+              ],
+              hoverOffset: 4,
+              borderColor: "#ffffff",
+              borderWidth: 4,
+            },
+          ],
+        },
+        options: {
+          ...sharedChartOptions,
+          cutout: "60%",
+        },
+      });
+    </script>
+  </body>
+</html>

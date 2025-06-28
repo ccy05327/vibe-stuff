@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Evaluative Mind: An Infographic on Snap Judgments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 300px;
+        max-height: 40vh;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 350px;
+        }
+      }
+      .flow-arrow::after {
+        content: "▼";
+        font-size: 2rem;
+        color: #ffd166;
+        text-align: center;
+        display: block;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+    </style>
+  </head>
+  <body class="text-slate-800">
+    <header class="bg-[#073B4C] text-white p-8 text-center">
+      <h1 class="text-4xl md:text-6xl font-black tracking-tight">
+        THE EVALUATIVE MIND
+      </h1>
+      <p class="mt-2 text-lg md:text-xl text-[#118AB2]">
+        Why Your Snap Judgments Are Limiting You & How to Reclaim a Richer Life
+      </p>
+    </header>
+
+    <main class="p-4 md:p-8">
+      <section id="intro" class="max-w-4xl mx-auto text-center my-12">
+        <div class="bg-white rounded-lg shadow-xl p-8">
+          <p class="text-2xl font-bold text-[#FF6B6B]">In just</p>
+          <p class="text-8xl md:text-9xl font-black text-[#073B4C] my-4">
+            1/10th
+          </p>
+          <p class="text-2xl font-bold text-[#FF6B6B]">
+            of a second, your brain forms a first impression.
+          </p>
+          <p class="mt-6 text-slate-600 max-w-2xl mx-auto">
+            This incredible speed is a legacy of our evolutionary past, but in
+            the modern world, this habit of "snap judgment" can lock us into a
+            cycle of biased thinking. This infographic explores the phenomenon,
+            its hidden costs, and how to shift from a judgmental mindset to a
+            curious one.
+          </p>
+        </div>
+      </section>
+
+      <section id="philosophy" class="max-w-6xl mx-auto my-16">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl md:text-4xl font-bold text-[#073B4C]">
+            The Philosophical Cost: The Missing Pillar of a Good Life
+          </h2>
+          <p class="mt-2 text-slate-500 max-w-3xl mx-auto">
+            Philosopher Lorraine Besser suggests a "good life" rests on three
+            pillars. While we often chase the first two, we neglect the third,
+            leaving our lives feeling unstable and "psychologically
+            impoverished."
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="font-bold text-xl text-center text-[#118AB2]">
+              The Neglected Pillar
+            </h3>
+            <div class="chart-container">
+              <canvas id="goodLifeChart"></canvas>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div
+              class="bg-white rounded-lg shadow-md p-6 border-l-4 border-[#FFD166]"
+            >
+              <h4 class="font-bold text-lg">1. Happiness</h4>
+              <p class="text-slate-600">
+                The pursuit of pleasure, positive emotions, and enjoyment.
+              </p>
+            </div>
+            <div
+              class="bg-white rounded-lg shadow-md p-6 border-l-4 border-[#06D6A0]"
+            >
+              <h4 class="font-bold text-lg">2. Meaning</h4>
+              <p class="text-slate-600">
+                Finding a sense of purpose and contribution to something larger
+                than oneself.
+              </p>
+            </div>
+            <div
+              class="bg-[#073B4C] text-white rounded-lg shadow-xl p-6 border-l-4 border-[#FF6B6B]"
+            >
+              <h4 class="font-bold text-lg">3. Psychological Richness</h4>
+              <p class="text-slate-200">
+                The crucial, often overlooked pillar built from novel, complex,
+                and perspective-shifting experiences. It's about pursuing "the
+                interesting," not just "the good."
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="biases" class="max-w-6xl mx-auto my-16">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl md:text-4xl font-bold text-[#073B4C]">
+            The Brain's Flawed Shortcuts: How Snap Judgments Form
+          </h2>
+          <p class="mt-2 text-slate-500 max-w-3xl mx-auto">
+            Our brains use mental shortcuts (heuristics) to make decisions
+            quickly. When misapplied, these lead to systematic errors in
+            thinking known as cognitive biases—the building blocks of snap
+            judgments.
+          </p>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <h3 class="font-bold text-xl text-center mb-4 text-[#118AB2]">
+            The Most Common Cognitive Biases
+          </h3>
+          <div class="chart-container h-96 md:h-[500px] max-h-[500px]">
+            <canvas id="biasChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section id="consequences" class="max-w-6xl mx-auto my-16">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl md:text-4xl font-bold text-[#073B4C]">
+            The Ripple Effect: Real-World Consequences
+          </h2>
+          <p class="mt-2 text-slate-500 max-w-3xl mx-auto">
+            These seemingly harmless mental errors have profound and measurable
+            impacts on hiring, relationships, and even our democracy.
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+            <h3 class="font-bold text-xl text-[#FF6B6B] mb-4">
+              Bias in Hiring
+            </h3>
+            <p class="text-slate-600 mb-6">
+              Identical resumes with stereotypically white-sounding names
+              receive dramatically more callbacks than those with African
+              American-sounding names.
+            </p>
+            <div class="flex justify-center items-end space-x-8">
+              <div class="text-center">
+                <p class="text-6xl text-[#073B4C]">👤</p>
+                <p class="font-bold">"Emily"</p>
+                <div class="bg-[#06D6A0] h-32 w-16 mx-auto mt-2 rounded"></div>
+                <p class="font-bold text-xl mt-2">~15%</p>
+                <p class="text-sm text-slate-500">Callback Rate</p>
+              </div>
+              <div class="text-center">
+                <p class="text-6xl text-[#073B4C]">👤</p>
+                <p class="font-bold">"Lakisha"</p>
+                <div class="bg-[#FF6B6B] h-20 w-16 mx-auto mt-2 rounded"></div>
+                <p class="font-bold text-xl mt-2">~10%</p>
+                <p class="text-sm text-slate-500">Callback Rate</p>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 mt-4">
+              Based on findings from Bertrand & Mullainathan (2004).
+            </p>
+          </div>
+          <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+            <h3 class="font-bold text-xl text-[#118AB2] mb-4">
+              Bias in Politics
+            </h3>
+            <p class="text-slate-600 mb-6">
+              Voters' split-second judgments of a political candidate's facial
+              "competence" can predict election outcomes with alarming accuracy.
+            </p>
+            <div class="flex flex-col items-center justify-center h-full">
+              <p class="text-6xl font-black text-[#118AB2]">70%</p>
+              <p class="text-slate-600 font-bold max-w-xs mx-auto">
+                of U.S. Senate race outcomes were correctly predicted by these
+                snap judgments.
+              </p>
+              <p class="text-xs text-slate-400 mt-4">
+                Based on findings from Todorov et al. (2005).
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cycle" class="max-w-4xl mx-auto my-16 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-[#073B4C]">
+          The Vicious Cycle of an Impoverished Mind
+        </h2>
+        <p class="mt-2 text-slate-500 max-w-3xl mx-auto">
+          A mind that defaults to snap judgments creates a self-perpetuating
+          loop, actively resisting the very experiences that would make it
+          richer.
+        </p>
+        <div class="mt-8">
+          <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="font-bold text-lg text-[#FF6B6B]">
+              1. Impoverished Experience
+            </h3>
+            <p class="text-slate-600">
+              A life with few novel or complex experiences creates a narrow
+              internal "database."
+            </p>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="font-bold text-lg text-[#FFD166]">
+              2. Increased Reliance on Bias
+            </h3>
+            <p class="text-slate-600">
+              Lacking rich personal data, the mind defaults to crude stereotypes
+              and heuristics to interpret new situations.
+            </p>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="font-bold text-lg text-[#118AB2]">
+              3. More Snap Judgments
+            </h3>
+            <p class="text-slate-600">
+              This reliance leads to more frequent, rapid, and binary judgments
+              about the world.
+            </p>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="bg-[#073B4C] text-white rounded-lg shadow-xl p-6">
+            <h3 class="font-bold text-lg text-[#06D6A0]">
+              4. Curiosity Foreclosed
+            </h3>
+            <p class="text-slate-200">
+              By labeling an experience "good" or "bad," curiosity is shut down,
+              preventing the very engagement that leads to psychological
+              richness.
+            </p>
+            <p class="text-2xl mt-2">🔄</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="solution" class="max-w-6xl mx-auto my-16">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl md:text-4xl font-bold text-[#073B4C]">
+            Rewiring Your Mind: From Judgment to Curiosity
+          </h2>
+          <p class="mt-2 text-slate-500 max-w-3xl mx-auto">
+            Overcoming this habit requires a conscious shift. It's about
+            replacing an old question with a new, more powerful one.
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div
+            class="bg-white rounded-lg shadow-lg p-8 border-t-8 border-[#FF6B6B]"
+          >
+            <h3 class="text-2xl font-bold text-center">
+              The Evaluative Mindset
+            </h3>
+            <p class="text-center text-4xl my-8">🤔</p>
+            <p class="text-center text-2xl font-bold text-[#FF6B6B] italic">
+              "Is this good or bad?"
+            </p>
+            <ul class="mt-8 space-y-3 text-slate-600 list-disc list-inside">
+              <li><strong>Goal:</strong> To categorize & dismiss.</li>
+              <li>
+                <strong>Response:</strong> Views novelty as a threat or
+                annoyance.
+              </li>
+              <li>
+                <strong>Outcome:</strong> Psychological Impoverishment. A
+                narrow, static inner world.
+              </li>
+            </ul>
+          </div>
+          <div
+            class="bg-[#073B4C] text-white rounded-lg shadow-xl p-8 border-t-8 border-[#06D6A0]"
+          >
+            <h3 class="text-2xl font-bold text-center">
+              The "Interesting" Mindset
+            </h3>
+            <p class="text-center text-4xl my-8">🧐</p>
+            <p class="text-center text-2xl font-bold text-[#06D6A0] italic">
+              "Is this interesting?"
+            </p>
+            <ul class="mt-8 space-y-3 text-slate-200 list-disc list-inside">
+              <li><strong>Goal:</strong> To engage & explore.</li>
+              <li>
+                <strong>Response:</strong> Views novelty as an opportunity for
+                growth.
+              </li>
+              <li>
+                <strong>Outcome:</strong> Psychological Richness. A dynamic,
+                complex inner world.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="mt-12 bg-white rounded-lg shadow-lg p-6">
+          <h3 class="text-xl font-bold text-center text-[#118AB2]">
+            Practical Steps to Cultivate Curiosity
+          </h3>
+          <ol
+            class="mt-4 space-y-2 text-slate-700 list-decimal list-inside max-w-2xl mx-auto"
+          >
+            <li>
+              <strong>Slow Down:</strong> Before judging, pause and take a
+              breath. Give your logical mind a chance to catch up.
+            </li>
+            <li>
+              <strong>Practice Perspective-Taking:</strong> Actively ask, "What
+              might be the situational factors here? How would I feel in their
+              position?"
+            </li>
+            <li>
+              <strong>Seek Disconfirming Evidence:</strong> Instead of proving
+              yourself right, challenge yourself. Ask, "What evidence might
+              prove me wrong?"
+            </li>
+            <li>
+              <strong>Focus on the Individual:</strong> Consciously look for
+              specific details about a person or situation, rather than relying
+              on group stereotypes.
+            </li>
+          </ol>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-[#073B4C] text-white p-6 text-center text-sm">
+      <p>
+        Infographic created based on the philosophical work of Lorraine Besser
+        and established psychological research on cognitive bias.
+      </p>
+      <p class="text-slate-400 mt-1">
+        Design and Visualization by Canvas Infographics.
+      </p>
+    </footer>
+
+    <script>
+      function wrapLabel(str, maxLen) {
+        if (str.length <= maxLen) {
+          return str;
+        }
+        const words = str.split(" ");
+        const lines = [];
+        let currentLine = "";
+        for (const word of words) {
+          if (
+            (currentLine + " " + word).trim().length > maxLen &&
+            currentLine.length > 0
+          ) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else {
+            currentLine = (currentLine + " " + word).trim();
+          }
+        }
+        if (currentLine.length > 0) {
+          lines.push(currentLine);
+        }
+        return lines;
+      }
+
+      const tooltipTitleCallback = function (tooltipItems) {
+        const item = tooltipItems[0];
+        let label = item.chart.data.labels[item.dataIndex];
+        if (Array.isArray(label)) {
+          return label.join(" ");
+        }
+        return label;
+      };
+
+      const sharedChartOptions = {
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: "#073B4C",
+              font: {
+                size: 14,
+              },
+            },
+          },
+          tooltip: {
+            callbacks: {
+              title: tooltipTitleCallback,
+            },
+            backgroundColor: "#073B4C",
+            titleFont: {
+              size: 16,
+            },
+            bodyFont: {
+              size: 14,
+            },
+            padding: 12,
+            cornerRadius: 4,
+          },
+        },
+      };
+
+      const goodLifeCtx = document
+        .getElementById("goodLifeChart")
+        .getContext("2d");
+      new Chart(goodLifeCtx, {
+        type: "doughnut",
+        data: {
+          labels: [
+            "Pursuit of Happiness",
+            "Pursuit of Meaning",
+            "Neglected Richness",
+          ],
+          datasets: [
+            {
+              label: "Focus on Life Pillars",
+              data: [45, 40, 15],
+              backgroundColor: ["#FFD166", "#06D6A0", "#FF6B6B"],
+              borderColor: "#ffffff",
+              borderWidth: 4,
+              hoverOffset: 8,
+            },
+          ],
+        },
+        options: { ...sharedChartOptions },
+      });
+
+      const biasCtx = document.getElementById("biasChart").getContext("2d");
+      const biasLabels = [
+        "Confirmation Bias (Seeking confirming evidence)",
+        "Fundamental Attribution Error (Blaming character over situation)",
+        "Halo / Horn Effect (One trait colors all others)",
+        "Availability Heuristic (Judging by what comes to mind easily)",
+        "Implicit Stereotyping (Unconscious associations)",
+      ];
+      new Chart(biasCtx, {
+        type: "bar",
+        data: {
+          labels: biasLabels.map((label) => wrapLabel(label, 25)),
+          datasets: [
+            {
+              label: "Relative Impact on Daily Judgments",
+              data: [90, 85, 75, 70, 88],
+              backgroundColor: [
+                "#FF6B6B",
+                "#FFD166",
+                "#06D6A0",
+                "#118AB2",
+                "#073B4C",
+              ],
+              borderRadius: 4,
+            },
+          ],
+        },
+        options: {
+          ...sharedChartOptions,
+          indexAxis: "y",
+          scales: {
+            y: {
+              ticks: { color: "#073B4C", font: { size: 12 } },
+              grid: { display: false },
+            },
+            x: {
+              ticks: { color: "#073B4C" },
+              grid: { color: "#e2e8f0" },
+            },
+          },
+          plugins: {
+            ...sharedChartOptions.plugins,
+            legend: { display: false },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
