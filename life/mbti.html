@@ -310,6 +310,10 @@
         <h2 class="text-2xl font-bold mb-8 text-center text-gray-700">
           Personality Timeline
         </h2>
+        <div
+          id="timeline-stats"
+          class="text-center text-sm text-gray-600 mb-6"
+        ></div>
         <div class="timeline" id="mbtiTimeline">
           <!-- Timeline items will be generated here by JavaScript -->
         </div>
@@ -643,13 +647,14 @@
       function populateContent() {
         const timelineContainer = document.getElementById("mbtiTimeline");
         const tableBody = document.getElementById("mbtiTableBody");
+        const timelineStats = document.getElementById("timeline-stats");
         timelineContainer.innerHTML = "";
         tableBody.innerHTML = "";
+        if (timelineStats) timelineStats.innerHTML = "";
 
         // Reverse order: newest at top
         const reversedData = [...mbtiData].slice().reverse();
         let lastType = reversedData[0]?.type;
-        let lastDate = null;
         reversedData.forEach((item, index) => {
           const side = index % 2 === 0 ? "left" : "right";
           let typeChanged = false;
@@ -657,6 +662,17 @@
             typeChanged = true;
           }
           lastType = item.type;
+          // Calculate days between tests for timeline (compare to next item in reversedData)
+          let daysBetween = "—";
+          if (index < reversedData.length - 1) {
+            const thisDate = new Date(item.date);
+            const nextDate = new Date(reversedData[index + 1].date);
+            daysBetween = getDaysBetween(thisDate, nextDate);
+          }
+          let daysBetweenText = "";
+          if (daysBetween !== "—") {
+            daysBetweenText = `<span class=\"text-orange-500\">${daysBetween}</span> <span class=\"text-black\">days since last test</span>`;
+          }
           const timelineItem = `
                 <div class="timeline-container ${side}">
                     <div class="bg-white p-4 rounded-lg shadow-md">
@@ -667,6 +683,7 @@
                           .split("(")[0]
                           .trim()}</h4>
                         <small class="text-gray-500">${item.date}</small>
+                        <div class="text-xs mt-1">${daysBetweenText}</div>
                     </div>
                 </div>`;
           timelineContainer.innerHTML += timelineItem;
@@ -702,16 +719,6 @@
               item.identity.trait
             )}`;
           }
-          // Calculate days between tests
-          let daysBetween = "—";
-          const thisDate = new Date(item.date);
-          if (lastDate) {
-            const diff = Math.round(
-              (thisDate - lastDate) / (1000 * 60 * 60 * 24)
-            );
-            daysBetween = diff;
-          }
-          lastDate = thisDate;
           const tableRow = `
                 <tr class="hover:bg-gray-50">
                     <td class="p-1 text-gray-600">${item.date}</td>
@@ -725,6 +732,22 @@
                 </tr>`;
           tableBody.innerHTML += tableRow;
         });
+
+        // Calculate stats for days between
+        const daysBetweenArr = [];
+        for (let i = 0; i < reversedData.length - 1; i++) {
+          const d1 = new Date(reversedData[i].date);
+          const d2 = new Date(reversedData[i + 1].date);
+          daysBetweenArr.push(getDaysBetween(d1, d2));
+        }
+        if (timelineStats && daysBetweenArr.length > 0) {
+          const max = Math.max(...daysBetweenArr);
+          const min = Math.min(...daysBetweenArr);
+          const avg = Math.round(
+            daysBetweenArr.reduce((a, b) => a + b, 0) / daysBetweenArr.length
+          );
+          timelineStats.innerHTML = `Longest gap: <span class="text-orange-500 font-semibold">${max}</span> days &nbsp; | &nbsp; Shortest: <span class="text-orange-500 font-semibold">${min}</span> days &nbsp; | &nbsp; Average: <span class="text-orange-500 font-semibold">${avg}</span> days`;
+        }
       }
 
       // --- INITIALIZATION ---
@@ -742,6 +765,11 @@
           populateContent();
         }, 150);
       });
+
+      // Helper to get absolute days between two dates
+      function getDaysBetween(date1, date2) {
+        return Math.abs(Math.round((date1 - date2) / (1000 * 60 * 60 * 24)));
+      }
     </script>
   </body>
 </html>
