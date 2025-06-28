@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My MBTI Journey</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,266 +11,548 @@
     <!-- Chart.js Zoom Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
     <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        /* Custom styles for the timeline and general aesthetics */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Tailwind gray-50 */
-        }
-        /* Timeline container */
-        .timeline {
-            position: relative;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        /* The vertical line in the middle of the timeline */
+      /* Custom styles for the timeline and general aesthetics */
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc; /* Tailwind gray-50 */
+      }
+      /* Timeline container */
+      .timeline {
+        position: relative;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      /* The vertical line in the middle of the timeline */
+      .timeline::after {
+        content: "";
+        position: absolute;
+        width: 6px;
+        background-color: #e5e7eb; /* Tailwind gray-200 */
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        margin-left: -3px;
+        border-radius: 3px;
+      }
+      /* Container for each timeline item */
+      .timeline-container {
+        padding: 10px 40px;
+        position: relative;
+        background-color: inherit;
+        width: 50%;
+      }
+      /* The circles on the timeline */
+      .timeline-container::after {
+        content: "";
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        right: -12.5px;
+        background-color: white;
+        border: 4px solid #3b82f6; /* Tailwind blue-500 */
+        top: 22px;
+        border-radius: 50%;
+        z-index: 1;
+      }
+      /* Position the containers */
+      .left {
+        left: 0;
+      }
+      .right {
+        left: 50%;
+      }
+      /* Add arrows to the left container (pointing right) */
+      .left::before {
+        content: " ";
+        height: 0;
+        position: absolute;
+        top: 28px;
+        width: 0;
+        z-index: 1;
+        right: 30px;
+        border: medium solid white;
+        border-width: 10px 0 10px 10px;
+        border-color: transparent transparent transparent white;
+      }
+      /* Add arrows to the right container (pointing left) */
+      .right::before {
+        content: " ";
+        height: 0;
+        position: absolute;
+        top: 28px;
+        width: 0;
+        z-index: 1;
+        left: 30px;
+        border: medium solid white;
+        border-width: 10px 10px 10px 0;
+        border-color: transparent white transparent transparent;
+      }
+      /* Fix the circle for right containers */
+      .right::after {
+        left: -12.5px;
+      }
+      /* Custom styling for filter checkboxes and radio buttons */
+      .filter-input:checked {
+        background-color: currentColor;
+      }
+      /* Media queries for responsive timeline on smaller screens */
+      @media screen and (max-width: 768px) {
         .timeline::after {
-            content: '';
-            position: absolute;
-            width: 6px;
-            background-color: #e5e7eb; /* Tailwind gray-200 */
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            margin-left: -3px;
-            border-radius: 3px;
+          left: 31px;
         }
-        /* Container for each timeline item */
         .timeline-container {
-            padding: 10px 40px;
-            position: relative;
-            background-color: inherit;
-            width: 50%;
+          width: 100%;
+          padding-left: 70px;
+          padding-right: 25px;
+          margin-bottom: 30px;
         }
-        /* The circles on the timeline */
-        .timeline-container::after {
-            content: '';
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            right: -12.5px;
-            background-color: white;
-            border: 4px solid #3b82f6; /* Tailwind blue-500 */
-            top: 22px;
-            border-radius: 50%;
-            z-index: 1;
+        .timeline-container::before {
+          left: 60px;
+          border: medium solid white;
+          border-width: 10px 10px 10px 0;
+          border-color: transparent white transparent transparent;
         }
-        /* Position the containers */
-        .left {
-            left: 0;
+        .left::after,
+        .right::after {
+          left: 18.5px;
         }
         .right {
-            left: 50%;
+          left: 0%;
         }
-        /* Add arrows to the left container (pointing right) */
-        .left::before {
-            content: " ";
-            height: 0;
-            position: absolute;
-            top: 28px;
-            width: 0;
-            z-index: 1;
-            right: 30px;
-            border: medium solid white;
-            border-width: 10px 0 10px 10px;
-            border-color: transparent transparent transparent white;
+        .timeline {
+          padding-left: 0;
+          padding-right: 0;
         }
-        /* Add arrows to the right container (pointing left) */
-        .right::before {
-            content: " ";
-            height: 0;
-            position: absolute;
-            top: 28px;
-            width: 0;
-            z-index: 1;
-            left: 30px;
-            border: medium solid white;
-            border-width: 10px 10px 10px 0;
-            border-color: transparent white transparent transparent;
+      }
+      /* --- MOBILE OPTIMIZATION --- */
+      @media screen and (max-width: 640px) {
+        html {
+          font-size: 15px;
         }
-        /* Fix the circle for right containers */
-        .right::after {
-            left: -12.5px;
+        .container {
+          padding: 0.5rem !important;
         }
-        /* Custom styling for filter checkboxes and radio buttons */
-        .filter-input:checked {
-            background-color: currentColor;
+        header {
+          margin-bottom: 2rem;
         }
-        /* Media queries for responsive timeline on smaller screens */
-        @media screen and (max-width: 768px) {
-            .timeline::after {
-                left: 31px;
-            }
-            .timeline-container {
-                width: 100%;
-                padding-left: 70px;
-                padding-right: 25px;
-            }
-            .timeline-container::before {
-                left: 60px;
-                border: medium solid white;
-                border-width: 10px 10px 10px 0;
-                border-color: transparent white transparent transparent;
-            }
-            .left::after, .right::after {
-                left: 18.5px;
-            }
-            .right {
-                left: 0%;
-            }
+        section {
+          margin-bottom: 2.5rem;
+          padding: 0.5rem !important;
         }
+        .timeline {
+          max-width: 100vw;
+          padding: 0;
+        }
+        .timeline-container {
+          padding: 0 0 0 50px;
+          margin-bottom: 24px;
+        }
+        .timeline-container .bg-white {
+          padding: 0.75rem;
+        }
+        .timeline-container::before {
+          left: 40px;
+        }
+        .timeline-container::after {
+          left: 8.5px;
+          width: 18px;
+          height: 18px;
+          top: 18px;
+        }
+        .timeline::after {
+          left: 21px;
+          width: 4px;
+        }
+        .timeline-container h3,
+        .timeline-container h4 {
+          font-size: 1rem;
+        }
+        .timeline-container small {
+          font-size: 0.85rem;
+        }
+        /* Chart controls grid */
+        #chart-controls {
+          grid-template-columns: 1fr !important;
+          gap: 0.5rem !important;
+        }
+        /* Chart area */
+        .relative.h-\[300px\] {
+          height: 220px !important;
+        }
+        .relative.h-\[300px\].md\:h-\[450px\] {
+          height: 220px !important;
+        }
+        /* Table scroll */
+        .overflow-x-auto {
+          -webkit-overflow-scrolling: touch;
+        }
+        table {
+          font-size: 0.95rem;
+          min-width: 600px;
+        }
+        th,
+        td {
+          padding: 0.5rem !important;
+        }
+        /* Section headings */
+        h1,
+        h2 {
+          font-size: 1.3rem !important;
+        }
+        /* Chart tip */
+        .text-sm.text-gray-500.mt-4.text-center p {
+          font-size: 0.95rem;
+        }
+      }
+      @media screen and (max-width: 400px) {
+        html {
+          font-size: 13px;
+        }
+        .timeline-container {
+          padding-left: 30px;
+        }
+        .timeline-container::before {
+          left: 20px;
+        }
+        .timeline-container::after {
+          left: -1.5px;
+        }
+        .timeline::after {
+          left: 11px;
+        }
+      }
+      /* Highlight for MBTI type change in timeline */
+      .type-changed {
+        color: #f59e42 !important; /* subtle orange highlight */
+        transition: color 0.2s;
+      }
     </style>
-</head>
-<body class="text-gray-800">
-
+  </head>
+  <body class="text-gray-800">
     <div class="container mx-auto p-4 md:p-8">
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">My MBTI Journey</h1>
-            <p class="text-lg text-gray-600 mt-2">A visual history of personality type evolution.</p>
-        </header>
+      <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+          My MBTI Journey
+        </h1>
+        <p class="text-lg text-gray-600 mt-2">
+          A visual history of personality type evolution.
+        </p>
+      </header>
 
-        <!-- Section 1: Trait Progression Chart -->
-        <section class="mb-16 bg-white p-6 rounded-2xl shadow-lg">
-            <h2 class="text-2xl font-bold mb-2 text-center text-gray-700">Trait Progression Chart</h2>
-            <p class="text-center text-gray-500 mb-6">Select which traits to display on the chart:</p>
-            
-            <!-- NEW: Chart Filters/Controls -->
-            <div id="chart-controls" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
-                <!-- Controls will be generated here by JavaScript -->
-            </div>
+      <!-- Section 1: Trait Progression Chart -->
+      <section class="mb-16 bg-white p-6 rounded-2xl shadow-lg">
+        <h2 class="text-2xl font-bold mb-2 text-center text-gray-700">
+          Trait Progression Chart
+        </h2>
+        <p class="text-center text-gray-500 mb-6">
+          Select which traits to display on the chart:
+        </p>
 
-            <div class="relative h-[300px] md:h-[450px]">
-                 <canvas id="mbtiChart"></canvas>
-            </div>
-            <div class="text-sm text-gray-500 mt-4 text-center">
-                <p class="mt-2 font-semibold text-blue-600">
-                    Pro Tip: Scroll with your mouse wheel to zoom in/out. Click and drag to pan left/right.
-                </p>
-            </div>
-        </section>
+        <!-- NEW: Chart Filters/Controls -->
+        <div
+          id="chart-controls"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-6"
+        >
+          <!-- Controls will be generated here by JavaScript -->
+        </div>
 
-        <!-- Section 2: Timeline View -->
-        <section class="mb-16">
-            <h2 class="text-2xl font-bold mb-8 text-center text-gray-700">Personality Timeline</h2>
-            <div class="timeline" id="mbtiTimeline">
-                <!-- Timeline items will be generated here by JavaScript -->
-            </div>
-        </section>
+        <div class="relative h-[300px] md:h-[450px]">
+          <canvas id="mbtiChart"></canvas>
+        </div>
+        <div class="text-sm text-gray-500 mt-4 text-center">
+          <p class="mt-2 font-semibold text-blue-600">
+            Pro Tip: Scroll with your mouse wheel to zoom in/out. Click and drag
+            to pan left/right.
+          </p>
+        </div>
+      </section>
 
-        <!-- Section 3: Detailed Test History Table -->
-        <section>
-            <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">Detailed Test History</h2>
-            <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-lg overflow-x-auto">
-                <table class="w-full text-left text-sm md:text-base">
-                    <thead class="bg-gray-100 text-gray-600 uppercase">
-                        <tr>
-                            <th class="p-3 rounded-l-lg">Personality Type</th>
-                            <th class="p-3">Energy</th>
-                            <th class="p-3">Mind</th>
-                            <th class="p-3">Nature</th>
-                            <th class="p-3">Tactics</th>
-                            <th class="p-3">Identity</th>
-                            <th class="p-3 rounded-r-lg">Test Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="mbtiTableBody" class="divide-y divide-gray-200">
-                       <!-- Table rows will be generated here by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
+      <!-- Section 2: Timeline View -->
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-8 text-center text-gray-700">
+          Personality Timeline
+        </h2>
+        <div class="timeline" id="mbtiTimeline">
+          <!-- Timeline items will be generated here by JavaScript -->
+        </div>
+      </section>
 
+      <!-- Section 3: Detailed Test History Table -->
+      <section>
+        <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">
+          Detailed Test History
+        </h2>
+        <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-lg overflow-x-auto">
+          <table class="w-full text-left text-sm md:text-base">
+            <thead class="bg-gray-100 text-gray-600 uppercase">
+              <tr>
+                <th class="p-3 rounded-l-lg">Personality Type</th>
+                <th class="p-3">Energy</th>
+                <th class="p-3">Mind</th>
+                <th class="p-3">Nature</th>
+                <th class="p-3">Tactics</th>
+                <th class="p-3">Identity</th>
+                <th class="p-3 rounded-r-lg">Test Date</th>
+              </tr>
+            </thead>
+            <tbody id="mbtiTableBody" class="divide-y divide-gray-200">
+              <!-- Table rows will be generated here by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
 
     <script>
-        // --- DATA SOURCE ---
-        const mbtiData = [
-            { type: "Turbulent Logistician (ISTJ-T)", energy: { trait: "Introverted", value: 57 }, mind: { trait: "Observant", value: 76 }, nature: { trait: "Thinking", value: 51 }, tactics: { trait: "Judging", value: 65 }, identity: { trait: "Turbulent", value: 67 }, date: "Jan 21, 2019" },
-            { type: "Assertive Logistician (ISTJ-A)", energy: { trait: "Introverted", value: 78 }, mind: { trait: "Observant", value: 79 }, nature: { trait: "Thinking", value: 82 }, tactics: { trait: "Judging", value: 72 }, identity: { trait: "Assertive", value: 57 }, date: "Sep 15, 2019" },
-            { type: "Turbulent Defender (ISFJ-T)", energy: { trait: "Introverted", value: 82 }, mind: { trait: "Observant", value: 62 }, nature: { trait: "Feeling", value: 67 }, tactics: { trait: "Judging", value: 72 }, identity: { trait: "Turbulent", value: 56 }, date: "Jan 29, 2021" },
-            { type: "Assertive Logistician (ISTJ-A)", energy: { trait: "Introverted", value: 89 }, mind: { trait: "Observant", value: 51 }, nature: { trait: "Thinking", value: 52 }, tactics: { trait: "Judging", value: 58 }, identity: { trait: "Assertive", value: 54 }, date: "Jul 30, 2021" },
-            { type: "Assertive Defender (ISFJ-A)", energy: { trait: "Introverted", value: 79 }, mind: { trait: "Observant", value: 60 }, nature: { trait: "Feeling", value: 53 }, tactics: { trait: "Judging", value: 68 }, identity: { trait: "Assertive", value: 67 }, date: "Jan 28, 2022" },
-            { type: "Assertive Logistician (ISTJ-A)", energy: { trait: "Introverted", value: 55 }, mind: { trait: "Observant", value: 64 }, nature: { trait: "Thinking", value: 55 }, tactics: { trait: "Judging", value: 54 }, identity: { trait: "Assertive", value: 65 }, date: "Sep 22, 2022" },
-            { type: "Turbulent Campaigner (ENFP-T)", energy: { trait: "Extraverted", value: 52 }, mind: { trait: "Intuitive", value: 61 }, nature: { trait: "Feeling", value: 68 }, tactics: { trait: "Prospecting", value: 74 }, identity: { trait: "Turbulent", value: 61 }, date: "Mar 23, 2023" },
-            { type: "Assertive Campaigner (ENFP-A)", energy: { trait: "Extraverted", value: 81 }, mind: { trait: "Intuitive", value: 54 }, nature: { trait: "Feeling", value: 75 }, tactics: { trait: "Prospecting", value: 78 }, identity: { trait: "Assertive", value: 76 }, date: "Sep 24, 2023" },
-            { type: "Assertive Campaigner (ENFP-A)", energy: { trait: "Extraverted", value: 68 }, mind: { trait: "Intuitive", value: 56 }, nature: { trait: "Feeling", value: 75 }, tactics: { trait: "Prospecting", value: 72 }, identity: { trait: "Assertive", value: 56 }, date: "Mar 21, 2024" },
-            { type: "Assertive Campaigner (ENFP-A)", energy: { trait: "Extraverted", value: 72 }, mind: { trait: "Intuitive", value: 79 }, nature: { trait: "Feeling", value: 86 }, tactics: { trait: "Prospecting", value: 75 }, identity: { trait: "Assertive", value: 54 }, date: "Nov 3, 2024" },
-            { type: "Turbulent Mediator (INFP-T)", energy: { trait: "Introverted", value: 56 }, mind: { trait: "Intuitive", value: 71 }, nature: { trait: "Feeling", value: 90 }, tactics: { trait: "Prospecting", value: 83 }, identity: { trait: "Turbulent", value: 68 }, date: "Feb 8, 2025" },
-            { type: "Assertive Campaigner (ENFP-A)", energy: { trait: "Extraverted", value: 56 }, mind: { trait: "Intuitive", value: 66 }, nature: { trait: "Feeling", value: 65 }, tactics: { trait: "Prospecting", value: 83 }, identity: { trait: "Assertive", value: 58 }, date: "Mar 31, 2025" },
-            { type: "Turbulent Mediator (INFP-T)", energy: { trait: "Introverted", value: 68 }, mind: { trait: "Intuitive", value: 71 }, nature: { trait: "Feeling", value: 96 }, tactics: { trait: "Prospecting", value: 83 }, identity: { trait: "Turbulent", value: 54 }, date: "Jun 28, 2025" }
-        ];
+      // --- DATA SOURCE ---
+      const mbtiData = [
+        {
+          type: "Turbulent Logistician (ISTJ-T)",
+          energy: { trait: "Introverted", value: 57 },
+          mind: { trait: "Observant", value: 76 },
+          nature: { trait: "Thinking", value: 51 },
+          tactics: { trait: "Judging", value: 65 },
+          identity: { trait: "Turbulent", value: 67 },
+          date: "Jan 21, 2019",
+        },
+        {
+          type: "Assertive Logistician (ISTJ-A)",
+          energy: { trait: "Introverted", value: 78 },
+          mind: { trait: "Observant", value: 79 },
+          nature: { trait: "Thinking", value: 82 },
+          tactics: { trait: "Judging", value: 72 },
+          identity: { trait: "Assertive", value: 57 },
+          date: "Sep 15, 2019",
+        },
+        {
+          type: "Turbulent Defender (ISFJ-T)",
+          energy: { trait: "Introverted", value: 82 },
+          mind: { trait: "Observant", value: 62 },
+          nature: { trait: "Feeling", value: 67 },
+          tactics: { trait: "Judging", value: 72 },
+          identity: { trait: "Turbulent", value: 56 },
+          date: "Jan 29, 2021",
+        },
+        {
+          type: "Assertive Logistician (ISTJ-A)",
+          energy: { trait: "Introverted", value: 89 },
+          mind: { trait: "Observant", value: 51 },
+          nature: { trait: "Thinking", value: 52 },
+          tactics: { trait: "Judging", value: 58 },
+          identity: { trait: "Assertive", value: 54 },
+          date: "Jul 30, 2021",
+        },
+        {
+          type: "Assertive Defender (ISFJ-A)",
+          energy: { trait: "Introverted", value: 79 },
+          mind: { trait: "Observant", value: 60 },
+          nature: { trait: "Feeling", value: 53 },
+          tactics: { trait: "Judging", value: 68 },
+          identity: { trait: "Assertive", value: 67 },
+          date: "Jan 28, 2022",
+        },
+        {
+          type: "Assertive Logistician (ISTJ-A)",
+          energy: { trait: "Introverted", value: 55 },
+          mind: { trait: "Observant", value: 64 },
+          nature: { trait: "Thinking", value: 55 },
+          tactics: { trait: "Judging", value: 54 },
+          identity: { trait: "Assertive", value: 65 },
+          date: "Sep 22, 2022",
+        },
+        {
+          type: "Turbulent Campaigner (ENFP-T)",
+          energy: { trait: "Extraverted", value: 52 },
+          mind: { trait: "Intuitive", value: 61 },
+          nature: { trait: "Feeling", value: 68 },
+          tactics: { trait: "Prospecting", value: 74 },
+          identity: { trait: "Turbulent", value: 61 },
+          date: "Mar 23, 2023",
+        },
+        {
+          type: "Assertive Campaigner (ENFP-A)",
+          energy: { trait: "Extraverted", value: 81 },
+          mind: { trait: "Intuitive", value: 54 },
+          nature: { trait: "Feeling", value: 75 },
+          tactics: { trait: "Prospecting", value: 78 },
+          identity: { trait: "Assertive", value: 76 },
+          date: "Sep 24, 2023",
+        },
+        {
+          type: "Assertive Campaigner (ENFP-A)",
+          energy: { trait: "Extraverted", value: 68 },
+          mind: { trait: "Intuitive", value: 56 },
+          nature: { trait: "Feeling", value: 75 },
+          tactics: { trait: "Prospecting", value: 72 },
+          identity: { trait: "Assertive", value: 56 },
+          date: "Mar 21, 2024",
+        },
+        {
+          type: "Assertive Campaigner (ENFP-A)",
+          energy: { trait: "Extraverted", value: 72 },
+          mind: { trait: "Intuitive", value: 79 },
+          nature: { trait: "Feeling", value: 86 },
+          tactics: { trait: "Prospecting", value: 75 },
+          identity: { trait: "Assertive", value: 54 },
+          date: "Nov 3, 2024",
+        },
+        {
+          type: "Turbulent Mediator (INFP-T)",
+          energy: { trait: "Introverted", value: 56 },
+          mind: { trait: "Intuitive", value: 71 },
+          nature: { trait: "Feeling", value: 90 },
+          tactics: { trait: "Prospecting", value: 83 },
+          identity: { trait: "Turbulent", value: 68 },
+          date: "Feb 8, 2025",
+        },
+        {
+          type: "Assertive Campaigner (ENFP-A)",
+          energy: { trait: "Extraverted", value: 56 },
+          mind: { trait: "Intuitive", value: 66 },
+          nature: { trait: "Feeling", value: 65 },
+          tactics: { trait: "Prospecting", value: 83 },
+          identity: { trait: "Assertive", value: 58 },
+          date: "Mar 31, 2025",
+        },
+        {
+          type: "Turbulent Mediator (INFP-T)",
+          energy: { trait: "Introverted", value: 68 },
+          mind: { trait: "Intuitive", value: 71 },
+          nature: { trait: "Feeling", value: 96 },
+          tactics: { trait: "Prospecting", value: 83 },
+          identity: { trait: "Turbulent", value: 54 },
+          date: "Jun 28, 2025",
+        },
+      ];
 
-        // --- GLOBAL CHART INSTANCE AND CONFIG ---
-        let mbtiChartInstance = null;
-        const dimensions = [
-            { key: 'energy', name: 'Energy', primary: 'Extraverted', secondary: 'Introverted', primaryAbbr: 'E', secondaryAbbr: 'I', color: '#ef4444' },
-            { key: 'mind', name: 'Mind', primary: 'Intuitive', secondary: 'Observant', primaryAbbr: 'N', secondaryAbbr: 'S', color: '#3b82f6' },
-            { key: 'nature', name: 'Nature', primary: 'Feeling', secondary: 'Thinking', primaryAbbr: 'F', secondaryAbbr: 'T', color: '#22c55e' },
-            { key: 'tactics', name: 'Tactics', primary: 'Prospecting', secondary: 'Judging', primaryAbbr: 'P', secondaryAbbr: 'J', color: '#a855f7' },
-            { key: 'identity', name: 'Identity', primary: 'Assertive', secondary: 'Turbulent', primaryAbbr: 'A', secondaryAbbr: 'T', color: '#f97316' }
-        ];
+      // --- GLOBAL CHART INSTANCE AND CONFIG ---
+      let mbtiChartInstance = null;
+      const dimensions = [
+        {
+          key: "energy",
+          name: "Energy",
+          primary: "Extraverted",
+          secondary: "Introverted",
+          primaryAbbr: "E",
+          secondaryAbbr: "I",
+          color: "#ef4444",
+        },
+        {
+          key: "mind",
+          name: "Mind",
+          primary: "Intuitive",
+          secondary: "Observant",
+          primaryAbbr: "N",
+          secondaryAbbr: "S",
+          color: "#3b82f6",
+        },
+        {
+          key: "nature",
+          name: "Nature",
+          primary: "Feeling",
+          secondary: "Thinking",
+          primaryAbbr: "F",
+          secondaryAbbr: "T",
+          color: "#22c55e",
+        },
+        {
+          key: "tactics",
+          name: "Tactics",
+          primary: "Prospecting",
+          secondary: "Judging",
+          primaryAbbr: "P",
+          secondaryAbbr: "J",
+          color: "#a855f7",
+        },
+        {
+          key: "identity",
+          name: "Identity",
+          primary: "Assertive",
+          secondary: "Turbulent",
+          primaryAbbr: "A",
+          secondaryAbbr: "T",
+          color: "#f97316",
+        },
+      ];
 
-        // --- CHART LOGIC ---
-        function calculateData(dimensionKey, selectedTrait) {
-            const dimension = dimensions.find(d => d.key === dimensionKey);
-            return mbtiData.map(d => {
-                const item = d[dimensionKey];
-                return item.trait === selectedTrait ? item.value : 100 - item.value;
-            });
-        }
-        
-        function setupChart() {
-            const ctx = document.getElementById('mbtiChart').getContext('2d');
-            const labels = mbtiData.map(d => new Date(d.date).toLocaleString('default', { month: 'short', year: 'numeric' }));
+      // --- CHART LOGIC ---
+      function calculateData(dimensionKey, selectedTrait) {
+        const dimension = dimensions.find((d) => d.key === dimensionKey);
+        return mbtiData.map((d) => {
+          const item = d[dimensionKey];
+          return item.trait === selectedTrait ? item.value : 100 - item.value;
+        });
+      }
 
-            const datasets = dimensions.map(dim => {
-                return {
-                    label: `${dim.name} (${dim.primaryAbbr} %)`,
-                    data: calculateData(dim.key, dim.primary),
-                    borderColor: dim.color,
-                    backgroundColor: `${dim.color}33`,
-                    tension: 0.1,
-                    borderWidth: 2
-                };
-            });
+      function setupChart() {
+        const ctx = document.getElementById("mbtiChart").getContext("2d");
+        const labels = mbtiData.map((d) =>
+          new Date(d.date).toLocaleString("default", {
+            month: "short",
+            year: "numeric",
+          })
+        );
 
-            mbtiChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: { labels, datasets },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, max: 100, title: { display: true, text: 'Percentage (%)' } },
-                        x: { title: { display: true, text: 'Test Date' } }
-                    },
-                    plugins: {
-                        legend: { display: false }, // We use custom controls, so hide the default legend
-                        tooltip: { mode: 'index', intersect: false },
-                        zoom: {
-                            pan: { enabled: true, mode: 'x' },
-                            zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' }
-                        }
-                    },
-                    interaction: { mode: 'nearest', axis: 'x', intersect: false }
-                }
-            });
-        }
+        const datasets = dimensions.map((dim) => {
+          return {
+            label: `${dim.name} (${dim.primaryAbbr} %)`,
+            data: calculateData(dim.key, dim.primary),
+            borderColor: dim.color,
+            backgroundColor: `${dim.color}33`,
+            tension: 0.1,
+            borderWidth: 2,
+          };
+        });
 
-        // --- FILTER/CONTROL LOGIC ---
-        function createChartControls() {
-            const container = document.getElementById('chart-controls');
-            container.innerHTML = ''; // Clear previous controls
+        mbtiChartInstance = new Chart(ctx, {
+          type: "line",
+          data: { labels, datasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                title: { display: true, text: "Percentage (%)" },
+              },
+              x: { title: { display: true, text: "Test Date" } },
+            },
+            plugins: {
+              legend: { display: false }, // We use custom controls, so hide the default legend
+              tooltip: { mode: "index", intersect: false },
+              zoom: {
+                pan: { enabled: true, mode: "x" },
+                zoom: {
+                  wheel: { enabled: true },
+                  pinch: { enabled: true },
+                  mode: "x",
+                },
+              },
+            },
+            interaction: { mode: "nearest", axis: "x", intersect: false },
+          },
+        });
+      }
 
-            dimensions.forEach((dim, index) => {
-                const controlWrapper = document.createElement('div');
-                controlWrapper.className = 'border rounded-lg p-3';
-                controlWrapper.style.borderColor = dim.color;
+      // --- FILTER/CONTROL LOGIC ---
+      function createChartControls() {
+        const container = document.getElementById("chart-controls");
+        container.innerHTML = ""; // Clear previous controls
 
-                controlWrapper.innerHTML = `
+        dimensions.forEach((dim, index) => {
+          const controlWrapper = document.createElement("div");
+          controlWrapper.className = "border rounded-lg p-3";
+          controlWrapper.style.borderColor = dim.color;
+
+          controlWrapper.innerHTML = `
                     <div class="flex items-center justify-between mb-2">
                         <label for="show-${dim.key}" class="font-bold text-sm flex items-center cursor-pointer" style="color: ${dim.color};">
                             <input type="checkbox" id="show-${dim.key}" data-index="${index}" class="filter-input h-4 w-4 rounded border-gray-300 mr-2" style="color: ${dim.color};" checked>
@@ -293,75 +575,87 @@
                     </div>
                 `;
 
-                container.appendChild(controlWrapper);
-            });
-
-            // Add event listeners
-            container.addEventListener('change', (e) => {
-                if (!e.target.matches('input')) return;
-
-                const index = e.target.dataset.index;
-                const chart = mbtiChartInstance;
-
-                // Handle show/hide checkbox
-                if (e.target.type === 'checkbox') {
-                    chart.getDatasetMeta(index).hidden = !e.target.checked;
-                }
-
-                // Handle trait selection radio button
-                if (e.target.type === 'radio') {
-                    const trait = e.target.dataset.trait;
-                    const abbr = e.target.dataset.abbr;
-                    const dim = dimensions[index];
-
-                    chart.config.data.datasets[index].data = calculateData(dim.key, trait);
-                    chart.config.data.datasets[index].label = `${dim.name} (${abbr} %)`;
-                }
-
-                chart.update();
-            });
-        }
-        
-        // --- TIMELINE AND TABLE LOGIC ---
-        function populateContent() {
-            const timelineContainer = document.getElementById('mbtiTimeline');
-            const tableBody = document.getElementById('mbtiTableBody');
-            timelineContainer.innerHTML = '';
-            tableBody.innerHTML = '';
-
-            mbtiData.forEach((item, index) => {
-                const side = index % 2 === 0 ? 'left' : 'right';
-                const timelineItem = `
-                    <div class="timeline-container ${side}">
-                        <div class="bg-white p-4 rounded-lg shadow-md">
-                            <h3 class="font-bold text-blue-600">${item.type.split('(')[1].replace(')', '')}</h3>
-                            <h4 class="font-semibold text-gray-800">${item.type.split('(')[0].trim()}</h4>
-                            <small class="text-gray-500">${item.date}</small>
-                        </div>
-                    </div>`;
-                timelineContainer.innerHTML += timelineItem;
-
-                const tableRow = `
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-semibold">${item.type}</td>
-                        <td class="p-3">${item.energy.value}% ${item.energy.trait}</td>
-                        <td class="p-3">${item.mind.value}% ${item.mind.trait}</td>
-                        <td class="p-3">${item.nature.value}% ${item.nature.trait}</td>
-                        <td class="p-3">${item.tactics.value}% ${item.tactics.trait}</td>
-                        <td class="p-3">${item.identity.value}% ${item.identity.trait}</td>
-                        <td class="p-3 text-gray-600">${item.date}</td>
-                    </tr>`;
-                tableBody.innerHTML += tableRow;
-            });
-        }
-        
-        // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            setupChart();
-            populateContent();
-            createChartControls();
+          container.appendChild(controlWrapper);
         });
 
+        // Add event listeners
+        container.addEventListener("change", (e) => {
+          if (!e.target.matches("input")) return;
+
+          const index = e.target.dataset.index;
+          const chart = mbtiChartInstance;
+
+          // Handle show/hide checkbox
+          if (e.target.type === "checkbox") {
+            chart.getDatasetMeta(index).hidden = !e.target.checked;
+          }
+
+          // Handle trait selection radio button
+          if (e.target.type === "radio") {
+            const trait = e.target.dataset.trait;
+            const abbr = e.target.dataset.abbr;
+            const dim = dimensions[index];
+
+            chart.config.data.datasets[index].data = calculateData(
+              dim.key,
+              trait
+            );
+            chart.config.data.datasets[index].label = `${dim.name} (${abbr} %)`;
+          }
+
+          chart.update();
+        });
+      }
+
+      // --- TIMELINE AND TABLE LOGIC ---
+      function populateContent() {
+        const timelineContainer = document.getElementById("mbtiTimeline");
+        const tableBody = document.getElementById("mbtiTableBody");
+        timelineContainer.innerHTML = "";
+        tableBody.innerHTML = "";
+
+        let lastType = mbtiData[0]?.type;
+        mbtiData.forEach((item, index) => {
+          const side = index % 2 === 0 ? "left" : "right";
+          let typeChanged = false;
+          if (index > 0 && item.type !== lastType) {
+            typeChanged = true;
+          }
+          lastType = item.type;
+          const timelineItem = `
+            <div class="timeline-container ${side}">
+              <div class="bg-white p-4 rounded-lg shadow-md">
+                <h3 class="font-bold text-blue-600${
+                  typeChanged ? " type-changed" : ""
+                }">${item.type.split("(")[1].replace(")", "")}</h3>
+                <h4 class="font-semibold text-gray-800">${item.type
+                  .split("(")[0]
+                  .trim()}</h4>
+                <small class="text-gray-500">${item.date}</small>
+              </div>
+            </div>`;
+          timelineContainer.innerHTML += timelineItem;
+
+          const tableRow = `
+            <tr class="hover:bg-gray-50">
+              <td class="p-3 font-semibold">${item.type}</td>
+              <td class="p-3">${item.energy.value}% ${item.energy.trait}</td>
+              <td class="p-3">${item.mind.value}% ${item.mind.trait}</td>
+              <td class="p-3">${item.nature.value}% ${item.nature.trait}</td>
+              <td class="p-3">${item.tactics.value}% ${item.tactics.trait}</td>
+              <td class="p-3">${item.identity.value}% ${item.identity.trait}</td>
+              <td class="p-3 text-gray-600">${item.date}</td>
+            </tr>`;
+          tableBody.innerHTML += tableRow;
+        });
+      }
+
+      // --- INITIALIZATION ---
+      document.addEventListener("DOMContentLoaded", () => {
+        setupChart();
+        populateContent();
+        createChartControls();
+      });
     </script>
-</body>
+  </body>
 </html>
