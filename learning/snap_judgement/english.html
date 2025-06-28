@@ -44,7 +44,7 @@
   </head>
   <body class="text-slate-800">
     <a
-      href="index.html"
+      id="backHomeBtn"
       class="fixed top-4 left-4 z-50 px-3 py-1.5 rounded-full shadow border flex items-center backdrop-blur-sm transition-all"
       style="
         background: #073b4c;
@@ -57,6 +57,18 @@
     >
       <span class="mr-2">&#8592;</span> Back
     </a>
+    <script>
+      // Dynamically set the homepage link for local and GitHub Pages
+      const btn = document.getElementById("backHomeBtn");
+      if (
+        location.hostname === "localhost" ||
+        location.hostname === "127.0.0.1"
+      ) {
+        btn.href = "/";
+      } else {
+        btn.href = "/vibe-stuff/";
+      }
+    </script>
     <header class="bg-[#073B4C] text-white p-8 text-center">
       <h1 class="text-4xl md:text-6xl font-black tracking-tight">
         THE EVALUATIVE MIND

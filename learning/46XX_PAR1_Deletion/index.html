@@ -69,7 +69,7 @@
   </head>
   <body class="bg-slate-50 text-slate-800">
     <a
-      href="/"
+      id="backHomeBtn"
       class="fixed top-6 left-6 z-50 flex items-center px-4 py-2 bg-cyan-700 text-white rounded-full shadow-md hover:bg-cyan-600 transition-colors text-sm font-semibold"
       style="box-shadow: 0 2px 8px 0 rgba(8, 145, 178, 0.08)"
     >
@@ -762,6 +762,17 @@
         `;
           diagnosisTableBody.appendChild(row);
         });
+
+        // Dynamically set the homepage link for local and GitHub Pages
+        const btn = document.getElementById("backHomeBtn");
+        if (
+          location.hostname === "localhost" ||
+          location.hostname === "127.0.0.1"
+        ) {
+          btn.href = "/";
+        } else {
+          btn.href = "/vibe-stuff/";
+        }
       });
     </script>
   </body>

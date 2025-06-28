@@ -318,7 +318,7 @@
       }
     </script>
     <a
-      href="../index.html"
+      id="backHomeBtn"
       class="fixed top-4 left-4 z-50 px-3 py-1.5 rounded-full shadow border flex items-center backdrop-blur-sm transition-all"
       style="
         background: #2563eb;
@@ -331,6 +331,18 @@
     >
       <span class="mr-2">&#8592;</span> Back to Home
     </a>
+    <script>
+      // Dynamically set the homepage link for local and GitHub Pages
+      const btn = document.getElementById("backHomeBtn");
+      if (
+        location.hostname === "localhost" ||
+        location.hostname === "127.0.0.1"
+      ) {
+        btn.href = "/";
+      } else {
+        btn.href = "/vibe-stuff/";
+      }
+    </script>
     <div
       class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden"
     >
