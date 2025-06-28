@@ -210,6 +210,15 @@
         .text-sm.text-gray-500.mt-4.text-center p {
           font-size: 0.95rem;
         }
+        /* Smaller font for detailed test history table */
+        #mbtiTableBody,
+        #mbtiTableBody td,
+        #mbtiTableBody th,
+        section:last-of-type table,
+        section:last-of-type thead,
+        section:last-of-type tbody {
+          font-size: 0.72rem;
+        }
       }
       @media screen and (max-width: 400px) {
         html {
@@ -227,6 +236,28 @@
         .timeline::after {
           left: 11px;
         }
+      }
+      @media screen and (max-width: 350px) {
+        #mbtiTableBody,
+        #mbtiTableBody td,
+        #mbtiTableBody th,
+        section:last-of-type table,
+        section:last-of-type thead,
+        section:last-of-type tbody {
+          font-size: 0.6rem;
+        }
+        th,
+        td {
+          padding-left: 0.15rem !important;
+          padding-right: 0.15rem !important;
+        }
+      }
+      /* Prevent line breaks in Personality Type column for single-line rows */
+      #mbtiTableBody td:first-child {
+        white-space: nowrap;
+        max-width: 0;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
       /* Highlight for MBTI type change in timeline */
       .type-changed {
@@ -290,19 +321,19 @@
           Detailed Test History
         </h2>
         <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-lg overflow-x-auto">
-          <table class="w-full text-left text-sm md:text-base">
-            <thead class="bg-gray-100 text-gray-600 uppercase">
+          <table class="w-full text-left text-xs md:text-xs">
+            <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
               <tr>
-                <th class="p-3 rounded-l-lg">Personality Type</th>
-                <th class="p-3">Energy</th>
-                <th class="p-3">Mind</th>
-                <th class="p-3">Nature</th>
-                <th class="p-3">Tactics</th>
-                <th class="p-3">Identity</th>
-                <th class="p-3 rounded-r-lg">Test Date</th>
+                <th class="p-1 rounded-l-lg">Personality Type</th>
+                <th class="p-1">Energy</th>
+                <th class="p-1">Mind</th>
+                <th class="p-1">Nature</th>
+                <th class="p-1">Tactics</th>
+                <th class="p-1">Identity</th>
+                <th class="p-1 rounded-r-lg">Test Date</th>
               </tr>
             </thead>
-            <tbody id="mbtiTableBody" class="divide-y divide-gray-200">
+            <tbody id="mbtiTableBody" class="divide-y divide-gray-200 text-xs">
               <!-- Table rows will be generated here by JavaScript -->
             </tbody>
           </table>
@@ -623,29 +654,50 @@
           }
           lastType = item.type;
           const timelineItem = `
-            <div class="timeline-container ${side}">
-              <div class="bg-white p-4 rounded-lg shadow-md">
-                <h3 class="font-bold text-blue-600${
-                  typeChanged ? " type-changed" : ""
-                }">${item.type.split("(")[1].replace(")", "")}</h3>
-                <h4 class="font-semibold text-gray-800">${item.type
-                  .split("(")[0]
-                  .trim()}</h4>
-                <small class="text-gray-500">${item.date}</small>
-              </div>
-            </div>`;
+                <div class="timeline-container ${side}">
+                    <div class="bg-white p-4 rounded-lg shadow-md">
+                        <h3 class="font-bold text-blue-600${
+                          typeChanged ? " type-changed" : ""
+                        }">${item.type.split("(")[1].replace(")", "")}</h3>
+                        <h4 class="font-semibold text-gray-800">${item.type
+                          .split("(")[0]
+                          .trim()}</h4>
+                        <small class="text-gray-500">${item.date}</small>
+                    </div>
+                </div>`;
           timelineContainer.innerHTML += timelineItem;
 
+          // Responsive abbreviation for mobile
+          const isMobile = window.innerWidth <= 640;
+          let typeCell = item.type;
+          let energyCell = `${item.energy.value}% ${item.energy.trait}`;
+          let mindCell = `${item.mind.value}% ${item.mind.trait}`;
+          let natureCell = `${item.nature.value}% ${item.nature.trait}`;
+          let tacticsCell = `${item.tactics.value}% ${item.tactics.trait}`;
+          let identityCell = `${item.identity.value}% ${item.identity.trait}`;
+          if (isMobile) {
+            // MBTI code only (e.g., ISTJ-A)
+            typeCell = item.type.match(/\(([^)]+)\)/)?.[1] || item.type;
+            // Abbreviate traits (e.g., Intro, Obser, Think, Judg, Turb, Asse)
+            const abbr = (t) => t.slice(0, 5);
+            energyCell = `${item.energy.value}% ${abbr(item.energy.trait)}`;
+            mindCell = `${item.mind.value}% ${abbr(item.mind.trait)}`;
+            natureCell = `${item.nature.value}% ${abbr(item.nature.trait)}`;
+            tacticsCell = `${item.tactics.value}% ${abbr(item.tactics.trait)}`;
+            identityCell = `${item.identity.value}% ${abbr(
+              item.identity.trait
+            )}`;
+          }
           const tableRow = `
-            <tr class="hover:bg-gray-50">
-              <td class="p-3 font-semibold">${item.type}</td>
-              <td class="p-3">${item.energy.value}% ${item.energy.trait}</td>
-              <td class="p-3">${item.mind.value}% ${item.mind.trait}</td>
-              <td class="p-3">${item.nature.value}% ${item.nature.trait}</td>
-              <td class="p-3">${item.tactics.value}% ${item.tactics.trait}</td>
-              <td class="p-3">${item.identity.value}% ${item.identity.trait}</td>
-              <td class="p-3 text-gray-600">${item.date}</td>
-            </tr>`;
+                <tr class="hover:bg-gray-50">
+                    <td class="p-1 font-semibold">${typeCell}</td>
+                    <td class="p-1">${energyCell}</td>
+                    <td class="p-1">${mindCell}</td>
+                    <td class="p-1">${natureCell}</td>
+                    <td class="p-1">${tacticsCell}</td>
+                    <td class="p-1">${identityCell}</td>
+                    <td class="p-1 text-gray-600">${item.date}</td>
+                </tr>`;
           tableBody.innerHTML += tableRow;
         });
       }
