@@ -298,7 +298,25 @@
       }
     </style>
   </head>
-  <body class="p-2 sm:p-4 md:p-6">
+  <body class="bg-slate-50 text-gray-800">
+    <script>
+      // Simple password protection
+      const password = "20250925";
+      let entered = false;
+      while (!entered) {
+        const input = prompt(
+          "This page is password protected. Please enter the password:"
+        );
+        if (input === null) {
+          window.location = "/";
+        }
+        if (input === password) {
+          entered = true;
+        } else {
+          alert("Incorrect password. Please try again.");
+        }
+      }
+    </script>
     <a
       href="../index.html"
       class="fixed top-4 left-4 z-50 px-3 py-1.5 rounded-full shadow border flex items-center backdrop-blur-sm transition-all"
