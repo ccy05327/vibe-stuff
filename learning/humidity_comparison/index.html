@@ -125,6 +125,41 @@
           </p>
         </section>
 
+        <div class="w-full max-w-xl mx-auto mt-4 mb-8">
+          <label class="block text-blue-700 font-semibold mb-2 text-center"
+            >English Audio</label
+          >
+          <audio
+            id="audioPlayerHumidity"
+            controls
+            class="w-full rounded shadow border border-blue-100 bg-white"
+          >
+            <source src="humidity_comparison.mp3" type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+          <div class="flex justify-center mt-2">
+            <label for="speedHumidity" class="mr-2 text-sm text-gray-600"
+              >播放速度：</label
+            >
+            <select id="speedHumidity" class="border rounded px-2 py-1 text-sm">
+              <option value="0.75">0.75x</option>
+              <option value="1" selected>1x</option>
+              <option value="1.25">1.25x</option>
+              <option value="1.5">1.5x</option>
+              <option value="2">2x</option>
+            </select>
+          </div>
+          <script>
+            const audioHumidity = document.getElementById(
+              "audioPlayerHumidity"
+            );
+            const speedHumidity = document.getElementById("speedHumidity");
+            speedHumidity.addEventListener("change", function () {
+              audioHumidity.playbackRate = parseFloat(this.value);
+            });
+          </script>
+        </div>
+
         <section id="comparison-section" class="mb-12">
           <h2
             id="comparison-title"
