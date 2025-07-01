@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { FiPlay, FiBookOpen, FiGamepad2, FiTarget } from 'react-icons/fi'
+import { FiPlay, FiBookOpen, FiZap, FiTarget } from 'react-icons/fi'
 
 export default function QuickStart() {
   const quickStartOptions = [
@@ -20,7 +20,7 @@ export default function QuickStart() {
       textColor: 'text-white',
     },
     {
-      icon: FiGamepad2,
+      icon: FiZap,
       title: 'Play Game',
       description: 'Practice with typing games',
       link: '/games',
