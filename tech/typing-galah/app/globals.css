@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+@layer base {
+  html {
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-galah-off-white text-galah-grey-dark;
+  }
+}
+
+@layer components {
+  .galah-gradient-text {
+    @apply bg-galah-gradient bg-clip-text text-transparent;
+  }
+
+  .btn-primary {
+    @apply bg-galah-pink-vibrant hover:bg-galah-pink-soft text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-galah-grey-dark font-semibold py-3 px-6 rounded-lg border border-galah-grey-mid transition-colors duration-200;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-md p-6;
+  }
+
+  .typing-area {
+    @apply bg-white rounded-lg p-6 shadow-md border-2 border-transparent focus-within:border-galah-pink-soft transition-colors duration-200;
+  }
+
+  .virtual-keyboard {
+    @apply bg-gray-50 rounded-lg p-4 border border-gray-200;
+  }
+
+  .key {
+    @apply bg-white border border-gray-300 rounded text-center font-mono text-sm hover:bg-gray-100 transition-colors duration-150;
+  }
+
+  .key-active {
+    @apply bg-galah-pink-vibrant text-white border-galah-pink-vibrant;
+  }
+
+  .key-correct {
+    @apply bg-green-500 text-white border-green-500;
+  }
+
+  .key-error {
+    @apply bg-red-500 text-white border-red-500;
+  }
+
+  .lesson-text {
+    @apply font-mono text-lg leading-relaxed;
+  }
+
+  .char-current {
+    @apply bg-galah-pink-soft text-white;
+  }
+
+  .char-correct {
+    @apply text-green-600;
+  }
+
+  .char-error {
+    @apply text-red-600 bg-red-100;
+  }
+
+  .char-pending {
+    @apply text-galah-grey-mid;
+  }
+
+  .stats-card {
+    @apply bg-gradient-to-br from-galah-pink-vibrant to-galah-pink-soft text-white rounded-lg p-4 shadow-md;
+  }
+
+  .achievement-badge {
+    @apply bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-semibold;
+  }
+
+  .nav-link {
+    @apply text-galah-grey-mid hover:text-galah-pink-vibrant transition-colors duration-200;
+  }
+
+  .nav-link-active {
+    @apply text-galah-pink-vibrant font-semibold;
+  }
+}
+
+@layer utilities {
+  .animate-typing {
+    animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+  }
+
+  @keyframes typing {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  @keyframes blink-caret {
+    from,
+    to {
+      border-color: transparent;
+    }
+    50% {
+      border-color: #e6749a;
+    }
+  }
+
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+}

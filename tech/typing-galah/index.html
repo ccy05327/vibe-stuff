@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Typing Galah: Interactive Strategic Blueprint</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Galah Palette -->
+    <!-- Application Structure Plan: A single-page, narrative scrolling application designed for stakeholders. The structure guides the user through a logical story: 'The Why' (market opportunity), 'The What' (product vision & brand), and 'The How' (roadmap & features). This is more persuasive and easier to digest than the original report's linear format. Key interactions include a filterable chart for competitive comparison, toggleable cards for displaying key information, and an interactive timeline for the product roadmap, making complex data exploration intuitive. -->
+    <!-- Visualization & Content Choices: 
+        - Market Opportunity -> Goal: Inform/Compare -> Method: Side-by-side comparison cards (HTML/Tailwind) -> Interaction: Static visual comparison -> Justification: Directly and quickly highlights the core value proposition (localization).
+        - Competitor Analysis -> Goal: Organize/Inform -> Method: Tabbed content sections (HTML/JS) -> Interaction: Click to reveal info -> Justification: Condenses large amounts of text into digestible, user-selectable chunks.
+        - Feature Comparison -> Goal: Compare -> Method: Grouped Bar Chart (Chart.js) -> Interaction: Checkbox filters to update chart data -> Justification: Transforms a dense data table into an easily comparable visual, allowing users to focus on specific product matchups.
+        - Phased Rollout -> Goal: Show Change/Process -> Method: Horizontal process diagram (HTML/Tailwind) -> Interaction: Click to reveal phase details -> Justification: Visually communicates the project's progression over time more effectively than a list.
+        - Curriculum Vocabulary -> Goal: Inform -> Method: Interactive table (HTML/JS) -> Interaction: Hover to highlight -> Justification: Adds a small, engaging interaction to otherwise static data. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8f7fa;
+      }
+      .galah-gradient-text {
+        background: linear-gradient(to right, #e6749a, #e4a8c4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .tab.active {
+        border-color: #e6749a;
+        color: #e6749a;
+        font-weight: 600;
+      }
+      .phase-card.active .phase-details {
+        max-height: 500px;
+        opacity: 1;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "galah-pink-vibrant": "#e6749a",
+              "galah-pink-soft": "#e4a8c4",
+              "galah-grey-mid": "#8d9aac",
+              "galah-grey-dark": "#4e566a",
+              "galah-off-white": "#F8F7FA",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="text-galah-grey-dark antialiased">
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <header class="text-center mb-16">
+        <h1 class="text-5xl md:text-6xl font-bold mb-4">
+          <span class="galah-gradient-text">Typing Galah</span>
+        </h1>
+        <p class="text-xl text-galah-grey-mid max-w-3xl mx-auto">
+          An interactive blueprint for building Australia's own touch typing
+          platform. This application visualises our strategic plan.
+        </p>
+      </header>
+
+      <section id="opportunity" class="mb-20">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-2">
+            The Niche Opportunity: Speaking Aussie
+          </h2>
+          <p class="text-lg text-galah-grey-mid max-w-3xl mx-auto">
+            Global platforms use generic US English, creating a disconnect for
+            Australian learners. Our core strategy is deep localisation,
+            offering a competitive advantage that's not about features, but
+            about cultural identity.
+          </p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="bg-white p-6 rounded-xl shadow-md">
+            <h3 class="text-xl font-bold mb-4 text-galah-pink-vibrant">
+              The Language Gap
+            </h3>
+            <p class="mb-6">
+              Incorrect spelling and unfamiliar words disrupt the learning flow.
+              We'll fix that.
+            </p>
+            <div class="space-y-3 text-left">
+              <div
+                class="flex items-center justify-between p-3 bg-red-50 rounded-lg"
+              >
+                <span
+                  >You type: "The <span class="font-bold">color</span> of the
+                  <span class="font-bold">gray</span> truck..."</span
+                ><span class="text-red-500 font-bold text-2xl">✗</span>
+              </div>
+              <div
+                class="flex items-center justify-between p-3 bg-green-50 rounded-lg"
+              >
+                <span
+                  >We teach: "The <span class="font-bold">colour</span> of the
+                  <span class="font-bold">grey</span> ute..."</span
+                ><span class="text-green-500 font-bold text-2xl">✓</span>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow-md">
+            <h3 class="text-xl font-bold mb-4 text-galah-pink-vibrant">
+              The Cultural Gap
+            </h3>
+            <p class="mb-6">
+              Typing about a "barbie" is more engaging than typing about a
+              "cookout".
+            </p>
+            <div class="space-y-3 text-left">
+              <div
+                class="flex items-center justify-between p-3 bg-red-50 rounded-lg"
+              >
+                <span
+                  >You type: "Let's get
+                  <span class="font-bold">takeout</span> for lunch."</span
+                ><span class="text-red-500 font-bold text-2xl">✗</span>
+              </div>
+              <div
+                class="flex items-center justify-between p-3 bg-green-50 rounded-lg"
+              >
+                <span
+                  >We teach: "Let's grab some
+                  <span class="font-bold">takeaway</span> this
+                  <span class="font-bold">arvo</span>."</span
+                ><span class="text-green-500 font-bold text-2xl">✓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="competitor" class="mb-20">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-2">
+            Deconstructing The Leader: TypingClub
+          </h2>
+          <p class="text-lg text-galah-grey-mid max-w-3xl mx-auto">
+            To build a successful competitor, we must first understand the
+            market leader. TypingClub's success rests on three key pillars.
+            Click each tab to explore our analysis.
+          </p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md">
+          <div class="border-b border-gray-200 mb-4">
+            <nav class="flex space-x-4" id="tabsContainer">
+              <button
+                class="tab py-2 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 active"
+                data-target="panel-1"
+              >
+                Core Experience & Gamification
+              </button>
+              <button
+                class="tab py-2 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                data-target="panel-2"
+              >
+                Content Breadth & Depth
+              </button>
+              <button
+                class="tab py-2 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                data-target="panel-3"
+              >
+                Business Model & Monetisation
+              </button>
+            </nav>
+          </div>
+          <div id="panelsContainer">
+            <div id="panel-1" class="tab-panel">
+              <h4 class="font-semibold text-lg mb-2">Engaging Learning Loop</h4>
+              <p>
+                TypingClub transforms typing practice into a game. Users get
+                immediate WPM and accuracy feedback, earning stars and badges
+                for mastering lessons. This structured progression and
+                motivational system is highly effective at keeping users engaged
+                and is a core principle we will adopt and localise.
+              </p>
+            </div>
+            <div id="panel-2" class="tab-panel hidden">
+              <h4 class="font-semibold text-lg mb-2">
+                Comprehensive Educational Platform
+              </h4>
+              <p>
+                It's more than just typing. TypingClub offers grade-specific
+                curricula, courses on digital citizenship, and specialised plans
+                for different needs (e.g., one-handed typing). This positions it
+                as a holistic tool for schools. Our MVP will focus on core
+                typing, with future phases expanding our content.
+              </p>
+            </div>
+            <div id="panel-3" class="tab-panel hidden">
+              <h4 class="font-semibold text-lg mb-2">The Freemium Funnel</h4>
+              <p>
+                A generous free "School Edition" drives massive adoption by
+                teachers. This version has calibrated limits (e.g., class size,
+                data retention) that create a natural incentive to upgrade to
+                the paid "Pro" edition, which offers unlimited access and
+                powerful administrative tools. We will replicate this
+                B2B-focused model.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="roadmap" class="mb-20">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-2">Our Rollout Plan</h2>
+          <p class="text-lg text-galah-grey-mid max-w-3xl mx-auto">
+            We will launch in three distinct phases, allowing us to build a
+            strong foundation, gather feedback, and scale effectively. Click
+            each phase to see the core features.
+          </p>
+        </div>
+        <div class="relative w-full">
+          <div
+            class="absolute left-1/2 top-4 bottom-4 w-0.5 bg-galah-pink-soft hidden sm:block"
+          ></div>
+          <div class="sm:grid grid-cols-3 gap-8" id="phasesContainer">
+            <div class="phase-card mb-8 sm:mb-0" data-phase="1">
+              <div class="flex items-center sm:flex-col sm:text-center">
+                <div
+                  class="flex-shrink-0 w-16 h-16 bg-white border-4 border-galah-pink-soft rounded-full flex items-center justify-center z-10"
+                >
+                  <span class="text-2xl font-bold text-galah-pink-vibrant"
+                    >1</span
+                  >
+                </div>
+                <div class="sm:mt-4 ml-4 sm:ml-0">
+                  <h3 class="text-xl font-bold">Phase 1: MVP</h3>
+                  <p class="text-galah-grey-mid">
+                    Launch the core learning experience.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="phase-details ml-8 sm:ml-0 sm:text-center border-l-2 sm:border-l-0 border-galah-pink-soft pl-6 sm:pl-0 mt-2 overflow-hidden max-h-0 opacity-0 transition-all duration-500"
+              >
+                <ul
+                  class="list-disc list-inside text-galah-grey-mid text-sm space-y-1"
+                >
+                  <li>User Accounts (Email/Google/Office)</li>
+                  <li>Core Typing Interface (WPM/Accuracy)</li>
+                  <li>Beginner Lesson Plan (Aussie English)</li>
+                  <li>Basic Gamification (Galah Feathers)</li>
+                  <li>Accessibility Foundation</li>
+                </ul>
+              </div>
+            </div>
+            <div class="phase-card mb-8 sm:mb-0" data-phase="2">
+              <div class="flex items-center sm:flex-col sm:text-center">
+                <div
+                  class="flex-shrink-0 w-16 h-16 bg-white border-4 border-galah-pink-soft rounded-full flex items-center justify-center z-10"
+                >
+                  <span class="text-2xl font-bold text-galah-pink-vibrant"
+                    >2</span
+                  >
+                </div>
+                <div class="sm:mt-4 ml-4 sm:ml-0">
+                  <h3 class="text-xl font-bold">Phase 2: "Fair Dinkum" Free</h3>
+                  <p class="text-galah-grey-mid">
+                    Enrich the free product to drive adoption.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="phase-details ml-8 sm:ml-0 sm:text-center border-l-2 sm:border-l-0 border-galah-pink-soft pl-6 sm:pl-0 mt-2 overflow-hidden max-h-0 opacity-0 transition-all duration-500"
+              >
+                <ul
+                  class="list-disc list-inside text-galah-grey-mid text-sm space-y-1"
+                >
+                  <li>Intermediate & Advanced Lessons</li>
+                  <li>Culturally Relevant Content (Slang/Yarns)</li>
+                  <li>Engaging Typing Games</li>
+                  <li>Full Achievement System</li>
+                </ul>
+              </div>
+            </div>
+            <div class="phase-card" data-phase="3">
+              <div class="flex items-center sm:flex-col sm:text-center">
+                <div
+                  class="flex-shrink-0 w-16 h-16 bg-white border-4 border-galah-pink-soft rounded-full flex items-center justify-center z-10"
+                >
+                  <span class="text-2xl font-bold text-galah-pink-vibrant"
+                    >3</span
+                  >
+                </div>
+                <div class="sm:mt-4 ml-4 sm:ml-0">
+                  <h3 class="text-xl font-bold">Phase 3: "School Mob"</h3>
+                  <p class="text-galah-grey-mid">
+                    Monetise via institutional and premium tiers.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="phase-details ml-8 sm:ml-0 sm:text-center border-l-2 sm:border-l-0 border-galah-pink-soft pl-6 sm:pl-0 mt-2 overflow-hidden max-h-0 opacity-0 transition-all duration-500"
+              >
+                <ul
+                  class="list-disc list-inside text-galah-grey-mid text-sm space-y-1"
+                >
+                  <li>Teacher & Admin Portals</li>
+                  <li>Class & Roster Management</li>
+                  <li>Lesson Customisation Tools</li>
+                  <li>Individual Premium Subscriptions</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="mb-20">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-2">Feature Face-off</h2>
+          <p class="text-lg text-galah-grey-mid max-w-3xl mx-auto">
+            This chart provides a direct comparison of the features across
+            TypingClub and Typing Galah. Use the filters to see how our
+            offerings stack up.
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-md">
+          <div
+            class="chart-container relative w-full h-96 max-h-[400px] md:h-[500px] md:max-h-[500px] max-w-4xl mx-auto"
+          >
+            <canvas id="featuresChart"></canvas>
+          </div>
+          <div
+            class="mt-6 flex flex-wrap justify-center items-center gap-4 text-sm"
+            id="chartFilters"
+          >
+            <label class="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                data-id="0"
+                class="form-checkbox h-4 w-4 rounded text-galah-pink-vibrant focus:ring-galah-pink-soft"
+                checked
+              />
+              <span>TypingClub Free</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                data-id="1"
+                class="form-checkbox h-4 w-4 rounded text-galah-pink-vibrant focus:ring-galah-pink-soft"
+                checked
+              />
+              <span>TypingClub Pro</span>
+            </label>
+            <label
+              class="flex items-center space-x-2 cursor-pointer font-semibold text-galah-pink-vibrant"
+            >
+              <input
+                type="checkbox"
+                data-id="2"
+                class="form-checkbox h-4 w-4 rounded text-galah-pink-vibrant focus:ring-galah-pink-soft"
+                checked
+              />
+              <span>Typing Galah Free</span>
+            </label>
+            <label
+              class="flex items-center space-x-2 cursor-pointer font-semibold text-galah-pink-vibrant"
+            >
+              <input
+                type="checkbox"
+                data-id="3"
+                class="form-checkbox h-4 w-4 rounded text-galah-pink-vibrant focus:ring-galah-pink-soft"
+                checked
+              />
+              <span>Typing Galah Premium / School</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section id="curriculum" class="mb-20">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-2">A "Fair Dinkum" Curriculum</h2>
+          <p class="text-lg text-galah-grey-mid max-w-3xl mx-auto">
+            Our curriculum is the heart of the platform. We integrate Australian
+            English from the first lesson to the last, making learning both
+            effective and culturally relevant.
+          </p>
+        </div>
+        <div class="overflow-x-auto bg-white p-6 rounded-xl shadow-md">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Standard/US English Term
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  "Typing Galah" Aussie Term
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="bg-white divide-y divide-gray-200"
+              id="vocabTable"
+            ></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="text-center mt-20 pt-8 border-t border-gray-200">
+        <p class="text-galah-grey-mid">
+          &copy; 2025 Typing Galah. A strategic vision.
+        </p>
+      </footer>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const vocabData = [
+          { us: "sidewalk", au: "footpath" },
+          { us: "sweater", au: "jumper, pullover" },
+          { us: "vacation", au: "holiday" },
+          { us: "trunk (of a car)", au: "boot" },
+          { us: "candy", au: "lollies, sweets" },
+          { us: "cookie", au: "biscuit, bikkie" },
+          { us: "sneakers / trainers", au: "runners" },
+          { us: "color / flavor", au: "colour / flavour" },
+          { us: "math", au: "maths" },
+          { us: "flashlight", au: "torch" },
+          { us: "apartment", au: "flat, unit" },
+          { us: "garbage can", au: "rubbish bin" },
+          { us: "shopping cart", au: "shopping trolley" },
+          { us: "restroom", au: "toilet, loo, dunny" },
+        ];
+
+        const vocabTableBody = document.getElementById("vocabTable");
+        vocabData.forEach((item) => {
+          const row = document.createElement("tr");
+          row.className =
+            "hover:bg-galah-pink-soft/20 transition-colors duration-200";
+          row.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.us}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-galah-grey-dark">${item.au}</td>
+            `;
+          vocabTableBody.appendChild(row);
+        });
+
+        const tabs = document.querySelectorAll(".tab");
+        const panels = document.querySelectorAll(".tab-panel");
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            tabs.forEach((t) => t.classList.remove("active"));
+            tab.classList.add("active");
+
+            const targetPanelId = tab.getAttribute("data-target");
+            panels.forEach((panel) => {
+              if (panel.id === targetPanelId) {
+                panel.classList.remove("hidden");
+              } else {
+                panel.classList.add("hidden");
+              }
+            });
+          });
+        });
+
+        const phaseCards = document.querySelectorAll(".phase-card");
+        phaseCards.forEach((card) => {
+          card.addEventListener("click", () => {
+            const alreadyActive = card.classList.contains("active");
+            phaseCards.forEach((c) => c.classList.remove("active"));
+            if (!alreadyActive) {
+              card.classList.add("active");
+            }
+          });
+        });
+
+        const chartData = {
+          labels: [
+            "Core Experience",
+            "Content & Games",
+            "Reporting & Data",
+            "School & Admin",
+          ],
+          datasets: [
+            {
+              label: "TypingClub Free",
+              data: [3, 2, 1, 1],
+              backgroundColor: "#A0AEC0", // Gray
+              borderColor: "#A0AEC0",
+              borderWidth: 1,
+            },
+            {
+              label: "TypingClub Pro",
+              data: [3, 4, 3, 4],
+              backgroundColor: "#718096", // Darker Gray
+              borderColor: "#718096",
+              borderWidth: 1,
+            },
+            {
+              label: "Typing Galah Free",
+              data: [4, 3, 1, 0],
+              backgroundColor: "#e4a8c4", // Galah Soft Pink
+              borderColor: "#e4a8c4",
+              borderWidth: 1,
+            },
+            {
+              label: "Typing Galah Premium / School",
+              data: [4, 4, 3, 4],
+              backgroundColor: "#e6749a", // Galah Vibrant Pink
+              borderColor: "#e6749a",
+              borderWidth: 1,
+            },
+          ],
+        };
+
+        const originalDatasets = JSON.parse(JSON.stringify(chartData.datasets));
+
+        const ctx = document.getElementById("featuresChart").getContext("2d");
+        const featuresChart = new Chart(ctx, {
+          type: "bar",
+          data: chartData,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: "Relative Feature Count",
+                },
+                ticks: {
+                  stepSize: 1,
+                },
+              },
+              x: {
+                grid: {
+                  display: false,
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                position: "bottom",
+              },
+              tooltip: {
+                mode: "index",
+                intersect: false,
+              },
+            },
+          },
+        });
+
+        const filters = document.getElementById("chartFilters");
+        filters.addEventListener("change", (e) => {
+          if (e.target.type === "checkbox") {
+            const checkedCheckboxes = filters.querySelectorAll(
+              'input[type="checkbox"]:checked'
+            );
+
+            if (checkedCheckboxes.length === 0) {
+              e.target.checked = true;
+              return;
+            }
+
+            const visibleDatasetIndices = Array.from(checkedCheckboxes).map(
+              (cb) => parseInt(cb.dataset.id)
+            );
+            const newDatasets = originalDatasets.filter((_, index) =>
+              visibleDatasetIndices.includes(index)
+            );
+
+            featuresChart.data.datasets = newDatasets;
+            featuresChart.update();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
