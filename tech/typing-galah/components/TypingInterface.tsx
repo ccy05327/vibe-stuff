@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo, useReducer } from 'react'
 import { createClient } from '@/lib/supabase'
 import VirtualKeyboard from './VirtualKeyboard'
 import TypingStats from './TypingStats'
@@ -25,91 +25,191 @@ interface KeyPress {
   correct: boolean
 }
 
+// State interface for useReducer
+interface TypingState {
+  currentIndex: number
+  startTime: number | null
+  keyPresses: KeyPress[]
+  isComplete: boolean
+  correctChars: number
+  timeElapsed: number
+  errors: Set<number>
+}
+
+// Action types for useReducer
+type TypingAction = 
+  | { type: 'START_TYPING'; timestamp: number }
+  | { type: 'KEY_PRESS'; payload: { char: string; timestamp: number; isCorrect: boolean; newIndex: number } }
+  | { type: 'UPDATE_TIME'; timeElapsed: number }
+  | { type: 'COMPLETE_LESSON' }
+  | { type: 'RESET_LESSON' }
+
+// Reducer for better state management
+function typingReducer(state: TypingState, action: TypingAction): TypingState {
+  switch (action.type) {
+    case 'START_TYPING':
+      return {
+        ...state,
+        startTime: action.timestamp
+      }
+    
+    case 'KEY_PRESS':
+      const { char, timestamp, isCorrect, newIndex } = action.payload
+      const newKeyPress: KeyPress = { key: char, timestamp, correct: isCorrect }
+      
+      // Use more efficient array update
+      const newKeyPresses = state.keyPresses.length < 1000 
+        ? [...state.keyPresses, newKeyPress]
+        : state.keyPresses.concat(newKeyPress)
+      
+      const newErrors = new Set(state.errors)
+      if (!isCorrect) {
+        newErrors.add(state.currentIndex)
+      }
+      
+      return {
+        ...state,
+        currentIndex: newIndex,
+        keyPresses: newKeyPresses,
+        correctChars: isCorrect ? state.correctChars + 1 : state.correctChars,
+        errors: newErrors
+      }
+    
+    case 'UPDATE_TIME':
+      return {
+        ...state,
+        timeElapsed: action.timeElapsed
+      }
+    
+    case 'COMPLETE_LESSON':
+      return {
+        ...state,
+        isComplete: true
+      }
+    
+    case 'RESET_LESSON':
+      return {
+        currentIndex: 0,
+        startTime: null,
+        keyPresses: [],
+        isComplete: false,
+        correctChars: 0,
+        timeElapsed: 0,
+        errors: new Set()
+      }
+    
+    default:
+      return state
+  }
+}
+
 export default function TypingInterface({ lessonText, lessonId, userId, onComplete }: TypingInterfaceProps) {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [startTime, setStartTime] = useState<number | null>(null)
-  const [keyPresses, setKeyPresses] = useState<KeyPress[]>([])
-  const [isComplete, setIsComplete] = useState(false)
-  const [correctChars, setCorrectChars] = useState(0)
-  const [timeElapsed, setTimeElapsed] = useState(0)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const errorsSetRef = useRef<Set<number>>(new Set())
+  const [state, dispatch] = useReducer(typingReducer, {
+    currentIndex: 0,
+    startTime: null,
+    keyPresses: [],
+    isComplete: false,
+    correctChars: 0,
+    timeElapsed: 0,
+    errors: new Set<number>()
+  })
+
+  const containerRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
 
-  // Memoized calculations for better performance
+  // Memoized calculations for better performance - only recalculate when necessary
   const stats = useMemo(() => {
-    if (!startTime || currentIndex === 0) {
+    if (!state.startTime || state.currentIndex === 0) {
       return { wpm: 0, accuracy: 100 }
     }
 
-    const timeInMinutes = (Date.now() - startTime) / 60000
-    const wordsTyped = currentIndex / 5 // Standard: 5 characters = 1 word
+    const timeInMinutes = (Date.now() - state.startTime) / 60000
+    const wordsTyped = state.currentIndex / 5 // Standard: 5 characters = 1 word
     const currentWpm = Math.round(wordsTyped / timeInMinutes) || 0
-    const currentAccuracy = Math.round((correctChars / currentIndex) * 100) || 100
+    const currentAccuracy = Math.round((state.correctChars / state.currentIndex) * 100) || 100
 
     return { wpm: currentWpm, accuracy: currentAccuracy }
-  }, [startTime, currentIndex, correctChars])
+  }, [state.startTime, state.currentIndex, state.correctChars])
 
-  // Update timer only
+  // Update timer with better performance
   useEffect(() => {
-    if (startTime && !isComplete) {
+    if (state.startTime && !state.isComplete) {
       const interval = setInterval(() => {
-        setTimeElapsed(Math.round((Date.now() - startTime) / 1000))
+        dispatch({ 
+          type: 'UPDATE_TIME', 
+          timeElapsed: Math.round((Date.now() - state.startTime!) / 1000) 
+        })
       }, 1000)
       return () => clearInterval(interval)
     }
-  }, [startTime, isComplete])
+  }, [state.startTime, state.isComplete])
 
-  // Focus input on mount
+  // Focus container on mount for better keyboard capture
   useEffect(() => {
-    inputRef.current?.focus()
+    containerRef.current?.focus()
   }, [])
 
-  const handleKeyPress = useCallback((char: string) => {
-    if (!startTime) {
-      setStartTime(Date.now())
+  // Direct keyboard event handling for better performance
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    // Prevent default browser behavior
+    e.preventDefault()
+    
+    // Ignore modifier keys and special keys
+    if (e.ctrlKey || e.altKey || e.metaKey || e.key.length > 1) {
+      return
     }
 
-    const isCorrect = char === lessonText[currentIndex]
-    const keyPress: KeyPress = {
-      key: char,
-      timestamp: Date.now(),
-      correct: isCorrect
+    // Ignore if lesson is complete
+    if (state.isComplete) {
+      return
     }
 
-    // More efficient array updates
-    setKeyPresses(prev => {
-      const newArray = [...prev]
-      newArray.push(keyPress)
-      return newArray
+    const char = e.key
+    const timestamp = Date.now()
+
+    // Start timing on first keystroke
+    if (!state.startTime) {
+      dispatch({ type: 'START_TYPING', timestamp })
+    }
+
+    const isCorrect = char === lessonText[state.currentIndex]
+    const newIndex = state.currentIndex + 1
+
+    // Single state update for better performance
+    dispatch({
+      type: 'KEY_PRESS',
+      payload: { char, timestamp, isCorrect, newIndex }
     })
-
-    if (isCorrect) {
-      setCorrectChars(prev => prev + 1)
-    } else {
-      errorsSetRef.current.add(currentIndex)
-    }
-
-    const newIndex = currentIndex + 1
-    setCurrentIndex(newIndex)
 
     // Check if lesson is complete
     if (newIndex >= lessonText.length) {
-      completeLesson([...keyPresses, keyPress])
+      dispatch({ type: 'COMPLETE_LESSON' })
+      
+      // Complete lesson with final data
+      setTimeout(() => {
+        completeLesson([...state.keyPresses, { key: char, timestamp, correct: isCorrect }])
+      }, 0)
     }
-  }, [currentIndex, lessonText, startTime, keyPresses])
+  }, [state.currentIndex, state.startTime, state.isComplete, state.keyPresses, lessonText])
+
+  // Add/remove keyboard event listener
+  useEffect(() => {
+    const container = containerRef.current
+    if (container) {
+      container.addEventListener('keydown', handleKeyDown)
+      return () => container.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [handleKeyDown])
 
   const completeLesson = useCallback(async (finalKeyPresses: KeyPress[]) => {
-    setIsComplete(true)
-    
-    const finalTimeInMinutes = startTime ? (Date.now() - startTime) / 60000 : 1
+    const finalTimeInMinutes = state.startTime ? (Date.now() - state.startTime) / 60000 : 1
     const finalWpm = Math.round((lessonText.length / 5) / finalTimeInMinutes)
-    const finalAccuracy = Math.round((correctChars / lessonText.length) * 100)
+    const finalAccuracy = Math.round((state.correctChars / lessonText.length) * 100)
 
     const results: TypingResults = {
       wpm: finalWpm,
       accuracy: finalAccuracy,
-      timeSpent: Math.round((Date.now() - (startTime || 0)) / 1000),
+      timeSpent: Math.round((Date.now() - (state.startTime || 0)) / 1000),
       keyPressData: finalKeyPresses
     }
 
@@ -127,40 +227,11 @@ export default function TypingInterface({ lessonText, lessonId, userId, onComple
     }
 
     onComplete?.(results)
-  }, [startTime, lessonText.length, correctChars, supabase, userId, lessonId, onComplete])
-
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    const expectedLength = currentIndex
-    
-    // Only allow typing forward, one character at a time
-    if (value.length === expectedLength + 1) {
-      const newChar = value[expectedLength]
-      handleKeyPress(newChar)
-      // Clear the input to prevent it from growing
-      e.target.value = ''
-    }
-  }, [currentIndex, handleKeyPress])
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    // Prevent backspace
-    if (e.key === 'Backspace') {
-      e.preventDefault()
-    }
-  }
+  }, [state.startTime, lessonText.length, state.correctChars, supabase, userId, lessonId, onComplete])
 
   const resetLesson = useCallback(() => {
-    setCurrentIndex(0)
-    setStartTime(null)
-    setKeyPresses([])
-    setIsComplete(false)
-    setCorrectChars(0)
-    setTimeElapsed(0)
-    errorsSetRef.current.clear()
-    if (inputRef.current) {
-      inputRef.current.value = ''
-      inputRef.current.focus()
-    }
+    dispatch({ type: 'RESET_LESSON' })
+    containerRef.current?.focus()
   }, [])
 
   // Memoized text rendering for better performance
@@ -168,11 +239,11 @@ export default function TypingInterface({ lessonText, lessonId, userId, onComple
     return lessonText.split('').map((char, index) => {
       let className = 'char-pending'
       
-      if (index < currentIndex) {
+      if (index < state.currentIndex) {
         // Check if this character was typed correctly
-        const wasCorrect = !errorsSetRef.current.has(index)
+        const wasCorrect = !state.errors.has(index)
         className = wasCorrect ? 'char-correct' : 'char-error'
-      } else if (index === currentIndex) {
+      } else if (index === state.currentIndex) {
         className = 'char-current'
       }
 
@@ -182,23 +253,28 @@ export default function TypingInterface({ lessonText, lessonId, userId, onComple
         </span>
       )
     })
-  }, [lessonText, currentIndex])
+  }, [lessonText, state.currentIndex, state.errors])
 
   const getCurrentKey = useCallback(() => {
-    if (currentIndex < lessonText.length) {
-      return lessonText[currentIndex].toLowerCase()
+    if (state.currentIndex < lessonText.length) {
+      return lessonText[state.currentIndex].toLowerCase()
     }
     return null
-  }, [currentIndex, lessonText])
+  }, [state.currentIndex, lessonText])
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div 
+      ref={containerRef}
+      className="max-w-4xl mx-auto space-y-6 outline-none"
+      tabIndex={0}
+      style={{ outline: 'none' }}
+    >
       {/* Stats */}
       <TypingStats 
         wpm={stats.wpm}
         accuracy={stats.accuracy}
-        timeElapsed={timeElapsed}
-        progress={(currentIndex / lessonText.length) * 100}
+        timeElapsed={state.timeElapsed}
+        progress={(state.currentIndex / lessonText.length) * 100}
       />
 
       {/* Typing Area */}
@@ -207,23 +283,8 @@ export default function TypingInterface({ lessonText, lessonId, userId, onComple
           {renderedText}
         </div>
 
-        {/* Hidden input for capturing keystrokes */}
-        <input
-          ref={inputRef}
-          type="text"
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          disabled={isComplete}
-          className="sr-only"
-          placeholder="Start typing..."
-          autoComplete="off"
-          autoCorrect="off"
-          autoCapitalize="off"
-          spellCheck={false}
-        />
-
         <div className="flex justify-center">
-          {!isComplete ? (
+          {!state.isComplete ? (
             <p className="text-galah-grey-mid text-center">
               Click here and start typing! 
               <span className="block text-sm mt-1">
@@ -255,7 +316,7 @@ export default function TypingInterface({ lessonText, lessonId, userId, onComple
       {/* Virtual Keyboard */}
       <VirtualKeyboard 
         currentKey={getCurrentKey()}
-        pressedKeys={Array.from(errorsSetRef.current).map(index => lessonText[index])}
+        pressedKeys={Array.from(state.errors).map(index => lessonText[index])}
       />
 
       {/* Instructions */}
