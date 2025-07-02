@@ -11,16 +11,22 @@ export default function HeroSection({ isAuthenticated }: HeroSectionProps) {
         <div className="text-center">
           {/* Hero Title */}
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold text-galah-grey-dark mb-6">
-            <span className="galah-gradient-text">Fair Dinkum</span>
+            <span className="galah-gradient-text">Typing Galah</span>
             <br />
-            Typing Lessons
+            <span className="text-3xl sm:text-4xl md:text-5xl">Fair Dinkum Typing Practice</span>
           </h1>
 
-          {/* Hero Subtitle */}
-          <p className="text-xl sm:text-2xl text-galah-grey-mid max-w-4xl mx-auto mb-8 leading-relaxed">
-            Learn to type with authentic Australian English. 
-            From "colour" to "arvo", master the keyboard while speaking your language.
-          </p>
+          {/* Personal Introduction */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <p className="text-xl sm:text-2xl text-galah-grey-mid leading-relaxed mb-4">
+              G'day! 👋 I got sick of typing "color" and "theater" on those American sites, 
+              so I made this little project for us Aussies.
+            </p>
+            <p className="text-lg text-galah-grey-mid leading-relaxed">
+              Finally, a place to practice typing with proper Australian English - 
+              "colour", "arvo", "servo", and all the words we actually use!
+            </p>
+          </div>
 
           {/* Australian Slang Preview */}
           <div className="inline-block bg-white rounded-lg p-4 shadow-md mb-8 border border-galah-pink-soft/20">
@@ -30,7 +36,7 @@ export default function HeroSection({ isAuthenticated }: HeroSectionProps) {
               <span className="text-galah-pink-vibrant font-bold">barbie</span> in the backyard!"
             </p>
             <p className="text-sm text-galah-grey-mid mt-2">
-              🇦🇺 Practise typing with real Aussie phrases
+              🦜 Practice typing with words you actually say
             </p>
           </div>
 
@@ -39,41 +45,41 @@ export default function HeroSection({ isAuthenticated }: HeroSectionProps) {
             {isAuthenticated ? (
               <>
                 <Link href="/dashboard" className="btn-primary text-lg px-8 py-4">
-                  Continue Learning
+                  Keep Practicing
                 </Link>
-                <Link href="/lessons" className="btn-secondary text-lg px-8 py-4">
-                  Browse Lessons
+                <Link href="/demo" className="btn-secondary text-lg px-8 py-4">
+                  Try a Quick Lesson
                 </Link>
               </>
             ) : (
               <>
-                <Link href="/auth/signup" className="btn-primary text-lg px-8 py-4">
-                  Start Typing for Free
+                <Link href="/demo" className="btn-primary text-lg px-8 py-4">
+                  Give it a Burl! 
                 </Link>
-                <Link href="/demo" className="btn-secondary text-lg px-8 py-4">
-                  Try Demo Lesson
+                <Link href="/auth/signup" className="btn-secondary text-lg px-8 py-4">
+                  Create Account (Free)
                 </Link>
               </>
             )}
           </div>
 
-          {/* Social Proof */}
+          {/* Project Stats - More Personal */}
           <div className="text-center">
             <p className="text-sm text-galah-grey-mid mb-4">
-              Trusted by students, teachers, and typing enthusiasts across Australia
+              A passion project for fellow Aussies who are tired of American typing sites 🇦🇺
             </p>
             <div className="flex justify-center items-center space-x-8 text-galah-grey-mid">
               <div className="text-center">
-                <div className="text-2xl font-bold text-galah-pink-vibrant">500+</div>
-                <div className="text-sm">Aussie Phrases</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-galah-pink-vibrant">50+</div>
-                <div className="text-sm">Typing Lessons</div>
-              </div>
-              <div className="text-center">
                 <div className="text-2xl font-bold text-galah-pink-vibrant">100%</div>
-                <div className="text-sm">Australian</div>
+                <div className="text-sm">Australian English</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-galah-pink-vibrant">Made</div>
+                <div className="text-sm">For Fun</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-galah-pink-vibrant">No</div>
+                <div className="text-sm">American Spelling</div>
               </div>
             </div>
           </div>

@@ -1,0 +1,220 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "EPIC 1: Project Setup & Foundation",
+        "description": "Initial setup of the project, including authentication and deployment. This phase is already complete.",
+        "priority": "critical",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 101,
+            "title": "Initial SPA Scaffolding",
+            "description": "Create the initial single-page application structure.",
+            "details": "Task completed by Gemini, providing the initial HTML/JS blueprint.",
+            "status": "done",
+            "dependencies": []
+          },
+          {
+            "id": 102,
+            "title": "Setup Supabase Backend",
+            "description": "Initialize a new Supabase project for backend services.",
+            "details": "A new project was created in the Supabase dashboard.",
+            "status": "done",
+            "dependencies": []
+          },
+          {
+            "id": 103,
+            "title": "Implement User Authentication",
+            "description": "Connect the frontend to Supabase Auth to handle user sign-up, sign-in, and session management.",
+            "details": "Supabase Auth helpers for React were used to create auth flows for email/password and social providers.",
+            "status": "done",
+            "dependencies": [
+              102
+            ]
+          },
+          {
+            "id": 104,
+            "title": "Deploy to Vercel",
+            "description": "Connect the GitHub repository to Vercel for continuous deployment.",
+            "details": "The project was successfully deployed and is live.",
+            "status": "done",
+            "dependencies": [
+              103
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "EPIC 2: Phase 1 - MVP Core Typing Experience",
+        "description": "Build the essential features for a user to practice typing and see their results. This is the core loop of the application.",
+        "priority": "critical",
+        "dependencies": [
+          1
+        ],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 201,
+            "title": "Design Core Database Schema with Cursor",
+            "description": "Create the initial tables in Supabase to store user data, lessons, and results.",
+            "details": "In Cursor, use the prompt: 'Generate the SQL for a Supabase schema with three tables: 1. `profiles` (linking to `auth.users`, storing `username`, `avatar_url`). 2. `lessons` (with `id`, `title`, `content` as text, `difficulty_level`). 3. `lesson_results` (linking to `profiles` and `lessons`, storing `wpm`, `accuracy`, `completed_at`). Ensure Row Level Security is enabled on all tables, allowing users to only access their own data.'",
+            "status": "done",
+            "dependencies": [
+              103
+            ]
+          },
+          {
+            "id": 202,
+            "title": "Build Typing Interface Component with Cursor",
+            "description": "Create the main React component where the user performs the typing test.",
+            "details": "In Cursor, prompt: 'Create a React component named `TypingTest.js`. It should fetch a lesson's text from Supabase. It needs to display the text and have a text input for the user. As the user types, the component should visually highlight correct and incorrect characters in the source text. Use Tailwind CSS for styling.'",
+            "status": "done",
+            "dependencies": [
+              201
+            ]
+          },
+          {
+            "id": 203,
+            "title": "Implement WPM & Accuracy Logic with Cursor",
+            "description": "Add the client-side logic to calculate Words Per Minute and accuracy in real-time.",
+            "details": "In Cursor, within the `TypingTest.js` component, prompt: 'Write the JavaScript logic to calculate WPM and accuracy. WPM should be calculated as `(all typed entries / 5) / (time in minutes)`. Accuracy should be `(correct characters / total characters typed) * 100`. Update these values every second using a `useEffect` hook.'",
+            "status": "done",
+            "dependencies": [
+              202
+            ]
+          },
+          {
+            "id": 204,
+            "title": "Save Lesson Results with Cursor",
+            "description": "Create the function to persist the user's results to the database upon lesson completion.",
+            "details": "In Cursor, prompt: 'Write an async function `saveResult` that takes a user's ID, lesson ID, WPM, and accuracy, and then inserts a new row into the `lesson_results` table in Supabase. Call this function when the user completes a lesson.'",
+            "status": "done",
+            "dependencies": [
+              203
+            ]
+          },
+          {
+            "id": 205,
+            "title": "Create User Dashboard Page with Cursor",
+            "description": "Build a page where users can see their progress and stats.",
+            "details": "In Cursor, prompt: 'Create a new page component `Dashboard.js`. It should fetch and display the current user's average WPM and accuracy from the `lesson_results` table. Also, list the last 5 lessons they completed with their scores. Use Chart.js to show a line graph of their WPM over time.'",
+            "status": "done",
+            "dependencies": [
+              204
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "EPIC 3: Phase 2 - Content & Engagement",
+        "description": "Expand the platform with more content, gamification, and engaging features to improve user retention.",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 301,
+            "title": "Generate Australian Curriculum Content with Gemini",
+            "description": "Create a rich set of Australian-themed typing lessons.",
+            "details": "Using Gemini, prompt: 'Generate 20 typing lessons of increasing difficulty. The theme is \"Aussie Slang and Culture\". Start with simple sentences like \"G'day mate, how's it going?\" and progress to complex paragraphs about the history of the pavlova or a summary of an iconic Australian film. Format the output as a JSON array of objects, each with a `title` and `content` key.'",
+            "status": "done",
+            "dependencies": [
+              201
+            ]
+          },
+          {
+            "id": 302,
+            "title": "Create Curriculum Seeding Script with Cursor",
+            "description": "Write a script to upload the generated lesson content into the Supabase database.",
+            "details": "In Cursor, using the JSON from the previous step, prompt: 'Write a Node.js script that reads `lessons.json` and inserts each lesson into the `lessons` table in my Supabase project. Use the `supabase-js` library.'",
+            "status": "done",
+            "dependencies": [
+              301
+            ]
+          },
+          {
+            "id": 303,
+            "title": "Design & Build Typing Game with Cursor",
+            "description": "Create the first interactive typing game to make practice more fun.",
+            "details": "In Cursor, prompt: 'Create a new React component for a typing game called \"Galah Rescue\". Words will fall from the top of the screen. The user must type the word correctly before it hits the bottom to score a point. Use simple CSS animations for the falling words. The component should be self-contained and fetch random words from a predefined list.'",
+            "status": "pending",
+            "dependencies": [
+              205
+            ]
+          },
+          {
+            "id": 304,
+            "title": "Design Achievement System with Gemini",
+            "description": "Conceptualize a system of badges and achievements to motivate users.",
+            "details": "Using Gemini, prompt: 'Design an achievement system for a typing app. Create 10 unique achievements with fun, Australian-themed names, descriptions, and unlock criteria. Examples: \"Speedy Galah\" (Achieve 70 WPM), \"Accurate Kookaburra\" (Get 99% accuracy 5 times in a row), \"Fair Dinkum Finisher\" (Complete all beginner lessons). Present this as a table.'",
+            "status": "pending",
+            "dependencies": []
+          },
+          {
+            "id": 305,
+            "title": "Implement Achievement System Backend with Cursor",
+            "description": "Build the backend logic to track and award achievements.",
+            "details": "In Cursor, prompt: 'Create a Supabase Edge Function named `award-achievement`. This function should be triggered whenever a new row is inserted into `lesson_results`. Inside the function, check the user's performance against the criteria for all achievements. If a criterion is met and the user doesn't already have the achievement, insert a new row into a `user_achievements` table.'",
+            "status": "pending",
+            "dependencies": [
+              304,
+              204
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "EPIC 4: UI/UX & Design Refinement",
+        "description": "Polish the application's look and feel, ensuring a high-quality, accessible, and enjoyable user experience.",
+        "priority": "medium",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 401,
+            "title": "Review and Refine Colour Palette with Gemini",
+            "description": "Ensure the colours are accessible and aesthetically pleasing.",
+            "details": "Using Gemini, prompt: 'Here is my current Tailwind colour scheme for Typing Galah [paste your tailwind.config.js theme]. Review this \"Galah Palette\" for WCAG AA contrast compliance between text and background colours. Suggest subtle adjustments or additional shades to improve accessibility while maintaining the original feel.'",
+            "status": "pending",
+            "dependencies": []
+          },
+          {
+            "id": 402,
+            "title": "Create UI Component Library with Cursor",
+            "description": "Standardize all UI elements like buttons, inputs, and modals into a reusable component library.",
+            "details": "In Cursor, prompt: 'Based on my existing pages, identify common UI elements (Button, Input, Card, Modal). Create a new directory `/components/ui` and generate a generic, reusable React component for each one. Use Tailwind CSS and `cva` (class-variance-authority) for flexible styling. Then, refactor one of my existing pages to use these new UI components.'",
+            "status": "pending",
+            "dependencies": [
+              205
+            ]
+          },
+          {
+            "id": 403,
+            "title": "Add Page Transitions and Animations with Cursor",
+            "description": "Implement smooth animations to make the user experience more fluid and engaging.",
+            "details": "In Cursor, prompt: 'Integrate the `framer-motion` library into my React project. Apply a simple fade-in animation to all main page components as they mount. Also, add a subtle `whileHover` scale effect to all clickable cards and buttons in the Dashboard.'",
+            "status": "pending",
+            "dependencies": [
+              402
+            ]
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-07-02T11:30:00.000Z",
+      "updated": "2025-07-02T12:25:30.655Z",
+      "description": "Task list for the Typing Galah project, designed for an AI-assisted workflow."
+    }
+  }
+}

@@ -173,6 +173,15 @@ export default function TypingInterface({ lessonText, lessonId, userId, onComple
     containerRef.current?.focus()
   }, [])
 
+  // Reset state when lesson changes (new lesson text or ID)
+  useEffect(() => {
+    dispatch({ type: 'RESET_LESSON' })
+    // Small delay to ensure clean state before focusing
+    setTimeout(() => {
+      containerRef.current?.focus()
+    }, 0)
+  }, [lessonText, lessonId])
+
   // Direct keyboard event handling for better performance
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     // Prevent default browser behavior

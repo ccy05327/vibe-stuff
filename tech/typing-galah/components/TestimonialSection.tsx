@@ -1,76 +1,89 @@
-export default function TestimonialSection() {
-  const testimonials = [
-    {
-      name: 'Sarah Mitchell',
-      role: 'Year 8 Teacher, Brisbane',
-      content: 'Finally! A typing platform that teaches our kids proper Australian spelling. My students love the slang lessons - they\'re actually excited about typing practice now.',
-      avatar: '👩‍🏫'
-    },
-    {
-      name: 'Jake Thompson',
-      role: 'Student, Melbourne',
-      content: 'This is heaps better than the American typing sites. I can type about stuff I actually say, like "arvo" and "servo". Got my first "You Little Ripper!" badge yesterday!',
-      avatar: '🧑‍🎓'
-    },
-    {
-      name: 'Linda Chen',
-      role: 'Homeschool Parent, Perth',
-      content: 'My daughter went from hunt-and-peck to 40 WPM in just 3 months. The Australian content makes such a difference - she\'s not confused by American spelling anymore.',
-      avatar: '👩‍💼'
-    }
-  ]
-
+export default function ProjectStorySection() {
   return (
     <section className="py-20 bg-galah-off-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-galah-grey-dark mb-4">
-            What <span className="galah-gradient-text">Fair Dinkum</span> Users Say
+            Why <span className="galah-gradient-text">Typing Galah</span> Exists
           </h2>
           <p className="text-xl text-galah-grey-mid max-w-3xl mx-auto">
-            From classrooms to lounge rooms, Aussies are loving their typing journey with us.
+            A little story about Australian English and typing frustration
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <div key={index} className="card hover:shadow-lg transition-shadow duration-300">
-              <div className="text-center mb-4">
-                <div className="text-4xl mb-3">{testimonial.avatar}</div>
-                <h4 className="font-semibold text-galah-grey-dark">{testimonial.name}</h4>
-                <p className="text-sm text-galah-pink-vibrant font-medium">{testimonial.role}</p>
-              </div>
-              <blockquote className="text-galah-grey-mid leading-relaxed italic">
-                "{testimonial.content}"
-              </blockquote>
-              <div className="flex justify-center mt-4">
-                <div className="flex space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-yellow-400 text-lg">⭐</span>
-                  ))}
-                </div>
-              </div>
+        <div className="max-w-4xl mx-auto">
+          {/* Personal Story */}
+          <div className="card mb-8">
+            <div className="text-center mb-6">
+              <div className="text-6xl mb-4">🤔</div>
+              <h3 className="text-2xl font-bold text-galah-grey-dark mb-2">The Problem</h3>
             </div>
-          ))}
-        </div>
+            <div className="text-galah-grey-mid leading-relaxed space-y-4">
+              <p>
+                Ever tried learning to type on those big American websites? You're there trying to improve your typing 
+                speed, but you keep having to type words like "color", "theater", and "aluminum" - words that just 
+                feel wrong to Australian fingers!
+              </p>
+              <p>
+                Even the British sites aren't quite right. We don't say "lift" - we say "elevator" sometimes too. 
+                We don't just say "biscuit" - we say "bikkie"! Where's the "arvo", "servo", and "barbie"?
+              </p>
+            </div>
+          </div>
 
-        {/* Stats Section */}
-        <div className="mt-16 text-center">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
-            <div className="card bg-white">
-              <div className="text-3xl font-bold text-galah-pink-vibrant mb-2">98%</div>
-              <div className="text-galah-grey-mid">Improved Accuracy</div>
-              <div className="text-sm text-galah-grey-mid mt-1">with Australian spelling</div>
+          {/* The Solution */}
+          <div className="card mb-8">
+            <div className="text-center mb-6">
+              <div className="text-6xl mb-4">💡</div>
+              <h3 className="text-2xl font-bold text-galah-grey-dark mb-2">The Solution</h3>
             </div>
-            <div className="card bg-white">
-              <div className="text-3xl font-bold text-galah-pink-vibrant mb-2">3x</div>
-              <div className="text-galah-grey-mid">Faster Learning</div>
-              <div className="text-sm text-galah-grey-mid mt-1">compared to generic platforms</div>
+            <div className="text-galah-grey-mid leading-relaxed space-y-4">
+              <p>
+                So I thought, "Why not make a typing site that actually speaks our language?" 
+                Not as a commercial venture, not to compete with the big players, but just as a fun project 
+                for fellow Aussies who want to practice typing with words that actually come out of our mouths.
+              </p>
+              <p>
+                This is Typing Galah - a little passion project celebrating Australian English, one keystroke at a time. 
+                It's free, it's made with love, and it's fair dinkum Australian.
+              </p>
             </div>
-            <div className="card bg-white">
-              <div className="text-3xl font-bold text-galah-pink-vibrant mb-2">500+</div>
-              <div className="text-galah-grey-mid">Aussie Phrases</div>
-              <div className="text-sm text-galah-grey-mid mt-1">and growing every week</div>
+          </div>
+
+          {/* What Makes it Special */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="card">
+              <div className="text-center mb-4">
+                <div className="text-3xl mb-2">🇦🇺</div>
+                <h4 className="font-semibold text-galah-grey-dark">Real Aussie Content</h4>
+              </div>
+              <p className="text-galah-grey-mid text-sm">
+                Not just British English with a few "mate"s thrown in. Real Australian phrases, 
+                slang, and spelling that you'd actually use in everyday conversation.
+              </p>
+            </div>
+
+            <div className="card">
+              <div className="text-center mb-4">
+                <div className="text-3xl mb-2">❤️</div>
+                <h4 className="font-semibold text-galah-grey-dark">Made for Fun</h4>
+              </div>
+              <p className="text-galah-grey-mid text-sm">
+                No corporate agenda, no premium upsells, no data harvesting. 
+                Just a simple tool made by an Aussie, for Aussies, because it needed to exist.
+              </p>
+            </div>
+          </div>
+
+          {/* Call to try it */}
+          <div className="text-center mt-12">
+            <div className="card bg-galah-pink-soft/10 inline-block">
+              <p className="text-galah-grey-dark text-lg mb-2">
+                <span className="text-2xl">🦜</span> Give it a go and see how it feels to type in your own language!
+              </p>
+              <p className="text-galah-grey-mid text-sm">
+                It's just a bit of fun, but hey - if it helps you get better at typing, that's bonzer!
+              </p>
             </div>
           </div>
         </div>
