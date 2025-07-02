@@ -40,6 +40,7 @@ interface TypingState {
 type TypingAction = 
   | { type: 'START_TYPING'; timestamp: number }
   | { type: 'KEY_PRESS'; payload: { char: string; timestamp: number; isCorrect: boolean; newIndex: number } }
+  | { type: 'BACKSPACE'; timestamp: number }
   | { type: 'UPDATE_TIME'; timeElapsed: number }
   | { type: 'COMPLETE_LESSON' }
   | { type: 'RESET_LESSON' }
@@ -73,6 +74,29 @@ function typingReducer(state: TypingState, action: TypingAction): TypingState {
         keyPresses: newKeyPresses,
         correctChars: isCorrect ? state.correctChars + 1 : state.correctChars,
         errors: newErrors
+      }
+    
+    case 'BACKSPACE':
+      if (state.currentIndex === 0) {
+        return state // Can't go back further
+      }
+      
+      const previousIndex = state.currentIndex - 1
+      const newKeyPressesAfterBackspace = state.keyPresses.slice(0, -1) // Remove last keypress
+      
+      // Remove error for the character we're deleting
+      const newErrorsAfterBackspace = new Set(state.errors)
+      newErrorsAfterBackspace.delete(previousIndex)
+      
+      // Recalculate correct chars based on remaining keypresses
+      const newCorrectChars = newKeyPressesAfterBackspace.filter(kp => kp.correct).length
+      
+      return {
+        ...state,
+        currentIndex: previousIndex,
+        keyPresses: newKeyPressesAfterBackspace,
+        correctChars: newCorrectChars,
+        errors: newErrorsAfterBackspace
       }
     
     case 'UPDATE_TIME':
@@ -154,13 +178,26 @@ export default function TypingInterface({ lessonText, lessonId, userId, onComple
     // Prevent default browser behavior
     e.preventDefault()
     
-    // Ignore modifier keys and special keys
-    if (e.ctrlKey || e.altKey || e.metaKey || e.key.length > 1) {
+    // Ignore modifier keys (except for standalone special keys we want to handle)
+    if (e.ctrlKey || e.altKey || e.metaKey) {
       return
     }
 
     // Ignore if lesson is complete
     if (state.isComplete) {
+      return
+    }
+
+    // Handle backspace
+    if (e.key === 'Backspace') {
+      if (state.currentIndex > 0) {
+        dispatch({ type: 'BACKSPACE', timestamp: Date.now() })
+      }
+      return
+    }
+
+    // Ignore other special keys (but allow normal characters)
+    if (e.key.length > 1) {
       return
     }
 
@@ -286,7 +323,7 @@ export default function TypingInterface({ lessonText, lessonId, userId, onComple
         <div className="flex justify-center">
           {!state.isComplete ? (
             <p className="text-galah-grey-mid text-center">
-              Click here and start typing! 
+              Click here and start typing! Use backspace to correct mistakes.
               <span className="block text-sm mt-1">
                 Type: <span className="font-mono bg-galah-pink-soft/20 px-2 py-1 rounded">
                   {getCurrentKey() || 'Complete!'}
@@ -331,6 +368,7 @@ export default function TypingInterface({ lessonText, lessonId, userId, onComple
               <li>• Focus on accuracy first, speed will come naturally</li>
               <li>• Use proper finger placement on the home row keys</li>
               <li>• Don't look at the keyboard - trust your muscle memory</li>
+              <li>• Use <span className="font-mono bg-galah-pink-soft/20 px-1 rounded">Backspace</span> to correct mistakes</li>
               <li>• Take breaks if your hands get tired</li>
             </ul>
           </div>
