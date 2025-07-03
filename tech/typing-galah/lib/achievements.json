@@ -1,0 +1,101 @@
+[
+  {
+    "id": "PROG_01",
+    "name": "First Steps",
+    "description": "Complete your very first lesson. Welcome to the mob!",
+    "category": "Progression",
+    "criteria": { "type": "total_lessons", "value": 1 }
+  },
+  {
+    "id": "PROG_02",
+    "name": "Bush Track Graduate",
+    "description": "Finish all 7 of the 'Beginner' lessons. You're on your way!",
+    "category": "Progression",
+    "criteria": {
+      "type": "lessons_by_difficulty",
+      "difficulty": "Beginner",
+      "value": 7
+    }
+  },
+  {
+    "id": "PROG_03",
+    "name": "Outback Adventurer",
+    "description": "Conquer all 7 of the 'Intermediate' lessons.",
+    "category": "Progression",
+    "criteria": {
+      "type": "lessons_by_difficulty",
+      "difficulty": "Intermediate",
+      "value": 7
+    }
+  },
+  {
+    "id": "PROG_04",
+    "name": "True Blue Legend",
+    "description": "Master all 6 of the 'Advanced' lessons. You're a legend!",
+    "category": "Progression",
+    "criteria": {
+      "type": "lessons_by_difficulty",
+      "difficulty": "Advanced",
+      "value": 6
+    }
+  },
+  {
+    "id": "PERF_01",
+    "name": "Speedy Galah",
+    "description": "Reach a typing speed of 70 WPM on any lesson.",
+    "category": "Performance",
+    "criteria": { "type": "max_wpm", "value": 70 }
+  },
+  {
+    "id": "PERF_02",
+    "name": "Accurate Kookaburra",
+    "description": "Achieve 99% or higher accuracy on 5 different lessons.",
+    "category": "Performance",
+    "criteria": { "type": "high_accuracy_count", "accuracy": 99, "value": 5 }
+  },
+  {
+    "id": "PERF_03",
+    "name": "Flawless Victory",
+    "description": "Get a perfect 100% accuracy on any lesson. Not a single typo!",
+    "category": "Performance",
+    "criteria": { "type": "perfect_accuracy", "value": 100 }
+  },
+  {
+    "id": "CONS_01",
+    "name": "Daily Dedication",
+    "description": "Complete at least one lesson each day for 3 days in a row.",
+    "category": "Consistency",
+    "criteria": { "type": "streak", "value": 3 }
+  },
+  {
+    "id": "CONS_02",
+    "name": "Weekly Warrior",
+    "description": "Complete at least one lesson each day for a full week.",
+    "category": "Consistency",
+    "criteria": { "type": "streak", "value": 7 }
+  },
+  {
+    "id": "CONS_03",
+    "name": "Word Collector",
+    "description": "Successfully type 1,000 words in total across all lessons.",
+    "category": "Consistency",
+    "criteria": { "type": "total_words", "value": 1000 }
+  },
+  {
+    "id": "SPEC_01",
+    "name": "It's the Vibe",
+    "description": "Successfully type the lesson titled 'The Film \"The Castle\"'.",
+    "category": "Special",
+    "criteria": {
+      "type": "specific_lesson",
+      "lesson_title": "The Film 'The Castle'"
+    }
+  },
+  {
+    "id": "SPEC_02",
+    "name": "Fair Dinkum",
+    "description": "Successfully type the phrase 'fair dinkum' without any errors.",
+    "category": "Special",
+    "criteria": { "type": "specific_phrase", "phrase": "fair dinkum" }
+  }
+]

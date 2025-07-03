@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
-import achievementsData from '@/supabase/functions/aware-achievements/_shared/achievements.json'
+import achievementsData from '@/lib/achievements.json'
 import Button from '@/components/ui/Button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import PageWrapper from '@/components/utils/PageWrapper'

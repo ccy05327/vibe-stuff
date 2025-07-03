@@ -4,15 +4,7 @@ const fs = require("fs");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env.local") });
 
 // Read achievements data
-const achievementsPath = path.join(
-  __dirname,
-  "..",
-  "supabase",
-  "functions",
-  "aware-achievements",
-  "_shared",
-  "achievements.json"
-);
+const achievementsPath = path.join(__dirname, "..", "lib", "achievements.json");
 const achievementsData = JSON.parse(fs.readFileSync(achievementsPath, "utf8"));
 
 async function seedAchievements() {
