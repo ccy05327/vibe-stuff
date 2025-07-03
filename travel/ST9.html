@@ -305,8 +305,8 @@
                 <span class="font-mono font-semibold">NT$ 5,397</span>
               </li>
               <li class="flex justify-between items-center">
-                <span>� 機場接送 (單程預估)</span>
-                <span class="font-mono font-semibold">NT$ 154</span>
+                <span>� 機場接送 (往返)</span>
+                <span class="font-mono font-semibold">NT$ 308</span>
               </li>
               <li class="flex justify-between items-center">
                 <span>�📄 越南電子簽證</span>
@@ -324,13 +324,13 @@
                 class="border-t pt-3 mt-3 flex justify-between items-center text-lg font-bold"
               >
                 <span>💰 基礎總預估</span>
-                <span class="font-mono text-[#A67B5B]">NT$ 8,761</span>
+                <span class="font-mono text-[#A67B5B]">NT$ 9,540</span>
               </li>
             </ul>
             <p class="mt-4 text-sm text-gray-500">
               * 已確認套餐：機票+住宿 NT$10,794
-              (兩人總計)。每人基礎總預算NT$8,761，距離目標預算NT$15,000仍有近NT$6,239的彈性空間！機場交通費以Grab單程約120,000
-              VND (NT$154)計算。
+              (兩人總計)。每人基礎總預算NT$9,540，距離目標預算NT$15,000仍有近NT$5,460的彈性空間！機場交通費以Grab往返約240,000
+              VND (NT$308)計算。
             </p>
           </div>
           <div class="chart-container mobile-chart">
@@ -478,7 +478,7 @@
         hidden
       >
         <h2 class="text-2xl font-bold mb-4 text-[#A67B5B]">
-          每日行程：五日探索與彈性
+          每日行程：六日探索與彈性
         </h2>
         <p class="text-gray-700 leading-relaxed mb-6">
           以下行程圍繞每日主題設計，結合了必訪的核心景點與提供個人空間的「彈性選項」。每個地點都附有地圖連結，並標示了建議的支付方式與雙幣別價格，讓你對預算和現金使用更有掌握。
@@ -588,7 +588,7 @@
               datasets: [
                 {
                   label: "預算分配",
-                  data: [5397, 2970, 865, 154],
+                  data: [5397, 2970, 865, 308],
                   backgroundColor: ["#A67B5B", "#E0DACE", "#C5A481", "#BDB7AB"],
                   borderColor: "#F8F5F2",
                   borderWidth: 4,
@@ -782,8 +782,31 @@
             ],
           },
           day5: {
-            title: "Day 5: 告別晚餐與準備",
-            theme: "最後探索與回憶",
+            title: "Day 5: 雙城記",
+            theme: "對比的生活方式",
+            items: [
+              {
+                time: "10:00",
+                activity: "探索草田區 (第二郡)",
+                desc: '參觀寧靜的外籍人士聚居區，在風格獨特的咖啡館享用早午餐。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 25 分鐘</span><span class="timeline-desc-item">💰 <b>預算:</b> 約 250,000 VND (約 NT$321) / 人 <span class="text-green-600 font-semibold">(可刷卡)</span></span>',
+                map: "https://maps.app.goo.gl/fQ8yF6aV6b5Z8zLq6",
+              },
+              {
+                time: "14:00",
+                activity: "在地巷弄探險 (海鮮)",
+                desc: '探索第四郡以蝸牛及貝類聞名的永慶街。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 20 分鐘</span><span class="timeline-desc-item">💰 <b>預算:</b> 約 250,000 VND (約 NT$321) / 人 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
+                map: "https://maps.app.goo.gl/1h47P82fH7T21fQ36",
+              },
+              {
+                time: "19:00",
+                activity: "告別晚宴 (火鍋)",
+                desc: '選擇一頓難忘的晚餐，如充滿樂趣的越式火鍋。<span class="timeline-desc-item">� <b>交通:</b> GrabBike</span><span class="timeline-desc-item">�💰 <b>預算:</b> 約 300,000 VND (約 NT$385) / 人 <span class="text-green-600 font-semibold">(可刷卡)</span></span>',
+              },
+            ],
+          },
+          day6: {
+            title: "Day 6: 最終巡禮",
+            theme: "美食告別與伴手禮",
             items: [
               {
                 time: "10:00",
@@ -793,34 +816,19 @@
               },
               {
                 time: "12:00",
-                activity: "【彈性】濱城市場伴手禮",
+                activity: "濱城市場伴手禮",
                 desc: '進行最後的採買（提醒：殺價是必備技能）。<span class="timeline-desc-item">🛵 <b>交通:</b> GrabBike</span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 15 分鐘</span><span class="timeline-desc-item">💰 <b>預算:</b> 依個人需求 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
                 map: "https://maps.app.goo.gl/R3c5gL5Q4dGq4HqV7",
               },
               {
-                time: "14:00",
+                time: "13:30",
                 activity: "最後的午餐",
                 desc: '品嚐旅途中最回味的一餐，或嘗試錯過的街頭小吃。<span class="timeline-desc-item">💰 <b>預算:</b> 約 100,000 VND (約 NT$128) / 人 <span class="text-red-600 font-semibold">(現金為主)</span></span>',
               },
               {
-                time: "16:00",
-                activity: "【彈性】放鬆時間",
-                desc: '可選擇體驗越式洗頭或足底按摩，為晚上的飛行做準備。<span class="timeline-desc-item">💰 <b>預算:</b> 約 250,000 VND (約 NT$321) / 人 <span class="text-green-600 font-semibold">(可刷卡)</span></span>',
-              },
-              {
-                time: "19:00",
-                activity: "告別晚餐",
-                desc: '享用在越南的最後一頓晚餐 <span class="text-green-600 font-semibold">(可刷卡)</span>。<span class="timeline-desc-item">💰 <b>預算:</b> 約 200,000 VND (約 NT$256) / 人</span>',
-              },
-              {
-                time: "21:30",
-                activity: "出發前往機場",
-                desc: '返回住宿領取行李，預訂Grab前往機場。<span class="timeline-desc-item">🚗 <b>交通:</b> GrabCar <span class="text-green-600 font-semibold">(綁定信用卡支付)</span></span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 45-60 分鐘</span><span class="timeline-desc-item">💰 <b>費用:</b> 約 120,000 VND (約 NT$154)</span>',
-              },
-              {
-                time: "22:15",
-                activity: "抵達機場 & 準備返程",
-                desc: "抵達新山一機場(SGN)，準備辦理登機手續。<br>✈️ <b>航班:</b> 2025.08.24 (日) SGN 00:15 → TPE 04:55",
+                time: "15:00",
+                activity: "前往機場",
+                desc: '返回住宿領取行李，預訂Grab前往機場，準備搭機返家。<span class="timeline-desc-item">🚗 <b>交通:</b> GrabCar <span class="text-green-600 font-semibold">(綁定信用卡支付)</span></span><span class="timeline-desc-item">🕒 <b>時間:</b> 約 45-60 分鐘</span><span class="timeline-desc-item">💰 <b>費用:</b> 約 120,000 VND (約 NT$154)</span>',
               },
             ],
           },
@@ -830,8 +838,8 @@
         const timelineContent = document.getElementById("timeline-content");
 
         if (timelineNav && timelineContent) {
-          // Only show days 1-5 for the 5-night trip
-          const daysToShow = ["day1", "day2", "day3", "day4", "day5"];
+          // Show all 6 days for the 6-day trip
+          const daysToShow = ["day1", "day2", "day3", "day4", "day5", "day6"];
           daysToShow.forEach((day, index) => {
             const dayNum = index + 1;
             const button = document.createElement("button");
