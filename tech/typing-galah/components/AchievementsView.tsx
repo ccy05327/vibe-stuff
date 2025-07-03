@@ -25,6 +25,12 @@ interface Achievement {
 interface UserAchievement {
   achievement_id: string
   achieved_at: string
+  achievements?: {
+    id: string
+    code: string
+    name: string
+    description: string
+  }
 }
 
 interface AchievementWithStatus extends Achievement {
