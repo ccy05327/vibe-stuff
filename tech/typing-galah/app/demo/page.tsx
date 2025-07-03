@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import TypingInterface from '@/components/TypingInterface'
+import GalahRescueGame from '@/components/GalahRescueGame'
 
 const DEMO_LESSONS = [
   {
@@ -144,6 +145,22 @@ export default function DemoPage() {
           userId="demo-user"
           onComplete={handleLessonComplete}
         />
+
+        {/* Typing Games Section */}
+        <div className="mt-16">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-galah-grey-dark mb-4">
+              <span className="galah-gradient-text">Typing Games</span>
+            </h2>
+            <p className="text-xl text-galah-grey-mid max-w-3xl mx-auto mb-6">
+              Practice typing with fun, Australian-themed games! Type the falling words to save the galahs.
+            </p>
+          </div>
+          
+          <div className="card bg-white">
+            <GalahRescueGame />
+          </div>
+        </div>
 
         {/* Call to Action */}
         <div className="mt-12 text-center">
