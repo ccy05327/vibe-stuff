@@ -286,29 +286,30 @@
         class="content-section bg-white p-6 sm:p-8 rounded-2xl shadow-lg mobile-content"
       >
         <h2 class="text-2xl font-bold mb-4 text-[#A67B5B]">
-          住宿選擇決定最終預算！
+          已確認預算：比預期更經濟！
         </h2>
         <p class="text-gray-700 leading-relaxed mb-6">
-          依據不同的住宿選擇，你的基礎總預算將落在 NT$9,300 至 NT$11,400
-          之間，無論如何都遠低於最初的1萬5目標。這代表你擁有極大的彈性資金，可以自由地用於購物或體驗更多活動。已確認入住
+          已確認機票+住宿套餐價格為 NT$10,794
+          (兩人總計，未含1.5%處理費)。加上簽證、SIM卡及基礎花費後，每人預算約
+          NT$8,761，遠低於最初的1萬5目標。這代表你擁有極大的彈性資金，可以自由地用於購物或體驗更多活動。已確認入住
           Nicey Ngan Ha Hotel (5晚)。
         </p>
         <div class="grid md:grid-cols-2 gap-8 items-center">
           <div>
             <h3 class="text-xl font-semibold mb-4 text-gray-800">
-              每人基礎總預算 (依住宿選擇)
+              每人基礎總預算 (已確認價格)
             </h3>
             <ul class="space-y-3 text-gray-700 mobile-budget-list">
               <li class="flex justify-between items-center">
-                <span>✈️ 來回機票 (TPE-SGN)</span>
-                <span class="font-mono font-semibold">NT$ 3,571</span>
+                <span>✈️ 機票+住宿套餐 (5晚/人)</span>
+                <span class="font-mono font-semibold">NT$ 5,397</span>
               </li>
               <li class="flex justify-between items-center">
-                <span>🏨 住宿 (5晚/人) - Nicey Ngan Ha Hotel</span>
-                <span class="font-mono font-semibold">NT$ 1,897</span>
+                <span>� 機場接送 (單程預估)</span>
+                <span class="font-mono font-semibold">NT$ 154</span>
               </li>
               <li class="flex justify-between items-center">
-                <span>📄 越南電子簽證</span>
+                <span>�📄 越南電子簽證</span>
                 <span class="font-mono font-semibold">NT$ 730</span>
               </li>
               <li class="flex justify-between items-center">
@@ -323,12 +324,13 @@
                 class="border-t pt-3 mt-3 flex justify-between items-center text-lg font-bold"
               >
                 <span>💰 基礎總預估</span>
-                <span class="font-mono text-[#A67B5B]">NT$ 9,233</span>
+                <span class="font-mono text-[#A67B5B]">NT$ 8,761</span>
               </li>
             </ul>
             <p class="mt-4 text-sm text-gray-500">
-              * 已確認住宿：Nicey Ngan Ha Hotel
-              (5晚)。總預算NT$9,233，距離目標預算NT$15,000仍有近NT$5,767的彈性空間。
+              * 已確認套餐：機票+住宿 NT$10,794
+              (兩人總計)。每人基礎總預算NT$8,761，距離目標預算NT$15,000仍有近NT$6,239的彈性空間！機場交通費以Grab單程約120,000
+              VND (NT$154)計算。
             </p>
           </div>
           <div class="chart-container mobile-chart">
@@ -433,7 +435,10 @@
               <p><strong>入住期間：</strong>2025.08.18 - 2025.08.23 (5晚)</p>
               <p><strong>房型：</strong>雙床房</p>
               <p><strong>位置：</strong>第一郡，機場車程約 25-40 分鐘</p>
-              <p><strong>費用：</strong>每人 NT$1,897 (5晚總計)</p>
+              <p>
+                <strong>費用：</strong>每人 NT$5,397 (機票+住宿套餐 NT$10,794÷2)
+              </p>
+              <p><strong>備註：</strong>未含1.5%處理費</p>
             </div>
           </div>
           <div>
@@ -455,7 +460,9 @@
               🛵 當地交通：Grab是你的好朋友
             </h3>
             <p class="mb-4 text-gray-700">
-              在胡志明市，Grab是最高效、經濟的交通方式。單人短程移動時，GrabBike（機車）是穿梭小巷、體驗在地風情的絕佳選擇。<span
+              在胡志明市，Grab是最高效、經濟的交通方式。單人短程移動時，GrabBike（機車）是穿梭小巷、體驗在地風情的絕佳選擇。<br /><br />
+              <strong>🚗 機場接送確認：</strong>已規劃使用Grab，單程約120,000
+              VND (約NT$154)，往返約NT$308。<span
                 class="block mt-2 font-semibold text-green-700"
                 >✓ 支付秘訣：建議出發前在 Grab App
                 內綁定信用卡，旅途中所有車資皆可無現金支付，方便又安全。</span
@@ -577,11 +584,11 @@
           budgetChartInstance = new Chart(budgetCtx.getContext("2d"), {
             type: "doughnut",
             data: {
-              labels: ["機票", "基礎花費", "住宿", "簽證 & SIM"],
+              labels: ["機票+住宿", "基礎花費", "簽證 & SIM", "機場交通"],
               datasets: [
                 {
                   label: "預算分配",
-                  data: [3571, 2970, 1897, 865],
+                  data: [5397, 2970, 865, 154],
                   backgroundColor: ["#A67B5B", "#E0DACE", "#C5A481", "#BDB7AB"],
                   borderColor: "#F8F5F2",
                   borderWidth: 4,
