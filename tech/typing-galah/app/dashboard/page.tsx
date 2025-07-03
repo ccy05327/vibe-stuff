@@ -4,6 +4,7 @@ import DashboardStats from '@/components/DashboardStats'
 import LessonProgress from '@/components/LessonProgress'
 import RecentAchievements from '@/components/RecentAchievements'
 import QuickStart from '@/components/QuickStart'
+import TestAchievements from '@/components/TestAchievements'
 
 export default async function DashboardPage() {
   const supabase = createServerSupabaseClient()
@@ -46,6 +47,9 @@ export default async function DashboardPage() {
           <div className="space-y-8">
             {/* Recent Achievements */}
             <RecentAchievements userId={session.user.id} />
+
+            {/* Test Achievements (for development) */}
+            <TestAchievements />
 
             {/* Motivational Quote */}
             <div className="card bg-galah-pink-vibrant text-white">

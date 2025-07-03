@@ -117,7 +117,7 @@
         "dependencies": [
           2
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 301,
@@ -144,7 +144,7 @@
             "title": "Design & Build Typing Game with Cursor",
             "description": "Create the first interactive typing game to make practice more fun.",
             "details": "In Cursor, prompt: 'Create a new React component for a typing game called \"Galah Rescue\". Words will fall from the top of the screen. The user must type the word correctly before it hits the bottom to score a point. Use simple CSS animations for the falling words. The component should be self-contained and fetch random words from a predefined list.'",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               205
             ]
@@ -154,7 +154,7 @@
             "title": "Design Achievement System with Gemini",
             "description": "Conceptualize a system of badges and achievements to motivate users.",
             "details": "Using Gemini, prompt: 'Design an achievement system for a typing app. Create 10 unique achievements with fun, Australian-themed names, descriptions, and unlock criteria. Examples: \"Speedy Galah\" (Achieve 70 WPM), \"Accurate Kookaburra\" (Get 99% accuracy 5 times in a row), \"Fair Dinkum Finisher\" (Complete all beginner lessons). Present this as a table.'",
-            "status": "pending",
+            "status": "done",
             "dependencies": []
           },
           {
@@ -162,7 +162,7 @@
             "title": "Implement Achievement System Backend with Cursor",
             "description": "Build the backend logic to track and award achievements.",
             "details": "In Cursor, prompt: 'Create a Supabase Edge Function named `award-achievement`. This function should be triggered whenever a new row is inserted into `lesson_results`. Inside the function, check the user's performance against the criteria for all achievements. If a criterion is met and the user doesn't already have the achievement, insert a new row into a `user_achievements` table.'",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               304,
               204
@@ -213,7 +213,7 @@
     ],
     "metadata": {
       "created": "2025-07-02T11:30:00.000Z",
-      "updated": "2025-07-02T12:25:30.655Z",
+      "updated": "2025-07-03T04:29:20.699Z",
       "description": "Task list for the Typing Galah project, designed for an AI-assisted workflow."
     }
   }

@@ -117,6 +117,7 @@ export type Database = {
       achievements: {
         Row: {
           id: string
+          code: string
           name: string
           description: string
           icon_url: string | null
@@ -124,6 +125,7 @@ export type Database = {
         }
         Insert: {
           id?: string
+          code: string
           name: string
           description: string
           icon_url?: string | null
@@ -131,6 +133,7 @@ export type Database = {
         }
         Update: {
           id?: string
+          code?: string
           name?: string
           description?: string
           icon_url?: string | null

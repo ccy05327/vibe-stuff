@@ -44,6 +44,9 @@ export default function Navbar() {
                   <Link href="/games" className="nav-link">
                     Games
                   </Link>
+                  <Link href="/achievements" className="nav-link">
+                    Achievements
+                  </Link>
                   <Link href="/progress" className="nav-link">
                     Progress
                   </Link>
@@ -154,6 +157,13 @@ export default function Navbar() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Games
+                </Link>
+                <Link
+                  href="/achievements"
+                  className="block px-3 py-2 text-base font-medium text-galah-grey-dark hover:text-galah-pink-vibrant hover:bg-gray-50 rounded-md"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Achievements
                 </Link>
                 <Link
                   href="/progress"

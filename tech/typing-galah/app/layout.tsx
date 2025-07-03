@@ -2,6 +2,7 @@ import './globals.css'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import Navbar from '@/components/Navbar'
 import AuthProvider from '@/components/AuthProvider'
+import { AchievementNotificationManager } from '@/components/AchievementNotification'
 
 export const metadata = {
   title: 'Typing Galah | Australia\'s Own Touch Typing Platform',
@@ -54,6 +55,7 @@ export default async function RootLayout({
               </div>
             </footer>
           </div>
+          <AchievementNotificationManager />
         </AuthProvider>
       </body>
     </html>
