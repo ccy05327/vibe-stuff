@@ -23,6 +23,10 @@ const nextConfig = {
       )
     );
 
+    const path = require('path');
+    config.resolve = config.resolve || {};
+    config.resolve.alias = config.resolve.alias || {};
+    config.resolve.alias['@supabase/functions-js'] = path.resolve(__dirname, 'vendor/@supabase/functions-js');
     return config;
   },
   // For production deployment - ignore errors temporarily
@@ -33,5 +37,8 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 };
-
+console.log(
+  "Webpack alias for @supabase/functions-js:",
+  require.resolve("./lib/supabase-functions-stub.js")
+);
 module.exports = nextConfig;
