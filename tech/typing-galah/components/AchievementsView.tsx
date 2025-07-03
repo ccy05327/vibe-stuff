@@ -250,7 +250,7 @@ export default function AchievementsView({ userId }: { userId: string }) {
     fetchAchievements()
   }, [userId])
 
-  const categories = ['All', ...new Set(achievementsData.map(a => a.category))]
+  const categories = ['All', ...Array.from(new Set(achievementsData.map(a => a.category)))]
   const filteredAchievements = selectedCategory === 'All' 
     ? achievements 
     : achievements.filter(a => a.category === selectedCategory)
