@@ -30,7 +30,12 @@ interface UserAchievement {
     code: string
     name: string
     description: string
-  }
+  } | {
+    id: string
+    code: string
+    name: string
+    description: string
+  }[]
 }
 
 interface AchievementWithStatus extends Achievement {
@@ -209,8 +214,10 @@ export default function AchievementsView({ userId }: { userId: string }) {
         // Create earned achievements map using achievement codes
         const earnedMap = new Map<string, { achieved_at: string }>()
         userAchievements?.forEach(ua => {
-          if (ua.achievements?.code) {
-            earnedMap.set(ua.achievements.code, { achieved_at: ua.achieved_at })
+          // Handle both single object and array cases
+          const achievement = Array.isArray(ua.achievements) ? ua.achievements[0] : ua.achievements
+          if (achievement?.code) {
+            earnedMap.set(achievement.code, { achieved_at: ua.achieved_at })
           }
         })
 
