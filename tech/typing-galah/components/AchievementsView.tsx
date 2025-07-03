@@ -14,7 +14,7 @@ interface Achievement {
   category: string
   criteria: {
     type: string
-    value: number
+    value?: number
     difficulty?: string
     accuracy?: number
     lesson_title?: string
@@ -92,20 +92,20 @@ export default function AchievementsView({ userId }: { userId: string }) {
     
     switch (criteria.type) {
       case 'total_lessons':
-        return safePercentage(stats.totalLessons, criteria.value)
+        return criteria.value ? safePercentage(stats.totalLessons, criteria.value) : 0
       case 'lessons_by_difficulty':
         const difficultyCount = stats.lessonsPerDifficulty[criteria.difficulty!] || 0
-        return safePercentage(difficultyCount, criteria.value)
+        return criteria.value ? safePercentage(difficultyCount, criteria.value) : 0
       case 'max_wpm':
-        return safePercentage(stats.maxWpm, criteria.value)
+        return criteria.value ? safePercentage(stats.maxWpm, criteria.value) : 0
       case 'high_accuracy_count':
-        return safePercentage(stats.highAccuracyLessons, criteria.value)
+        return criteria.value ? safePercentage(stats.highAccuracyLessons, criteria.value) : 0
       case 'perfect_accuracy':
         return stats.perfectAccuracyLessons > 0 ? 100 : 0
       case 'streak':
-        return safePercentage(stats.streak, criteria.value)
+        return criteria.value ? safePercentage(stats.streak, criteria.value) : 0
       case 'total_words':
-        return safePercentage(stats.totalWords, criteria.value)
+        return criteria.value ? safePercentage(stats.totalWords, criteria.value) : 0
       case 'specific_lesson':
         // Check if user has completed the specific lesson
         const hasCompletedLesson = stats.attempts.some(attempt => {
@@ -113,6 +113,10 @@ export default function AchievementsView({ userId }: { userId: string }) {
           return false
         })
         return hasCompletedLesson ? 100 : 0
+      case 'specific_phrase':
+        // Check if user has typed the specific phrase correctly
+        // This would need implementation based on your lesson content
+        return 0
       default:
         return 0
     }
