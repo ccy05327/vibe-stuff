@@ -4,7 +4,11 @@ import { motion } from 'framer-motion'
 import React from 'react'
 
 // Motion Button wrapper
-interface MotionButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onDrag' | 'onDragEnd' | 'onDragEnter' | 'onDragExit' | 'onDragLeave' | 'onDragOver' | 'onDragStart' | 'onDrop'> {
+interface MotionButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 
+  | 'onDrag' | 'onDragEnd' | 'onDragEnter' | 'onDragExit' | 'onDragLeave' | 'onDragOver' | 'onDragStart' | 'onDrop'
+  | 'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration'
+  | 'onTransitionEnd'
+> {
   children: React.ReactNode
   whileHover?: any
   whileTap?: any
@@ -25,7 +29,11 @@ export const MotionButton = React.forwardRef<HTMLButtonElement, MotionButtonProp
 MotionButton.displayName = 'MotionButton'
 
 // Motion Div wrapper
-interface MotionDivProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onDrag' | 'onDragEnd' | 'onDragEnter' | 'onDragExit' | 'onDragLeave' | 'onDragOver' | 'onDragStart' | 'onDrop'> {
+interface MotionDivProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 
+  | 'onDrag' | 'onDragEnd' | 'onDragEnter' | 'onDragExit' | 'onDragLeave' | 'onDragOver' | 'onDragStart' | 'onDrop'
+  | 'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration'
+  | 'onTransitionEnd'
+> {
   children: React.ReactNode
   whileHover?: any
   whileTap?: any
