@@ -70,14 +70,18 @@ export default function RecentAchievements({ userId }: { userId: string }) {
         }
 
         // Transform the data
-        const recentAchievements: AchievementWithIcon[] = userAchievements?.map(ua => ({
-          id: ua.achievements.code,
-          name: ua.achievements.name,
-          description: ua.achievements.description,
-          icon_url: ua.achievements.icon_url,
-          achieved_at: ua.achieved_at,
-          icon: getAchievementIcon(ua.achievements.code)
-        })) || []
+        const recentAchievements: AchievementWithIcon[] = userAchievements?.map(ua => {
+          // Handle both single object and array cases
+          const achievement = Array.isArray(ua.achievements) ? ua.achievements[0] : ua.achievements
+          return {
+            id: achievement?.code || '',
+            name: achievement?.name || '',
+            description: achievement?.description || '',
+            icon_url: achievement?.icon_url || null,
+            achieved_at: ua.achieved_at,
+            icon: getAchievementIcon(achievement?.code || '')
+          }
+        }).filter(a => a.id) || []
 
         setAchievements(recentAchievements)
       } catch (error) {
