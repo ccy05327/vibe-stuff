@@ -7,7 +7,33 @@
         "description": "Initial setup of the project, including authentication and deployment.",
         "priority": "critical",
         "dependencies": [],
-        "status": "done"
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 101,
+            "title": "Initial SPA Scaffolding",
+            "description": "Create the initial single-page application structure.",
+            "status": "done"
+          },
+          {
+            "id": 102,
+            "title": "Setup Supabase Backend",
+            "description": "Initialize a new Supabase project for backend services.",
+            "status": "done"
+          },
+          {
+            "id": 103,
+            "title": "Implement User Authentication",
+            "description": "Connect the frontend to Supabase Auth to handle user sign-up, sign-in, and session management.",
+            "status": "done"
+          },
+          {
+            "id": 104,
+            "title": "Deploy to Vercel",
+            "description": "Connect the GitHub repository to Vercel for continuous deployment.",
+            "status": "done"
+          }
+        ]
       },
       {
         "id": 2,
@@ -17,7 +43,39 @@
         "dependencies": [
           1
         ],
-        "status": "done"
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 201,
+            "title": "Design Core Database Schema",
+            "description": "Create the initial tables in Supabase to store user data, lessons, and results.",
+            "status": "done"
+          },
+          {
+            "id": 202,
+            "title": "Build Typing Interface Component",
+            "description": "Create the main React component where the user performs the typing test.",
+            "status": "done"
+          },
+          {
+            "id": 203,
+            "title": "Implement WPM & Accuracy Logic",
+            "description": "Add the client-side logic to calculate Words Per Minute and accuracy.",
+            "status": "done"
+          },
+          {
+            "id": 204,
+            "title": "Save Lesson Results",
+            "description": "Create the function to persist the user's results to the database.",
+            "status": "done"
+          },
+          {
+            "id": 205,
+            "title": "Create User Dashboard Page",
+            "description": "Build a page where users can see their progress and stats.",
+            "status": "done"
+          }
+        ]
       },
       {
         "id": 3,
@@ -27,7 +85,39 @@
         "dependencies": [
           2
         ],
-        "status": "done"
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 301,
+            "title": "Generate Australian Curriculum Content",
+            "description": "Create a rich set of Australian-themed typing lessons.",
+            "status": "done"
+          },
+          {
+            "id": 302,
+            "title": "Create Curriculum Seeding Script",
+            "description": "Write a script to upload the generated lesson content into the Supabase database.",
+            "status": "done"
+          },
+          {
+            "id": 303,
+            "title": "Design & Build Typing Game",
+            "description": "Create the first interactive typing game to make practice more fun.",
+            "status": "done"
+          },
+          {
+            "id": 304,
+            "title": "Design Achievement System",
+            "description": "Conceptualize a system of badges and achievements to motivate users.",
+            "status": "done"
+          },
+          {
+            "id": 305,
+            "title": "Implement Achievement System Backend",
+            "description": "Build the backend logic to track and award achievements.",
+            "status": "done"
+          }
+        ]
       },
       {
         "id": 4,
@@ -35,37 +125,27 @@
         "description": "Polish the application's look and feel, ensuring a high-quality, accessible, and enjoyable user experience.",
         "priority": "medium",
         "dependencies": [
-          2
+          3
         ],
         "status": "done",
         "subtasks": [
           {
             "id": 401,
-            "title": "Review and Refine Colour Palette with Gemini",
+            "title": "Review and Refine Colour Palette",
             "description": "Ensure the colours are accessible and aesthetically pleasing.",
-            "details": "Analyse the current Tailwind theme for WCAG AA contrast compliance and visual harmony. Suggest specific hex code changes to improve accessibility without compromising the brand's feel.",
-            "status": "done",
-            "dependencies": []
+            "status": "done"
           },
           {
             "id": 402,
-            "title": "Create UI Component Library with Cursor",
+            "title": "Create UI Component Library",
             "description": "Standardize all UI elements like buttons, inputs, and modals into a reusable component library.",
-            "details": "In Cursor, prompt: 'Based on my existing pages, identify common UI elements (Button, Input, Card, Modal). Create a new directory `/components/ui` and generate a generic, reusable React component for each one. Use Tailwind CSS and `cva` (class-variance-authority) for flexible styling. Then, refactor one of my existing pages to use these new UI components.'",
-            "status": "done",
-            "dependencies": [
-              205
-            ]
+            "status": "done"
           },
           {
             "id": 403,
-            "title": "Add Page Transitions and Animations with Cursor",
+            "title": "Add Page Transitions and Animations",
             "description": "Implement smooth animations to make the user experience more fluid and engaging.",
-            "details": "In Cursor, prompt: 'Integrate the `framer-motion` library into my React project. Apply a simple fade-in animation to all main page components as they mount. Also, add a subtle `whileHover` scale effect to all clickable cards and buttons in the Dashboard.'",
-            "status": "done",
-            "dependencies": [
-              402
-            ]
+            "status": "done"
           }
         ]
       },
@@ -77,41 +157,31 @@
         "dependencies": [
           4
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": [
           {
             "id": 501,
-            "title": "Build Lessons Page with Cursor",
+            "title": "Build Lessons Page",
             "description": "Create a page that lists all available lessons, grouped by difficulty.",
-            "details": "In Cursor, prompt: 'Create a new page component `Lessons.js`. Fetch all lessons from the Supabase `lessons` table. Display them in sections grouped by difficulty ('Beginner', 'Intermediate', 'Advanced'). Each lesson should be a clickable card that navigates the user to the typing test for that specific lesson.'",
-            "status": "pending",
-            "dependencies": []
+            "status": "pending"
           },
           {
             "id": 502,
-            "title": "Build Progress Page with Cursor",
+            "title": "Build Progress Page",
             "description": "Create a detailed progress page with charts and statistics.",
-            "details": "In Cursor, prompt: 'Create a `Progress.js` page. Use Chart.js to create two visualisations: 1. A line chart showing the user's WPM over the last 10 lessons. 2. A bar chart showing the user's average accuracy per difficulty level. Also include stat cards for 'Total Time Practiced' and 'Best WPM'.'",
-            "status": "pending",
-            "dependencies": [
-              501
-            ]
+            "status": "pending"
           },
           {
             "id": 503,
-            "title": "Build User Profile & Settings Pages with Cursor",
+            "title": "Build User Profile & Settings Pages",
             "description": "Allow users to view their profile and update their settings.",
-            "details": "In Cursor, create two pages. `Profile.js`: A simple page that displays the user's username and join date. `Settings.js`: A page that allows the user to update their username and provides a button to log out. The username update should call a Supabase function to update the `profiles` table.'",
-            "status": "pending",
-            "dependencies": []
+            "status": "pending"
           },
           {
             "id": 504,
             "title": "Build Static About Page",
             "description": "Create a simple, static 'About' page explaining the project's mission.",
-            "details": "Create a new page `About.js`. Write a brief summary of why Typing Galah was created, its focus on Australian English, and a thank you to the open-source tools used.",
-            "status": "pending",
-            "dependencies": []
+            "status": "pending"
           }
         ]
       },
@@ -129,37 +199,27 @@
             "id": 601,
             "title": "Conduct Cross-Browser & Mobile Testing",
             "description": "Ensure the application works and looks great on all major browsers and mobile devices.",
-            "details": "Manually test the full user flow on Chrome, Firefox, and Safari. Use browser developer tools to simulate various mobile screen sizes (iPhone, Android). Fix any layout or styling issues that arise.",
-            "status": "pending",
-            "dependencies": []
+            "status": "pending"
           },
           {
             "id": 602,
             "title": "Implement User Feedback",
             "description": "Ask a few friends to test the site and provide feedback on their experience.",
-            "details": "Share the live Vercel link with 3-5 testers. Ask them to complete a few lessons, play the game, and unlock an achievement. Collect their feedback on what was confusing, difficult, or enjoyable. Create small tasks to address any critical feedback.",
-            "status": "pending",
-            "dependencies": [
-              601
-            ]
+            "status": "pending"
           },
           {
             "id": 603,
-            "title": "Final Code Cleanup & Refactor with Cursor",
+            "title": "Final Code Cleanup & Refactor",
             "description": "Perform a final pass on the codebase to ensure it's clean and maintainable.",
-            "details": "In Cursor, go through each major component and prompt: 'Review this component. Are there any opportunities to refactor for clarity, remove unused code, or improve comments?'",
-            "status": "pending",
-            "dependencies": [
-              602
-            ]
+            "status": "pending"
           }
         ]
       }
     ],
     "metadata": {
       "created": "2025-07-02T11:30:00.000Z",
-      "updated": "2025-07-03T06:18:00.857Z",
-      "description": "Task list for the Typing Galah project, designed for an AI-assisted workflow. Now includes EPIC 5 and 6."
+      "updated": "2025-07-03T06:53:10.886Z",
+      "description": "Task list for the Typing Galah project, designed for an AI-assisted workflow. Includes complete history."
     }
   }
 }
