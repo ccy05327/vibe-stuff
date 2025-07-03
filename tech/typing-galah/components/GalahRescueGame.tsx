@@ -29,6 +29,8 @@ const GalahRescueGame: React.FC = () => {
   const [lives, setLives] = useState<number>(5);
   const [gameState, setGameState] = useState<GameState>('ready');
 
+
+
   // Handle input changes and word matching
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -68,7 +70,7 @@ const GalahRescueGame: React.FC = () => {
     setGameState('ready');
   };
 
-  // Start game when input is focused
+  // Start game when input is focused or button is clicked
   const startGame = () => {
     if (gameState === 'ready') {
       setGameState('playing');
@@ -89,31 +91,36 @@ const GalahRescueGame: React.FC = () => {
     // Falling Interval: Move words down every 100ms
     const fallingInterval = setInterval(() => {
       setWordsOnScreen(prevWords => {
-        const updatedWords = prevWords.map(word => ({
-          ...word,
-          y: word.y + 5 // Move each word down by 5 pixels
-        }));
+        const { stillOnScreen, lostWords } = prevWords.reduce(
+          (acc, word) => {
+            const newY = word.y + 5; // Move word down by 5 pixels
+            
+            if (newY >= 500) {
+              // Word has fallen past the bottom
+              acc.lostWords.push(word);
+            } else {
+              // Word is still on screen
+              acc.stillOnScreen.push({
+                ...word,
+                y: newY
+              });
+            }
+            return acc;
+          },
+          { stillOnScreen: [] as WordOnScreen[], lostWords: [] as WordOnScreen[] }
+        );
 
-        // Check for words that have fallen past the bottom (500px)
-        const wordsStillOnScreen: WordOnScreen[] = [];
-        let livesLost = 0;
-
-        updatedWords.forEach(word => {
-          if (word.y > 500) {
-            // Word has fallen past the bottom - lose a life
-            livesLost += 1;
-          } else {
-            // Word is still on screen
-            wordsStillOnScreen.push(word);
-          }
-        });
-
-        // Update lives if any words fell past the bottom
-        if (livesLost > 0) {
-          setLives(prevLives => prevLives - livesLost);
+        // Update lives only once per interval for all lost words
+        if (lostWords.length > 0) {
+          console.log('🔥 Words lost this interval:', lostWords.length, 'words:', lostWords.map(w => w.word));
+          setLives(prevLives => {
+            const newLives = Math.max(0, prevLives - lostWords.length);
+            console.log('💔 Lives update:', prevLives, '->', newLives);
+            return newLives;
+          });
         }
 
-        return wordsStillOnScreen;
+        return stillOnScreen;
       });
     }, 100);
 
@@ -178,10 +185,16 @@ const GalahRescueGame: React.FC = () => {
 
         {/* Game Start/End Messages */}
         {gameState === 'ready' && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-            <div className="text-white text-center">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-20">
+            <div className="text-white text-center bg-black/80 p-8 rounded-lg border-2 border-green-400">
               <h3 className="text-xl font-bold mb-2">Ready to Play?</h3>
-              <p className="text-sm">Click the input field and start typing to begin!</p>
+              <p className="text-sm mb-4">Save the galahs by typing falling Australian words!</p>
+              <button
+                onClick={startGame}
+                className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-lg"
+              >
+                🦜 Start Game
+              </button>
             </div>
           </div>
         )}
@@ -202,24 +215,41 @@ const GalahRescueGame: React.FC = () => {
         )}
       </div>
 
+
+
       {/* Input Field */}
       <div className="mt-4">
         <input
           type="text"
           value={inputValue}
           onChange={handleInputChange}
-          placeholder="Type the falling words here..."
-          disabled={gameState !== 'playing'}
-          className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg text-lg font-mono focus:outline-none focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+          placeholder={
+            gameState === 'ready' 
+              ? "Click here or the Start Game button to begin..." 
+              : gameState === 'playing' 
+                ? "Type the falling words here..." 
+                : "Game Over"
+          }
+          disabled={gameState === 'gameOver'}
+          className={`w-full px-4 py-2 border-2 rounded-lg text-lg font-mono focus:outline-none transition-colors ${
+            gameState === 'gameOver' 
+              ? 'border-gray-300 bg-gray-100 cursor-not-allowed text-gray-500'
+              : gameState === 'ready'
+                ? 'border-green-400 bg-green-50 focus:border-green-500 cursor-pointer'
+                : 'border-blue-400 bg-white focus:border-blue-500'
+          }`}
           onFocus={startGame}
+          onClick={() => {
+            if (gameState === 'ready') {
+              startGame();
+            }
+          }}
         />
       </div>
 
-      {/* Debug Info */}
-      <div className="mt-4 text-sm text-gray-600">
-        <p>Words on screen: {wordsOnScreen.length}</p>
-        <p>Available words: {WORD_LIST.length}</p>
-      </div>
+
+
+
     </div>
   );
 };
