@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Button from '@/components/ui/Button'
+import PageWrapper from '@/components/utils/PageWrapper'
 
 // Australian-themed word list for the typing game
 const WORD_LIST = [
@@ -141,163 +143,168 @@ export default function RescueGame() {
   }
 
   return (
-    <div className="rescue-game max-w-4xl mx-auto p-6">
-      <h2 className="text-3xl font-bold text-galah-grey-dark mb-6 text-center">
-        🦜 Galah Rescue Game
-      </h2>
-      
-      {/* Game State Display */}
-      <div className="text-center mb-4">
-        {gameState === 'ready' && (
-          <p className="text-galah-grey-mid text-lg">
-            Ready to rescue some galahs? Type the falling words to save them!
-          </p>
-        )}
-        {gameState === 'playing' && (
-          <p className="text-galah-grey-mid text-lg">
-            Game in progress... Type fast to save the galahs!
-          </p>
-        )}
-        {gameState === 'gameOver' && (
-          <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6">
-            <p className="text-red-600 font-bold text-2xl mb-2">
-              💔 Game Over!
-            </p>
-            <p className="text-red-500 text-lg mb-4">
-              All the galahs flew away! Better luck next time, mate.
-            </p>
-            <p className="text-galah-grey-dark text-xl font-semibold">
-              Final Score: <span className="text-galah-pink-vibrant">{score}</span> galahs rescued!
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Main Game Container */}
-      <div className="game-container relative h-[500px] border-4 border-galah-pink-vibrant rounded-lg bg-gradient-to-b from-sky-200 to-sky-300 overflow-hidden shadow-lg">
+    <PageWrapper>
+      <div className="rescue-game max-w-4xl mx-auto p-6">
+        <h2 className="text-3xl font-bold text-galah-grey-dark mb-6 text-center">
+          🦜 Galah Rescue Game
+        </h2>
         
-        {/* Score and Lives - Top of Container */}
-        <div className="absolute top-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-b-2 border-galah-pink-soft p-4 z-10">
-          <div className="flex justify-between items-center">
-            <div className="text-xl font-bold text-galah-grey-dark">
-              Score: <span className="text-galah-pink-vibrant">{score}</span>
-            </div>
-            <div className="text-xl font-bold text-galah-grey-dark">
-              Lives: <span className="text-red-500">
-                {lives > 0 ? '❤️'.repeat(lives) : '💀'}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Game Area - Middle of Container */}
-        <div className="absolute top-16 left-0 right-0 bottom-20 p-4">
+        {/* Game State Display */}
+        <div className="text-center mb-4">
           {gameState === 'ready' && (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-galah-grey-dark text-xl font-semibold bg-white/80 px-6 py-3 rounded-lg">
-                Click "Start Game" to begin rescuing galahs!
+            <p className="text-galah-grey-mid text-lg">
+              Ready to rescue some galahs? Type the falling words to save them!
+            </p>
+          )}
+          {gameState === 'playing' && (
+            <p className="text-galah-grey-mid text-lg">
+              Game in progress... Type fast to save the galahs!
+            </p>
+          )}
+          {gameState === 'gameOver' && (
+            <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6">
+              <p className="text-red-600 font-bold text-2xl mb-2">
+                💔 Game Over!
+              </p>
+              <p className="text-red-500 text-lg mb-4">
+                All the galahs flew away! Better luck next time, mate.
+              </p>
+              <p className="text-galah-grey-dark text-xl font-semibold">
+                Final Score: <span className="text-galah-pink-vibrant">{score}</span> galahs rescued!
               </p>
             </div>
           )}
+        </div>
+
+        {/* Main Game Container */}
+        <div className="game-container relative h-[500px] border-4 border-galah-pink-vibrant rounded-lg bg-gradient-to-b from-sky-200 to-sky-300 overflow-hidden shadow-lg">
           
-          {gameState === 'gameOver' && (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center bg-white/90 px-8 py-6 rounded-lg shadow-lg">
-                <div className="text-6xl mb-4">🪦</div>
-                <p className="text-galah-grey-dark text-2xl font-bold mb-2">
-                  No More Lives!
-                </p>
-                <p className="text-galah-grey-mid text-lg">
-                  You rescued {score} galah{score !== 1 ? 's' : ''} before they all flew away.
-                </p>
+          {/* Score and Lives - Top of Container */}
+          <div className="absolute top-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-b-2 border-galah-pink-soft p-4 z-10">
+            <div className="flex justify-between items-center">
+              <div className="text-xl font-bold text-galah-grey-dark">
+                Score: <span className="text-galah-pink-vibrant">{score}</span>
+              </div>
+              <div className="text-xl font-bold text-galah-grey-dark">
+                Lives: <span className="text-red-500">
+                  {lives > 0 ? '❤️'.repeat(lives) : '💀'}
+                </span>
               </div>
             </div>
+          </div>
+
+          {/* Game Area - Middle of Container */}
+          <div className="absolute top-16 left-0 right-0 bottom-20 p-4">
+            {gameState === 'ready' && (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-galah-grey-dark text-xl font-semibold bg-white/80 px-6 py-3 rounded-lg">
+                  Click "Start Game" to begin rescuing galahs!
+                </p>
+              </div>
+            )}
+            
+            {gameState === 'gameOver' && (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center bg-white/90 px-8 py-6 rounded-lg shadow-lg">
+                  <div className="text-6xl mb-4">🪦</div>
+                  <p className="text-galah-grey-dark text-2xl font-bold mb-2">
+                    No More Lives!
+                  </p>
+                  <p className="text-galah-grey-mid text-lg">
+                    You rescued {score} galah{score !== 1 ? 's' : ''} before they all flew away.
+                  </p>
+                </div>
+              </div>
+            )}
+            
+            {/* Falling Words - Only show during gameplay */}
+            {gameState === 'playing' && wordsOnScreen.map(word => (
+              <div
+                key={word.id}
+                className="absolute text-lg font-bold text-galah-grey-dark bg-white px-3 py-2 rounded-lg shadow-lg border-2 border-galah-pink-soft hover:scale-105 transition-transform whitespace-nowrap"
+                style={{
+                  left: `${word.x}%`,
+                  top: `${word.y}px`,
+                  transform: 'translateX(-50%)',
+                  zIndex: 1, // Lower z-index so words appear behind input bar
+                  maxWidth: '200px', // Prevent words from being too wide
+                  textAlign: 'center'
+                }}
+              >
+                {word.word}
+              </div>
+            ))}
+          </div>
+
+          {/* Input Field - Bottom of Container */}
+          <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t-2 border-galah-pink-soft p-4 z-20">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={handleInputChange}
+              placeholder={gameState === 'playing' ? "Type the falling words here..." : "Game not active"}
+              className="w-full p-3 border-2 border-galah-pink-soft rounded-lg text-lg font-semibold focus:outline-none focus:border-galah-pink-vibrant focus:ring-2 focus:ring-galah-pink-soft/50 disabled:bg-gray-100"
+              disabled={gameState !== 'playing'}
+              autoFocus={gameState === 'playing'}
+            />
+          </div>
+        </div>
+
+        {/* Control Buttons */}
+        <div className="flex justify-center space-x-4 mt-6">
+          {gameState === 'ready' && (
+            <Button
+              onClick={() => setGameState('playing')}
+              variant="primary"
+              size="lg"
+            >
+              Start Game
+            </Button>
           )}
           
-          {/* Falling Words - Only show during gameplay */}
-          {gameState === 'playing' && wordsOnScreen.map(word => (
-            <div
-              key={word.id}
-              className="absolute text-lg font-bold text-galah-grey-dark bg-white px-3 py-2 rounded-lg shadow-lg border-2 border-galah-pink-soft hover:scale-105 transition-transform whitespace-nowrap"
-              style={{
-                left: `${word.x}%`,
-                top: `${word.y}px`,
-                transform: 'translateX(-50%)',
-                zIndex: 1, // Lower z-index so words appear behind input bar
-                maxWidth: '200px', // Prevent words from being too wide
-                textAlign: 'center'
+          {gameState === 'playing' && (
+            <Button
+              onClick={() => {
+                setGameState('ready')
+                setWordsOnScreen([])
+                setInputValue('')
               }}
+              variant="secondary"
+              size="lg"
             >
-              {word.word}
-            </div>
-          ))}
+              Pause Game
+            </Button>
+          )}
+          
+          {gameState === 'gameOver' && (
+            <Button
+              onClick={() => {
+                setGameState('ready')
+                setScore(0)
+                setLives(5)
+                setWordsOnScreen([])
+                setInputValue('')
+              }}
+              variant="primary"
+              size="lg"
+            >
+              🦜 Play Again
+            </Button>
+          )}
         </div>
 
-        {/* Input Field - Bottom of Container */}
-        <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t-2 border-galah-pink-soft p-4 z-20">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={handleInputChange}
-            placeholder={gameState === 'playing' ? "Type the falling words here..." : "Game not active"}
-            className="w-full p-3 border-2 border-galah-pink-soft rounded-lg text-lg font-semibold focus:outline-none focus:border-galah-pink-vibrant focus:ring-2 focus:ring-galah-pink-soft/50 disabled:bg-gray-100"
-            disabled={gameState !== 'playing'}
-            autoFocus={gameState === 'playing'}
-          />
+        {/* Instructions */}
+        <div className="mt-8 p-6 bg-galah-pink-soft/10 rounded-lg border-2 border-galah-pink-soft/30">
+          <h3 className="font-bold text-galah-grey-dark mb-3 text-lg">How to Play:</h3>
+          <ul className="text-galah-grey-mid space-y-2">
+            <li>• Words will fall from the top of the screen</li>
+            <li>• Type the complete word to save the galah and earn points</li>
+            <li>• If a word reaches the bottom, you lose a life ❤️</li>
+            <li>• Game ends when you run out of lives</li>
+            <li>• Fair dinkum Aussie words only!</li>
+          </ul>
         </div>
       </div>
-
-      {/* Control Buttons */}
-      <div className="flex justify-center space-x-4 mt-6">
-        {gameState === 'ready' && (
-          <button
-            onClick={() => setGameState('playing')}
-            className="btn-primary text-lg px-8 py-3"
-          >
-            Start Game
-          </button>
-        )}
-        
-        {gameState === 'playing' && (
-          <button
-            onClick={() => {
-              setGameState('ready')
-              setWordsOnScreen([])
-              setInputValue('')
-            }}
-            className="btn-secondary text-lg px-8 py-3"
-          >
-            Pause Game
-          </button>
-        )}
-        
-        {gameState === 'gameOver' && (
-          <button
-            onClick={() => {
-              setGameState('ready')
-              setScore(0)
-              setLives(5)
-              setWordsOnScreen([])
-              setInputValue('')
-            }}
-            className="btn-primary text-lg px-8 py-3"
-          >
-            🦜 Play Again
-          </button>
-        )}
-      </div>
-
-      {/* Instructions */}
-      <div className="mt-8 p-6 bg-galah-pink-soft/10 rounded-lg border-2 border-galah-pink-soft/30">
-        <h3 className="font-bold text-galah-grey-dark mb-3 text-lg">How to Play:</h3>
-        <ul className="text-galah-grey-mid space-y-2">
-          <li>• Words will fall from the top of the screen</li>
-          <li>• Type the complete word to save the galah and earn points</li>
-          <li>• If a word reaches the bottom, you lose a life ❤️</li>
-          <li>• Game ends when you run out of lives</li>
-          <li>• Fair dinkum Aussie words only!</li>
-        </ul>
-      </div>
-    </div>
+    </PageWrapper>
   )
 }

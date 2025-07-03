@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Button from '@/components/ui/Button'
 
 interface Achievement {
   id: string
@@ -62,12 +63,12 @@ export default function AchievementNotification({
               Achievement Unlocked!
             </span>
           </div>
-          <button
+          <Button
             onClick={handleClose}
-            className="text-galah-grey-mid hover:text-galah-grey-dark transition-colors text-lg"
+            variant="icon"
           >
             ✕
-          </button>
+          </Button>
         </div>
 
         {/* Achievement Content */}

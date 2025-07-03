@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
+import Button from '@/components/ui/Button'
 
 // Sample achievements for testing
 const testAchievements = [
@@ -46,22 +48,25 @@ export default function TestAchievements() {
   }
 
   return (
-    <div className="card max-w-md">
-      <h3 className="text-lg font-semibold text-galah-grey-dark mb-4">
-        🧪 Test Achievements
-      </h3>
-      <p className="text-sm text-galah-grey-mid mb-4">
-        Click the button below to test achievement notifications!
-      </p>
-      <button
-        onClick={triggerNotification}
-        className="w-full btn-primary"
-      >
-        🎉 Trigger Achievement Notification
-      </button>
-      <p className="text-xs text-galah-grey-mid mt-2 text-center">
-        Notifications triggered: {notificationCount}
-      </p>
-    </div>
+    <Card className="max-w-md">
+      <CardHeader>
+        <CardTitle>🧪 Test Achievements</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-galah-grey-mid mb-4">
+          Click the button below to test achievement notifications!
+        </p>
+        <Button
+          onClick={triggerNotification}
+          variant="primary"
+          className="w-full"
+        >
+          🎉 Trigger Achievement Notification
+        </Button>
+        <p className="text-xs text-galah-grey-mid mt-2 text-center">
+          Notifications triggered: {notificationCount}
+        </p>
+      </CardContent>
+    </Card>
   )
 } 

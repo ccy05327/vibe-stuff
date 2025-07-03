@@ -8,9 +8,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "galah-pink-vibrant": "#e6749a",
+        "galah-pink-vibrant": "#D94F86",
         "galah-pink-soft": "#e4a8c4",
-        "galah-grey-mid": "#8d9aac",
+        "galah-grey-mid": "#7A8AA1",
         "galah-grey-dark": "#4e566a",
         "galah-off-white": "#f8f7fa",
       },

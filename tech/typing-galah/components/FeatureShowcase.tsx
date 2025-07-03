@@ -1,4 +1,5 @@
 import { FiTarget, FiAward, FiBook, FiHeart } from 'react-icons/fi'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 
 export default function FeatureShowcase() {
   const features = [
@@ -74,68 +75,72 @@ export default function FeatureShowcase() {
           
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* Virtual Keyboard Preview */}
-            <div className="card">
-              <h4 className="text-xl font-semibold mb-4 text-galah-grey-dark">
-                Virtual Keyboard Helper
-              </h4>
-              <div className="virtual-keyboard">
-                <div className="grid grid-cols-10 gap-1 mb-2">
-                  {['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map((key, index) => (
-                    <div key={key} className={`key h-8 flex items-center justify-center ${index === 4 ? 'key-active' : ''}`}>
-                      {key}
-                    </div>
-                  ))}
+            <Card isHoverable>
+              <CardHeader>
+                <CardTitle>Virtual Keyboard Helper</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="virtual-keyboard">
+                  <div className="grid grid-cols-10 gap-1 mb-2">
+                    {['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map((key, index) => (
+                      <div key={key} className={`key h-8 flex items-center justify-center ${index === 4 ? 'key-active' : ''}`}>
+                        {key}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-9 gap-1 mb-2 ml-4">
+                    {['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'].map((key) => (
+                      <div key={key} className="key h-8 flex items-center justify-center">
+                        {key}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-7 gap-1 ml-8">
+                    {['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map((key) => (
+                      <div key={key} className="key h-8 flex items-center justify-center">
+                        {key}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="grid grid-cols-9 gap-1 mb-2 ml-4">
-                  {['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'].map((key) => (
-                    <div key={key} className="key h-8 flex items-center justify-center">
-                      {key}
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-7 gap-1 ml-8">
-                  {['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map((key) => (
-                    <div key={key} className="key h-8 flex items-center justify-center">
-                      {key}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <p className="text-sm text-galah-grey-mid mt-3">
-                Shows you which key to press next (if you want the help!)
-              </p>
-            </div>
+                <p className="text-sm text-galah-grey-mid mt-3">
+                  Shows you which key to press next (if you want the help!)
+                </p>
+              </CardContent>
+            </Card>
 
             {/* Progress Tracking Preview */}
-            <div className="card">
-              <h4 className="text-xl font-semibold mb-4 text-galah-grey-dark">
-                Track Your Progress
-              </h4>
-              <div className="space-y-4">
-                <div className="stats-card">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold">Words per Minute</span>
-                    <span className="text-2xl font-bold">45</span>
+            <Card isHoverable>
+              <CardHeader>
+                <CardTitle>Track Your Progress</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="stats-card">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold">Words per Minute</span>
+                      <span className="text-2xl font-bold">45</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                    <span className="text-galah-grey-dark">🦜 Galah Feathers</span>
+                    <span className="achievement-badge">12</span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-galah-grey-mid">Progress</span>
+                      <span className="text-galah-pink-vibrant font-medium">Getting there!</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-galah-pink-vibrant h-2 rounded-full" style={{ width: '85%' }}></div>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <span className="text-galah-grey-dark">🦜 Galah Feathers</span>
-                  <span className="achievement-badge">12</span>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-galah-grey-mid">Progress</span>
-                    <span className="text-galah-pink-vibrant font-medium">Getting there!</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-galah-pink-vibrant h-2 rounded-full" style={{ width: '85%' }}></div>
-                  </div>
-                </div>
-              </div>
-              <p className="text-sm text-galah-grey-mid mt-3">
-                Simple stats and a few fun rewards to keep you motivated
-              </p>
-            </div>
+                <p className="text-sm text-galah-grey-mid mt-3">
+                  Simple stats and a few fun rewards to keep you motivated
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

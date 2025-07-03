@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import achievementsData from '@/supabase/functions/aware-achievements/_shared/achievements.json'
+import Button from '@/components/ui/Button'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
+import PageWrapper from '@/components/utils/PageWrapper'
 
 interface Achievement {
   id: string
@@ -248,109 +251,120 @@ export default function AchievementsView({ userId }: { userId: string }) {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        {/* Stats skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="card animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-              <div className="h-8 bg-gray-200 rounded w-3/4"></div>
-            </div>
-          ))}
-        </div>
-        
-        {/* Achievements skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="card animate-pulse">
-              <div className="flex items-start space-x-3">
-                <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
-                <div className="flex-1">
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
-                  <div className="h-2 bg-gray-200 rounded w-full"></div>
+      <PageWrapper>
+        <div className="space-y-6">
+          {/* Stats skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="card animate-pulse">
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Achievements skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="card animate-pulse">
+                <div className="flex items-start space-x-3">
+                  <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
+                  <div className="flex-1">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
+                    <div className="h-2 bg-gray-200 rounded w-full"></div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </PageWrapper>
     )
   }
 
   return (
-    <div className="space-y-6">
-      {/* Achievement Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="card bg-galah-pink-vibrant text-white">
-          <h3 className="text-sm font-medium opacity-90">Total Earned</h3>
-          <p className="text-2xl font-bold">{earnedCount}/{totalCount}</p>
+    <PageWrapper>
+      <div className="space-y-6">
+        {/* Achievement Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card className="bg-galah-pink-vibrant text-white">
+            <CardContent>
+              <h3 className="text-sm font-medium opacity-90">Total Earned</h3>
+              <p className="text-2xl font-bold">{earnedCount}/{totalCount}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent>
+              <h3 className="text-sm font-medium text-galah-grey-mid">Completion Rate</h3>
+              <p className="text-2xl font-bold text-galah-grey-dark">
+                {totalCount > 0 ? Math.round((earnedCount / totalCount) * 100) : 0}%
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent>
+              <h3 className="text-sm font-medium text-galah-grey-mid">Max WPM</h3>
+              <p className="text-2xl font-bold text-galah-grey-dark">
+                {userStats?.maxWpm || 0}
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent>
+              <h3 className="text-sm font-medium text-galah-grey-mid">Lessons Completed</h3>
+              <p className="text-2xl font-bold text-galah-grey-dark">
+                {userStats?.totalLessons || 0}
+              </p>
+            </CardContent>
+          </Card>
         </div>
-        <div className="card">
-          <h3 className="text-sm font-medium text-galah-grey-mid">Completion Rate</h3>
-          <p className="text-2xl font-bold text-galah-grey-dark">
-            {totalCount > 0 ? Math.round((earnedCount / totalCount) * 100) : 0}%
-          </p>
-        </div>
-        <div className="card">
-          <h3 className="text-sm font-medium text-galah-grey-mid">Max WPM</h3>
-          <p className="text-2xl font-bold text-galah-grey-dark">
-            {userStats?.maxWpm || 0}
-          </p>
-        </div>
-        <div className="card">
-          <h3 className="text-sm font-medium text-galah-grey-mid">Lessons Completed</h3>
-          <p className="text-2xl font-bold text-galah-grey-dark">
-            {userStats?.totalLessons || 0}
-          </p>
-        </div>
-      </div>
 
-      {/* Category Filter */}
-      <div className="flex flex-wrap gap-2">
-        {categories.map(category => (
-          <button
-            key={category}
-            onClick={() => setSelectedCategory(category)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              selectedCategory === category
-                ? 'bg-galah-pink-vibrant text-white'
-                : 'bg-white text-galah-grey-mid hover:bg-galah-pink-soft/10'
-            }`}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
+        {/* Category Filter */}
+        <div className="flex flex-wrap gap-2">
+          {categories.map(category => (
+            <Button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              variant={selectedCategory === category ? 'primary' : 'secondary'}
+              size="default"
+            >
+              {category}
+            </Button>
+          ))}
+        </div>
 
-      {/* Achievements Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredAchievements.map((achievement) => (
-          <div
-            key={achievement.id}
-            className={`card transition-all duration-200 ${
-              achievement.earned
-                ? 'bg-gradient-to-br from-galah-pink-soft/20 to-galah-pink-vibrant/20 border-galah-pink-vibrant/30'
-                : 'hover:shadow-lg'
-            }`}
-          >
-            <div className="flex items-start space-x-3">
-              <div className={`text-3xl p-3 rounded-full ${
-                achievement.earned ? 'bg-galah-pink-vibrant/20' : 'bg-gray-100'
-              }`}>
-                {achievement.icon}
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-2">
-                  <h3 className="font-semibold text-galah-grey-dark">
-                    {achievement.name}
-                  </h3>
-                  {achievement.earned && (
-                    <div className="bg-galah-pink-vibrant text-white text-xs px-2 py-1 rounded-full">
-                      ✓
+        {/* Achievements Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredAchievements.map((achievement) => (
+            <Card
+              key={achievement.id}
+              className={`transition-all duration-200 ${
+                achievement.earned
+                  ? 'bg-gradient-to-br from-galah-pink-soft/20 to-galah-pink-vibrant/20 border-galah-pink-vibrant/30'
+                  : 'hover:shadow-lg'
+              }`}
+            >
+              <CardHeader>
+                <div className="flex items-start space-x-3">
+                  <div className={`text-3xl p-3 rounded-full ${
+                    achievement.earned ? 'bg-galah-pink-vibrant/20' : 'bg-gray-100'
+                  }`}>
+                    {achievement.icon}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <CardTitle className="text-base">{achievement.name}</CardTitle>
+                      {achievement.earned && (
+                        <div className="bg-galah-pink-vibrant text-white text-xs px-2 py-1 rounded-full">
+                          ✓
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
+              </CardHeader>
+              <CardContent>
                 <p className="text-sm text-galah-grey-mid mb-3">
                   {achievement.description}
                 </p>
@@ -373,11 +387,11 @@ export default function AchievementsView({ userId }: { userId: string }) {
                     </div>
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
-        ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   )
 } 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { FiTrendingUp, FiTarget, FiClock, FiAward } from 'react-icons/fi'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 
 interface DashboardStatsProps {
   userId: string
@@ -72,19 +73,21 @@ export default function DashboardStats({ userId }: DashboardStatsProps) {
 
   if (loading) {
     return (
-      <div className="card">
-        <div className="animate-pulse">
-          <div className="h-6 bg-gray-200 rounded mb-4 w-1/3"></div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="text-center">
-                <div className="h-8 bg-gray-200 rounded mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded"></div>
-              </div>
-            ))}
+      <Card>
+        <CardContent>
+          <div className="animate-pulse">
+            <div className="h-6 bg-gray-200 rounded mb-4 w-1/3"></div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="text-center">
+                  <div className="h-8 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     )
   }
 
@@ -124,65 +127,66 @@ export default function DashboardStats({ userId }: DashboardStatsProps) {
   ]
 
   return (
-    <div className="card">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-galah-grey-dark">
-          Your Typing Stats
-        </h2>
-        <div className="text-sm text-galah-grey-mid">
-          Last updated: {new Date().toLocaleDateString('en-AU')}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        {statCards.map((stat, index) => (
-          <div
-            key={index}
-            className={`p-4 rounded-lg border-2 border-transparent hover:border-galah-pink-soft/30 transition-colors ${stat.bgColor}`}
-          >
-            <div className="text-center">
-              <div className={`inline-flex items-center justify-center w-10 h-10 rounded-full ${stat.bgColor} mb-2`}>
-                <stat.icon className={`w-5 h-5 ${stat.color}`} />
-              </div>
-              <div className={`text-2xl font-bold ${stat.color} mb-1`}>
-                {stat.value}{stat.suffix}
-              </div>
-              <div className="text-sm text-galah-grey-mid font-medium">
-                {stat.label}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Progress Insights */}
-      <div className="border-t border-gray-200 pt-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-gray-50 rounded-lg">
-            <div className="text-lg font-semibold text-galah-grey-dark mb-1">
-              Recent Performance
-            </div>
-            <div className="text-sm text-galah-grey-mid">
-              Latest: <span className="font-medium text-galah-pink-vibrant">{stats.recentWpm} WPM</span>
-              {stats.recentWpm > stats.averageWpm ? (
-                <span className="text-green-600 ml-2">📈 Above average!</span>
-              ) : (
-                <span className="text-orange-600 ml-2">Keep practising!</span>
-              )}
-            </div>
-          </div>
-          <div className="text-center p-3 bg-gray-50 rounded-lg">
-            <div className="text-lg font-semibold text-galah-grey-dark mb-1">
-              Total Practice Time
-            </div>
-            <div className="text-sm text-galah-grey-mid">
-              Approximately <span className="font-medium text-galah-pink-vibrant">{stats.totalTimeSpent} minutes</span>
-              <br />
-              <span className="text-xs">You're committed to improvement!</span>
-            </div>
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle>Your Typing Stats</CardTitle>
+          <div className="text-sm text-galah-grey-mid">
+            Last updated: {new Date().toLocaleDateString('en-AU')}
           </div>
         </div>
-      </div>
-    </div>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          {statCards.map((stat, index) => (
+            <div
+              key={index}
+              className={`p-4 rounded-lg border-2 border-transparent hover:border-galah-pink-soft/30 transition-colors ${stat.bgColor}`}
+            >
+              <div className="text-center">
+                <div className={`inline-flex items-center justify-center w-10 h-10 rounded-full ${stat.bgColor} mb-2`}>
+                  <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                </div>
+                <div className={`text-2xl font-bold ${stat.color} mb-1`}>
+                  {stat.value}{stat.suffix}
+                </div>
+                <div className="text-sm text-galah-grey-mid font-medium">
+                  {stat.label}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Progress Insights */}
+        <div className="border-t border-gray-200 pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="text-center p-3 bg-gray-50 rounded-lg">
+              <div className="text-lg font-semibold text-galah-grey-dark mb-1">
+                Recent Performance
+              </div>
+              <div className="text-sm text-galah-grey-mid">
+                Latest: <span className="font-medium text-galah-pink-vibrant">{stats.recentWpm} WPM</span>
+                {stats.recentWpm > stats.averageWpm ? (
+                  <span className="text-green-600 ml-2">📈 Above average!</span>
+                ) : (
+                  <span className="text-orange-600 ml-2">Keep practising!</span>
+                )}
+              </div>
+            </div>
+            <div className="text-center p-3 bg-gray-50 rounded-lg">
+              <div className="text-lg font-semibold text-galah-grey-dark mb-1">
+                Total Practice Time
+              </div>
+              <div className="text-sm text-galah-grey-mid">
+                Approximately <span className="font-medium text-galah-pink-vibrant">{stats.totalTimeSpent} minutes</span>
+                <br />
+                <span className="text-xs">You're committed to improvement!</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   )
 } 

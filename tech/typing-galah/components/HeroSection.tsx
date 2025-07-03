@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Button from '@/components/ui/Button'
 
 interface HeroSectionProps {
   isAuthenticated: boolean
@@ -44,21 +45,25 @@ export default function HeroSection({ isAuthenticated }: HeroSectionProps) {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             {isAuthenticated ? (
               <>
-                <Link href="/dashboard" className="btn-primary text-lg px-8 py-4">
-                  Keep Practicing
+                <Link href="/dashboard">
+                  <Button variant="primary" size="lg">
+                    Keep Practicing
+                  </Button>
                 </Link>
-                <Link href="/demo" className="btn-secondary text-lg px-8 py-4">
-                  Try a Quick Lesson
+                <Link href="/demo">
+                  <Button variant="secondary" size="lg">
+                    Try a Quick Lesson
+                  </Button>
                 </Link>
               </>
             ) : (
               <>
-                <Link href="/demo" className="btn-primary text-lg px-8 py-4">
+                <Button variant="primary" size="lg" href="/demo">
                   Give it a Burl! 
-                </Link>
-                <Link href="/auth/signup" className="btn-secondary text-lg px-8 py-4">
+                </Button>
+                <Button variant="secondary" size="lg" href="/auth/signup">
                   Create Account (Free)
-                </Link>
+                </Button>
               </>
             )}
           </div>

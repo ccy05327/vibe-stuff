@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import Link from 'next/link'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
+import Button from '@/components/ui/Button'
 
 interface Achievement {
   id: string
@@ -103,71 +105,74 @@ export default function RecentAchievements({ userId }: { userId: string }) {
 
   if (loading) {
     return (
-      <div className="card">
-        <h3 className="text-lg font-semibold text-galah-grey-dark mb-4">
-          Recent Achievements
-        </h3>
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="flex items-start space-x-3 p-3 bg-galah-pink-soft/5 rounded-lg animate-pulse">
-              <div className="w-8 h-8 bg-gray-200 rounded"></div>
-              <div className="flex-1">
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2 mb-1"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Achievements</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-start space-x-3 p-3 bg-galah-pink-soft/5 rounded-lg animate-pulse">
+                <div className="w-8 h-8 bg-gray-200 rounded"></div>
+                <div className="flex-1">
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2 mb-1"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     )
   }
 
   return (
-    <div className="card">
-      <h3 className="text-lg font-semibold text-galah-grey-dark mb-4">
-        Recent Achievements
-      </h3>
-      <div className="space-y-3">
-        {achievements.length === 0 ? (
-          <div className="text-center py-6">
-            <div className="text-4xl mb-2">🎖️</div>
-            <p className="text-galah-grey-mid text-sm">
-              No achievements yet!
-            </p>
-            <p className="text-galah-grey-mid text-xs mt-1">
-              Start typing to earn your first achievement
-            </p>
-          </div>
-        ) : (
-          achievements.map((achievement, index) => (
-            <div key={index} className="flex items-start space-x-3 p-3 bg-galah-pink-soft/5 rounded-lg border-l-4 border-galah-pink-vibrant">
-              <div className="text-2xl bg-white rounded-full p-2 shadow-sm">
-                {achievement.icon}
-              </div>
-              <div className="flex-1">
-                <h4 className="font-medium text-galah-grey-dark text-sm">
-                  {achievement.name}
-                </h4>
-                <p className="text-xs text-galah-grey-mid">
-                  {achievement.description}
-                </p>
-                <p className="text-xs text-galah-pink-vibrant mt-1 font-medium">
-                  {formatDate(achievement.achieved_at)}
-                </p>
-              </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Recent Achievements</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-3">
+          {achievements.length === 0 ? (
+            <div className="text-center py-6">
+              <div className="text-4xl mb-2">🎖️</div>
+              <p className="text-galah-grey-mid text-sm">
+                No achievements yet!
+              </p>
+              <p className="text-galah-grey-mid text-xs mt-1">
+                Start typing to earn your first achievement
+              </p>
             </div>
-          ))
-        )}
-      </div>
-      <div className="mt-4 text-center">
-        <Link 
-          href="/achievements"
-          className="text-sm text-galah-pink-vibrant hover:text-galah-pink-soft font-medium transition-colors"
-        >
-          View All Achievements
-        </Link>
-      </div>
-    </div>
+          ) : (
+            achievements.map((achievement, index) => (
+              <div key={index} className="flex items-start space-x-3 p-3 bg-galah-pink-soft/5 rounded-lg border-l-4 border-galah-pink-vibrant">
+                <div className="text-2xl bg-white rounded-full p-2 shadow-sm">
+                  {achievement.icon}
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-galah-grey-dark text-sm">
+                    {achievement.name}
+                  </h4>
+                  <p className="text-xs text-galah-grey-mid">
+                    {achievement.description}
+                  </p>
+                  <p className="text-xs text-galah-pink-vibrant mt-1 font-medium">
+                    {formatDate(achievement.achieved_at)}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+        <div className="mt-4 text-center">
+          <Link href="/achievements">
+            <Button variant="secondary" size="default">
+              View All Achievements
+            </Button>
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
   )
 } 

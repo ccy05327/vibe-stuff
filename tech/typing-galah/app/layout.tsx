@@ -1,8 +1,10 @@
+
 import './globals.css'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import Navbar from '@/components/Navbar'
 import AuthProvider from '@/components/AuthProvider'
 import { AchievementNotificationManager } from '@/components/AchievementNotification'
+import PageWrapper from '@/components/utils/PageWrapper'
 
 export const metadata = {
   title: 'Typing Galah | Australia\'s Own Touch Typing Platform',
@@ -40,7 +42,9 @@ export default async function RootLayout({
           <div className="min-h-full">
             <Navbar />
             <main className="flex-1">
-              {children}
+              <PageWrapper>
+                {children}
+              </PageWrapper>
             </main>
             <footer className="bg-white border-t border-gray-200 mt-auto">
               <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">

@@ -4,6 +4,8 @@ import { useState, useEffect, useRef, useCallback, useMemo, useReducer } from 'r
 import { createClient } from '@/lib/supabase'
 import VirtualKeyboard from './VirtualKeyboard'
 import TypingStats from './TypingStats'
+import Button from '@/components/ui/Button'
+import { Card, CardHeader, CardContent } from '@/components/ui/Card'
 
 interface TypingInterfaceProps {
   lessonText: string
@@ -348,12 +350,12 @@ export default function TypingInterface({ lessonText, lessonId, userId, onComple
               <p className="text-galah-grey-mid mb-4">
                 Lesson completed with {stats.wpm} WPM and {stats.accuracy}% accuracy!
               </p>
-              <button
+              <Button
                 onClick={resetLesson}
-                className="btn-primary"
+                variant="secondary"
               >
                 Try Again
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -366,23 +368,25 @@ export default function TypingInterface({ lessonText, lessonId, userId, onComple
       />
 
       {/* Instructions */}
-      <div className="card bg-galah-pink-soft/10">
-        <div className="flex items-start space-x-3">
-          <div className="text-2xl">🦜</div>
-          <div>
-            <h4 className="font-semibold text-galah-grey-dark mb-2">
+      <Card className="bg-galah-pink-soft/10">
+        <CardHeader>
+          <div className="flex items-start space-x-3">
+            <div className="text-2xl">🦜</div>
+            <h4 className="font-semibold text-galah-grey-dark">
               Galah's Tips
             </h4>
-            <ul className="text-sm text-galah-grey-mid space-y-1">
-              <li>• Focus on accuracy first, speed will come naturally</li>
-              <li>• Use proper finger placement on the home row keys</li>
-              <li>• Don't look at the keyboard - trust your muscle memory</li>
-              <li>• Use <span className="font-mono bg-galah-pink-soft/20 px-1 rounded">Backspace</span> to correct mistakes</li>
-              <li>• Take breaks if your hands get tired</li>
-            </ul>
           </div>
-        </div>
-      </div>
+        </CardHeader>
+        <CardContent>
+          <ul className="text-sm text-galah-grey-mid space-y-1">
+            <li>• Focus on accuracy first, speed will come naturally</li>
+            <li>• Use proper finger placement on the home row keys</li>
+            <li>• Don't look at the keyboard - trust your muscle memory</li>
+            <li>• Use <span className="font-mono bg-galah-pink-soft/20 px-1 rounded">Backspace</span> to correct mistakes</li>
+            <li>• Take breaks if your hands get tired</li>
+          </ul>
+        </CardContent>
+      </Card>
     </div>
   )
 } 

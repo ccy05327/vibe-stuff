@@ -1,3 +1,5 @@
+import { Card, CardContent } from '@/components/ui/Card'
+
 interface TypingStatsProps {
   wpm: number
   accuracy: number
@@ -25,51 +27,53 @@ export default function TypingStats({ wpm, accuracy, timeElapsed, progress }: Ty
   }
 
   return (
-    <div className="card bg-galah-pink-vibrant text-white">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-        <div className="text-center">
-          <div className={`text-3xl font-bold mb-1`}>
-            {wpm}
+    <Card className="bg-galah-pink-vibrant text-white">
+      <CardContent>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div className="text-center">
+            <div className={`text-3xl font-bold mb-1`}>
+              {wpm}
+            </div>
+            <div className="text-sm opacity-90">
+              Words per Minute
+            </div>
           </div>
-          <div className="text-sm opacity-90">
-            Words per Minute
+
+          <div className="text-center">
+            <div className={`text-3xl font-bold mb-1`}>
+              {accuracy}%
+            </div>
+            <div className="text-sm opacity-90">
+              Accuracy
+            </div>
+          </div>
+
+          <div className="text-center">
+            <div className="text-3xl font-bold mb-1">
+              {formatTime(timeElapsed)}
+            </div>
+            <div className="text-sm opacity-90">
+              Time Elapsed
+            </div>
+          </div>
+
+          <div className="text-center">
+            <div className="text-3xl font-bold mb-1">
+              {Math.round(progress)}%
+            </div>
+            <div className="text-sm opacity-90">
+              Progress
+            </div>
           </div>
         </div>
 
-        <div className="text-center">
-          <div className={`text-3xl font-bold mb-1`}>
-            {accuracy}%
-          </div>
-          <div className="text-sm opacity-90">
-            Accuracy
-          </div>
+        <div className="w-full bg-white/20 rounded-full h-3">
+          <div 
+            className="bg-white h-3 rounded-full transition-all duration-300 ease-out"
+            style={{ width: `${Math.min(progress, 100)}%` }}
+          ></div>
         </div>
-
-        <div className="text-center">
-          <div className="text-3xl font-bold mb-1">
-            {formatTime(timeElapsed)}
-          </div>
-          <div className="text-sm opacity-90">
-            Time Elapsed
-          </div>
-        </div>
-
-        <div className="text-center">
-          <div className="text-3xl font-bold mb-1">
-            {Math.round(progress)}%
-          </div>
-          <div className="text-sm opacity-90">
-            Progress
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full bg-white/20 rounded-full h-3">
-        <div 
-          className="bg-white h-3 rounded-full transition-all duration-300 ease-out"
-          style={{ width: `${Math.min(progress, 100)}%` }}
-        ></div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 } 

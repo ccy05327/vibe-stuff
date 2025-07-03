@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useAuth } from './AuthProvider'
 import { useState } from 'react'
+import Button from '@/components/ui/Button'
 // Temporarily commenting out react-icons to test
 // import { FiBars, FiX, FiUser, FiLogOut, FiSettings } from 'react-icons/fi'
 
@@ -62,18 +63,16 @@ export default function Navbar() {
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="relative">
-                <button
+                <Button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center space-x-2 text-galah-grey-dark hover:text-galah-pink-vibrant transition-colors"
+                  variant="icon"
+                  className="flex items-center space-x-2 text-galah-grey-dark hover:text-galah-pink-vibrant"
                 >
                   <div className="w-8 h-8 bg-galah-pink-soft rounded-full flex items-center justify-center">
                     {/* <FiUser className="w-4 h-4 text-white" /> */}
                     <span className="text-white text-sm">👤</span>
                   </div>
-                  <span className="hidden md:block font-medium">
-                    {user.email?.split('@')[0]}
-                  </span>
-                </button>
+                </Button>
 
                 {/* User dropdown */}
                 {isUserMenuOpen && (
@@ -95,13 +94,14 @@ export default function Navbar() {
                       ⚙️ Settings
                     </Link>
                     <hr className="my-1" />
-                    <button
+                    <Button
                       onClick={handleSignOut}
-                      className="flex items-center w-full px-4 py-2 text-sm text-galah-grey-dark hover:bg-gray-50"
+                      variant="ghost"
+                      className="flex items-center w-full justify-start"
                     >
                       {/* <FiLogOut className="w-4 h-4 mr-2" /> */}
                       🚪 Sign Out
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -117,16 +117,17 @@ export default function Navbar() {
             )}
 
             {/* Mobile menu button */}
-            <button
+            <Button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-galah-grey-dark hover:text-galah-pink-vibrant hover:bg-gray-100 transition-colors"
+              variant="icon"
+              className="md:hidden"
             >
               {isMenuOpen ? (
                 <span className="text-xl">✕</span>
               ) : (
                 <span className="text-xl">☰</span>
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -173,12 +174,13 @@ export default function Navbar() {
                   Progress
                 </Link>
                 <hr className="my-2" />
-                <button
+                <Button
                   onClick={handleSignOut}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-galah-grey-dark hover:text-galah-pink-vibrant hover:bg-gray-50 rounded-md"
+                  variant="ghost"
+                  className="block w-full text-left"
                 >
                   Sign Out
-                </button>
+                </Button>
               </>
             ) : (
               <>
