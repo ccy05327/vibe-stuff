@@ -110,7 +110,8 @@
             >English Audio</label
           >
           <p class="text-xs text-slate-500 mb-1">
-            音檔為英文朗讀，但內容根據中文版報告製作，與英文版不同。
+            The audio is in English but is based on the Chinese report, so it
+            differs from the English version.
           </p>
           <audio
             id="audioPlayerEN"
@@ -122,7 +123,7 @@
           </audio>
           <div class="flex justify-center mt-2">
             <label for="speedEN" class="mr-2 text-sm text-gray-600"
-              >播放速度：</label
+              >playing speed：</label
             >
             <select id="speedEN" class="border rounded px-2 py-1 text-sm">
               <option value="0.75">0.75x</option>
@@ -137,6 +138,40 @@
             const speedEN = document.getElementById("speedEN");
             speedEN.addEventListener("change", function () {
               audioEN.playbackRate = parseFloat(this.value);
+            });
+          </script>
+        </div>
+
+        <div class="w-full max-w-xl mx-auto mt-6 mb-8">
+          <label class="block text-blue-700 font-semibold mb-2">中文版</label>
+          <p class="text-xs text-slate-500 mb-1">
+            使用notebook LM額外產出的中文版podcast。
+          </p>
+          <audio
+            id="audioPlayerCH"
+            controls
+            class="w-full rounded shadow border border-blue-100 bg-white"
+          >
+            <source src="(CH) chinese.wav" type="audio/wav" />
+            Your browser does not support the audio element.
+          </audio>
+          <div class="flex justify-center mt-2">
+            <label for="speedCH" class="mr-2 text-sm text-gray-600"
+              >播放速度：</label
+            >
+            <select id="speedCH" class="border rounded px-2 py-1 text-sm">
+              <option value="0.75">0.75x</option>
+              <option value="1" selected>1x</option>
+              <option value="1.25">1.25x</option>
+              <option value="1.5">1.5x</option>
+              <option value="2">2x</option>
+            </select>
+          </div>
+          <script>
+            const audioCH = document.getElementById("audioPlayerCH");
+            const speedCH = document.getElementById("speedCH");
+            speedCH.addEventListener("change", function () {
+              audioCH.playbackRate = parseFloat(this.value);
             });
           </script>
         </div>
