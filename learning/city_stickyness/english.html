@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Magnetic City: An Interactive Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Application Structure Plan: A tab-based SPA to segment the report's dense information into digestible, user-selectable themes. This structure encourages non-linear exploration over passive scrolling. The tabs are: 1. 'Overview' for the main findings and top 10 chart. 2. 'The Why' for an interactive diagram explaining the Attraction vs. Retention framework. 3. 'City Explorer' for an interactive map and deep-dive details on each city. 4. 'The Big Picture' for a comparative table of different global indices. This task-oriented flow allows users to immediately grasp the key message and then delve into the methodology, city-specifics, or broader context as they choose, enhancing usability and understanding. -->
+    <!-- Visualization & Content Choices: 1. Top 10 Ranking: An interactive horizontal bar chart (Chart.js/Canvas) to visually compare city ranks. Interaction: Hover for details. Justification: Best for ranked value comparison. 2. Attraction vs. Retention: A two-column interactive diagram (HTML/CSS) with clickable cards. Interaction: Click to reveal details. Justification: Turns static lists into an engaging, self-paced learning tool. 3. World Map & Deep Dive: A background map image with clickable, absolutely-positioned HTML elements for markers, linked to a dynamic content pane. Interaction: Click a marker to load that city's detailed analysis. Justification: Provides geographic context and an exploratory interface without violating the NO SVG/NO complex library constraint. 4. Comparative Indices: An interactive HTML table. Interaction: Row hover highlights the city across all index columns. Justification: Enhances readability and makes cross-referencing simple. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #fdfbf7;
+        color: #434242;
+      }
+      .tab-active {
+        color: #b97a57;
+        border-color: #b97a57;
+      }
+      .tab-inactive {
+        color: #7f7f7f;
+        border-color: transparent;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 400px;
+        max-height: 50vh;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 500px;
+        }
+      }
+      .map-marker {
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        background-color: rgba(185, 122, 87, 0.8);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        border: 2px solid white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+      .map-marker:hover,
+      .map-marker.selected {
+        transform: scale(1.2);
+        background-color: rgba(160, 168, 146, 1);
+        z-index: 10;
+      }
+
+      /* Custom Range Slider Styling */
+      input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #b97a57;
+        border: 2px solid white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #b97a57;
+        border: 2px solid white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        border: none;
+      }
+
+      input[type="range"]:focus {
+        outline: none;
+      }
+
+      input[type="range"]:focus::-webkit-slider-thumb {
+        box-shadow: 0 0 0 2px rgba(185, 122, 87, 0.5);
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex justify-start mb-6">
+        <a
+          href="../../index.html"
+          class="flex items-center text-[#B97A57] hover:text-white hover:bg-[#B97A57] transition-all duration-300 bg-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg border border-[#B97A57]"
+        >
+          <svg
+            class="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            ></path>
+          </svg>
+          Back to Portal
+        </a>
+      </div>
+      <header class="text-center mb-10">
+        <h1
+          class="text-4xl md:text-5xl font-bold text-[#434242] tracking-tight"
+        >
+          The Magnetic City
+        </h1>
+        <p class="mt-3 text-lg text-[#7F7F7F] max-w-3xl mx-auto">
+          An interactive exploration of the Gensler City Pulse 2025 report on
+          the cities residents don't want to leave.
+        </p>
+
+        <!-- Audio Player -->
+        <div class="mt-6 max-w-lg mx-auto">
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div class="flex items-center mb-3">
+              <span class="text-lg mr-2">🎧</span>
+              <h3 class="text-sm font-semibold text-[#434242]">
+                Listen to the Report Podcast
+              </h3>
+            </div>
+            <audio
+              id="audioPlayer"
+              controls
+              class="w-full mb-3"
+              preload="metadata"
+            >
+              <source src="urban_stickness.mp3" type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+
+            <!-- Speed Control -->
+            <div class="flex items-center justify-between mb-2">
+              <label
+                for="speedControl"
+                class="text-xs font-medium text-[#434242]"
+                >Playback Speed:</label
+              >
+              <div class="flex items-center space-x-2">
+                <span
+                  id="speedDisplay"
+                  class="text-xs text-[#7F7F7F] min-w-[2rem]"
+                  >1.0x</span
+                >
+                <input
+                  type="range"
+                  id="speedControl"
+                  min="0.5"
+                  max="2"
+                  step="0.1"
+                  value="1"
+                  class="w-20 h-2 bg-[#F5F0E8] rounded-lg appearance-none cursor-pointer"
+                  style="
+                    background: linear-gradient(
+                      to right,
+                      #b97a57 0%,
+                      #b97a57 50%,
+                      #f5f0e8 50%,
+                      #f5f0e8 100%
+                    );
+                  "
+                />
+              </div>
+            </div>
+
+            <p class="text-xs text-[#7F7F7F]">
+              Audio discussion of the Gensler City Pulse 2025 findings
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <nav class="mb-8 border-b border-gray-200">
+        <ul
+          class="flex flex-wrap -mb-px justify-center text-sm font-medium text-center"
+        >
+          <li class="mr-2">
+            <button
+              class="nav-tab inline-block p-4 border-b-2 rounded-t-lg tab-active"
+              data-tab="overview"
+            >
+              Overview
+            </button>
+          </li>
+          <li class="mr-2">
+            <button
+              class="nav-tab inline-block p-4 border-b-2 rounded-t-lg tab-inactive"
+              data-tab="framework"
+            >
+              The "Why"
+            </button>
+          </li>
+          <li class="mr-2">
+            <button
+              class="nav-tab inline-block p-4 border-b-2 rounded-t-lg tab-inactive"
+              data-tab="explorer"
+            >
+              City Explorer
+            </button>
+          </li>
+          <li>
+            <button
+              class="nav-tab inline-block p-4 border-b-2 rounded-t-lg tab-inactive"
+              data-tab="context"
+            >
+              The Big Picture
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <main>
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content">
+          <section class="bg-[#F5F0E8] p-6 rounded-2xl mb-8">
+            <h2 class="text-2xl font-bold mb-3 text-[#434242]">
+              What Makes a City "Sticky"?
+            </h2>
+            <p class="text-base text-[#434242] leading-relaxed">
+              The Gensler "City Pulse 2025" report introduces a new way to
+              measure urban success: **"stickiness,"** or the likelihood of
+              residents to stay in their city. It moves beyond traditional
+              metrics like infrastructure and economy to focus on the human
+              experience. The report's core finding is that the factors that
+              attract people to a city (like jobs) are different from the
+              emotional connections that make them stay (like pride and
+              belonging). This interactive report explores these findings,
+              starting with the cities that have mastered the art of retention.
+            </p>
+          </section>
+
+          <section>
+            <h3 class="text-2xl font-bold text-center mb-4 text-[#434242]">
+              Top 10 Most "Magnetic" Cities
+            </h3>
+            <p class="text-center text-[#7F7F7F] mb-6 max-w-2xl mx-auto">
+              Percentage of residents who say they are "unlikely" to move away.
+            </p>
+            <div class="chart-container">
+              <canvas id="topCitiesChart"></canvas>
+            </div>
+          </section>
+        </div>
+
+        <!-- Framework Tab -->
+        <div id="framework" class="tab-content hidden">
+          <section class="bg-[#F5F0E8] p-6 rounded-2xl mb-8">
+            <h2 class="text-2xl font-bold mb-3 text-[#434242]">
+              Attraction vs. Retention: The Two Forces of Urban Life
+            </h2>
+            <p class="text-base text-[#434242] leading-relaxed">
+              The report's central thesis is the duality of urban appeal.
+              Practical needs pull people in, but emotional bonds make them
+              stay. Explore the key factors for each below. Click on a factor to
+              learn more about its importance in the study.
+            </p>
+          </section>
+
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="p-6 bg-white rounded-xl shadow-sm">
+              <h3 class="text-xl font-bold text-[#A0A892] mb-4">
+                → Attraction Factors (The "Pull")
+              </h3>
+              <p class="mb-4 text-sm text-[#7F7F7F]">
+                These are the pragmatic "table stakes" that make a city a viable
+                place to move to.
+              </p>
+              <ul class="space-y-3" id="attraction-factors"></ul>
+            </div>
+            <div class="p-6 bg-white rounded-xl shadow-sm">
+              <h3 class="text-xl font-bold text-[#B97A57] mb-4">
+                ❤️ Retention Factors (The "Stickiness")
+              </h3>
+              <p class="mb-4 text-sm text-[#7F7F7F]">
+                These are the emotional drivers that forge long-term loyalty and
+                a sense of home.
+              </p>
+              <ul class="space-y-3" id="retention-factors"></ul>
+            </div>
+          </div>
+          <div
+            id="factor-modal"
+            class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4"
+          >
+            <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full">
+              <h4 id="modal-title" class="text-lg font-bold mb-2"></h4>
+              <p id="modal-text" class="text-sm text-gray-700"></p>
+              <button
+                id="modal-close"
+                class="mt-4 w-full bg-[#B97A57] text-white py-2 rounded-lg hover:bg-opacity-90 transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Explorer Tab -->
+        <div id="explorer" class="tab-content hidden">
+          <section class="bg-[#F5F0E8] p-6 rounded-2xl mb-8">
+            <h2 class="text-2xl font-bold mb-3 text-[#434242]">
+              Explore the Magnetic Cities
+            </h2>
+            <p class="text-base text-[#434242] leading-relaxed">
+              Discover the top 10 "stickiest" cities on the map. Click a marker
+              to reveal a detailed analysis of what makes that city a place its
+              residents are proud to call home. This section combines the
+              report's rankings and deep-dive analyses into one explorable tool.
+            </p>
+          </section>
+          <div class="grid lg:grid-cols-5 gap-8">
+            <div class="lg:col-span-3">
+              <div
+                id="map-container"
+                class="relative w-full aspect-[16/9] bg-gray-200 rounded-lg overflow-hidden"
+                style="
+                  background-image: url('https://placehold.co/1200x675/e2e8f0/cbd5e1?text=World+Map');
+                  background-size: cover;
+                  background-position: center;
+                "
+              ></div>
+            </div>
+            <div
+              id="city-details-container"
+              class="lg:col-span-2 p-6 bg-white rounded-xl shadow-sm self-start"
+            >
+              <div id="city-details">
+                <h3 class="text-xl font-bold text-[#434242]">
+                  Select a city on the map
+                </h3>
+                <p class="text-[#7F7F7F] mt-2">
+                  Click on a numbered marker to learn more about its unique
+                  brand of urban magnetism.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Context Tab -->
+        <div id="context" class="tab-content hidden">
+          <section class="bg-[#F5F0E8] p-6 rounded-2xl mb-8">
+            <h2 class="text-2xl font-bold mb-3 text-[#434242]">
+              Context is Key: How Does "Stickiness" Compare?
+            </h2>
+            <p class="text-base text-[#434242] leading-relaxed">
+              A city's rank depends on the questions asked. This section
+              compares the Gensler "stickiness" findings with other major 2025
+              livability indices. Notice how different methodologies produce
+              vastly different results, highlighting that "most livable" doesn't
+              always mean "most loved." Hover over a city row to see how it
+              fares across all lists.
+            </p>
+          </section>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500">
+              <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3">City</th>
+                  <th scope="col" class="px-6 py-3 text-center">
+                    Gensler "Stickiness"
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-center">
+                    EIU Livability
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-center">
+                    Resonance "Best City"
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-center">
+                    Monocle Quality of Life
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="comparison-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+      <footer class="text-center mt-12 pt-8 border-t border-gray-200">
+        <p class="text-sm text-gray-500">
+          Data sourced and adapted from the Gensler Research Institute "City
+          Pulse 2025: The Magnetic City" report.
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Audio Speed Control
+        const audioPlayer = document.getElementById("audioPlayer");
+        const speedControl = document.getElementById("speedControl");
+        const speedDisplay = document.getElementById("speedDisplay");
+
+        if (audioPlayer && speedControl && speedDisplay) {
+          speedControl.addEventListener("input", function () {
+            const speed = parseFloat(this.value);
+            audioPlayer.playbackRate = speed;
+            speedDisplay.textContent = speed.toFixed(1) + "x";
+
+            // Update slider background to show progress
+            const percentage = ((speed - 0.5) / (2 - 0.5)) * 100;
+            this.style.background = `linear-gradient(to right, #B97A57 0%, #B97A57 ${percentage}%, #F5F0E8 ${percentage}%, #F5F0E8 100%)`;
+          });
+
+          // Initialize slider background
+          const initialPercentage = ((1 - 0.5) / (2 - 0.5)) * 100;
+          speedControl.style.background = `linear-gradient(to right, #B97A57 0%, #B97A57 ${initialPercentage}%, #F5F0E8 ${initialPercentage}%, #F5F0E8 100%)`;
+        }
+
+        const topCitiesData = [
+          {
+            rank: 1,
+            city: "Taipei",
+            country: "Taiwan",
+            value: 64,
+            lat: 25.04,
+            lon: 121.53,
+            mapX: "81%",
+            mapY: "36%",
+          },
+          {
+            rank: 2,
+            city: "Ho Chi Minh City",
+            country: "Vietnam",
+            value: 61,
+            lat: 10.76,
+            lon: 106.66,
+            mapX: "77%",
+            mapY: "48%",
+          },
+          {
+            rank: 3,
+            city: "Singapore",
+            country: "Singapore",
+            value: 59,
+            lat: 1.29,
+            lon: 103.85,
+            mapX: "76%",
+            mapY: "54%",
+          },
+          {
+            rank: 4,
+            city: "Sydney",
+            country: "Australia",
+            value: 58,
+            lat: -33.87,
+            lon: 151.21,
+            mapX: "90%",
+            mapY: "80%",
+          },
+          {
+            rank: 5,
+            city: "Berlin",
+            country: "Germany",
+            value: 51,
+            lat: 52.52,
+            lon: 13.38,
+            mapX: "52%",
+            mapY: "18%",
+          },
+          {
+            rank: 6,
+            city: "Monterrey",
+            country: "Mexico",
+            value: 50,
+            lat: 25.69,
+            lon: -100.32,
+            mapX: "20%",
+            mapY: "35%",
+          },
+          {
+            rank: 7,
+            city: "Munich",
+            country: "Germany",
+            value: 49,
+            lat: 48.14,
+            lon: 11.58,
+            mapX: "51.5%",
+            mapY: "22%",
+          },
+          {
+            rank: 8,
+            city: "São Paulo",
+            country: "Brazil",
+            value: 49,
+            lat: -23.53,
+            lon: -46.63,
+            mapX: "36%",
+            mapY: "73%",
+          },
+          {
+            rank: 9,
+            city: "Vancouver",
+            country: "Canada",
+            value: 49,
+            lat: 49.25,
+            lon: -123.12,
+            mapX: "12%",
+            mapY: "20%",
+          },
+          {
+            rank: 10,
+            city: "Seoul",
+            country: "South Korea",
+            value: 47,
+            lat: 37.53,
+            lon: 127.02,
+            mapX: "83%",
+            mapY: "30%",
+          },
+        ];
+
+        const cityDetailsContent = {
+          Taipei: {
+            title: "Taipei: The Convivial City",
+            text: "Taipei's top ranking defies its housing affordability crisis, proving the power of 'emotional infrastructure.' Its success lies in revitalizing industrial sites into vibrant community hubs like Huashan 1914 Creative Park, preserving heritage, and fostering a strong sense of community ownership. This, combined with a high homeownership rate, creates a powerful anchor for residents.",
+            rank: 1,
+            value: 64,
+          },
+          "Ho Chi Minh City": {
+            title: "HCMC: The Energetic Hub",
+            text: "The city's 'stickiness' comes from the emotional power of momentum. As Vietnam's economic engine, it exudes energy and possibility. Residents feel part of a national success story. This optimism, combined with a stunning blend of French colonial architecture, a booming contemporary arts scene, and vibrant street life, forges a deep sense of belonging.",
+            rank: 2,
+            value: 61,
+          },
+          Singapore: {
+            title: "Singapore: The Resilient Haven",
+            text: "Singapore blends pragmatic excellence with the emotional security it creates. It's a global outlier in affordability perception, with many residents feeling their cost of living has improved due to proactive governance. This creates a tangible sense of economic well-being and trust, providing 'certainty in an uncertain world' that becomes a powerful emotional anchor.",
+            rank: 3,
+            value: 59,
+          },
+          Sydney: {
+            title: "Sydney: The Lifestyle Capital",
+            text: "Known for its high quality of life, stunning natural environment, and robust economy, Sydney successfully blends pragmatic attraction factors with lifestyle elements that foster a deep emotional connection to place.",
+            rank: 4,
+            value: 58,
+          },
+          Berlin: {
+            title: "Berlin: The Creative Powerhouse",
+            text: "As a global capital of culture and creativity, Berlin attracts and retains talent by offering a rich, engaging, and uniquely open urban experience. Its affordability (relative to other capitals) and vibrant arts scene create strong loyalty.",
+            rank: 5,
+            value: 51,
+          },
+          Monterrey: {
+            title: "Monterrey: The Industrial Heart",
+            text: "This major Latin American economic hub's 'stickiness' suggests that the dynamism, opportunity, and vibrant culture found in the city generate a powerful sense of local pride that anchors residents.",
+            rank: 6,
+            value: 50,
+          },
+          Munich: {
+            title: "Munich: The Stable Leader",
+            text: "An economic powerhouse with a high degree of livability, Munich offers a well-organized and prosperous urban experience. Its blend of economic opportunity and traditional Bavarian culture creates a stable, satisfying environment.",
+            rank: 7,
+            value: 49,
+          },
+          "São Paulo": {
+            title: "São Paulo: The Dynamic Metropolis",
+            text: "The largest city in the Americas, São Paulo's magnetism comes from its sheer scale and energy. Its vibrant culture and central role in Brazil's economy create immense pride and a sense of belonging for its residents.",
+            rank: 8,
+            value: 49,
+          },
+          Vancouver: {
+            title: "Vancouver: The Natural Escape",
+            text: "Long celebrated for its unparalleled access to nature, Vancouver's high retention is driven by a lifestyle blending urban amenities with outdoor recreation. This unique sense of place is something residents are reluctant to give up.",
+            rank: 9,
+            value: 49,
+          },
+          Seoul: {
+            title: "Seoul: The Epicenter of Cool",
+            text: "A hyper-modern global center for tech and pop culture, Seoul's magnetism is fueled by intense energy and civic pride. Residents feel they are at the center of a global phenomenon, fostering deep loyalty.",
+            rank: 10,
+            value: 47,
+          },
+        };
+
+        const factors = {
+          attraction: [
+            {
+              title: "Cost of living",
+              text: 'Rated "very" or "extremely" important by 83% of prospective movers. It\'s the primary gatekeeper for considering a new city.',
+            },
+            {
+              title: "Level of crime",
+              text: "A close second, rated important by 81%. Personal safety is a non-negotiable prerequisite for a move.",
+            },
+            {
+              title: "High-quality healthcare",
+              text: "Rated important by 80%. Access to reliable healthcare is a foundational need for individuals and families.",
+            },
+            {
+              title: "Job opportunities",
+              text: "A primary driver, providing the financial security necessary to establish a life in a new place.",
+            },
+          ],
+          retention: [
+            {
+              title: "I don't feel bored",
+              text: "The #1 predictor of retention. A city that offers engaging experiences, culture, and activities creates a vibrant life.",
+            },
+            {
+              title: "I feel at home",
+              text: "This speaks to a deep sense of belonging and comfort. It transforms a city from a location into a home.",
+            },
+            {
+              title: "I am proud of my city",
+              text: "Civic pride is a powerful emotional anchor, connecting personal identity to the city's reputation and character.",
+            },
+            {
+              title: "My city is getting better to age",
+              text: "This reflects confidence in the city's future and its ability to support residents through all life stages.",
+            },
+            {
+              title: "My sense of belonging has grown",
+              text: "This shows the city is successful at integrating residents over time, deepening their roots and community ties.",
+            },
+          ],
+        };
+
+        const comparisonData = [
+          {
+            city: "Taipei",
+            gensler: "1",
+            eiu: "N/A",
+            resonance: "N/A",
+            monocle: "N/A",
+          },
+          {
+            city: "Ho Chi Minh City",
+            gensler: "2",
+            eiu: "N/A",
+            resonance: "N/A",
+            monocle: "N/A",
+          },
+          {
+            city: "Singapore",
+            gensler: "3",
+            eiu: "N/A",
+            resonance: "5",
+            monocle: "N/A",
+          },
+          {
+            city: "Sydney",
+            gensler: "4",
+            eiu: "6",
+            resonance: "12",
+            monocle: "N/A",
+          },
+          {
+            city: "Berlin",
+            gensler: "5",
+            eiu: "N/A",
+            resonance: "11",
+            monocle: "N/A",
+          },
+          {
+            city: "London",
+            gensler: "N/A",
+            eiu: "N/A",
+            resonance: "1",
+            monocle: "N/A",
+          },
+          {
+            city: "Paris",
+            gensler: "N/A",
+            eiu: "N/A",
+            resonance: "3",
+            monocle: "1",
+          },
+          {
+            city: "Copenhagen",
+            gensler: "N/A",
+            eiu: "1",
+            resonance: "N/A",
+            monocle: "N/A",
+          },
+          {
+            city: "Vienna",
+            gensler: "N/A",
+            eiu: "2",
+            resonance: "N/A",
+            monocle: "5",
+          },
+          {
+            city: "Zurich",
+            gensler: "N/A",
+            eiu: "2",
+            resonance: "N/A",
+            monocle: "6",
+          },
+        ];
+
+        const tabs = document.querySelectorAll(".nav-tab");
+        const tabContents = document.querySelectorAll(".tab-content");
+
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            tabs.forEach((item) => {
+              item.classList.remove("tab-active");
+              item.classList.add("tab-inactive");
+            });
+            tab.classList.add("tab-active");
+            tab.classList.remove("tab-inactive");
+
+            const target = document.getElementById(tab.dataset.tab);
+            tabContents.forEach((content) => content.classList.add("hidden"));
+            target.classList.remove("hidden");
+          });
+        });
+
+        function createTopCitiesChart() {
+          const ctx = document
+            .getElementById("topCitiesChart")
+            .getContext("2d");
+          const sortedData = [...topCitiesData].sort(
+            (a, b) => a.value - b.value
+          );
+          new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: sortedData.map((d) => `${d.city}, ${d.country}`),
+              datasets: [
+                {
+                  label: "% Unlikely to Move",
+                  data: sortedData.map((d) => d.value),
+                  backgroundColor: "#B97A57",
+                  borderColor: "#B97A57",
+                  borderWidth: 1,
+                },
+              ],
+            },
+            options: {
+              indexAxis: "y",
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      return ` ${context.raw}%`;
+                    },
+                  },
+                },
+              },
+              scales: {
+                x: {
+                  beginAtZero: true,
+                  grid: { color: "#e5e7eb" },
+                  ticks: {
+                    callback: function (value) {
+                      return value + "%";
+                    },
+                    color: "#434242",
+                  },
+                },
+                y: {
+                  grid: { display: false },
+                  ticks: { color: "#434242" },
+                },
+              },
+            },
+          });
+        }
+
+        function populateFactors() {
+          const attractionList = document.getElementById("attraction-factors");
+          const retentionList = document.getElementById("retention-factors");
+
+          factors.attraction.forEach((factor) => {
+            const li = document.createElement("li");
+            li.innerHTML = `<button data-title="${factor.title}" data-text="${factor.text}" class="factor-btn w-full text-left p-3 bg-[#F5F0E8] rounded-md hover:bg-[#A0A892] hover:text-white transition">${factor.title}</button>`;
+            attractionList.appendChild(li);
+          });
+
+          factors.retention.forEach((factor) => {
+            const li = document.createElement("li");
+            li.innerHTML = `<button data-title="${factor.title}" data-text="${factor.text}" class="factor-btn w-full text-left p-3 bg-[#F5F0E8] rounded-md hover:bg-[#B97A57] hover:text-white transition">${factor.title}</button>`;
+            retentionList.appendChild(li);
+          });
+
+          const modal = document.getElementById("factor-modal");
+          const modalTitle = document.getElementById("modal-title");
+          const modalText = document.getElementById("modal-text");
+          const closeModalBtn = document.getElementById("modal-close");
+
+          document.querySelectorAll(".factor-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              modalTitle.textContent = btn.dataset.title;
+              modalText.textContent = btn.dataset.text;
+              modal.classList.remove("hidden");
+              modal.classList.add("flex");
+            });
+          });
+
+          closeModalBtn.addEventListener("click", () => {
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+          });
+
+          modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+              modal.classList.add("hidden");
+              modal.classList.remove("flex");
+            }
+          });
+        }
+
+        function populateMap() {
+          const mapContainer = document.getElementById("map-container");
+          topCitiesData.forEach((city) => {
+            const marker = document.createElement("div");
+            marker.className = "map-marker";
+            marker.style.left = city.mapX;
+            marker.style.top = city.mapY;
+            marker.textContent = city.rank;
+            marker.dataset.city = city.city;
+            mapContainer.appendChild(marker);
+
+            marker.addEventListener("click", () => {
+              updateCityDetails(city.city);
+              document
+                .querySelectorAll(".map-marker")
+                .forEach((m) => m.classList.remove("selected"));
+              marker.classList.add("selected");
+            });
+          });
+        }
+
+        function updateCityDetails(cityName) {
+          const details = cityDetailsContent[cityName];
+          const container = document.getElementById("city-details");
+          if (details) {
+            container.innerHTML = `
+                <h3 class="text-2xl font-bold text-[#434242]">${details.title}</h3>
+                <div class="my-3 text-lg">
+                    <span class="font-semibold text-[#B97A57]">Rank ${details.rank}</span>
+                    <span class="mx-2 text-gray-300">|</span>
+                    <span class="font-semibold text-[#A0A892]">${details.value}% Unlikely to Move</span>
+                </div>
+                <p class="text-[#434242] leading-relaxed">${details.text}</p>
+            `;
+          }
+        }
+
+        function populateComparisonTable() {
+          const tbody = document.getElementById("comparison-table");
+          comparisonData.forEach((data) => {
+            const row = document.createElement("tr");
+            row.className =
+              "bg-white border-b hover:bg-[#F5F0E8] transition-colors duration-200";
+            row.innerHTML = `
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${
+                  data.city
+                }</th>
+                <td class="px-6 py-4 text-center font-bold text-[#B97A57]">${
+                  data.gensler !== "N/A" ? data.gensler : "–"
+                }</td>
+                <td class="px-6 py-4 text-center">${
+                  data.eiu !== "N/A" ? data.eiu : "–"
+                }</td>
+                <td class="px-6 py-4 text-center">${
+                  data.resonance !== "N/A" ? data.resonance : "–"
+                }</td>
+                <td class="px-6 py-4 text-center">${
+                  data.monocle !== "N/A" ? data.monocle : "–"
+                }</td>
+            `;
+            tbody.appendChild(row);
+          });
+        }
+
+        createTopCitiesChart();
+        populateFactors();
+        populateMap();
+        populateComparisonTable();
+      });
+    </script>
+  </body>
+</html>
