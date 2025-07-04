@@ -6,16 +6,16 @@
     <title>The Magnetic City: An Interactive Report</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+      src="https://cdn.plot.ly/plotly-2.32.0.min.js"
+      charset="utf-8"
+    ></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-    <!-- Chosen Palette: Warm Neutral Harmony -->
-    <!-- Application Structure Plan: A tab-based SPA to segment the report's dense information into digestible, user-selectable themes. This structure encourages non-linear exploration over passive scrolling. The tabs are: 1. 'Overview' for the main findings and top 10 chart. 2. 'The Why' for an interactive diagram explaining the Attraction vs. Retention framework. 3. 'City Explorer' for an interactive map and deep-dive details on each city. 4. 'The Big Picture' for a comparative table of different global indices. This task-oriented flow allows users to immediately grasp the key message and then delve into the methodology, city-specifics, or broader context as they choose, enhancing usability and understanding. -->
-    <!-- Visualization & Content Choices: 1. Top 10 Ranking: An interactive horizontal bar chart (Chart.js/Canvas) to visually compare city ranks. Interaction: Hover for details. Justification: Best for ranked value comparison. 2. Attraction vs. Retention: A two-column interactive diagram (HTML/CSS) with clickable cards. Interaction: Click to reveal details. Justification: Turns static lists into an engaging, self-paced learning tool. 3. World Map & Deep Dive: A background map image with clickable, absolutely-positioned HTML elements for markers, linked to a dynamic content pane. Interaction: Click a marker to load that city's detailed analysis. Justification: Provides geographic context and an exploratory interface without violating the NO SVG/NO complex library constraint. 4. Comparative Indices: An interactive HTML table. Interaction: Row hover highlights the city across all index columns. Justification: Enhances readability and makes cross-referencing simple. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
       body {
         font-family: "Inter", sans-serif;
@@ -149,7 +149,7 @@
               class="w-full mb-3"
               preload="metadata"
             >
-              <source src="urban_stickness.mp3" type="audio/mpeg" />
+              <source src="(EN) urban_stickiness.mp3" type="audio/mpeg" />
               Your browser does not support the audio element.
             </audio>
 
@@ -336,13 +336,11 @@
             <div class="lg:col-span-3">
               <div
                 id="map-container"
-                class="relative w-full aspect-[16/9] bg-gray-200 rounded-lg overflow-hidden"
-                style="
-                  background-image: url('https://placehold.co/1200x675/e2e8f0/cbd5e1?text=World+Map');
-                  background-size: cover;
-                  background-position: center;
-                "
-              ></div>
+                class="relative w-full bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+                style="height: 500px"
+              >
+                <div id="world-map" style="width: 100%; height: 100%"></div>
+              </div>
             </div>
             <div
               id="city-details-container"
@@ -403,8 +401,16 @@
 
       <footer class="text-center mt-12 pt-8 border-t border-gray-200">
         <p class="text-sm text-gray-500">
-          Data sourced and adapted from the Gensler Research Institute "City
-          Pulse 2025: The Magnetic City" report.
+          Data sourced and adapted from the Gensler Research Institute
+          <a
+            href="https://www.gensler.com/gri/city-pulse-2025"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[#B97A57] hover:text-[#A0A892] underline transition-colors"
+          >
+            "City Pulse 2025: The Magnetic City"
+          </a>
+          report.
         </p>
       </footer>
     </div>
@@ -437,164 +443,144 @@
             rank: 1,
             city: "Taipei",
             country: "Taiwan",
-            value: 64,
-            lat: 25.04,
-            lon: 121.53,
-            mapX: "81%",
-            mapY: "36%",
+            value: 85,
+            lat: 25.033,
+            lon: 121.5654,
           },
           {
             rank: 2,
-            city: "Ho Chi Minh City",
-            country: "Vietnam",
-            value: 61,
-            lat: 10.76,
-            lon: 106.66,
-            mapX: "77%",
-            mapY: "48%",
+            city: "Seoul",
+            country: "South Korea",
+            value: 82,
+            lat: 37.5665,
+            lon: 126.978,
           },
           {
             rank: 3,
             city: "Singapore",
             country: "Singapore",
-            value: 59,
-            lat: 1.29,
-            lon: 103.85,
-            mapX: "76%",
-            mapY: "54%",
+            value: 80,
+            lat: 1.3521,
+            lon: 103.8198,
           },
           {
             rank: 4,
-            city: "Sydney",
-            country: "Australia",
-            value: 58,
-            lat: -33.87,
-            lon: 151.21,
-            mapX: "90%",
-            mapY: "80%",
+            city: "Munich",
+            country: "Germany",
+            value: 79,
+            lat: 48.1351,
+            lon: 11.582,
           },
           {
             rank: 5,
-            city: "Berlin",
-            country: "Germany",
-            value: 51,
-            lat: 52.52,
-            lon: 13.38,
-            mapX: "52%",
-            mapY: "18%",
+            city: "Monterrey",
+            country: "Mexico",
+            value: 78,
+            lat: 25.6866,
+            lon: -100.3161,
           },
           {
             rank: 6,
-            city: "Monterrey",
+            city: "Mexico City",
             country: "Mexico",
-            value: 50,
-            lat: 25.69,
-            lon: -100.32,
-            mapX: "20%",
-            mapY: "35%",
+            value: 77,
+            lat: 19.4326,
+            lon: -99.1332,
           },
           {
             rank: 7,
-            city: "Munich",
-            country: "Germany",
-            value: 49,
-            lat: 48.14,
-            lon: 11.58,
-            mapX: "51.5%",
-            mapY: "22%",
+            city: "London",
+            country: "United Kingdom",
+            value: 75,
+            lat: 51.5072,
+            lon: -0.1276,
           },
           {
             rank: 8,
-            city: "São Paulo",
-            country: "Brazil",
-            value: 49,
-            lat: -23.53,
-            lon: -46.63,
-            mapX: "36%",
-            mapY: "73%",
+            city: "Bogotá",
+            country: "Colombia",
+            value: 74,
+            lat: 4.711,
+            lon: -74.0721,
           },
           {
             rank: 9,
-            city: "Vancouver",
-            country: "Canada",
-            value: 49,
-            lat: 49.25,
-            lon: -123.12,
-            mapX: "12%",
-            mapY: "20%",
+            city: "Sydney",
+            country: "Australia",
+            value: 73,
+            lat: -33.8688,
+            lon: 151.2093,
           },
           {
             rank: 10,
-            city: "Seoul",
-            country: "South Korea",
-            value: 47,
-            lat: 37.53,
-            lon: 127.02,
-            mapX: "83%",
-            mapY: "30%",
+            city: "Shanghai",
+            country: "China",
+            value: 72,
+            lat: 31.2304,
+            lon: 121.4737,
           },
         ];
 
         const cityDetailsContent = {
           Taipei: {
             title: "Taipei: The Convivial City",
-            text: "Taipei's top ranking defies its housing affordability crisis, proving the power of 'emotional infrastructure.' Its success lies in revitalizing industrial sites into vibrant community hubs like Huashan 1914 Creative Park, preserving heritage, and fostering a strong sense of community ownership. This, combined with a high homeownership rate, creates a powerful anchor for residents.",
+            text: "Taipei tops the list with an impressive 85% retention rate. Its exceptional performance stems from world-class convenient public transportation, extremely high safety levels, and vibrant street life that perfectly embodies 'not feeling bored' and 'feeling at home.' Rich food culture, diverse creative activities, and strong local identity significantly enhance residents' civic pride.",
             rank: 1,
-            value: 64,
+            value: 85,
           },
-          "Ho Chi Minh City": {
-            title: "HCMC: The Energetic Hub",
-            text: "The city's 'stickiness' comes from the emotional power of momentum. As Vietnam's economic engine, it exudes energy and possibility. Residents feel part of a national success story. This optimism, combined with a stunning blend of French colonial architecture, a booming contemporary arts scene, and vibrant street life, forges a deep sense of belonging.",
+          Seoul: {
+            title: "Seoul: The Cultural Powerhouse",
+            text: "As Korea's economic and cultural heart, Seoul seamlessly blends cutting-edge technology with deep historical heritage. From bustling shopping districts to serene ancient palaces, from world-class pop culture to exquisite traditional arts, Seoul's diverse experiences keep residents engaged while strong national and civic pride serves as a powerful unifying force.",
             rank: 2,
-            value: 61,
+            value: 82,
           },
           Singapore: {
-            title: "Singapore: The Resilient Haven",
-            text: "Singapore blends pragmatic excellence with the emotional security it creates. It's a global outlier in affordability perception, with many residents feeling their cost of living has improved due to proactive governance. This creates a tangible sense of economic well-being and trust, providing 'certainty in an uncertain world' that becomes a powerful emotional anchor.",
+            title: "Singapore: The Garden City-State",
+            text: "As a highly organized city-state renowned for safety and greenery, Singapore provides residents with exceptional quality of life and a strong sense of 'home.' The report specifically notes that as a city-state, Singapore is its citizens' 'only urban choice' domestically, which itself serves as a powerful retention factor.",
             rank: 3,
-            value: 59,
+            value: 80,
           },
-          Sydney: {
-            title: "Sydney: The Lifestyle Capital",
-            text: "Known for its high quality of life, stunning natural environment, and robust economy, Sydney successfully blends pragmatic attraction factors with lifestyle elements that foster a deep emotional connection to place.",
+          Munich: {
+            title: "Munich: The European Leader",
+            text: "Munich ranks highest among European cities on the list. It's not only Germany's economic powerhouse but also renowned for its high-quality living environment, rich cultural activities, and proximity to nature. The perfect balance between economic vitality and leisure lifestyle creates strong resident belonging and pride.",
             rank: 4,
-            value: 58,
-          },
-          Berlin: {
-            title: "Berlin: The Creative Powerhouse",
-            text: "As a global capital of culture and creativity, Berlin attracts and retains talent by offering a rich, engaging, and uniquely open urban experience. Its affordability (relative to other capitals) and vibrant arts scene create strong loyalty.",
-            rank: 5,
-            value: 51,
+            value: 79,
           },
           Monterrey: {
             title: "Monterrey: The Industrial Heart",
-            text: "This major Latin American economic hub's 'stickiness' suggests that the dynamism, opportunity, and vibrant culture found in the city generate a powerful sense of local pride that anchors residents.",
+            text: "Monterrey's inclusion demonstrates the 'rise of the Global South.' As Mexico's industrial center, it's described as a city that provides both abundant opportunities and high livability. Strong regional culture, tight community connections, and vibrant public life play crucial roles in establishing resident belonging.",
+            rank: 5,
+            value: 78,
+          },
+          "Mexico City": {
+            title: "Mexico City: The Cultural Metropolis",
+            text: "This Latin American megacity boasts world-class museums, rich historical heritage, and unparalleled culinary landscapes, providing residents with constant cultural nourishment that keeps them 'never bored.' Deep cultural foundations and strong national pride serve as important emotional anchors for residents choosing to stay long-term.",
             rank: 6,
-            value: 50,
+            value: 77,
           },
-          Munich: {
-            title: "Munich: The Stable Leader",
-            text: "An economic powerhouse with a high degree of livability, Munich offers a well-organized and prosperous urban experience. Its blend of economic opportunity and traditional Bavarian culture creates a stable, satisfying environment.",
+          London: {
+            title: "London: The Global Hub",
+            text: "As a global financial and cultural center, London's stickiness stems from its unparalleled diversity and vitality. World-class theaters, museums, and multicultural communities make it a city that never loses its freshness. Its unique experiences create strong resident belonging and pride in being 'Londoners.'",
             rank: 7,
-            value: 49,
+            value: 75,
           },
-          "São Paulo": {
-            title: "São Paulo: The Dynamic Metropolis",
-            text: "The largest city in the Americas, São Paulo's magnetism comes from its sheer scale and energy. Its vibrant culture and central role in Brazil's economy create immense pride and a sense of belonging for its residents.",
+          Bogotá: {
+            title: "Bogotá: The Rising Star",
+            text: "Bogotá has made significant progress in recent years in urban renewal, public space development, and cultural advancement. Its innovative public transportation system, extensive citywide cycling network, and thriving arts scene have enhanced residents' quality of life and civic pride.",
             rank: 8,
-            value: 49,
+            value: 74,
           },
-          Vancouver: {
-            title: "Vancouver: The Natural Escape",
-            text: "Long celebrated for its unparalleled access to nature, Vancouver's high retention is driven by a lifestyle blending urban amenities with outdoor recreation. This unique sense of place is something residents are reluctant to give up.",
+          Sydney: {
+            title: "Sydney: The Lifestyle Capital",
+            text: "Sydney is famous for its iconic harbor views, pleasant climate, and relaxed outdoor lifestyle. Residents can easily switch between bustling urban life and beautiful natural scenery, and this balance greatly enhances happiness and 'feeling at home.'",
             rank: 9,
-            value: 49,
+            value: 73,
           },
-          Seoul: {
-            title: "Seoul: The Epicenter of Cool",
-            text: "A hyper-modern global center for tech and pop culture, Seoul's magnetism is fueled by intense energy and civic pride. Residents feel they are at the center of a global phenomenon, fostering deep loyalty.",
+          Shanghai: {
+            title: "Shanghai: The Economic Engine",
+            text: "As China's economic center, Shanghai makes residents proud with its rapid development, efficient management, and ever-changing skyline. This city blends traditional and modern charm, providing rich and diverse life experiences. Its vitality and opportunities keep residents 'never bored' and confident about the future.",
             rank: 10,
-            value: 47,
+            value: 72,
           },
         };
 
@@ -830,25 +816,83 @@
           });
         }
 
-        function populateMap() {
-          const mapContainer = document.getElementById("map-container");
-          topCitiesData.forEach((city) => {
-            const marker = document.createElement("div");
-            marker.className = "map-marker";
-            marker.style.left = city.mapX;
-            marker.style.top = city.mapY;
-            marker.textContent = city.rank;
-            marker.dataset.city = city.city;
-            mapContainer.appendChild(marker);
+        function createWorldMap() {
+          const mapData = [
+            {
+              type: "scattergeo",
+              lon: topCitiesData.map((c) => c.lon),
+              lat: topCitiesData.map((c) => c.lat),
+              text: topCitiesData.map(
+                (c) => `${c.rank}. ${c.city}, ${c.country}: ${c.value}%`
+              ),
+              mode: "markers",
+              marker: {
+                size: 15,
+                color: "#B97A57",
+                opacity: 0.8,
+                line: {
+                  color: "white",
+                  width: 2,
+                },
+              },
+              hovertemplate:
+                "<b>%{text}</b><br>" +
+                "Click to learn more<br>" +
+                "<extra></extra>",
+            },
+          ];
 
-            marker.addEventListener("click", () => {
-              updateCityDetails(city.city);
-              document
-                .querySelectorAll(".map-marker")
-                .forEach((m) => m.classList.remove("selected"));
-              marker.classList.add("selected");
+          const layout = {
+            geo: {
+              projection: {
+                type: "natural earth",
+              },
+              showland: true,
+              landcolor: "#F5F0E8",
+              showocean: true,
+              oceancolor: "#FFFFFF",
+              bgcolor: "#FDFBF7",
+              countrycolor: "#E5E7EB",
+              showcountries: true,
+              showsubunits: true,
+              subunitcolor: "#E5E7EB",
+            },
+            margin: { l: 0, r: 0, t: 0, b: 0 },
+            paper_bgcolor: "#FDFBF7",
+          };
+
+          const config = {
+            responsive: true,
+            displayModeBar: false,
+          };
+
+          Plotly.newPlot("world-map", mapData, layout, config);
+
+          // Add click event listener
+          document
+            .getElementById("world-map")
+            .on("plotly_click", function (data) {
+              const pointIndex = data.points[0].pointIndex;
+              const cityName = topCitiesData[pointIndex].city;
+              updateCityDetails(cityName);
+
+              // Update marker colors to show selection
+              const newColors = topCitiesData.map((_, i) =>
+                i === pointIndex ? "#A0A892" : "#B97A57"
+              );
+              const newSizes = topCitiesData.map((_, i) =>
+                i === pointIndex ? 20 : 15
+              );
+
+              Plotly.restyle("world-map", {
+                "marker.color": [newColors],
+                "marker.size": [newSizes],
+              });
             });
-          });
+        }
+
+        function populateMap() {
+          createWorldMap();
         }
 
         function updateCityDetails(cityName) {

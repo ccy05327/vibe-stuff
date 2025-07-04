@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Magnetic City: An Interactive Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #fdfbf7;
+        color: #434242;
+      }
+      .tab-active {
+        color: #b97a57;
+        border-color: #b97a57;
+      }
+      .tab-inactive {
+        color: #7f7f7f;
+        border-color: transparent;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 400px;
+        max-height: 60vh;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 500px;
+        }
+      }
+      .factor-btn {
+        transition: all 0.2s ease-in-out;
+      }
+      .scorecard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+      }
+      .scorecard-item {
+        background-color: #f5f0e8;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        text-align: center;
+      }
+      .scorecard-item.value {
+        font-size: 2.25rem;
+        font-weight: bold;
+        color: #b97a57;
+      }
+      .scorecard-item.label {
+        font-size: 0.875rem;
+        color: #7f7f7f;
+        margin-top: 0.25rem;
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex justify-start mb-6">
+        <a
+          href="../../index.html"
+          class="flex items-center text-[#B97A57] hover:text-white hover:bg-[#B97A57] transition-all duration-300 bg-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg border border-[#B97A57]"
+        >
+          <svg
+            class="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            ></path>
+          </svg>
+          Back to Portal
+        </a>
+      </div>
+      <header class="text-center mb-10">
+        <h1
+          class="text-4xl md:text-5xl font-bold text-[#434242] tracking-tight"
+        >
+          The Magnetic City
+        </h1>
+        <p class="mt-3 text-lg text-[#7F7F7F] max-w-3xl mx-auto">
+          An interactive exploration of the Gensler City Pulse 2025 report on
+          the cities residents don't want to leave.
+        </p>
+        <!-- Audio Player -->
+        <div class="mt-6 max-w-lg mx-auto">
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div class="flex items-center mb-3">
+              <span class="text-lg mr-2">🎧</span>
+              <h3 class="text-sm font-semibold text-[#434242]">
+                Listen to the Report Podcast
+              </h3>
+            </div>
+            <audio
+              id="audioPlayer"
+              controls
+              class="w-full mb-3"
+              preload="metadata"
+            >
+              <source src="(EN) urban_stickiness.mp3" type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+
+            <!-- Speed Control -->
+            <div class="flex items-center justify-between mb-2">
+              <label
+                for="speedControl"
+                class="text-xs font-medium text-[#434242]"
+                >Playback Speed:</label
+              >
+              <div class="flex items-center space-x-2">
+                <span
+                  id="speedDisplay"
+                  class="text-xs text-[#7F7F7F] min-w-[2rem]"
+                  >1.0x</span
+                >
+                <input
+                  type="range"
+                  id="speedControl"
+                  min="0.5"
+                  max="2"
+                  step="0.1"
+                  value="1"
+                  class="w-20 h-2 bg-[#F5F0E8] rounded-lg appearance-none cursor-pointer"
+                  style="
+                    background: linear-gradient(
+                      to right,
+                      #b97a57 0%,
+                      #b97a57 50%,
+                      #f5f0e8 50%,
+                      #f5f0e8 100%
+                    );
+                  "
+                />
+              </div>
+            </div>
+
+            <p class="text-xs text-[#7F7F7F]">
+              Audio discussion of the Gensler City Pulse 2025 findings
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <nav class="mb-8 border-b border-gray-200">
+        <ul
+          class="flex flex-wrap -mb-px justify-center text-sm font-medium text-center"
+        >
+          <li class="mr-2">
+            <button
+              class="nav-tab inline-block p-4 border-b-2 rounded-t-lg tab-active"
+              data-tab="overview"
+            >
+              Overview
+            </button>
+          </li>
+          <li class="mr-2">
+            <button
+              class="nav-tab inline-block p-4 border-b-2 rounded-t-lg tab-inactive"
+              data-tab="framework"
+            >
+              The "Why"
+            </button>
+          </li>
+          <li class="mr-2">
+            <button
+              class="nav-tab inline-block p-4 border-b-2 rounded-t-lg tab-inactive"
+              data-tab="movers"
+            >
+              Movers & Motives
+            </button>
+          </li>
+          <li class="mr-2">
+            <button
+              class="nav-tab inline-block p-4 border-b-2 rounded-t-lg tab-inactive"
+              data-tab="satisfaction"
+            >
+              Satisfaction vs. Stickiness
+            </button>
+          </li>
+          <li class="mr-2">
+            <button
+              class="nav-tab inline-block p-4 border-b-2 rounded-t-lg tab-inactive"
+              data-tab="climate"
+            >
+              Climate & The City
+            </button>
+          </li>
+          <li class="mr-2">
+            <button
+              class="nav-tab inline-block p-4 border-b-2 rounded-t-lg tab-inactive"
+              data-tab="scorecard"
+            >
+              City Scorecard
+            </button>
+          </li>
+          <li>
+            <button
+              class="nav-tab inline-block p-4 border-b-2 rounded-t-lg tab-inactive"
+              data-tab="context"
+            >
+              The Big Picture
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <main>
+        <div id="overview" class="tab-content">
+          <section class="bg-[#F5F0E8] p-6 rounded-2xl mb-8">
+            <h2 class="text-2xl font-bold mb-3 text-[#434242]">
+              What Makes a City "Sticky"?
+            </h2>
+            <p class="text-base text-[#434242] leading-relaxed">
+              The Gensler "City Pulse 2025" report introduces a new way to
+              measure urban success: **"stickiness,"** or the likelihood of
+              residents to stay in their city.[10] It moves beyond traditional
+              metrics like infrastructure and economy to focus on the human
+              experience. The report's core finding is that the factors that
+              attract people to a city (like jobs) are different from the
+              emotional connections that make them stay (like pride and
+              belonging).[10] This interactive report explores these findings,
+              starting with the cities that have mastered the art of retention.
+            </p>
+          </section>
+          <section>
+            <h3 class="text-2xl font-bold text-center mb-4 text-[#434242]">
+              Top 10 Most "Magnetic" Cities
+            </h3>
+            <p class="text-center text-[#7F7F7F] mb-6 max-w-2xl mx-auto">
+              Percentage of residents who say they are "unlikely" to move
+              away.[10]
+            </p>
+            <div class="chart-container">
+              <canvas id="topCitiesChart"></canvas>
+            </div>
+          </section>
+        </div>
+
+        <div id="framework" class="tab-content hidden">
+          <section class="bg-[#F5F0E8] p-6 rounded-2xl mb-8">
+            <h2 class="text-2xl font-bold mb-3 text-[#434242]">
+              Attraction vs. Retention: The Two Forces of Urban Life
+            </h2>
+            <p class="text-base text-[#434242] leading-relaxed">
+              The report's central thesis is the duality of urban appeal.
+              Practical needs pull people in, but emotional bonds make them
+              stay. Explore the key factors for each below. Click on a factor to
+              learn more about its importance in the study.[10]
+            </p>
+          </section>
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="p-6 bg-white rounded-xl shadow-sm">
+              <h3 class="text-xl font-bold text-[#A0A892] mb-4">
+                → Attraction Factors (The "Pull")
+              </h3>
+              <p class="mb-4 text-sm text-[#7F7F7F]">
+                These are the pragmatic "table stakes" that make a city a viable
+                place to move to.
+              </p>
+              <ul class="space-y-3" id="attraction-factors"></ul>
+            </div>
+            <div class="p-6 bg-white rounded-xl shadow-sm">
+              <h3 class="text-xl font-bold text-[#B97A57] mb-4">
+                ❤️ Retention Factors (The "Stickiness")
+              </h3>
+              <p class="mb-4 text-sm text-[#7F7F7F]">
+                These are the emotional drivers that forge long-term loyalty and
+                a sense of home.
+              </p>
+              <ul class="space-y-3" id="retention-factors"></ul>
+            </div>
+          </div>
+          <div
+            id="factor-modal"
+            class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4"
+          >
+            <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full">
+              <h4 id="modal-title" class="text-lg font-bold mb-2"></h4>
+              <p id="modal-text" class="text-sm text-gray-700"></p>
+              <button
+                id="modal-close"
+                class="mt-4 w-full bg-[#B97A57] text-white py-2 rounded-lg hover:bg-opacity-90 transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="movers" class="tab-content hidden">
+          <section class="bg-[#F5F0E8] p-6 rounded-2xl mb-8">
+            <h2 class="text-2xl font-bold mb-3 text-[#434242]">
+              Who Is Moving and Why?
+            </h2>
+            <p class="text-base text-[#434242] leading-relaxed">
+              The report reveals distinct patterns in who is most likely to move
+              and where they are headed. Younger residents are the most mobile,
+              while the appeal of smaller cities is growing, challenging the
+              dominance of traditional megacities.[10]
+            </p>
+          </section>
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="p-6 bg-white rounded-xl shadow-sm">
+              <h3 class="text-xl font-bold text-center mb-4 text-[#434242]">
+                Likelihood to Move by Life Stage
+              </h3>
+              <p class="text-center text-sm text-[#7F7F7F] mb-4">
+                Young adults are most likely to consider relocating, while older
+                adults are the most settled. Newcomers (in a city <5 years) are
+                also a high flight risk, with over 40% planning to move
+                again.[10]
+              </p>
+              <div class="chart-container h-80">
+                <canvas id="lifeStageChart"></canvas>
+              </div>
+            </div>
+            <div class="p-6 bg-white rounded-xl shadow-sm">
+              <h3 class="text-xl font-bold text-center mb-4 text-[#434242]">
+                The Rising Appeal of Smaller Cities
+              </h3>
+              <p class="text-center text-sm text-[#7F7F7F] mb-4">
+                While urban areas remain the top choice, many movers are drawn
+                to smaller cities that offer a lower cost of living and a higher
+                perceived quality of life. This presents both an opportunity and
+                a challenge for these emerging hubs.[10]
+              </p>
+              <div class="chart-container h-80">
+                <canvas id="destinationTypeChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="satisfaction" class="tab-content hidden">
+          <section class="bg-[#F5F0E8] p-6 rounded-2xl mb-8">
+            <h2 class="text-2xl font-bold mb-3 text-[#434242]">
+              Satisfaction Is Not Retention
+            </h2>
+            <p class="text-base text-[#434242] leading-relaxed">
+              One of the report's most counterintuitive findings is that high
+              resident satisfaction doesn't guarantee they will stay. Cities
+              like Dubai and Abu Dhabi boast some of the highest satisfaction
+              rates globally, yet don't rank in the top 10 for "stickiness."
+              This chart plots resident satisfaction against their likelihood to
+              move, revealing that emotional connection—not just satisfaction
+              with services—is the key to retention.[10]
+            </p>
+          </section>
+          <section>
+            <h3 class="text-2xl font-bold text-center mb-4 text-[#434242]">
+              Satisfaction vs. Likelihood to Move
+            </h3>
+            <p class="text-center text-[#7F7F7F] mb-6 max-w-2xl mx-auto">
+              Hover over a point to see the city. The ideal position is in the
+              top-left quadrant (high satisfaction, low likelihood to move).
+            </p>
+            <div class="chart-container">
+              <canvas id="satisfactionChart"></canvas>
+            </div>
+          </section>
+        </div>
+
+        <div id="climate" class="tab-content hidden">
+          <section class="bg-[#F5F0E8] p-6 rounded-2xl mb-8">
+            <h2 class="text-2xl font-bold mb-3 text-[#434242]">
+              Climate Change and Urban Migration
+            </h2>
+            <p class="text-base text-[#434242] leading-relaxed">
+              Climate change is increasingly influencing residents' decisions to
+              stay or leave. The report shows a clear correlation: people are
+              more likely to consider moving out of cities that are more
+              vulnerable to climate change. This chart compares each city's
+              climate vulnerability score (ND-GAIN Index) with the percentage of
+              residents who believe they will need to move due to environmental
+              issues, highlighting a critical new factor in urban magnetism.[10]
+            </p>
+          </section>
+          <section>
+            <h3 class="text-2xl font-bold text-center mb-4 text-[#434242]">
+              Climate Vulnerability vs. Likelihood to Move
+            </h3>
+            <p class="text-center text-[#7F7F7F] mb-6 max-w-2xl mx-auto">
+              Cities in the top-right quadrant face the greatest risk, with high
+              vulnerability and a high percentage of residents considering a
+              climate-related move.
+            </p>
+            <div class="chart-container">
+              <canvas id="climateChart"></canvas>
+            </div>
+          </section>
+        </div>
+
+        <div id="scorecard" class="tab-content hidden">
+          <section class="bg-[#F5F0E8] p-6 rounded-2xl mb-8">
+            <h2 class="text-2xl font-bold mb-3 text-[#434242]">
+              City Performance Scorecard
+            </h2>
+            <p class="text-base text-[#434242] leading-relaxed">
+              Explore how each of the 65 surveyed cities performs on key
+              metrics. Select a city from the dropdown menu to see its
+              residents' ratings on factors from economic strength to climate
+              preparedness. This data provides a granular look at the strengths
+              and challenges of each urban center.[10]
+            </p>
+          </section>
+          <div class="mb-6 max-w-md mx-auto">
+            <label
+              for="city-select"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Select a City:</label
+            >
+            <select
+              id="city-select"
+              class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#B97A57] focus:border-[#B97A57]"
+            ></select>
+          </div>
+          <div id="scorecard-display" class="p-6 bg-white rounded-xl shadow-sm">
+            <h3
+              id="scorecard-city-name"
+              class="text-2xl font-bold text-center mb-6"
+            >
+              Select a city to view its scorecard
+            </h3>
+            <div id="scorecard-grid-container" class="scorecard-grid"></div>
+          </div>
+        </div>
+
+        <div id="context" class="tab-content hidden">
+          <section class="bg-[#F5F0E8] p-6 rounded-2xl mb-8">
+            <h2 class="text-2xl font-bold mb-3 text-[#434242]">
+              Context is Key: How Does "Stickiness" Compare?
+            </h2>
+            <p class="text-base text-[#434242] leading-relaxed">
+              A city's rank depends on the questions asked. This section
+              compares the Gensler "stickiness" findings with other major 2025
+              livability indices. Notice how different methodologies produce
+              vastly different results, highlighting that "most livable" doesn't
+              always mean "most loved." Hover over a city row to see how it
+              fares across all lists.[11, 5, 3]
+            </p>
+          </section>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500">
+              <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3">City</th>
+                  <th scope="col" class="px-6 py-3 text-center">
+                    Gensler "Stickiness"
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-center">
+                    EIU Livability
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-center">
+                    Resonance "Best City"
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-center">
+                    Monocle Quality of Life
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="comparison-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+      <footer class="text-center mt-12 pt-8 border-t border-gray-200">
+        <p class="text-sm text-gray-500">
+          Data sourced and adapted from the Gensler Research Institute
+          <a
+            href="https://www.gensler.com/gri/city-pulse-2025"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[#B97A57] hover:text-[#A0A892] underline transition-colors"
+          >
+            "City Pulse 2025: The Magnetic City"
+          </a>
+          report.
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      // This script is self-contained and uses Chart.js and Tailwind CSS, which are included via CDN in the HTML head.
+      // All data is embedded directly within this script, sourced from the provided research document.
+      document.addEventListener("DOMContentLoaded", function () {
+        // Data extracted from the 'City Pulse 2025' report [10]
+        const topCitiesData = [
+          { rank: 1, city: "Taipei", country: "Taiwan", value: 85 },
+          { rank: 2, city: "Seoul", country: "South Korea", value: 82 },
+          { rank: 3, city: "Singapore", country: "Singapore", value: 80 },
+          { rank: 4, city: "Munich", country: "Germany", value: 79 },
+          { rank: 5, city: "Monterrey", country: "Mexico", value: 78 },
+          { rank: 6, city: "Mexico City", country: "Mexico", value: 77 },
+          { rank: 7, city: "London", country: "United Kingdom", value: 75 },
+          { rank: 8, city: "Bogotá", country: "Colombia", value: 74 },
+          { rank: 9, city: "Sydney", country: "Australia", value: 73 },
+          { rank: 10, city: "Shanghai", country: "China", value: 72 },
+        ];
+
+        const factors = {
+          attraction: [
+            {
+              title: "Cost of living",
+              text: 'Rated "very" or "extremely" important by 83% of prospective movers.',
+            },
+            {
+              title: "Level of crime",
+              text: "A close second, rated important by 81%. Personal safety is a non-negotiable prerequisite.",
+            },
+            {
+              title: "High-quality healthcare",
+              text: "Rated important by 80%. Access to reliable healthcare is a foundational need.",
+            },
+            {
+              title: "Job opportunities",
+              text: "A primary driver, providing the financial security necessary to establish a life.",
+            },
+          ],
+          retention: [
+            {
+              title: "I don't feel bored",
+              text: "The #1 predictor of retention. A city that offers engaging experiences creates a vibrant life.",
+            },
+            {
+              title: "I feel at home",
+              text: "This speaks to a deep sense of belonging and comfort.",
+            },
+            {
+              title: "I am proud of my city",
+              text: "Civic pride is a powerful emotional anchor.",
+            },
+            {
+              title: "My city is getting better to age",
+              text: "This reflects confidence in the city's future.",
+            },
+          ],
+        };
+
+        const comparisonData = [
+          {
+            city: "Taipei",
+            gensler: "1",
+            eiu: "N/A",
+            resonance: "N/A",
+            monocle: "N/A",
+          },
+          {
+            city: "Seoul",
+            gensler: "2",
+            eiu: "N/A",
+            resonance: "N/A",
+            monocle: "N/A",
+          },
+          {
+            city: "Singapore",
+            gensler: "3",
+            eiu: "N/A",
+            resonance: "5",
+            monocle: "N/A",
+          },
+          {
+            city: "Munich",
+            gensler: "4",
+            eiu: "N/A",
+            resonance: "N/A",
+            monocle: "N/A",
+          },
+          {
+            city: "London",
+            gensler: "7",
+            eiu: "N/A",
+            resonance: "1",
+            monocle: "N/A",
+          },
+        ];
+
+        // NEW DATA FOR ADDED SECTIONS [10]
+        const satisfactionVsLikelyData = [
+          { city: "Dubai", x: 95, y: 45 },
+          { city: "Singapore", x: 85, y: 20 },
+          { city: "Taipei", x: 82, y: 15 },
+          { city: "Munich", x: 80, y: 21 },
+          { city: "London", x: 75, y: 25 },
+        ];
+
+        const climateData = [
+          { city: "Bangkok", x: 0.45, y: 35 },
+          { city: "Singapore", x: 0.78, y: 15 },
+          { city: "Taipei", x: 0.65, y: 12 },
+          { city: "Munich", x: 0.82, y: 8 },
+          { city: "London", x: 0.8, y: 10 },
+        ];
+
+        const cityScorecardData = {
+          Atlanta: {
+            "Economic strength": 51,
+            "Peace/stability": 48,
+            "Vibrancy of city": 63,
+            "Climate preparedness": 41,
+            "Improving quality of life": 47,
+            "Investing in neighborhoods": 47,
+            "Addressing homelessness": 29,
+            "Reducing crime": 39,
+          },
+          Austin: {
+            "Economic strength": 60,
+            "Peace/stability": 51,
+            "Vibrancy of city": 62,
+            "Climate preparedness": 40,
+            "Improving quality of life": 49,
+            "Investing in neighborhoods": 44,
+            "Addressing homelessness": 29,
+            "Reducing crime": 34,
+          },
+          Baltimore: {
+            "Economic strength": 31,
+            "Peace/stability": 28,
+            "Vibrancy of city": 37,
+            "Climate preparedness": 34,
+            "Improving quality of life": 31,
+            "Investing in neighborhoods": 30,
+            "Addressing homelessness": 19,
+            "Reducing crime": 24,
+          },
+          Boston: {
+            "Economic strength": 53,
+            "Peace/stability": 59,
+            "Vibrancy of city": 59,
+            "Climate preparedness": 44,
+            "Improving quality of life": 48,
+            "Investing in neighborhoods": 46,
+            "Addressing homelessness": 29,
+            "Reducing crime": 46,
+          },
+          Charlotte: {
+            "Economic strength": 52,
+            "Peace/stability": 47,
+            "Vibrancy of city": 60,
+            "Climate preparedness": 41,
+            "Improving quality of life": 46,
+            "Investing in neighborhoods": 40,
+            "Addressing homelessness": 25,
+            "Reducing crime": 36,
+          },
+          Chicago: {
+            "Economic strength": 45,
+            "Peace/stability": 40,
+            "Vibrancy of city": 61,
+            "Climate preparedness": 42,
+            "Improving quality of life": 43,
+            "Investing in neighborhoods": 41,
+            "Addressing homelessness": 24,
+            "Reducing crime": 25,
+          },
+          Columbus: {
+            "Economic strength": 46,
+            "Peace/stability": 46,
+            "Vibrancy of city": 53,
+            "Climate preparedness": 38,
+            "Improving quality of life": 43,
+            "Investing in neighborhoods": 39,
+            "Addressing homelessness": 30,
+            "Reducing crime": 34,
+          },
+          Dallas: {
+            "Economic strength": 55,
+            "Peace/stability": 50,
+            "Vibrancy of city": 58,
+            "Climate preparedness": 39,
+            "Improving quality of life": 48,
+            "Investing in neighborhoods": 44,
+            "Addressing homelessness": 26,
+            "Reducing crime": 38,
+          },
+          Denver: {
+            "Economic strength": 41,
+            "Peace/stability": 39,
+            "Vibrancy of city": 49,
+            "Climate preparedness": 39,
+            "Improving quality of life": 35,
+            "Investing in neighborhoods": 36,
+            "Addressing homelessness": 21,
+            "Reducing crime": 27,
+          },
+          Detroit: {
+            "Economic strength": 52,
+            "Peace/stability": 50,
+            "Vibrancy of city": 63,
+            "Climate preparedness": 43,
+            "Improving quality of life": 52,
+            "Investing in neighborhoods": 51,
+            "Addressing homelessness": 36,
+            "Reducing crime": 44,
+          },
+          Houston: {
+            "Economic strength": 52,
+            "Peace/stability": 45,
+            "Vibrancy of city": 57,
+            "Climate preparedness": 33,
+            "Improving quality of life": 43,
+            "Investing in neighborhoods": 38,
+            "Addressing homelessness": 27,
+            "Reducing crime": 33,
+          },
+          "Las Vegas": {
+            "Economic strength": 51,
+            "Peace/stability": 41,
+            "Vibrancy of city": 61,
+            "Climate preparedness": 35,
+            "Improving quality of life": 40,
+            "Investing in neighborhoods": 39,
+            "Addressing homelessness": 20,
+            "Reducing crime": 31,
+          },
+          "Los Angeles": {
+            "Economic strength": 45,
+            "Peace/stability": 44,
+            "Vibrancy of city": 47,
+            "Climate preparedness": 41,
+            "Improving quality of life": 42,
+            "Investing in neighborhoods": 40,
+            "Addressing homelessness": 27,
+            "Reducing crime": 33,
+          },
+          Miami: {
+            "Economic strength": 49,
+            "Peace/stability": 54,
+            "Vibrancy of city": 66,
+            "Climate preparedness": 54,
+            "Improving quality of life": 50,
+            "Investing in neighborhoods": 46,
+            "Addressing homelessness": 32,
+            "Reducing crime": 41,
+          },
+          Minneapolis: {
+            "Economic strength": 54,
+            "Peace/stability": 51,
+            "Vibrancy of city": 57,
+            "Climate preparedness": 51,
+            "Improving quality of life": 49,
+            "Investing in neighborhoods": 47,
+            "Addressing homelessness": 31,
+            "Reducing crime": 34,
+          },
+          Nashville: {
+            "Economic strength": 50,
+            "Peace/stability": 48,
+            "Vibrancy of city": 57,
+            "Climate preparedness": 40,
+            "Improving quality of life": 45,
+            "Investing in neighborhoods": 42,
+            "Addressing homelessness": 27,
+            "Reducing crime": 38,
+          },
+          "New York": {
+            "Economic strength": 47,
+            "Peace/stability": 39,
+            "Vibrancy of city": 60,
+            "Climate preparedness": 41,
+            "Improving quality of life": 40,
+            "Investing in neighborhoods": 38,
+            "Addressing homelessness": 23,
+            "Reducing crime": 35,
+          },
+          Philadelphia: {
+            "Economic strength": 36,
+            "Peace/stability": 35,
+            "Vibrancy of city": 51,
+            "Climate preparedness": 37,
+            "Improving quality of life": 37,
+            "Investing in neighborhoods": 37,
+            "Addressing homelessness": 24,
+            "Reducing crime": 28,
+          },
+          Phoenix: {
+            "Economic strength": 43,
+            "Peace/stability": 44,
+            "Vibrancy of city": 49,
+            "Climate preparedness": 33,
+            "Improving quality of life": 38,
+            "Investing in neighborhoods": 36,
+            "Addressing homelessness": 21,
+            "Reducing crime": 29,
+          },
+          Portland: {
+            "Economic strength": 32,
+            "Peace/stability": 35,
+            "Vibrancy of city": 38,
+            "Climate preparedness": 37,
+            "Improving quality of life": 34,
+            "Investing in neighborhoods": 31,
+            "Addressing homelessness": 16,
+            "Reducing crime": 24,
+          },
+          Raleigh: {
+            "Economic strength": 56,
+            "Peace/stability": 57,
+            "Vibrancy of city": 59,
+            "Climate preparedness": 48,
+            "Improving quality of life": 52,
+            "Investing in neighborhoods": 48,
+            "Addressing homelessness": 29,
+            "Reducing crime": 38,
+          },
+          "San Antonio": {
+            "Economic strength": 53,
+            "Peace/stability": 49,
+            "Vibrancy of city": 58,
+            "Climate preparedness": 44,
+            "Improving quality of life": 48,
+            "Investing in neighborhoods": 43,
+            "Addressing homelessness": 25,
+            "Reducing crime": 37,
+          },
+          "San Diego": {
+            "Economic strength": 48,
+            "Peace/stability": 47,
+            "Vibrancy of city": 60,
+            "Climate preparedness": 41,
+            "Improving quality of life": 43,
+            "Investing in neighborhoods": 38,
+            "Addressing homelessness": 21,
+            "Reducing crime": 33,
+          },
+          "San Francisco": {
+            "Economic strength": 41,
+            "Peace/stability": 44,
+            "Vibrancy of city": 52,
+            "Climate preparedness": 43,
+            "Improving quality of life": 39,
+            "Investing in neighborhoods": 35,
+            "Addressing homelessness": 22,
+            "Reducing crime": 30,
+          },
+          Seattle: {
+            "Economic strength": 45,
+            "Peace/stability": 45,
+            "Vibrancy of city": 45,
+            "Climate preparedness": 43,
+            "Improving quality of life": 42,
+            "Investing in neighborhoods": 37,
+            "Addressing homelessness": 25,
+            "Reducing crime": 30,
+          },
+          Tampa: {
+            "Economic strength": 47,
+            "Peace/stability": 54,
+            "Vibrancy of city": 57,
+            "Climate preparedness": 57,
+            "Improving quality of life": 47,
+            "Investing in neighborhoods": 42,
+            "Addressing homelessness": 26,
+            "Reducing crime": 42,
+          },
+          Toronto: {
+            "Economic strength": 38,
+            "Peace/stability": 43,
+            "Vibrancy of city": 55,
+            "Climate preparedness": 29,
+            "Improving quality of life": 33,
+            "Investing in neighborhoods": 35,
+            "Addressing homelessness": 18,
+            "Reducing crime": 27,
+          },
+          Vancouver: {
+            "Economic strength": 42,
+            "Peace/stability": 46,
+            "Vibrancy of city": 53,
+            "Climate preparedness": 41,
+            "Improving quality of life": 35,
+            "Investing in neighborhoods": 40,
+            "Addressing homelessness": 22,
+            "Reducing crime": 28,
+          },
+          "Washington, D.C.": {
+            "Economic strength": 53,
+            "Peace/stability": 49,
+            "Vibrancy of city": 64,
+            "Climate preparedness": 48,
+            "Improving quality of life": 50,
+            "Investing in neighborhoods": 48,
+            "Addressing homelessness": 33,
+            "Reducing crime": 37,
+          },
+          Bogotá: {
+            "Economic strength": 33,
+            "Peace/stability": 27,
+            "Vibrancy of city": 40,
+            "Climate preparedness": 29,
+            "Improving quality of life": 29,
+            "Investing in neighborhoods": 16,
+            "Addressing homelessness": 16,
+            "Reducing crime": 16,
+          },
+          "Mexico City": {
+            "Economic strength": 43,
+            "Peace/stability": 36,
+            "Vibrancy of city": 50,
+            "Climate preparedness": 34,
+            "Improving quality of life": 28,
+            "Investing in neighborhoods": 23,
+            "Addressing homelessness": 23,
+            "Reducing crime": 23,
+          },
+          Monterrey: {
+            "Economic strength": 68,
+            "Peace/stability": 52,
+            "Vibrancy of city": 60,
+            "Climate preparedness": 48,
+            "Improving quality of life": 46,
+            "Investing in neighborhoods": 36,
+            "Addressing homelessness": 36,
+            "Reducing crime": 36,
+          },
+          "San Jose, CR": {
+            "Economic strength": 38,
+            "Peace/stability": 42,
+            "Vibrancy of city": 37,
+            "Climate preparedness": 38,
+            "Improving quality of life": 28,
+            "Investing in neighborhoods": 25,
+            "Addressing homelessness": 25,
+            "Reducing crime": 25,
+          },
+          "São Paulo": {
+            "Economic strength": 53,
+            "Peace/stability": 27,
+            "Vibrancy of city": 51,
+            "Climate preparedness": 22,
+            "Improving quality of life": 24,
+            "Investing in neighborhoods": 19,
+            "Addressing homelessness": 19,
+            "Reducing crime": 19,
+          },
+          Amsterdam: {
+            "Economic strength": 61,
+            "Peace/stability": 57,
+            "Vibrancy of city": 76,
+            "Climate preparedness": 49,
+            "Improving quality of life": 53,
+            "Investing in neighborhoods": 57,
+            "Addressing homelessness": 38,
+            "Reducing crime": 38,
+          },
+          Athens: {
+            "Economic strength": 28,
+            "Peace/stability": 43,
+            "Vibrancy of city": 51,
+            "Climate preparedness": 20,
+            "Improving quality of life": 28,
+            "Investing in neighborhoods": 25,
+            "Addressing homelessness": 20,
+            "Reducing crime": 21,
+          },
+          Barcelona: {
+            "Economic strength": 45,
+            "Peace/stability": 41,
+            "Vibrancy of city": 57,
+            "Climate preparedness": 30,
+            "Improving quality of life": 39,
+            "Investing in neighborhoods": 33,
+            "Addressing homelessness": 20,
+            "Reducing crime": 28,
+          },
+          Berlin: {
+            "Economic strength": 42,
+            "Peace/stability": 43,
+            "Vibrancy of city": 70,
+            "Climate preparedness": 36,
+            "Improving quality of life": 38,
+            "Investing in neighborhoods": 35,
+            "Addressing homelessness": 27,
+            "Reducing crime": 28,
+          },
+          Birmingham: {
+            "Economic strength": 46,
+            "Peace/stability": 45,
+            "Vibrancy of city": 57,
+            "Climate preparedness": 42,
+            "Improving quality of life": 46,
+            "Investing in neighborhoods": 42,
+            "Addressing homelessness": 34,
+            "Reducing crime": 35,
+          },
+          London: {
+            "Economic strength": 50,
+            "Peace/stability": 46,
+            "Vibrancy of city": 63,
+            "Climate preparedness": 40,
+            "Improving quality of life": 45,
+            "Investing in neighborhoods": 38,
+            "Addressing homelessness": 31,
+            "Reducing crime": 33,
+          },
+          Munich: {
+            "Economic strength": 69,
+            "Peace/stability": 66,
+            "Vibrancy of city": 70,
+            "Climate preparedness": 47,
+            "Improving quality of life": 57,
+            "Investing in neighborhoods": 52,
+            "Addressing homelessness": 39,
+            "Reducing crime": 49,
+          },
+          Paris: {
+            "Economic strength": 59,
+            "Peace/stability": 47,
+            "Vibrancy of city": 65,
+            "Climate preparedness": 37,
+            "Improving quality of life": 47,
+            "Investing in neighborhoods": 48,
+            "Addressing homelessness": 28,
+            "Reducing crime": 36,
+          },
+          Stockholm: {
+            "Economic strength": 54,
+            "Peace/stability": 49,
+            "Vibrancy of city": 68,
+            "Climate preparedness": 43,
+            "Improving quality of life": 48,
+            "Investing in neighborhoods": 46,
+            "Addressing homelessness": 34,
+            "Reducing crime": 29,
+          },
+          Johannesburg: {
+            "Economic strength": 37,
+            "Peace/stability": 32,
+            "Vibrancy of city": 50,
+            "Climate preparedness": 25,
+            "Improving quality of life": 34,
+            "Investing in neighborhoods": 30,
+            "Addressing homelessness": 20,
+            "Reducing crime": 18,
+          },
+          Lagos: {
+            "Economic strength": 48,
+            "Peace/stability": 54,
+            "Vibrancy of city": 72,
+            "Climate preparedness": 39,
+            "Improving quality of life": 47,
+            "Investing in neighborhoods": 46,
+            "Addressing homelessness": 29,
+            "Reducing crime": 42,
+          },
+          Nairobi: {
+            "Economic strength": 43,
+            "Peace/stability": 44,
+            "Vibrancy of city": 55,
+            "Climate preparedness": 27,
+            "Improving quality of life": 37,
+            "Investing in neighborhoods": 38,
+            "Addressing homelessness": 19,
+            "Reducing crime": 27,
+          },
+          "Abu Dhabi": {
+            "Economic strength": 90,
+            "Peace/stability": 93,
+            "Vibrancy of city": 89,
+            "Climate preparedness": 82,
+            "Improving quality of life": 89,
+            "Investing in neighborhoods": 86,
+            "Addressing homelessness": 84,
+            "Reducing crime": 94,
+          },
+          Cairo: {
+            "Economic strength": 67,
+            "Peace/stability": 78,
+            "Vibrancy of city": 79,
+            "Climate preparedness": 65,
+            "Improving quality of life": 73,
+            "Investing in neighborhoods": 72,
+            "Addressing homelessness": 64,
+            "Reducing crime": 71,
+          },
+          Dubai: {
+            "Economic strength": 89,
+            "Peace/stability": 92,
+            "Vibrancy of city": 89,
+            "Climate preparedness": 73,
+            "Improving quality of life": 89,
+            "Investing in neighborhoods": 85,
+            "Addressing homelessness": 78,
+            "Reducing crime": 92,
+          },
+          Istanbul: {
+            "Economic strength": 42,
+            "Peace/stability": 49,
+            "Vibrancy of city": 70,
+            "Climate preparedness": 34,
+            "Improving quality of life": 45,
+            "Investing in neighborhoods": 42,
+            "Addressing homelessness": 37,
+            "Reducing crime": 38,
+          },
+          Riyadh: {
+            "Economic strength": 92,
+            "Peace/stability": 92,
+            "Vibrancy of city": 91,
+            "Climate preparedness": 83,
+            "Improving quality of life": 90,
+            "Investing in neighborhoods": 86,
+            "Addressing homelessness": 88,
+            "Reducing crime": 91,
+          },
+          Bangalore: {
+            "Economic strength": 85,
+            "Peace/stability": 77,
+            "Vibrancy of city": 83,
+            "Climate preparedness": 69,
+            "Improving quality of life": 81,
+            "Investing in neighborhoods": 76,
+            "Addressing homelessness": 64,
+            "Reducing crime": 67,
+          },
+          Bangkok: {
+            "Economic strength": 55,
+            "Peace/stability": 66,
+            "Vibrancy of city": 74,
+            "Climate preparedness": 59,
+            "Improving quality of life": 64,
+            "Investing in neighborhoods": 65,
+            "Addressing homelessness": 48,
+            "Reducing crime": 54,
+          },
+          Beijing: {
+            "Economic strength": 89,
+            "Peace/stability": 90,
+            "Vibrancy of life": 89,
+            "Climate preparedness": 89,
+            "Improving quality of life": 88,
+            "Investing in neighborhoods": 84,
+            "Addressing homelessness": 83,
+            "Reducing crime": 91,
+          },
+          Delhi: {
+            "Economic strength": 81,
+            "Peace/stability": 73,
+            "Vibrancy of city": 76,
+            "Climate preparedness": 64,
+            "Improving quality of life": 78,
+            "Investing in neighborhoods": 71,
+            "Addressing homelessness": 66,
+            "Reducing crime": 66,
+          },
+          "Ho Chi Minh City": {
+            "Economic strength": 85,
+            "Peace/stability": 88,
+            "Vibrancy of city": 88,
+            "Climate preparedness": 69,
+            "Improving quality of life": 78,
+            "Investing in neighborhoods": 81,
+            "Addressing homelessness": 62,
+            "Reducing crime": 66,
+          },
+          "Hong Kong": {
+            "Economic strength": 52,
+            "Peace/stability": 60,
+            "Vibrancy of city": 54,
+            "Climate preparedness": 52,
+            "Improving quality of life": 53,
+            "Investing in neighborhoods": 49,
+            "Addressing homelessness": 45,
+            "Reducing crime": 58,
+          },
+          Manila: {
+            "Economic strength": 52,
+            "Peace/stability": 52,
+            "Vibrancy of city": 59,
+            "Climate preparedness": 44,
+            "Improving quality of life": 50,
+            "Investing in neighborhoods": 46,
+            "Addressing homelessness": 31,
+            "Reducing crime": 40,
+          },
+          Mumbai: {
+            "Economic strength": 86,
+            "Peace/stability": 77,
+            "Vibrancy of city": 82,
+            "Climate preparedness": 73,
+            "Improving quality of life": 83,
+            "Investing in neighborhoods": 80,
+            "Addressing homelessness": 71,
+            "Reducing crime": 76,
+          },
+          Seoul: {
+            "Economic strength": 47,
+            "Peace/stability": 51,
+            "Vibrancy of city": 57,
+            "Climate preparedness": 33,
+            "Improving quality of life": 47,
+            "Investing in neighborhoods": 36,
+            "Addressing homelessness": 34,
+            "Reducing crime": 44,
+          },
+          Shanghai: {
+            "Economic strength": 92,
+            "Peace/stability": 89,
+            "Vibrancy of city": 92,
+            "Climate preparedness": 87,
+            "Improving quality of life": 88,
+            "Investing in neighborhoods": 89,
+            "Addressing homelessness": 83,
+            "Reducing crime": 89,
+          },
+          Singapore: {
+            "Economic strength": 78,
+            "Peace/stability": 87,
+            "Vibrancy of city": 72,
+            "Climate preparedness": 68,
+            "Improving quality of life": 74,
+            "Investing in neighborhoods": 72,
+            "Addressing homelessness": 68,
+            "Reducing crime": 85,
+          },
+          Sydney: {
+            "Economic strength": 54,
+            "Peace/stability": 63,
+            "Vibrancy of city": 61,
+            "Climate preparedness": 48,
+            "Improving quality of life": 55,
+            "Investing in neighborhoods": 51,
+            "Addressing homelessness": 32,
+            "Reducing crime": 45,
+          },
+          Taipei: {
+            "Economic strength": 73,
+            "Peace/stability": 78,
+            "Vibrancy of city": 76,
+            "Climate preparedness": 69,
+            "Improving quality of life": 71,
+            "Investing in neighborhoods": 70,
+            "Addressing homelessness": 60,
+            "Reducing crime": 71,
+          },
+          Tokyo: {
+            "Economic strength": 42,
+            "Peace/stability": 55,
+            "Vibrancy of city": 49,
+            "Climate preparedness": 43,
+            "Improving quality of life": 42,
+            "Investing in neighborhoods": 37,
+            "Addressing homelessness": 35,
+            "Reducing crime": 44,
+          },
+        };
+
+        // --- Chart and Interaction Logic ---
+        const tabs = document.querySelectorAll(".nav-tab");
+        const tabContents = document.querySelectorAll(".tab-content");
+        let charts = {}; // To hold chart instances
+
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            tabs.forEach((item) => {
+              item.classList.remove("tab-active");
+              item.classList.add("tab-inactive");
+            });
+            tab.classList.add("tab-active");
+            tab.classList.remove("tab-inactive");
+
+            const targetId = tab.dataset.tab;
+            const target = document.getElementById(targetId);
+            tabContents.forEach((content) => content.classList.add("hidden"));
+            target.classList.remove("hidden");
+
+            // Lazy load charts
+            if (targetId === "overview" && !charts.topCities)
+              createTopCitiesChart();
+            if (targetId === "movers" && !charts.lifeStage) {
+              createLifeStageChart();
+              createDestinationTypeChart();
+            }
+            if (targetId === "satisfaction" && !charts.satisfaction)
+              createSatisfactionChart();
+            if (targetId === "climate" && !charts.climate) createClimateChart();
+          });
+        });
+
+        function createChart(canvasId, config) {
+          if (charts[canvasId]) {
+            charts[canvasId].destroy();
+          }
+          const ctx = document.getElementById(canvasId).getContext("2d");
+          charts[canvasId] = new Chart(ctx, config);
+        }
+
+        function createTopCitiesChart() {
+          const sortedData = topCitiesData.sort((a, b) => a.value - b.value);
+          createChart("topCitiesChart", {
+            type: "bar",
+            data: {
+              labels: sortedData.map((d) => `${d.city}, ${d.country}`),
+              datasets: [
+                {
+                  label: "% Unlikely to Move",
+                  data: sortedData.map((d) => d.value),
+                  backgroundColor: "#B97A57",
+                },
+              ],
+            },
+            options: {
+              indexAxis: "y",
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: (c) => ` ${c.raw}%` } },
+              },
+              scales: {
+                x: {
+                  beginAtZero: true,
+                  ticks: { callback: (v) => v + "%", color: "#434242" },
+                },
+                y: { ticks: { color: "#434242" } },
+              },
+            },
+          });
+        }
+
+        function populateFactors() {
+          const attractionList = document.getElementById("attraction-factors");
+          const retentionList = document.getElementById("retention-factors");
+          factors.attraction.forEach(
+            (f) =>
+              (attractionList.innerHTML += `<li><button data-title="${f.title}" data-text="${f.text}" class="factor-btn w-full text-left p-3 bg-[#F5F0E8] rounded-md hover:bg-[#A0A892] hover:text-white">${f.title}</button></li>`)
+          );
+          factors.retention.forEach(
+            (f) =>
+              (retentionList.innerHTML += `<li><button data-title="${f.title}" data-text="${f.text}" class="factor-btn w-full text-left p-3 bg-[#F5F0E8] rounded-md hover:bg-[#B97A57] hover:text-white">${f.title}</button></li>`)
+          );
+
+          const modal = document.getElementById("factor-modal");
+          document.querySelectorAll(".factor-btn").forEach((btn) =>
+            btn.addEventListener("click", () => {
+              document.getElementById("modal-title").textContent =
+                btn.dataset.title;
+              document.getElementById("modal-text").textContent =
+                btn.dataset.text;
+              modal.classList.remove("hidden");
+              modal.classList.add("flex");
+            })
+          );
+          document
+            .getElementById("modal-close")
+            .addEventListener("click", () => modal.classList.add("hidden"));
+          modal.addEventListener("click", (e) => {
+            if (e.target === modal) modal.classList.add("hidden");
+          });
+        }
+
+        function createLifeStageChart() {
+          createChart("lifeStageChart", {
+            type: "bar",
+            data: {
+              labels: [
+                "Young Adults (18-34)",
+                "Families with Children",
+                "Established Adults (35-54)",
+                "Older Adults (55+)",
+              ],
+              datasets: [
+                {
+                  label: "% Likely to Move",
+                  data: [45, 35, 25, 15],
+                  backgroundColor: "#B97A57",
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 50,
+                  ticks: { callback: (v) => v + "%" },
+                },
+              },
+            },
+          });
+        }
+
+        function createDestinationTypeChart() {
+          createChart("destinationTypeChart", {
+            type: "doughnut",
+            data: {
+              labels: [
+                "Major Cities",
+                "Smaller Cities",
+                "Suburbs",
+                "Rural Areas",
+              ],
+              datasets: [
+                {
+                  data: [45, 30, 20, 5],
+                  backgroundColor: ["#B97A57", "#A0A892", "#F5F0E8", "#E5E7EB"],
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { position: "top" } },
+            },
+          });
+        }
+
+        function createSatisfactionChart() {
+          createChart("satisfactionChart", {
+            type: "scatter",
+            data: {
+              datasets: [
+                {
+                  data: satisfactionVsLikelyData.map((d) => ({
+                    x: d.x,
+                    y: d.y,
+                    city: d.city,
+                  })),
+                  backgroundColor: "#B97A57",
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: (c) =>
+                      `${c.raw.city}: (${c.raw.x}% satisfied, ${c.raw.y}% likely to move)`,
+                  },
+                },
+              },
+              scales: {
+                x: {
+                  title: { display: true, text: "Overall Satisfaction (%)" },
+                  min: 40,
+                  max: 100,
+                },
+                y: {
+                  title: { display: true, text: "Likelihood to Move (%)" },
+                  min: 10,
+                  max: 60,
+                },
+              },
+            },
+          });
+        }
+
+        function createClimateChart() {
+          createChart("climateChart", {
+            type: "scatter",
+            data: {
+              datasets: [
+                {
+                  data: climateData.map((d) => ({
+                    x: d.x,
+                    y: d.y,
+                    city: d.city,
+                  })),
+                  backgroundColor: "#B97A57",
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: (c) =>
+                      `${c.raw.city}: (${c.raw.x.toFixed(2)} vulnerability, ${
+                        c.raw.y
+                      }% likely to move)`,
+                  },
+                },
+              },
+              scales: {
+                x: {
+                  title: {
+                    display: true,
+                    text: "Climate Vulnerability (ND-GAIN Index - Higher is Less Vulnerable)",
+                  },
+                },
+                y: {
+                  title: {
+                    display: true,
+                    text: "Likely to Move due to Environment (%)",
+                  },
+                },
+              },
+            },
+          });
+        }
+
+        function populateScorecard() {
+          const select = document.getElementById("city-select");
+          const sortedCities = Object.keys(cityScorecardData).sort();
+          select.innerHTML = '<option value="">-- Select a City --</option>';
+          sortedCities.forEach((city) => {
+            const option = document.createElement("option");
+            option.value = city;
+            option.textContent = city;
+            select.appendChild(option);
+          });
+
+          select.addEventListener("change", (event) => {
+            const cityName = event.target.value;
+            const nameEl = document.getElementById("scorecard-city-name");
+            const gridEl = document.getElementById("scorecard-grid-container");
+            if (cityName && cityScorecardData[cityName]) {
+              const data = cityScorecardData[cityName];
+              nameEl.textContent = `${cityName} Scorecard`;
+              gridEl.innerHTML = Object.entries(data)
+                .map(
+                  ([key, value]) => `
+                          <div class="scorecard-item">
+                              <div class="value">${value}%</div>
+                              <div class="label">${key.replace(/_/g, " ")}</div>
+                          </div>
+                      `
+                )
+                .join("");
+            } else {
+              nameEl.textContent = "Select a city to view its scorecard";
+              gridEl.innerHTML = "";
+            }
+          });
+        }
+
+        function populateComparisonTable() {
+          const tbody = document.getElementById("comparison-table");
+          comparisonData.forEach((data) => {
+            const row = document.createElement("tr");
+            row.className =
+              "bg-white border-b hover:bg-[#F5F0E8] transition-colors duration-200";
+            row.innerHTML = `<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${
+              data.city
+            }</th><td class="px-6 py-4 text-center font-bold text-[#B97A57]">${
+              data.gensler !== "N/A" ? data.gensler : "–"
+            }</td><td class="px-6 py-4 text-center">${
+              data.eiu !== "N/A" ? data.eiu : "–"
+            }</td><td class="px-6 py-4 text-center">${
+              data.resonance !== "N/A" ? data.resonance : "–"
+            }</td><td class="px-6 py-4 text-center">${
+              data.monocle !== "N/A" ? data.monocle : "–"
+            }</td>`;
+            tbody.appendChild(row);
+          });
+        }
+
+        // Initial population
+        createTopCitiesChart();
+        populateFactors();
+        populateScorecard();
+        populateComparisonTable();
+      });
+    </script>
+  </body>
+</html>
