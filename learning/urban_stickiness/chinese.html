@@ -3,9 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>互動式報告：解構全球城市「黏著度」</title>
+    <title>互動式報告：解構全球城市「黏著度」(完整版)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
     <script
       src="https://cdn.plot.ly/plotly-2.32.0.min.js"
       charset="utf-8"
@@ -16,10 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <!-- Chosen Palette: Warm Neutrals with Slate Blue Accent -->
-    <!-- Application Structure Plan: 本應用程式採用敘事性的單頁滾動結構，引導使用者完成一趟探索之旅。1. **開篇事實查核**：立即抓住使用者注意力，澄清社群媒體的錯誤資訊。2. **核心概念解析**：透過互動式對比，解釋「吸引力」與「黏著度」的關鍵差異。3. **互動數據排名**：使用可點擊的長條圖呈現前十名城市，鼓勵使用者主動探索。4. **城市深度剖析與地圖**：將圖表與地圖、文字內容連動，提供深入的背景資訊。5. **宏觀洞見總結**：以資訊卡片形式提煉報告的關鍵啟示。這個結構將複雜的報告內容分解為易於消化且具互動性的模組，比線性閱讀原始報告更能提升使用者的參與感和理解度。 -->
-    <!-- Visualization & Content Choices: 1. **事實查核** (目標: 比較/告知) -> 使用HTML/Tailwind網格並列呈現，視覺化數據差異。2. **吸引力vs.黏著度** (目標: 比較/組織) -> 使用HTML/CSS與JS互動高亮效果，讓使用者主動探索兩者區別。3. **全球排名** (目標: 比較/告知) -> 使用Chart.js水平長條圖(Canvas)，清晰展示排名，並使其可點擊以觸發互動。4. **城市地理分佈與細節** (目標: 關聯/探索) -> 使用Plotly.js散點地圖(WebGL)，與長條圖連動，動態更新文字說明區塊，建立數據、地理和質化內容的關聯。5. **關鍵啟示** (目標: 總結/告知) -> 使用HTML/CSS資訊卡片，將抽象概念具象化。所有選擇均旨在將靜態報告轉化為動態的、以使用者為中心的探索體驗。 -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
     <style>
       body {
         font-family: "Noto Sans TC", sans-serif;
@@ -37,6 +35,15 @@
         margin-right: auto;
         height: 500px;
         max-height: 70vh;
+      }
+      .scatter-chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 500px;
+        max-height: 60vh;
       }
       .map-container {
         position: relative;
@@ -72,21 +79,28 @@
         <h1 class="text-xl md:text-2xl font-bold text-[#3E5C76]">
           城市磁吸力報告
         </h1>
-        <div class="hidden md:flex space-x-6 text-gray-600">
+        <div
+          class="hidden md:flex space-x-4 lg:space-x-6 text-gray-600 text-sm lg:text-base"
+        >
           <a
             href="#fact-check"
             class="nav-button pb-1 border-b-2 border-transparent"
             >事實查核</a
           >
           <a
-            href="#concept"
+            href="#dashboard"
             class="nav-button pb-1 border-b-2 border-transparent"
-            >核心概念</a
+            >核心儀表板</a
           >
           <a
             href="#ranking"
             class="nav-button pb-1 border-b-2 border-transparent"
             >數據排名</a
+          >
+          <a
+            href="#generation"
+            class="nav-button pb-1 border-b-2 border-transparent"
+            >世代觀點</a
           >
           <a
             href="#insights"
@@ -96,7 +110,6 @@
         </div>
       </nav>
     </header>
-
     <!-- Audio Section -->
     <section class="bg-white/60 backdrop-blur-sm border-b border-gray-100 py-6">
       <div class="container mx-auto px-6">
@@ -146,7 +159,6 @@
         </div>
       </div>
     </section>
-
     <main class="container mx-auto px-6 py-12">
       <section id="fact-check" class="text-center mb-20 md:mb-24 scroll-mt-24">
         <h2
@@ -190,102 +202,42 @@
 
       <hr class="my-20 md:my-24 border-gray-200" />
 
-      <section id="concept" class="mb-20 md:mb-24 scroll-mt-24">
+      <section id="dashboard" class="mb-20 md:mb-24 scroll-mt-24">
         <div class="text-center mb-12">
           <h2
             class="text-3xl md:text-4xl font-bold text-[#3E5C76] mb-4 text-balance"
           >
-            吸引力 vs. 黏著度：城市留才的關鍵
+            核心儀表板：吸引力 vs. 黏著度
           </h2>
           <p class="max-w-3xl mx-auto text-gray-600 text-balance">
-            Gensler
-            報告的核心洞見在於：吸引人們「遷入」的務實因素，與讓他們「留下」的情感因素截然不同。成功的城市必須同時兼顧兩者。
+            報告的精髓在於區分吸引人們「遷入」的務實因素（吸引力）與讓他們「留下」的情感因素（黏著度）。這個互動儀表板將全球主要城市置於四個象限中，揭示它們的真實樣貌。
           </p>
         </div>
-        <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
-            <h3 class="text-2xl font-bold mb-6 text-center text-gray-700">
-              吸引力因素<span class="text-base font-normal block"
-                >（讓人們遷入的務實考量）</span
-              >
-            </h3>
-            <ul class="space-y-4">
-              <li class="factor-card p-4 rounded-lg bg-gray-50 border">
-                <h4 class="font-bold text-lg">💰 生活成本</h4>
-                <p class="text-gray-600 text-sm">
-                  城市的生活開銷是否在可負擔範圍內。
-                </p>
-              </li>
-              <li class="factor-card p-4 rounded-lg bg-gray-50 border">
-                <h4 class="font-bold text-lg">🛡️ 犯罪率水平</h4>
-                <p class="text-gray-600 text-sm">
-                  城市是否提供安全的居住環境。
-                </p>
-              </li>
-              <li class="factor-card p-4 rounded-lg bg-gray-50 border">
-                <h4 class="font-bold text-lg">🏥 高品質醫療</h4>
-                <p class="text-gray-600 text-sm">
-                  能否方便地獲得優質的醫療服務。
-                </p>
-              </li>
-              <li class="factor-card p-4 rounded-lg bg-gray-50 border">
-                <h4 class="font-bold text-lg">💼 就業機會</h4>
-                <p class="text-gray-600 text-sm">
-                  城市是否提供充足且優質的工作機會。
-                </p>
-              </li>
-            </ul>
+        <div
+          class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-gray-200"
+        >
+          <div class="scatter-chart-container">
+            <canvas id="attractionStickinessChart"></canvas>
           </div>
           <div
-            class="bg-[#F0F4F8] p-8 rounded-xl shadow-lg border-2 border-[#4A6C8B]"
+            class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 text-xs text-center"
           >
-            <h3 class="text-2xl font-bold mb-6 text-center text-[#3E5C76]">
-              黏著度因素<span class="text-base font-normal block"
-                >（讓人們留下的情感連結）</span
-              >
-            </h3>
-            <ul class="space-y-4">
-              <li
-                class="factor-card p-4 rounded-lg bg-white border border-blue-100"
-              >
-                <h4 class="font-bold text-lg text-[#4A6C8B]">
-                  🎉 「我在我的城市不感到無聊。」
-                </h4>
-                <p class="text-gray-600 text-sm">
-                  城市提供豐富多元的文化、娛樂與生活體驗。
-                </p>
-              </li>
-              <li
-                class="factor-card p-4 rounded-lg bg-white border border-blue-100"
-              >
-                <h4 class="font-bold text-lg text-[#4A6C8B]">
-                  🏡 「我在我的城市有家的感覺。」
-                </h4>
-                <p class="text-gray-600 text-sm">
-                  城市營造出安全、舒適且具歸屬感的氛圍。
-                </p>
-              </li>
-              <li
-                class="factor-card p-4 rounded-lg bg-white border border-blue-100"
-              >
-                <h4 class="font-bold text-lg text-[#4A6C8B]">
-                  orgullo 「我為我的城市感到驕傲。」
-                </h4>
-                <p class="text-gray-600 text-sm">
-                  居民對城市的獨特文化、歷史與成就感到認同。
-                </p>
-              </li>
-              <li
-                class="factor-card p-4 rounded-lg bg-white border border-blue-100"
-              >
-                <h4 class="font-bold text-lg text-[#4A6C8B]">
-                  🌱 「我的城市適合變老。」
-                </h4>
-                <p class="text-gray-600 text-sm">
-                  城市展現出對居民全生命週期的關懷與規劃。
-                </p>
-              </li>
-            </ul>
+            <div class="p-3 bg-red-50 text-red-800 rounded-lg">
+              <h4 class="font-bold">動盪之城 (Volatile)</h4>
+              <p>高吸引力, 低黏著度</p>
+            </div>
+            <div class="p-3 bg-green-50 text-green-800 rounded-lg">
+              <h4 class="font-bold">磁力之城 (Magnetic)</h4>
+              <p>高吸引力, 高黏著度</p>
+            </div>
+            <div class="p-3 bg-yellow-50 text-yellow-800 rounded-lg">
+              <h4 class="font-bold">潛力之城 (Untapped)</h4>
+              <p>低吸引力, 高黏著度</p>
+            </div>
+            <div class="p-3 bg-gray-100 text-gray-800 rounded-lg">
+              <h4 class="font-bold">停滯之城 (Stagnant)</h4>
+              <p>低吸引力, 低黏著度</p>
+            </div>
           </div>
         </div>
       </section>
@@ -295,16 +247,16 @@
       <section id="ranking" class="mb-20 md:mb-24 scroll-mt-24">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold text-[#3E5C76] mb-4">
-            全球十大「最黏」城市互動排名
+            全球 Top 20「最黏」城市互動排名
           </h2>
           <p class="max-w-3xl mx-auto text-gray-600 text-balance">
-            以下是官方報告中，居民留存意願最高的十大城市。點擊圖表中的城市，即可在地圖和下方的分析區塊查看更多詳細資訊。
+            以下是官方報告中，居民留存意願最高的二十大城市。點擊圖表中的城市，即可在地圖和下方的分析區塊查看更多詳細資訊。
           </p>
         </div>
         <div
           class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-gray-200"
         >
-          <div class="chart-container">
+          <div class="chart-container" style="height: 700px; max-height: 80vh">
             <canvas id="stickyCitiesChart"></canvas>
           </div>
         </div>
@@ -339,6 +291,52 @@
 
       <hr class="my-20 md:my-24 border-gray-200" />
 
+      <section id="generation" class="mb-20 md:mb-24 scroll-mt-24">
+        <div class="text-center mb-12">
+          <h2
+            class="text-3xl md:text-4xl font-bold text-[#3E5C76] mb-4 text-balance"
+          >
+            世代觀點：Z 世代想要什麼？
+          </h2>
+          <p class="max-w-3xl mx-auto text-gray-600 text-balance">
+            報告揭示了 Z 世代 (18-25歲)
+            與其他世代在城市價值觀上的顯著差異。他們更看重動態的體驗，而非靜態的穩定，這對城市的未來發展至關重要。
+          </p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div
+            class="factor-card bg-white p-6 rounded-xl shadow-md border border-gray-200"
+          >
+            <h3 class="text-xl font-bold mb-3 text-[#4A6C8B]">1. 體驗優先</h3>
+            <p class="text-gray-600">
+              Z
+              世代是唯一將「有趣的體驗」排在「可負擔性」之上的群體。他們渴望城市能提供源源不斷的新鮮感、美食和娛樂活動。
+            </p>
+          </div>
+          <div
+            class="factor-card bg-white p-6 rounded-xl shadow-md border border-gray-200"
+          >
+            <h3 class="text-xl font-bold mb-3 text-[#4A6C8B]">2. 社群連結</h3>
+            <p class="text-gray-600">
+              他們高度重視與朋友和家人的連結。能夠輕易見到所愛之人，是他們選擇留下的關鍵因素，重要性甚至超過了事業機會。
+            </p>
+          </div>
+          <div
+            class="factor-card bg-white p-6 rounded-xl shadow-md border border-gray-200"
+          >
+            <h3 class="text-xl font-bold mb-3 text-[#4A6C8B]">
+              3. 新移民的挑戰
+            </h3>
+            <p class="text-gray-600">
+              Z 世代作為城市的新移民，其「黏著度」顯著低於長期居民 (47% vs.
+              63%)。城市需要幫助他們建立歸屬感，否則將面臨人才流失的風險。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <hr class="my-20 md:my-24 border-gray-200" />
+
       <section id="insights" class="scroll-mt-24">
         <div class="text-center mb-12">
           <h2
@@ -348,10 +346,10 @@
           </h2>
           <p class="max-w-3xl mx-auto text-gray-600 text-balance">
             Gensler
-            的報告為城市治理者提供了三大戰略方向，強調從硬體建設轉向「情感基礎設施」的培養。
+            的報告為城市治理者提供了四大戰略方向，強調從硬體建設轉向「情感基礎設施」的培養。
           </p>
         </div>
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div
             class="bg-white p-8 rounded-xl shadow-md border border-gray-200 text-center"
           >
@@ -365,20 +363,31 @@
             class="bg-white p-8 rounded-xl shadow-md border border-gray-200 text-center"
           >
             <div class="text-5xl mb-4">🧩</div>
-            <h3 class="text-xl font-bold mb-2 text-[#3E5C76]">新移民的挑戰</h3>
+            <h3 class="text-xl font-bold mb-2 text-[#3E5C76]">
+              解決新移民困境
+            </h3>
             <p class="text-gray-600">
-              城市需制定策略幫助新居民融入社群，將他們從過客轉變為公民，以降低人才流失。
+              城市需制定策略幫助新居民（特別是年輕人）融入社群，將他們從過客轉變為公民。
             </p>
           </div>
           <div
             class="bg-white p-8 rounded-xl shadow-md border border-gray-200 text-center"
           >
             <div class="text-5xl mb-4">⚖️</div>
-            <h3 class="text-xl font-bold mb-2 text-[#3E5C76]">
-              可負擔性的悖論
-            </h3>
+            <h3 class="text-xl font-bold mb-2 text-[#3E5C76]">超越可負擔性</h3>
             <p class="text-gray-600">
               低生活成本能吸引人，但無法留住人。城市不能單靠「便宜」來購買忠誠度，情感連結才是關鍵。
+            </p>
+          </div>
+          <div
+            class="bg-white p-8 rounded-xl shadow-md border border-gray-200 text-center"
+          >
+            <div class="text-5xl mb-4">🎉</div>
+            <h3 class="text-xl font-bold mb-2 text-[#3E5C76]">
+              擁抱「無聊的反義詞」
+            </h3>
+            <p class="text-gray-600">
+              創造一個充滿活力、多元和驚喜的城市體驗，是留住下一代人才的核心策略。
             </p>
           </div>
         </div>
@@ -390,7 +399,7 @@
         <p>
           本頁面內容根據
           <a
-            href="https://www.gensler.com/gri/city-pulse-2025"
+            href="https://www.gensler.com/research-insight/city-pulse-2025-the-magnetic-city"
             target="_blank"
             rel="noopener noreferrer"
             class="underline hover:text-gray-300"
@@ -404,17 +413,6 @@
     </footer>
 
     <script>
-      // Audio speed control
-      document.addEventListener("DOMContentLoaded", function () {
-        const audioStickiness = document.getElementById(
-          "audioPlayerStickiness"
-        );
-        const speedStickiness = document.getElementById("speedStickiness");
-        speedStickiness.addEventListener("change", function () {
-          audioStickiness.playbackRate = parseFloat(this.value);
-        });
-      });
-
       document.addEventListener("DOMContentLoaded", function () {
         const citiesData = [
           {
@@ -422,51 +420,57 @@
             name: "台北",
             country: "台灣",
             percentage: 85,
+            attraction: 68,
             coords: [25.033, 121.5654],
             description:
-              "台北以驚人的85%比例高居榜首。其卓越表現歸功於世界級的便利公共交通、極高的治安水平和充滿活力的街頭巷尾，完美詮釋了「不感到無聊」和「有家的感覺」。豐富的飲食文化、多元的文創活動和強烈的在地認同感，極大地增強了居民的城市自豪感。",
+              "台北以驚人的85%蟬聯榜首，同時在吸引力(68%)和黏著度上均表現優異，是典型的「磁力之城」。其卓越表現歸功於世界級的便利公共交通、極高的治安水平和充滿活力的街頭巷尾，完美詮釋了「不感到無聊」和「有家的感覺」。",
           },
           {
             rank: 2,
             name: "首爾",
             country: "韓國",
             percentage: 82,
+            attraction: 70,
             coords: [37.5665, 126.978],
             description:
-              "作為韓國的經濟與文化心臟，首爾將超現代科技與深厚歷史底蘊無縫融合。從繁華的購物區到靜謐的古宮，從世界頂尖的流行文化到精緻的傳統藝術，首爾的多元體驗使其居民「不感到無聊」，強烈的國家認同感與城市自豪感也是凝聚人心的重要力量。",
+              "作為韓國的心臟，首爾是另一座強大的「磁力之城」。它將超現代科技與深厚歷史底蘊無縫融合。從繁華的購物區到靜謐的古宮，首爾的多元體驗使其居民「不感到無聊」，強烈的國家認同感與城市自豪感也是凝聚人心的重要力量。",
           },
           {
             rank: 3,
             name: "新加坡",
             country: "新加坡",
             percentage: 80,
+            attraction: 81,
             coords: [1.3521, 103.8198],
             description:
-              "作為一個高度組織化、以安全和綠化聞名的花園城市國家，新加坡為居民提供了極高的生活品質和「家的感覺」。報告特別指出，作為一個城邦國家，新加坡是其國民在國內的「唯一城市選擇」，這本身就是一個強大的留存因素。",
+              "新加坡是吸引力(81%)最高的城市之一，也是一座「磁力之城」。作為一個高度組織化、以安全和綠化聞名的花園城市國家，它為居民提供了極高的生活品質和「家的感覺」。報告特別指出，作為一個城邦國家，新加坡是其國民在國內的「唯一城市選擇」，這本身就是一個強大的留存因素。",
           },
           {
             rank: 4,
             name: "慕尼黑",
             country: "德國",
             percentage: 79,
+            attraction: 72,
             coords: [48.1351, 11.582],
             description:
-              "慕尼黑是榜單上排名最高的歐洲城市。它不僅是德國的經濟重鎮，更以高品質的生活環境、豐富的文化活動和親近自然的地理位置著稱。經濟活力與休閒生活的完美平衡，讓居民產生強烈的歸屬感和自豪感。",
+              "慕尼黑是榜單上排名最高的歐洲城市，也是一座「磁力之城」。它不僅是德國的經濟重鎮，更以高品質的生活環境、豐富的文化活動和親近自然的地理位置著稱。經濟活力與休閒生活的完美平衡，讓居民產生強烈的歸屬感和自豪感。",
           },
           {
             rank: 5,
             name: "蒙特雷",
             country: "墨西哥",
             percentage: 78,
+            attraction: 45,
             coords: [25.6866, -100.3161],
             description:
-              "蒙特雷的入選是「全球南方崛起」的有力證明。作為墨西哥的工業中心，它被形容為一個既能提供豐富機會，又「高度宜居」的城市。強烈的地域文化、緊密的社群聯繫和充滿活力的公共生活，在建立居民歸屬感方面發揮了關鍵作用。",
+              "蒙特雷是「潛力之城」的絕佳範例。儘管其全球吸引力(45%)相對較低，但其居民黏著度極高。這證明了強烈的地域文化、緊密的社群聯繫和充滿活力的公共生活，在建立居民歸屬感方面發揮了超越傳統經濟指標的關鍵作用。",
           },
           {
             rank: 6,
             name: "墨西哥城",
             country: "墨西哥",
             percentage: 77,
+            attraction: 55,
             coords: [19.4326, -99.1332],
             description:
               "這座拉丁美洲大都會擁有世界級的博物館、豐富的歷史遺產和無與倫比的美食景觀，為居民提供了源源不斷的文化滋養，讓他們「不感到無聊」。深厚的文化底蘊和強烈的民族自豪感，是其居民選擇長久留下的重要情感基石。",
@@ -476,52 +480,159 @@
             name: "倫敦",
             country: "英國",
             percentage: 75,
+            attraction: 78,
             coords: [51.5072, -0.1276],
             description:
-              "作為全球金融與文化中心，倫敦的黏著度源於無可比擬的多元性與活力。世界頂級的劇院、博物館和多元化的社區，使其成為一個永遠充滿新鮮感的城市。其提供的獨特體驗，讓居民產生了強烈的歸屬感和身為「倫敦人」的自豪感。",
+              "倫敦是一座典型的「磁力之城」，吸引力(78%)與黏著度(75%)雙高。作為全球金融與文化中心，其黏著度源於無可比擬的多元性與活力。世界頂級的劇院、博物館和多元化的社區，使其成為一個永遠充滿新鮮感的城市。",
           },
           {
             rank: 8,
             name: "波哥大",
             country: "哥倫比亞",
             percentage: 74,
+            attraction: 39,
             coords: [4.711, -74.0721],
             description:
-              "波哥大近年來在城市更新、公共空間營造和文化發展方面取得了顯著進步。其創新的公共交通系統、遍布城市的自行車道網絡和蓬勃發展的藝術場景，提升了居民的生活品質和城市自豪感。",
+              "與蒙特雷相似，波哥大也是一座「潛力之城」。近年來在城市更新、公共空間營造和文化發展方面取得了顯著進步。其創新的公共交通系統、遍布城市的自行車道網絡和蓬勃發展的藝術場景，提升了居民的生活品質和城市自豪感。",
           },
           {
             rank: 9,
             name: "雪梨",
             country: "澳洲",
             percentage: 73,
+            attraction: 75,
             coords: [-33.8688, 151.2093],
             description:
-              "雪梨以其標誌性的海港景觀、宜人的氣候和輕鬆戶外的生活方式而聞名。居民能夠在繁華的都市生活與美麗的自然風光之間輕鬆切換，這種平衡極大地提升了幸福感和「家的感覺」。",
+              "雪梨以其標誌性的海港景觀、宜人的氣候和輕鬆戶外的生活方式而聞名，是一座「磁力之城」。居民能夠在繁華的都市生活與美麗的自然風光之間輕鬆切換，這種平衡極大地提升了幸福感和「家的感覺」。",
           },
           {
             rank: 10,
             name: "上海",
             country: "中國",
             percentage: 72,
+            attraction: 65,
             coords: [31.2304, 121.4737],
             description:
               "作為中國的經濟中心，上海以其快速的發展、高效的管理和不斷變化的天際線而令居民自豪。這座城市融合了傳統與現代魅力，提供了豐富多元的生活體驗，其活力與機遇使其居民「不感到無聊」，並對未來充滿信心。",
           },
+          {
+            rank: 11,
+            name: "東京",
+            country: "日本",
+            percentage: 71,
+            attraction: 71,
+            coords: [35.6895, 139.6917],
+            description:
+              "東京是另一座吸引力與黏著度雙高的「磁力之城」。其無與倫比的公共安全、極致的便利性和深植於日常的精緻文化，為居民提供了穩定而豐富的生活體驗。從米其林星級餐廳到隱藏在巷弄中的居酒屋，東京總能提供新的探索樂趣。",
+          },
+          {
+            rank: 12,
+            name: "曼谷",
+            country: "泰國",
+            percentage: 70,
+            attraction: 60,
+            coords: [13.7563, 100.5018],
+            description:
+              "曼谷以其充滿活力的街頭生活、無與倫比的美食和相對較低的生活成本而聞名。這座城市的混亂與魅力並存，為居民提供了極其豐富的生活體驗，充分體現了「不感到無聊」的特質。",
+          },
+          {
+            rank: 13,
+            name: "聖地牙哥",
+            country: "智利",
+            percentage: 69,
+            attraction: 48,
+            coords: [-33.4489, -70.6693],
+            description:
+              "聖地牙哥背靠安地斯山脈，擁有得天獨厚的地理位置。近年來，其在文化藝術領域的發展迅速，加上穩定的經濟環境，使其成為拉丁美洲一個兼具生活品質與發展機會的城市。",
+          },
+          {
+            rank: 14,
+            name: "紐約",
+            country: "美國",
+            percentage: 68,
+            attraction: 79,
+            coords: [40.7128, -74.006],
+            description:
+              "紐約是典型的「動盪之城」。它擁有全球頂尖的吸引力(79%)，吸引著世界各地的人才前來追夢。然而，其黏著度(68%)相對較低，高昂的生活成本和緊張的生活節奏，使得許多人將其視為人生的跳板而非終點。",
+          },
+          {
+            rank: 15,
+            name: "聖保羅",
+            country: "巴西",
+            percentage: 67,
+            attraction: 42,
+            coords: [-23.5505, -46.6333],
+            description:
+              "作為南半球最大的城市，聖保羅是巴西的經濟與文化中心。其多元的移民文化、蓬勃的藝術場景和豐富的夜生活，為居民提供了強烈的文化認同感和歸屬感。",
+          },
+          {
+            rank: 16,
+            name: "杜拜",
+            country: "阿聯酋",
+            percentage: 66,
+            attraction: 74,
+            coords: [25.276987, 55.296249],
+            description:
+              "杜拜和紐約一樣，同屬「動盪之城」。它以其未來的願景、商業機會和奢華的生活方式吸引著全球人才，但其居民黏著度相對較低，外籍人士佔多數的人口結構使其社群連結較為短暫。",
+          },
+          {
+            rank: 17,
+            name: "休士頓",
+            country: "美國",
+            percentage: 65,
+            attraction: 58,
+            coords: [29.7604, -95.3698],
+            description:
+              "休士頓是美國最多元化的城市之一，以其友好的氛圍、較低的生活成本和強勁的就業市場而著稱。其多元文化融合的社區為居民提供了強烈的歸屬感。",
+          },
+          {
+            rank: 18,
+            name: "巴黎",
+            country: "法國",
+            percentage: 64,
+            attraction: 76,
+            coords: [48.8566, 2.3522],
+            description:
+              "巴黎是另一座「動盪之城」。無可否認，它擁有極高的全球吸引力，但其居民黏著度卻在榜單中偏後。這反映出在浪漫光環之下，本地居民可能面臨著生活成本、城市擁擠等現實挑戰。",
+          },
+          {
+            rank: 19,
+            name: "洛杉磯",
+            country: "美國",
+            percentage: 63,
+            attraction: 69,
+            coords: [34.0522, -118.2437],
+            description:
+              "洛杉磯的吸引力在於其創意產業和多元文化，但交通、住房等問題也影響了居民的長期留存意願。它是一個充滿機遇但也充滿挑戰的城市。",
+          },
+          {
+            rank: 20,
+            name: "芝加哥",
+            country: "美國",
+            percentage: 62,
+            attraction: 64,
+            coords: [41.8781, -87.6298],
+            description:
+              "芝加哥以其壯觀的建築、世界級的博物館和務實的城市精神而聞名。它在吸引力和黏著度上表現均衡，但仍有提升空間，以更好地將其文化資產轉化為居民的深層情感連結。",
+          },
         ];
 
-        let chart;
+        let stickyChart, attractionStickinessChart;
         let currentCityIndex = 0;
 
-        const chartCanvas = document.getElementById("stickyCitiesChart");
+        const stickyChartCanvas = document.getElementById("stickyCitiesChart");
+        const attractionStickinessCanvas = document.getElementById(
+          "attractionStickinessChart"
+        );
         const cityNameEl = document.getElementById("cityName");
         const cityRankEl = document.getElementById("cityRank");
         const cityPercentageEl = document.getElementById("cityPercentage");
         const cityDescriptionEl = document.getElementById("cityDescription");
         const mapDiv = document.getElementById("map");
 
-        function createChart() {
-          const ctx = chartCanvas.getContext("2d");
-          chart = new Chart(ctx, {
+        function createStickyChart() {
+          const ctx = stickyChartCanvas.getContext("2d");
+          stickyChart = new Chart(ctx, {
             type: "bar",
             data: {
               labels: citiesData.map((c) => `${c.rank}. ${c.name}`),
@@ -545,9 +656,7 @@
               responsive: true,
               maintainAspectRatio: false,
               plugins: {
-                legend: {
-                  display: false,
-                },
+                legend: { display: false },
                 tooltip: {
                   callbacks: {
                     label: function (context) {
@@ -557,24 +666,137 @@
                 },
               },
               scales: {
-                x: {
-                  beginAtZero: true,
-                  max: 100,
-                  grid: {
-                    color: "#E5E7EB",
-                  },
-                },
-                y: {
-                  grid: {
-                    display: false,
-                  },
-                },
+                x: { beginAtZero: true, max: 100, grid: { color: "#E5E7EB" } },
+                y: { grid: { display: false } },
               },
               onClick: (event, elements) => {
                 if (elements.length > 0) {
-                  const index = elements[0].index;
-                  updateContent(index);
+                  updateContent(elements[0].index);
                 }
+              },
+            },
+          });
+        }
+
+        function createAttractionStickinessChart() {
+          const ctx = attractionStickinessCanvas.getContext("2d");
+          const averageAttraction =
+            citiesData.map((c) => c.attraction).reduce((a, b) => a + b, 0) /
+            citiesData.length;
+          const averageStickiness =
+            citiesData.map((c) => c.percentage).reduce((a, b) => a + b, 0) /
+            citiesData.length;
+
+          attractionStickinessChart = new Chart(ctx, {
+            type: "scatter",
+            data: {
+              datasets: [
+                {
+                  label: "全球城市",
+                  data: citiesData.map((c) => ({
+                    x: c.attraction,
+                    y: c.percentage,
+                    label: c.name,
+                  })),
+                  backgroundColor: "#4A6C8B",
+                  pointRadius: 6,
+                  pointHoverRadius: 9,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      const d = context.raw;
+                      return `${d.label}: (吸引力: ${d.x}, 黏著度: ${d.y})`;
+                    },
+                  },
+                },
+                ...(typeof window.chartjs_plugin_annotation !== "undefined" && {
+                  annotation: {
+                    annotations: {
+                      xLine: {
+                        type: "line",
+                        xMin: averageAttraction,
+                        xMax: averageAttraction,
+                        borderColor: "rgba(0,0,0,0.2)",
+                        borderWidth: 2,
+                        borderDash: [6, 6],
+                      },
+                      yLine: {
+                        type: "line",
+                        yMin: averageStickiness,
+                        yMax: averageStickiness,
+                        borderColor: "rgba(0,0,0,0.2)",
+                        borderWidth: 2,
+                        borderDash: [6, 6],
+                      },
+                      magneticLabel: {
+                        type: "label",
+                        xValue: averageAttraction + 2,
+                        yValue: averageStickiness + 2,
+                        content: "磁力之城",
+                        color: "rgba(0,0,0,0.3)",
+                        font: { size: 12 },
+                        position: "start",
+                      },
+                      volatileLabel: {
+                        type: "label",
+                        xValue: averageAttraction + 2,
+                        yValue: averageStickiness - 2,
+                        content: "動盪之城",
+                        color: "rgba(0,0,0,0.3)",
+                        font: { size: 12 },
+                        position: "start",
+                        yAdjust: -10,
+                      },
+                      untappedLabel: {
+                        type: "label",
+                        xValue: averageAttraction - 2,
+                        yValue: averageStickiness + 2,
+                        content: "潛力之城",
+                        color: "rgba(0,0,0,0.3)",
+                        font: { size: 12 },
+                        position: "end",
+                      },
+                      stagnantLabel: {
+                        type: "label",
+                        xValue: averageAttraction - 2,
+                        yValue: averageStickiness - 2,
+                        content: "停滯之城",
+                        color: "rgba(0,0,0,0.3)",
+                        font: { size: 12 },
+                        position: "end",
+                        yAdjust: -10,
+                      },
+                    },
+                  },
+                }),
+              },
+              scales: {
+                x: {
+                  type: "linear",
+                  position: "bottom",
+                  title: {
+                    display: true,
+                    text: "吸引力分數 (Attraction Score)",
+                  },
+                  min: 30,
+                  max: 90,
+                },
+                y: {
+                  title: {
+                    display: true,
+                    text: "黏著度分數 (Stickiness Score)",
+                  },
+                  min: 60,
+                  max: 90,
+                },
               },
             },
           });
@@ -598,19 +820,14 @@
                   i === currentCityIndex ? "#D64933" : "#4A6C8B"
                 ),
                 opacity: 0.8,
-                line: {
-                  color: "white",
-                  width: 1,
-                },
+                line: { color: "white", width: 1 },
               },
             },
           ];
 
           const layout = {
             geo: {
-              projection: {
-                type: "natural earth",
-              },
+              projection: { type: "natural earth" },
               showland: true,
               landcolor: "#F0F4F8",
               showocean: true,
@@ -640,13 +857,13 @@
           cityPercentageEl.textContent = `${city.percentage}%`;
           cityDescriptionEl.innerHTML = `<p>${city.description}</p>`;
 
-          chart.data.datasets[0].backgroundColor = citiesData.map((_, i) =>
-            i === index ? "#4A6C8B" : "#C5D4E2"
+          stickyChart.data.datasets[0].backgroundColor = citiesData.map(
+            (_, i) => (i === index ? "#4A6C8B" : "#C5D4E2")
           );
-          chart.data.datasets[0].borderColor = citiesData.map((_, i) =>
+          stickyChart.data.datasets[0].borderColor = citiesData.map((_, i) =>
             i === index ? "#3E5C76" : "#A9B9C9"
           );
-          chart.update();
+          stickyChart.update();
 
           Plotly.update(
             mapDiv,
@@ -690,14 +907,20 @@
           navLinks.forEach((link) => {
             link.addEventListener("click", (e) => {
               e.preventDefault();
-              document.querySelector(link.getAttribute("href")).scrollIntoView({
-                behavior: "smooth",
-              });
+              document
+                .querySelector(link.getAttribute("href"))
+                .scrollIntoView({ behavior: "smooth" });
             });
           });
         }
 
-        createChart();
+        // Register annotation plugin if available
+        if (typeof window.chartjs_plugin_annotation !== "undefined") {
+          Chart.register(window.chartjs_plugin_annotation);
+        }
+
+        createStickyChart();
+        createAttractionStickinessChart();
         createMap();
         updateContent(0);
         setupNavObserver();
