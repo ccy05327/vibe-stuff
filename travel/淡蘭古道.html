@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>淡蘭北路・野營挑戰計畫</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Earthy Adventure -->
+    <!-- Application Structure Plan: 依使用者最終需求「純野營/找庇護所」，將計畫定版。此架構保留了淡蘭北路的務實路線，但將住宿策略完全轉化為背包客的實戰技巧，詳細說明如何在沒有付費營地的狀況下，利用宮廟、學校、涼亭等設施安全過夜。 -->
+    <!-- Visualization & Content Choices: 
+        - 每日挑戰圖表 (Bar Chart): Report Info -> 每日距離與時間 -> Goal: Compare -> Viz: Chart.js Bar Chart -> Interaction: Hover -> Justification: 維持視覺化的挑戰曲線，讓使用者對每日體能消耗有明確預期。
+        - 每日行程 (Tabbed Timeline): Report Info -> 每日路標點 -> Goal: Organize/Inform -> Viz: HTML/CSS timeline -> Interaction: Click tabs -> Justification: 關鍵更新！Day 2的住宿策略完全重寫，提供在福隆地區尋找免費庇護所的詳細SOP，取代原有的付費營地資訊。
+        - 後勤規劃 (Info Cards): Report Info -> 交通與飲水 -> Goal: Inform/Actionable -> Viz: Styled HTML cards -> Interaction: Static -> Justification: 飲水與食物協議部分，特別強調「無炊煮」原則，所有補給點均以能購得現成食物的便利商店或雜貨店為主。
+        - Library/Method: Chart.js for charts, HTML/Tailwind for all other visual elements. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+        background-color: #fbf9f6; /* Warm Ivory Background */
+      }
+      .main-container {
+        max-width: 1200px;
+        margin: auto;
+      }
+      .nav-link {
+        transition: all 0.3s ease;
+        border-bottom: 3px solid transparent;
+      }
+      .nav-link.active {
+        color: #bc5a45; /* Earthy Terracotta */
+        border-bottom-color: #bc5a45;
+      }
+      .content-section {
+        display: none;
+      }
+      .content-section.active {
+        display: block;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .stat-card {
+        background-color: #ffffff;
+        border-left: 5px solid #d8a798; /* Muted Rose */
+      }
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: 1.25rem;
+        top: 1.25rem;
+        bottom: -1.25rem;
+        width: 2px;
+        background-color: #eae5e1; /* Light Neutral */
+        transform: translateX(-50%);
+      }
+      .timeline-item:last-child::before {
+        display: none;
+      }
+      .timeline-icon {
+        z-index: 10;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 300px;
+        max-height: 40vh;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 400px;
+        }
+      }
+      .tab-button {
+        transition: all 0.3s ease;
+      }
+      .tab-button.active {
+        background-color: #bc5a45;
+        color: #ffffff;
+      }
+      .checklist-item:hover {
+        background-color: #f7f5f2;
+      }
+    </style>
+  </head>
+  <body class="text-gray-800">
+    <div class="main-container p-4 md:p-8">
+      <header class="text-center mb-8">
+        <div class="flex justify-start mb-4">
+          <a
+            href="../index.html"
+            class="flex items-center text-[#BC5A45] hover:text-white hover:bg-[#BC5A45] transition-all duration-300 bg-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg border border-[#BC5A45]"
+          >
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              ></path>
+            </svg>
+            返回首頁
+          </a>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold text-[#BC5A45]">
+          淡蘭北路・野營挑戰計畫
+        </h1>
+        <p class="text-gray-600 mt-2">一份為自給自足背包客設計的純粹探險方案</p>
+      </header>
+
+      <nav class="flex justify-center border-b-2 border-gray-200 mb-8">
+        <a
+          href="#"
+          class="nav-link active py-4 px-6 text-lg font-medium text-gray-600 hover:text-[#BC5A45]"
+          data-target="overview"
+          >總覽</a
+        >
+        <a
+          href="#"
+          class="nav-link py-4 px-6 text-lg font-medium text-gray-600 hover:text-[#BC5A45]"
+          data-target="daily"
+          >每日行程</a
+        >
+        <a
+          href="#"
+          class="nav-link py-4 px-6 text-lg font-medium text-gray-600 hover:text-[#BC5A45]"
+          data-target="prep"
+          >行前準備</a
+        >
+      </nav>
+
+      <main>
+        <!-- Overview Section -->
+        <section id="overview" class="content-section active">
+          <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-bold text-[#BC5A45] mb-4">
+              章節介紹：遠征總覽
+            </h2>
+            <p class="text-gray-700 leading-relaxed">
+              此計畫是根據您的最終需求——「純野營/找庇護所」、「無炊煮」、「每日15-20公里上限」——所打造的決定版。我們將採用後勤最單純、風景最多元的<strong>淡蘭北路</strong>，並將住宿策略完全轉化為背包客的實戰技巧，確保您能在最少的花費下，安全、自主地完成這趟旅程。
+            </p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="stat-card p-6 rounded-lg shadow-lg">
+              <h3 class="text-lg font-semibold text-gray-500">總預估距離</h3>
+              <p class="text-4xl font-bold text-[#BC5A45]">
+                ~ 42 <span class="text-2xl">公里</span>
+              </p>
+            </div>
+            <div class="stat-card p-6 rounded-lg shadow-lg">
+              <h3 class="text-lg font-semibold text-gray-500">總時長</h3>
+              <p class="text-4xl font-bold text-[#BC5A45]">
+                3 <span class="text-2xl">天</span> 2
+                <span class="text-2xl">夜</span>
+              </p>
+            </div>
+            <div class="stat-card p-6 rounded-lg shadow-lg border-l-orange-500">
+              <h3 class="text-lg font-semibold text-gray-500">總體難度</h3>
+              <p class="text-4xl font-bold text-orange-600">中等</p>
+              <p class="text-sm text-gray-500 mt-1">
+                距離適中、後勤單純、考驗應變
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+              <h3 class="text-xl font-bold text-center mb-4 text-[#BC5A45]">
+                每日挑戰曲線 (務實版)
+              </h3>
+              <p class="text-sm text-gray-600 text-center mb-4">
+                此圖表清晰地展示了「先難後易」的策略。每日的距離都嚴格控制在您設定的20公里上限內，讓您可以在安全的體能範圍內，深度體驗古道的歷史與風景。
+              </p>
+              <div class="chart-container">
+                <canvas id="dailyChallengeChart"></canvas>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+              <h3 class="text-xl font-bold text-center mb-4 text-red-600">
+                ⚠️ 關鍵風險分析：七月氣候
+              </h3>
+              <div class="space-y-4 text-gray-700">
+                <div>
+                  <h4 class="font-bold">🌡️ 高溫與高濕度</h4>
+                  <p>
+                    七月依然炎熱，中暑風險不可忽視。雖然每日距離縮短，但仍需注意補水與防曬。
+                  </p>
+                </div>
+                <div>
+                  <h4 class="font-bold">⛈️ 午後雷陣雨</h4>
+                  <p>
+                    夏季典型的天氣模式依然存在。提早出發，在午後雷雨好發前抵達宿營點，是確保安全與舒適的不二法門。
+                  </p>
+                </div>
+                <div
+                  class="bg-blue-50 border-l-4 border-[#5A8D9C] p-4 rounded-r-md"
+                >
+                  <h4 class="font-bold text-[#5A8D9C]">🛡️ 核心戰術應對</h4>
+                  <p class="text-sm">
+                    每日提早出發，享受清晨的涼爽。善用台鐵的便利性，若遇極端天氣，可彈性調整行程或直接搭火車前往下一站，安全性大幅提升。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Daily Itinerary Section -->
+        <section id="daily" class="content-section">
+          <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-bold text-[#BC5A45] mb-4">
+              章節介紹：每日戰術分解
+            </h2>
+            <p class="text-gray-700 leading-relaxed">
+              本章節是您的行動手冊。我們將三天的征途模組化，您可以點擊下方的按鈕切換每日計畫。每一天的內容都包含路線主題、視覺化的路標時間軸，以及最重要的住宿與飲水策略。請仔細研究每一天的細節，特別是關鍵的後勤資訊與裝備要求。
+            </p>
+          </div>
+          <div
+            class="mb-6 flex justify-center items-center bg-gray-200 rounded-full p-1 max-w-md mx-auto shadow-inner"
+          >
+            <button
+              class="tab-button w-1/3 py-2 px-4 rounded-full text-sm font-medium active"
+              data-day="day1"
+            >
+              第一天
+            </button>
+            <button
+              class="tab-button w-1/3 py-2 px-4 rounded-full text-sm font-medium"
+              data-day="day2"
+            >
+              第二天
+            </button>
+            <button
+              class="tab-button w-1/3 py-2 px-4 rounded-full text-sm font-medium"
+              data-day="day3"
+            >
+              第三天
+            </button>
+          </div>
+
+          <div id="day1Content" class="daily-content">
+            <div class="bg-white rounded-lg shadow-lg p-6 lg:p-8">
+              <h3 class="text-2xl font-bold text-[#BC5A45] mb-2">
+                第一天：礦業遺跡與古碑之路
+              </h3>
+              <p class="text-gray-600 mb-6">
+                路線: 瑞芳 → 猴硐 → 雙溪 | 距離: 約 17 km | 預估時間: 7-8 小時
+              </p>
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2">
+                  <h4 class="font-bold mb-4 text-gray-700">路標時間軸</h4>
+                  <div class="relative">
+                    <div class="timeline-item relative pb-10 pl-10">
+                      <div
+                        class="timeline-icon absolute left-0 top-0 w-10 h-10 rounded-full bg-[#D8A798] text-white flex items-center justify-center font-bold"
+                      >
+                        🚂
+                      </div>
+                      <h5 class="font-bold">起點：瑞芳火車站</h5>
+                      <p class="text-sm text-gray-600">
+                        行動：在車站旁的便利商店完成最後補給。
+                      </p>
+                    </div>
+                    <div class="timeline-item relative pb-10 pl-10">
+                      <div
+                        class="timeline-icon absolute left-0 top-0 w-10 h-10 rounded-full bg-[#D8A798] text-white flex items-center justify-center"
+                      >
+                        🐱
+                      </div>
+                      <h5 class="font-bold">猴硐煤礦博物園區</h5>
+                      <p class="text-sm text-gray-600">
+                        情資：約 6
+                        公里後抵達。可在貓村稍作休息，吃午餐，並再次補水。
+                      </p>
+                    </div>
+                    <div class="timeline-item relative pb-10 pl-10">
+                      <div
+                        class="timeline-icon absolute left-0 top-0 w-10 h-10 rounded-full bg-[#D8A798] text-white flex items-center justify-center"
+                      >
+                        ⛰️
+                      </div>
+                      <h5 class="font-bold">金字碑古道</h5>
+                      <p class="text-sm text-gray-600">
+                        情資：本日主要挑戰路段，翻越三貂嶺，路徑原始優美。
+                      </p>
+                    </div>
+                    <div class="timeline-item relative pl-10">
+                      <div
+                        class="timeline-icon absolute left-0 top-0 w-10 h-10 rounded-full bg-[#BC5A45] text-white flex items-center justify-center"
+                      >
+                        ⛺
+                      </div>
+                      <h5 class="font-bold">終點：雙溪</h5>
+                      <p class="text-sm text-gray-600">
+                        行動：抵達雙溪市區補給晚餐，執行「宮廟/野營」住宿策略。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg"
+                >
+                  <h4 class="font-bold text-amber-800">
+                    第一晚住宿策略：宮廟或野營
+                  </h4>
+                  <p class="text-sm text-amber-700 mt-2">
+                    <strong>挑戰：雙溪無商業露營區。</strong>
+                  </p>
+                  <p class="text-xs text-amber-700 mt-2">
+                    <strong>首選方案：</strong>
+                    禮貌地向<strong>雙溪三忠廟</strong>詢問是否可在廟埕或有遮蔽處搭營。這是最經典、最受山友推薦的方式，通常有廁所和水源。
+                  </p>
+                  <p class="text-xs text-amber-700 mt-2">
+                    <strong>備選方案：</strong>
+                    在雙溪高中附近或溪畔尋找平坦、隱蔽且安全的<strong>野營點</strong>。務必遵守LNT原則，不留下任何垃圾，並在隔天清晨儘速拔營離開。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="day2Content" class="daily-content hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6 lg:p-8">
+              <h3 class="text-2xl font-bold text-[#BC5A45] mb-2">
+                第二天：奔向蔚藍海岸
+              </h3>
+              <p class="text-gray-600 mb-6">
+                路線: 雙溪 → 貢寮 → 福隆 | 距離: 約 16 km | 預估時間: 6-7 小時
+              </p>
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2">
+                  <h4 class="font-bold mb-4 text-gray-700">路標時間軸</h4>
+                  <div class="relative">
+                    <div class="timeline-item relative pb-10 pl-10">
+                      <div
+                        class="timeline-icon absolute left-0 top-0 w-10 h-10 rounded-full bg-[#D8A798] text-white flex items-center justify-center font-bold"
+                      >
+                        ⛺
+                      </div>
+                      <h5 class="font-bold">起點：雙溪</h5>
+                      <p class="text-sm text-gray-600">
+                        行動：在市區吃完早餐，補滿水後出發。
+                      </p>
+                    </div>
+                    <div class="timeline-item relative pb-10 pl-10">
+                      <div
+                        class="timeline-icon absolute left-0 top-0 w-10 h-10 rounded-full bg-[#D8A798] text-white flex items-center justify-center"
+                      >
+                        🛤️
+                      </div>
+                      <h5 class="font-bold">嶐嶺古道</h5>
+                      <p class="text-sm text-gray-600">
+                        情資：沿著舊鐵道遺跡前進，風景秀麗，坡度平緩。
+                      </p>
+                    </div>
+                    <div class="timeline-item relative pb-10 pl-10">
+                      <div
+                        class="timeline-icon absolute left-0 top-0 w-10 h-10 rounded-full bg-[#D8A798] text-white flex items-center justify-center"
+                      >
+                        🍱
+                      </div>
+                      <h5 class="font-bold">貢寮市區</h5>
+                      <p class="text-sm text-gray-600">
+                        情資：中途的絕佳休息點，可在貢寮車站附近吃午餐、補給。
+                      </p>
+                    </div>
+                    <div class="timeline-item relative pl-10">
+                      <div
+                        class="timeline-icon absolute left-0 top-0 w-10 h-10 rounded-full bg-[#BC5A45] text-white flex items-center justify-center"
+                      >
+                        🏖️
+                      </div>
+                      <h5 class="font-bold">終點：福隆</h5>
+                      <p class="text-sm text-gray-600">
+                        行動：抵達福隆後，補給晚餐與隔日早餐，執行「庇護所」住宿策略。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="bg-sky-50 border-l-4 border-sky-500 p-4 rounded-r-lg"
+                >
+                  <h4 class="font-bold text-sky-800">
+                    第二晚住宿策略：尋找庇護所
+                  </h4>
+                  <p class="text-sm text-sky-700 mt-2">
+                    <strong>挑戰：放棄昂貴營地，尋找免費庇護所。</strong>
+                  </p>
+                  <p class="text-xs text-sky-700 mt-2">
+                    <strong>方案A (學校)：</strong>
+                    <strong>福隆國小</strong
+                    >在週末或假日是絕佳選項。可在其有遮蔽的走廊或司令台紮營。務必保持安靜、乾淨，並在隔天清晨師生到校前離開。
+                  </p>
+                  <p class="text-xs text-sky-700 mt-2">
+                    <strong>方案B (涼亭/公共設施)：</strong>
+                    福隆遊客中心附近、或舊草嶺隧道入口處的公園，通常設有涼亭或半開放式空間，可做為緊急庇護所。
+                  </p>
+                  <p class="text-xs text-sky-700 mt-2">
+                    <strong>方案C (宮廟)：</strong>
+                    福隆市區的宮廟規模較小，但仍可禮貌地詢問是否能提供協助。這是對應變能力的考驗。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="day3Content" class="daily-content hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6 lg:p-8">
+              <h3 class="text-2xl font-bold text-[#BC5A45] mb-2">
+                第三天：經典草嶺，入蘭門戶
+              </h3>
+              <p class="text-gray-600 mb-6">
+                路線: 福隆 → 草嶺古道 → 大里 | 距離: 約 9 km | 預估時間: 3-4
+                小時
+              </p>
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2">
+                  <h4 class="font-bold mb-4 text-gray-700">路標時間軸</h4>
+                  <div class="relative">
+                    <div class="timeline-item relative pb-10 pl-10">
+                      <div
+                        class="timeline-icon absolute left-0 top-0 w-10 h-10 rounded-full bg-[#D8A798] text-white flex items-center justify-center font-bold"
+                      >
+                        🏖️
+                      </div>
+                      <h5 class="font-bold">起點：福隆</h5>
+                      <p class="text-sm text-gray-600">
+                        行動：可以悠閒地吃完早餐，整理裝備後出發。
+                      </p>
+                    </div>
+                    <div class="timeline-item relative pb-10 pl-10">
+                      <div
+                        class="timeline-icon absolute left-0 top-0 w-10 h-10 rounded-full bg-[#D8A798] text-white flex items-center justify-center"
+                      >
+                        🧗
+                      </div>
+                      <h5 class="font-bold">草嶺古道啞口</h5>
+                      <p class="text-sm text-gray-600">
+                        情資：古道最高點，可在此欣賞龜山島與太平洋的壯闊景色。
+                      </p>
+                    </div>
+                    <div class="timeline-item relative pb-10 pl-10">
+                      <div
+                        class="timeline-icon absolute left-0 top-0 w-10 h-10 rounded-full bg-[#D8A798] text-white flex items-center justify-center"
+                      >
+                        🏛️
+                      </div>
+                      <h5 class="font-bold">大里天公廟</h5>
+                      <p class="text-sm text-gray-600">
+                        情資：古道終點，可在廟前廣場休息，整理行囊。此處也可詢問借宿。
+                      </p>
+                    </div>
+                    <div class="timeline-item relative pl-10">
+                      <div
+                        class="timeline-icon absolute left-0 top-0 w-10 h-10 rounded-full bg-[#BC5A45] text-white flex items-center justify-center"
+                      >
+                        🎉
+                      </div>
+                      <h5 class="font-bold">終點：大里火車站</h5>
+                      <p class="text-sm text-gray-600">
+                        行動：遠征完成！從天公廟步行5分鐘即可抵達，搭乘台鐵返回台北。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg"
+                >
+                  <h4 class="font-bold text-green-800">第三日任務目標</h4>
+                  <p class="text-sm text-green-700 mt-2">
+                    本日的目標是「享受」。這是一段輕鬆、風景絕佳的路線。放慢腳步，感受海風，為這趟旅程畫下完美的句點。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Preparation Section -->
+        <section id="prep" class="content-section">
+          <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-bold text-[#BC5A45] mb-4">
+              章節介紹：行前準備
+            </h2>
+            <p class="text-gray-700 leading-relaxed">
+              俗話說「工欲善其事，必先利其器」。本章節整合了所有出發前必須完成的後勤工作，包含一份可互動的裝備清單、詳細的交通計畫，以及最重要的飲水策略。請逐項確認，確保萬無一失。
+            </p>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+              <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-bold text-center mb-4 text-[#BC5A45]">
+                  必要裝備互動清單
+                </h3>
+                <p class="text-sm text-gray-600 text-center mb-4">
+                  請逐一核對您的裝備。此路線後勤較佳，但核心安全裝備依然不可或缺。
+                </p>
+                <div class="space-y-1 max-h-[500px] overflow-y-auto pr-2">
+                  <h4 class="font-bold text-gray-700 mt-4 border-b pb-2">
+                    背負與住宿
+                  </h4>
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700">65公升登山包</span></label
+                  >
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700"
+                      >自立式帳篷 (強烈建議)</span
+                    ></label
+                  >
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700">夏季睡袋</span></label
+                  >
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700">蛋殼睡墊</span></label
+                  >
+
+                  <h4 class="font-bold text-gray-700 mt-4 border-b pb-2">
+                    飲水與安全
+                  </h4>
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700"
+                      >總飲水容量 > 2公升</span
+                    ></label
+                  >
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700"
+                      >頭燈與備用電池</span
+                    ></label
+                  >
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700">登山杖 (一對)</span></label
+                  >
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700"
+                      >急救包 (含水泡貼)</span
+                    ></label
+                  >
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer bg-red-50"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700"
+                      >離線地圖與GPX檔
+                      <span class="text-red-500 font-bold">*</span></span
+                    ></label
+                  >
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700">大型行動電源</span></label
+                  >
+
+                  <h4 class="font-bold text-gray-700 mt-4 border-b pb-2">
+                    衣物與雜項
+                  </h4>
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700">防水外套</span></label
+                  >
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700">排汗衣 x2-3</span></label
+                  >
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700">快乾健行褲 x2</span></label
+                  >
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700">登山襪 x3</span></label
+                  >
+                  <label
+                    class="checklist-item flex items-center p-2 rounded-md cursor-pointer"
+                    ><input
+                      type="checkbox"
+                      class="h-5 w-5 rounded border-gray-300 text-[#BC5A45] focus:ring-[#BC5A45]"
+                    />
+                    <span class="ml-3 text-gray-700">遮陽帽</span></label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="space-y-8">
+              <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-bold text-[#BC5A45] mb-3">
+                  📍 會合計畫 (北路版)
+                </h3>
+                <p><strong>集合點：</strong>瑞芳火車站</p>
+                <p>
+                  <strong>交通方式：</strong
+                  >從台北/基隆/五堵出發，均可搭乘台鐵區間車直達瑞芳。
+                </p>
+                <p class="text-sm text-green-600 mt-2">
+                  建議在早上 7:30 前抵達瑞芳，留出充足時間補給與整裝。
+                </p>
+              </div>
+              <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-bold text-green-600 mb-3">
+                  💧 無炊煮飲水與食物協議
+                </h3>
+                <p class="mb-2">
+                  北路後勤相對單純，每日都會經過市鎮，可輕易買到現成食物與飲水。
+                </p>
+                <ul
+                  class="list-decimal list-inside text-gray-700 space-y-1 text-sm"
+                >
+                  <li>
+                    <strong>第一天：</strong>
+                    在<strong>瑞芳</strong>補給。中途可在<strong>猴硐</strong>補給午餐。終點<strong>雙溪</strong>可補給晚餐。
+                  </li>
+                  <li>
+                    <strong>第二天：</strong>
+                    在<strong>雙溪</strong>補給。中途可在<strong>貢寮</strong>補給。終點<strong>福隆</strong>補給點眾多。
+                  </li>
+                  <li>
+                    <strong>第三天：</strong>
+                    在<strong>福隆</strong>補給。終點<strong>大里</strong>有小吃店，或可直接搭火車至頭城/礁溪慶功。
+                  </li>
+                </ul>
+              </div>
+              <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-bold text-[#BC5A45] mb-3">
+                  ⛑️ 最終安全簡報
+                </h3>
+                <ul
+                  class="list-disc list-inside text-gray-700 space-y-1 text-sm"
+                >
+                  <li>
+                    <strong>無痕山林(LNT):</strong>
+                    這是野營者的最高信條。帶走所有垃圾，尊重環境。
+                  </li>
+                  <li>
+                    <strong>緊急應變:</strong>
+                    將此計畫留給緊急聯絡人。記下求救電話 112 / 119。
+                  </li>
+                  <li>
+                    <strong>GPX導航:</strong>
+                    北路雖較熱門，但部分路段仍需依賴GPX，務必下載並熟悉操作。
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="text-center mt-12 pt-8 border-t border-gray-200">
+        <p class="text-gray-600">
+          預祝各位在這條充滿歷史與海風的路上，有一趟安全、愉快且收穫滿滿的旅程。
+        </p>
+        <p class="text-xs text-gray-400 mt-2">互動應用程式 by Gemini</p>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Data for the chart
+        const tripData = {
+          daily: [
+            { day: "第一天", distance: 17, time: 7.5 },
+            { day: "第二天", distance: 16, time: 6.5 },
+            { day: "第三天", distance: 9, time: 3.5 },
+          ],
+        };
+
+        // Chart.js implementation
+        const ctx = document
+          .getElementById("dailyChallengeChart")
+          .getContext("2d");
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: tripData.daily.map((d) => d.day),
+            datasets: [
+              {
+                label: "預估距離 (公里)",
+                data: tripData.daily.map((d) => d.distance),
+                backgroundColor: "#BC5A45",
+                borderColor: "#A04732",
+                borderWidth: 1,
+                yAxisID: "y",
+              },
+              {
+                label: "預估時間 (小時)",
+                data: tripData.daily.map((d) => d.time),
+                backgroundColor: "#EAE5E1",
+                borderColor: "#D4CCC5",
+                borderWidth: 1,
+                yAxisID: "y1",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                grid: {
+                  display: false,
+                },
+              },
+              y: {
+                beginAtZero: true,
+                position: "left",
+                title: {
+                  display: true,
+                  text: "公里",
+                },
+              },
+              y1: {
+                beginAtZero: true,
+                position: "right",
+                title: {
+                  display: true,
+                  text: "小時",
+                },
+                grid: {
+                  drawOnChartArea: false,
+                },
+              },
+            },
+            plugins: {
+              tooltip: {
+                mode: "index",
+                intersect: false,
+                backgroundColor: "#333",
+                titleFont: {
+                  weight: "bold",
+                },
+              },
+              legend: {
+                position: "bottom",
+              },
+            },
+          },
+        });
+
+        // Main navigation tabs
+        const navLinks = document.querySelectorAll(".nav-link");
+        const contentSections = document.querySelectorAll(".content-section");
+
+        navLinks.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            navLinks.forEach((l) => l.classList.remove("active"));
+            link.classList.add("active");
+
+            const targetId = link.getAttribute("data-target");
+            contentSections.forEach((section) => {
+              section.classList.remove("active");
+              if (section.id === targetId) {
+                section.classList.add("active");
+              }
+            });
+          });
+        });
+
+        // Daily itinerary tabs
+        const dayButtons = document.querySelectorAll(".tab-button");
+        const dayContents = document.querySelectorAll(".daily-content");
+
+        dayButtons.forEach((button) => {
+          button.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            dayButtons.forEach((b) => b.classList.remove("active"));
+            button.classList.add("active");
+
+            const targetDay = button.getAttribute("data-day");
+            dayContents.forEach((content) => {
+              content.classList.add("hidden");
+              if (content.id === `${targetDay}Content`) {
+                content.classList.remove("hidden");
+              }
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
