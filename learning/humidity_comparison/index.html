@@ -16,15 +16,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <!-- Chosen Palette: Warm Neutral Harmony -->
-    <!-- Application Structure Plan: The SPA is designed as an interactive dashboard. The core interaction is a Winter/Summer toggle that controls the entire application's state. The layout prioritizes visual exploration first (interactive map), followed by direct comparison (dynamic highlights and a bar chart), and finally deeper understanding (tabbed section for concepts). This structure guides the user from broad discovery to specific insights, making the complex climate data more accessible than the original report's linear format. The user flow is: 1. Select a season. 2. See global patterns on the map. 3. Analyze ranked comparisons in the chart and cards. 4. Explore the underlying scientific reasons in the tabs. This is more intuitive for data exploration. -->
-    <!-- Visualization & Content Choices: 
-        - Report Info: City locations, seasonal humidity data. -> Goal: Geographic exploration. -> Viz: Plotly.js Scatter-Geo Map. -> Interaction: Hover for details, updates on season toggle. -> Justification: Fulfills core user request for an interactive map using canvas/webgl, avoiding SVG. -> Library: Plotly.js.
-        - Report Info: Comparative humidity values. -> Goal: Rank and compare cities. -> Viz: Chart.js Horizontal Bar Chart. -> Interaction: Re-renders on season toggle. -> Justification: Best for comparing discrete values; horizontal layout accommodates long city names. -> Library: Chart.js.
-        - Report Info: Explanations of humidity, climate drivers. -> Goal: Provide context and deeper learning. -> Viz: HTML/CSS Tabbed component. -> Interaction: Click to switch content. -> Justification: Organizes dense text into digestible, user-selectable chunks. -> Library: Vanilla JS.
-        - Report Info: Key findings (e.g., Keelung's winter humidity). -> Goal: Highlight important facts. -> Viz: Dynamic HTML cards. -> Interaction: Content updates with season toggle. -> Justification: Draws attention to the most significant insights from the report. -> Library: Vanilla JS.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
     <style>
       body {
         font-family: "Noto Sans TC", sans-serif;
@@ -137,37 +129,98 @@
           </p>
         </section>
 
-        <div class="w-full max-w-xl mx-auto mt-4 mb-8">
-          <label class="block text-blue-700 font-semibold mb-2 text-center"
-            >English Audio</label
-          >
-          <audio
-            id="audioPlayerHumidity"
-            controls
-            class="w-full rounded shadow border border-blue-100 bg-white"
-          >
-            <source src="humidity_comparison.mp3" type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio>
-          <div class="flex justify-center mt-2">
-            <label for="speedHumidity" class="mr-2 text-sm text-gray-600"
-              >播放速度：</label
+        <div class="w-full max-w-4xl mx-auto mt-4 mb-8">
+          <h2 class="text-2xl font-bold mb-6 text-center text-slate-800">
+            Audio Overview
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- English Audio -->
+            <div
+              class="bg-white p-6 rounded-xl shadow-lg border border-blue-100"
             >
-            <select id="speedHumidity" class="border rounded px-2 py-1 text-sm">
-              <option value="0.75">0.75x</option>
-              <option value="1" selected>1x</option>
-              <option value="1.25">1.25x</option>
-              <option value="1.5">1.5x</option>
-              <option value="2">2x</option>
-            </select>
+              <label
+                class="block text-blue-700 font-semibold mb-3 text-center text-lg flex items-center justify-center"
+              >
+                <span class="text-2xl mr-2">🇬🇧</span>
+                English Version
+              </label>
+              <audio
+                id="audioPlayerHumidityEN"
+                controls
+                class="w-full rounded shadow border border-blue-100 bg-white mb-3"
+              >
+                <source src="(EN) humidity_comparison.mp3" type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+              <div class="flex justify-center">
+                <label for="speedHumidityEN" class="mr-2 text-sm text-gray-600"
+                  >playing speed：</label
+                >
+                <select
+                  id="speedHumidityEN"
+                  class="border rounded px-2 py-1 text-sm"
+                >
+                  <option value="0.75">0.75x</option>
+                  <option value="1" selected>1x</option>
+                  <option value="1.25">1.25x</option>
+                  <option value="1.5">1.5x</option>
+                  <option value="2">2x</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Chinese Audio -->
+            <div
+              class="bg-white p-6 rounded-xl shadow-lg border border-blue-100"
+            >
+              <label
+                class="block text-blue-700 font-semibold mb-3 text-center text-lg flex items-center justify-center"
+              >
+                <span class="text-2xl mr-2">🇹🇼</span>
+                中文版
+              </label>
+              <audio
+                id="audioPlayerHumidityCH"
+                controls
+                class="w-full rounded shadow border border-blue-100 bg-white mb-3"
+              >
+                <source src="(CH) humidity_comparison.wav" type="audio/wav" />
+                Your browser does not support the audio element.
+              </audio>
+              <div class="flex justify-center">
+                <label for="speedHumidityCH" class="mr-2 text-sm text-gray-600"
+                  >播放速度：</label
+                >
+                <select
+                  id="speedHumidityCH"
+                  class="border rounded px-2 py-1 text-sm"
+                >
+                  <option value="0.75">0.75x</option>
+                  <option value="1" selected>1x</option>
+                  <option value="1.25">1.25x</option>
+                  <option value="1.5">1.5x</option>
+                  <option value="2">2x</option>
+                </select>
+              </div>
+            </div>
           </div>
           <script>
-            const audioHumidity = document.getElementById(
-              "audioPlayerHumidity"
+            // English audio speed control
+            const audioHumidityEN = document.getElementById(
+              "audioPlayerHumidityEN"
             );
-            const speedHumidity = document.getElementById("speedHumidity");
-            speedHumidity.addEventListener("change", function () {
-              audioHumidity.playbackRate = parseFloat(this.value);
+            const speedHumidityEN = document.getElementById("speedHumidityEN");
+            speedHumidityEN.addEventListener("change", function () {
+              audioHumidityEN.playbackRate = parseFloat(this.value);
+            });
+
+            // Chinese audio speed control
+            const audioHumidityCH = document.getElementById(
+              "audioPlayerHumidityCH"
+            );
+            const speedHumidityCH = document.getElementById("speedHumidityCH");
+            speedHumidityCH.addEventListener("change", function () {
+              audioHumidityCH.playbackRate = parseFloat(this.value);
             });
           </script>
         </div>
