@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Let's Talk English! 聊聊英文吧！</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* 自訂字體與基本樣式 */
+      body {
+        font-family: "Helvetica Neue", Arial, "PingFang TC",
+          "Microsoft JhengHei", sans-serif;
+      }
+      /* 卡片翻轉效果 */
+      .card-inner {
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+      }
+      .card.flipped .card-inner {
+        transform: rotateY(180deg);
+      }
+      .card-front,
+      .card-back {
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+      }
+      .card-back {
+        transform: rotateY(180deg);
+      }
+      /* 滾動淡入動畫 */
+      .fade-in-section {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      }
+      .fade-in-section.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      /* 行動裝置優化 */
+      @media (max-width: 768px) {
+        .card-inner {
+          height: 120px;
+        }
+        .card-back span {
+          font-size: 1.5rem;
+        }
+        .perspective-1000 {
+          perspective: 1000px;
+        }
+      }
+      /* 響應式視頻容器 */
+      .video-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%; /* 16:9 比例 */
+        height: 0;
+        overflow: hidden;
+        border-radius: 0.5rem;
+      }
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <header
+      class="w-full min-h-screen flex flex-col items-center justify-center bg-white p-4 sm:p-6 text-center fade-in-section"
+    >
+      <img
+        src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&w=800&auto=format&fit=crop"
+        alt="年輕人在咖啡店愉快聊天"
+        class="w-full max-w-xs sm:max-w-md rounded-lg shadow-xl mb-6 sm:mb-8"
+        loading="lazy"
+      />
+      <h1
+        class="text-3xl sm:text-4xl md:text-5xl font-bold text-teal-600 mb-3 sm:mb-4"
+      >
+        Let's Talk English!
+      </h1>
+      <h2
+        class="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-700 mb-4 sm:mb-6"
+      >
+        聊聊英文吧！
+      </h2>
+      <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-2">
+        哈囉！歡迎你們！今天不是上課，是一場輕鬆的英文探險。我們的目標很簡單：一起玩、一起聊聊，看看英文可以多有趣！準備好了嗎？
+      </p>
+      <div class="mt-8 sm:mt-10 animate-bounce">
+        <svg
+          class="w-6 h-6 sm:w-8 sm:h-8 text-teal-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          ></path>
+        </svg>
+      </div>
+    </header>
+
+    <main
+      class="container mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-20 space-y-12 sm:space-y-20 md:space-y-28"
+    >
+      <section id="mission1" class="fade-in-section">
+        <h2 class="text-2xl sm:text-3xl font-bold text-center mb-2">
+          Mission 1: <span class="text-indigo-600">Sound Adventure</span>
+        </h2>
+        <p class="text-lg sm:text-xl text-center text-gray-600 mb-6 sm:mb-8">
+          任務一：聲音探險
+        </p>
+        <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+          <p class="text-base sm:text-lg mb-4 sm:mb-6">
+            英文的聲音聽起來是什麼樣子？讓我們從最基本的字母發音開始。這部影片是專為像你們一樣的青少年和成人初學者設計的，跟著影片一起唸唸看吧！
+          </p>
+          <div class="video-container">
+            <iframe
+              src="https://www.youtube.com/embed/3-3a134v2_w"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              class="w-full h-full"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section id="mission2" class="fade-in-section">
+        <h2 class="text-2xl sm:text-3xl font-bold text-center mb-2">
+          Mission 2: <span class="text-rose-600">Favorites Board</span>
+        </h2>
+        <p class="text-lg sm:text-xl text-center text-gray-600 mb-6 sm:mb-8">
+          任務二：最愛話題板
+        </p>
+        <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+          <p class="text-base sm:text-lg mb-4 sm:mb-6 text-center">
+            點擊下方的卡片，看看它們的英文怎麼說！這些都是我們常聊到的話題喔。
+          </p>
+          <div
+            class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 md:gap-6 mb-8 sm:mb-10"
+          >
+            <div class="card perspective-1000 cursor-pointer" data-word="Food">
+              <div class="card-inner relative w-full h-32 sm:h-40 md:h-48">
+                <div
+                  class="card-front absolute w-full h-full bg-cover bg-center rounded-lg shadow-md"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=800&auto=format&fit=crop');
+                  "
+                ></div>
+                <div
+                  class="card-back absolute w-full h-full bg-rose-500 rounded-lg shadow-md flex items-center justify-center"
+                >
+                  <span
+                    class="text-white text-2xl sm:text-3xl md:text-4xl font-bold"
+                    >Food</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="card perspective-1000 cursor-pointer" data-word="Music">
+              <div class="card-inner relative w-full h-32 sm:h-40 md:h-48">
+                <div
+                  class="card-front absolute w-full h-full bg-cover bg-center rounded-lg shadow-md"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop');
+                  "
+                ></div>
+                <div
+                  class="card-back absolute w-full h-full bg-sky-500 rounded-lg shadow-md flex items-center justify-center"
+                >
+                  <span
+                    class="text-white text-2xl sm:text-3xl md:text-4xl font-bold"
+                    >Music</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div
+              class="card perspective-1000 cursor-pointer"
+              data-word="Movies"
+            >
+              <div class="card-inner relative w-full h-32 sm:h-40 md:h-48">
+                <div
+                  class="card-front absolute w-full h-full bg-cover bg-center rounded-lg shadow-md"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1572188863110-46d451c82377?q=80&w=800&auto=format&fit=crop');
+                  "
+                ></div>
+                <div
+                  class="card-back absolute w-full h-full bg-amber-500 rounded-lg shadow-md flex items-center justify-center"
+                >
+                  <span
+                    class="text-white text-2xl sm:text-3xl md:text-4xl font-bold"
+                    >Movies</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="card perspective-1000 cursor-pointer" data-word="Games">
+              <div class="card-inner relative w-full h-32 sm:h-40 md:h-48">
+                <div
+                  class="card-front absolute w-full h-full bg-cover bg-center rounded-lg shadow-md"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800&auto=format&fit=crop');
+                  "
+                ></div>
+                <div
+                  class="card-back absolute w-full h-full bg-lime-600 rounded-lg shadow-md flex items-center justify-center"
+                >
+                  <span
+                    class="text-white text-2xl sm:text-3xl md:text-4xl font-bold"
+                    >Games</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-teal-50 border-l-4 border-teal-500 p-4 rounded-r-lg">
+            <h3 class="text-lg sm:text-xl font-bold text-teal-800 mb-2">
+              ✨ 威力句型 (Power Chunk)
+            </h3>
+            <p class="text-base sm:text-lg text-gray-700 mb-2">
+              學會這個，你就能和任何人聊他的最愛！
+            </p>
+            <div class="space-y-2 sm:space-y-3 mt-4">
+              <p class="text-sm sm:text-base md:text-lg">
+                <span class="font-bold text-rose-600">Q:</span> What's your
+                favorite
+                <span class="font-semibold text-blue-600">[topic]</span>?
+              </p>
+              <p class="text-sm sm:text-base md:text-lg">
+                <span class="font-bold text-green-600">A:</span> My favorite
+                <span class="font-semibold text-blue-600">[topic]</span> is
+                <span class="font-semibold text-purple-600">[your answer]</span
+                >.
+              </p>
+              <p class="text-xs sm:text-sm md:text-base text-gray-500 mt-2">
+                試試看：What's your favorite food? My favorite food is pizza.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="mission3" class="fade-in-section">
+        <h2 class="text-2xl sm:text-3xl font-bold text-center mb-2">
+          Final Mission: <span class="text-purple-600">The Drawing Game</span>
+        </h2>
+        <p class="text-lg sm:text-xl text-center text-gray-600 mb-6 sm:mb-8">
+          最終任務：合作繪圖
+        </p>
+        <div class="bg-white p-4 sm:p-6 md:p-8 rounded-lg shadow-lg">
+          <h3 class="text-xl sm:text-2xl font-semibold mb-4 text-center">
+            遊戲規則 (Game Rules)
+          </h3>
+          <ol
+            class="list-decimal list-inside space-y-2 sm:space-y-3 text-base sm:text-lg text-gray-700 max-w-lg mx-auto"
+          >
+            <li>
+              老師會用手機給姊姊看一個「秘密單字」(secret word)，例如：Pizza。
+            </li>
+            <li>
+              姊姊用任何她會的英文單字或句子來描述這個東西，不能說出那個字喔！
+            </li>
+            <li>弟弟用手機的繪圖功能，根據姊姊的描述把它畫出來。</li>
+            <li>猜對了就得分！然後交換角色，換弟弟描述、姊姊畫。</li>
+          </ol>
+          <p
+            class="text-center mt-4 sm:mt-6 font-semibold text-purple-700 text-sm sm:text-base"
+          >
+            這個遊戲的目標是合作和開心，不是考驗畫畫技巧！
+          </p>
+        </div>
+      </section>
+
+      <footer
+        id="toolkit"
+        class="fade-in-section text-center border-t pt-8 sm:pt-12 mt-8 sm:mt-12"
+      >
+        <h2 class="text-2xl sm:text-3xl font-bold mb-2">
+          Your New <span class="text-orange-600">Toolkit</span>
+        </h2>
+        <p class="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8">
+          你的新工具箱
+        </p>
+        <p class="max-w-2xl mx-auto mb-8 sm:mb-10 text-base sm:text-lg px-2">
+          今天的探險只是個開始！如果你想在平常也用好玩的方式接觸英文，這兩個免費
+          App 是很棒的起點。
+        </p>
+        <div
+          class="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8 md:gap-12"
+        >
+          <div
+            class="bg-white p-4 sm:p-6 rounded-lg shadow-lg flex flex-col items-center w-full max-w-sm"
+          >
+            <img
+              src="https://logos-world.net/wp-content/uploads/2021/03/Duolingo-Logo.png"
+              alt="Duolingo Logo"
+              class="h-10 sm:h-12 mb-3 sm:mb-4 object-contain"
+              loading="lazy"
+            />
+            <p
+              class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 text-center"
+            >
+              像玩遊戲一樣，每天花幾分鐘完成課程，不知不覺就進步了！
+            </p>
+            <a
+              href="https://www.duolingo.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-green-500 text-white font-bold py-2 px-4 sm:px-6 rounded-full hover:bg-green-600 transition-colors text-sm sm:text-base"
+              >前往官網</a
+            >
+          </div>
+          <div
+            class="bg-white p-4 sm:p-6 rounded-lg shadow-lg flex flex-col items-center w-full max-w-sm"
+          >
+            <img
+              src="https://assets-global.website-files.com/62973c405f6353085b3e7077/62973c405f635366c33e709c_logo.svg"
+              alt="WordUp Logo"
+              class="h-10 sm:h-12 mb-3 sm:mb-4 object-contain"
+              loading="lazy"
+            />
+            <p
+              class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 text-center"
+            >
+              專注於學習「真正實用」的單字，並提供電影、新聞的例句，非常有趣。
+            </p>
+            <a
+              href="https://www.wordupapp.co/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-blue-500 text-white font-bold py-2 px-4 sm:px-6 rounded-full hover:bg-blue-600 transition-colors text-sm sm:text-base"
+              >前往官網</a
+            >
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // 卡片翻轉功能
+        const cards = document.querySelectorAll(".card");
+        cards.forEach((card) => {
+          card.addEventListener("click", () => {
+            card.classList.toggle("flipped");
+          });
+        });
+
+        // 滾動淡入功能
+        const sections = document.querySelectorAll(".fade-in-section");
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+              }
+            });
+          },
+          {
+            rootMargin: "0px",
+            threshold: 0.1,
+          }
+        );
+
+        sections.forEach((section) => {
+          observer.observe(section);
+        });
+      });
+    </script>
+  </body>
+</html>

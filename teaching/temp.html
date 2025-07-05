@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>專屬於你的英文學習計畫</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 350px;
+        max-height: 450px;
+      }
+      @media (max-width: 768px) {
+        .chart-container {
+          height: 400px;
+        }
+      }
+      .nav-link {
+        transition: color 0.3s, border-bottom-color 0.3s;
+      }
+      .nav-link.active,
+      .nav-link:hover {
+        color: #f59e0b;
+        border-bottom-color: #f59e0b;
+      }
+      .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+      }
+      .accordion-button.open.accordion-arrow {
+        transform: rotate(180deg);
+      }
+      .accordion-arrow {
+        transition: transform 0.3s;
+      }
+      .section-fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      }
+      .section-fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body class="bg-amber-50 text-slate-800">
+    <header id="home" class="bg-white shadow-md sticky top-0 z-50">
+      <nav class="container mx-auto px-6 py-3">
+        <div class="flex justify-between items-center">
+          <div class="text-xl font-bold text-amber-600">
+            <a href="#home">專屬英文學習計畫</a>
+          </div>
+          <div class="hidden md:flex space-x-8">
+            <a href="#plan" class="nav-link pb-1 border-b-2 border-transparent"
+              >計畫核心</a
+            >
+            <a
+              href="#pricing"
+              class="nav-link pb-1 border-b-2 border-transparent"
+              >費用說明</a
+            >
+            <a
+              href="#roadmap"
+              class="nav-link pb-1 border-b-2 border-transparent"
+              >學習地圖</a
+            >
+            <a
+              href="#assessment"
+              class="nav-link pb-1 border-b-2 border-transparent"
+              >成果檢視</a
+            >
+          </div>
+          <div class="md:hidden">
+            <button
+              id="mobile-menu-button"
+              class="text-slate-800 focus:outline-none"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16m-7 6h7"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden mt-4">
+          <a
+            href="#plan"
+            class="block py-2 text-center text-slate-700 hover:bg-amber-100 rounded"
+            >計畫核心</a
+          >
+          <a
+            href="#pricing"
+            class="block py-2 text-center text-slate-700 hover:bg-amber-100 rounded"
+            >費用說明</a
+          >
+          <a
+            href="#roadmap"
+            class="block py-2 text-center text-slate-700 hover:bg-amber-100 rounded"
+            >學習地圖</a
+          >
+          <a
+            href="#assessment"
+            class="block py-2 text-center text-slate-700 hover:bg-amber-100 rounded"
+            >成果檢視</a
+          >
+        </div>
+      </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-16">
+      <section class="text-center mb-16 md:mb-24 section-fade-in">
+        <h1 class="text-4xl md:text-5xl font-bold text-amber-700 mb-4">
+          開啟你的英語冒險之旅
+        </h1>
+        <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">
+          這是一份為你們姊弟量身打造的英文學習計畫，目標是為了瑞士旅行和培養生活口說能力。我們將擺脫傳統課本，運用大量有趣、免費的網路資源，讓學英文變得好玩又實用！
+        </p>
+      </section>
+
+      <section id="plan" class="mb-16 md:mb-24 pt-16 -mt-16 section-fade-in">
+        <h2 class="text-3xl font-bold text-center mb-12 text-slate-800">
+          計畫核心：我們的學習方式
+        </h2>
+        <div class="grid md:grid-cols-3 gap-8 text-center">
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <div class="text-4xl mb-4 text-amber-500">🏃‍♂️</div>
+            <h3 class="text-xl font-bold mb-2">全身反應教學法 (TPR)</h3>
+            <p class="text-slate-600">
+              把「說」跟「做」綁在一起，透過動作直接理解英文，讓你輕鬆無痛地建立語感，不再害怕開口。
+            </p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <div class="text-4xl mb-4 text-amber-500">🗣️</div>
+            <h3 class="text-xl font-bold mb-2">語塊+回音法</h3>
+            <p class="text-slate-600">
+              學習一整句實用的片語，而非單字。透過模仿跟讀，快速改善發音和流暢度，讓口說更自然。
+            </p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <div class="text-4xl mb-4 text-amber-500">🤝</div>
+            <h3 class="text-xl font-bold mb-2">手足協力學習</h3>
+            <p class="text-slate-600">
+              課程設計充滿合作遊戲與角色扮演，把姊弟關係變成學習超能力，一起完成任務、一起進步！
+            </p>
+          </div>
+        </div>
+        <div
+          class="mt-12 bg-amber-100 border-l-4 border-amber-500 text-amber-800 p-6 rounded-r-lg shadow"
+        >
+          <h3 class="text-xl font-bold mb-2">🎯 我們的 SMART 總目標</h3>
+          <p>
+            在八週課程結束時，你們姊弟要能合作完成一場五分鐘的<strong
+              class="font-semibold"
+              >角色扮演</strong
+            >，在裡面成功地使用基礎旅遊相關片語，完成<strong
+              class="font-semibold"
+              >問路</strong
+            >和在<strong class="font-semibold">咖啡廳點餐</strong
+            >的任務，並充滿自信地開口說英語！
+          </p>
+        </div>
+      </section>
+
+      <section id="pricing" class="mb-16 md:mb-24 pt-16 -mt-16 section-fade-in">
+        <h2 class="text-3xl font-bold text-center mb-4 text-slate-800">
+          費用說明：透明的價值定位
+        </h2>
+        <p class="text-center text-slate-600 mb-12 max-w-3xl mx-auto">
+          我們的收費參考市場行情，並針對「一對二口說教學」的專業價值來定位，同時提供比兩堂獨立課程更優惠的「好朋友方案」。
+        </p>
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+          <h3 class="text-xl font-bold mb-4 text-center">
+            大台北英文家教時薪行情分析 (2025)
+          </h3>
+          <div class="chart-container">
+            <canvas id="pricingChart"></canvas>
+          </div>
+          <p class="text-center text-sm text-slate-500 mt-4">
+            *圖表中的「成人/一般會話 (初階)」是我們課程的價值定位參考。
+          </p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-xl font-bold mb-2">🤝 一對二好朋友方案</h3>
+            <p class="text-slate-600 mb-4">
+              兩人一起上課，費用更划算！我們會採用業界常見的「1.5倍乘數法」或「人均折扣法」來計算，確保你們能用最棒的價格，享受同伴學習的樂趣。
+            </p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-xl font-bold mb-2">🚗 交通費與課程約定</h3>
+            <p class="text-slate-600">
+              跨區上課的交通費會透明計算，並在課前提供一份簡單的書面約定，內容包含費用、付款方式與請假規則，保障我們雙方的權益。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="roadmap" class="mb-16 md:mb-24 pt-16 -mt-16 section-fade-in">
+        <h2 class="text-3xl font-bold text-center mb-12 text-slate-800">
+          學習地圖：八週冒險旅程
+        </h2>
+        <div id="accordion-container" class="space-y-4 max-w-4xl mx-auto"></div>
+      </section>
+
+      <section id="assessment" class="pt-16 -mt-16 section-fade-in">
+        <h2 class="text-3xl font-bold text-center mb-12 text-slate-800">
+          成果檢視：好玩的挑戰，看見進步
+        </h2>
+        <p class="text-center text-slate-600 mb-12 max-w-3xl mx-auto">
+          我們不用考試來評量！而是透過有趣的「表現挑戰」，來看看你們能「用英文做什麼」，讓你實際感受自己的成長。
+        </p>
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+          <div
+            class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-amber-400"
+          >
+            <h3 class="text-xl font-bold mb-2">🏅 期中挑戰：迷路的旅客</h3>
+            <p class="text-slate-600">
+              在第四週結束時，你們將合作進行問路與指路的角色扮演。一人當地圖，一人當旅客，看看你們能不能成功找到目的地！
+            </p>
+          </div>
+          <div
+            class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-amber-600"
+          >
+            <h3 class="text-xl font-bold mb-2">
+              🏆 期末挑戰：我們的夢想一日遊
+            </h3>
+            <p class="text-slate-600">
+              在第八週，你們要合作規劃一趟夢想中的城市一日遊，並用英文向我介紹你們的計畫，展現這兩個月所學的綜合能力！
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+          <h3 class="text-xl font-bold mb-4 text-center">口說能力進步指標</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-amber-100">
+                  <th class="p-3 font-semibold text-sm">評量標準</th>
+                  <th class="p-3 font-semibold text-sm">1. 初試啼聲</th>
+                  <th class="p-3 font-semibold text-sm">2. 漸入佳境</th>
+                  <th class="p-3 font-semibold text-sm">3. 自信溝通</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="hover:bg-amber-50 border-b border-slate-200">
+                  <td class="p-3 font-medium text-slate-700">任務達成與互動</td>
+                  <td class="p-3 text-sm text-slate-600">需大量提示才能回應</td>
+                  <td class="p-3 text-sm text-slate-600">
+                    能用記憶片語回應，簡單互動
+                  </td>
+                  <td class="p-3 text-sm text-slate-600">
+                    能主動運用句型完成任務
+                  </td>
+                </tr>
+                <tr class="hover:bg-amber-50 border-b border-slate-200">
+                  <td class="p-3 font-medium text-slate-700">流利度與發音</td>
+                  <td class="p-3 text-sm text-slate-600">多為單字，停頓頻繁</td>
+                  <td class="p-3 text-sm text-slate-600">
+                    能說簡短句子，發音可辨
+                  </td>
+                  <td class="p-3 text-sm text-slate-600">
+                    語速較自然，發音清晰
+                  </td>
+                </tr>
+                <tr class="hover:bg-amber-50 border-b border-slate-200">
+                  <td class="p-3 font-medium text-slate-700">詞彙與語法</td>
+                  <td class="p-3 text-sm text-slate-600">能使用零散單字</td>
+                  <td class="p-3 text-sm text-slate-600">
+                    能用基礎詞彙與固定語塊
+                  </td>
+                  <td class="p-3 text-sm text-slate-600">能靈活運用所學詞彙</td>
+                </tr>
+                <tr class="hover:bg-amber-50">
+                  <td class="p-3 font-medium text-slate-700">聽力理解</td>
+                  <td class="p-3 text-sm text-slate-600">僅能聽懂熟悉單字</td>
+                  <td class="p-3 text-sm text-slate-600">能聽懂慢速簡單問句</td>
+                  <td class="p-3 text-sm text-slate-600">
+                    能理解熟悉情境下的對話
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white mt-16">
+      <div class="container mx-auto px-6 py-4 text-center">
+        <p>&copy; 2025 客製化英文學習計畫. All Rights Reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const curriculumData = [
+          {
+            week: 1,
+            theme: "破冰與基本禮貌用語",
+            icon: "👋",
+            skills: "打招呼、自我介紹、基本禮貌用語",
+            interest: "透過遊戲認識彼此，建立學習夥伴關係",
+          },
+          {
+            week: 2,
+            theme: "數字與時間",
+            icon: "⏰",
+            skills: "基本數字、時間表達、日期說法",
+            interest: "製作個人時間表，練習約時間",
+          },
+          {
+            week: 3,
+            theme: "方向與位置",
+            icon: "🧭",
+            skills: "基本方向詞、位置介系詞、簡單指路",
+            interest: "教室尋寶遊戲，練習方向指引",
+          },
+          {
+            week: 4,
+            theme: "交通工具與問路",
+            icon: "🚌",
+            skills: "交通工具名稱、問路對話、地圖閱讀",
+            interest: "規劃虛擬旅行路線，角色扮演問路",
+          },
+          {
+            week: 5,
+            theme: "食物與點餐",
+            icon: "🍽️",
+            skills: "食物名稱、點餐對話、喜好表達",
+            interest: "模擬餐廳點餐，製作夢想菜單",
+          },
+          {
+            week: 6,
+            theme: "購物與價格",
+            icon: "🛍️",
+            skills: "購物用語、價格詢問、討價還價",
+            interest: "模擬市場購物，練習殺價技巧",
+          },
+          {
+            week: 7,
+            theme: "天氣與活動",
+            icon: "🌤️",
+            skills: "天氣描述、活動安排、未來計畫",
+            interest: "氣象主播體驗，規劃天氣活動",
+          },
+          {
+            week: 8,
+            theme: "綜合應用與成果展示",
+            icon: "🎯",
+            skills: "綜合運用所學、情境對話、成果展示",
+            interest: "最終挑戰：夢想一日遊規劃與展示",
+          },
+        ];
+
+        const accordionContainer = document.getElementById(
+          "accordion-container"
+        );
+        curriculumData.forEach((item) => {
+          const div = document.createElement("div");
+          div.className = "bg-white rounded-lg shadow-md";
+          div.innerHTML = `
+                          <button class="accordion-button w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-slate-800">
+                              <span class="flex items-center">
+                                  <span class="text-2xl mr-4">${item.icon}</span>
+                                  <span>第 ${item.week} 週：${item.theme}</span>
+                              </span>
+                              <span class="accordion-arrow text-amber-500 text-2xl">
+                                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                              </span>
+                          </button>
+                          <div class="accordion-content px-5">
+                              <div class="pb-5 text-slate-600">
+                                  <p class="mb-2"><strong class="font-semibold text-slate-700">核心技能：</strong>${item.skills}</p>
+                                  <p><strong class="font-semibold text-slate-700">興趣焦點：</strong>${item.interest}</p>
+                              </div>
+                          </div>
+                      `;
+          accordionContainer.appendChild(div);
+        });
+
+        accordionContainer.addEventListener("click", function (e) {
+          const button = e.target.closest(".accordion-button");
+          if (button) {
+            button.classList.toggle("open");
+            const content = button.nextElementSibling;
+            if (content.style.maxHeight) {
+              content.style.maxHeight = null;
+              content.style.padding = "0px";
+            } else {
+              content.style.padding = "0 1.25rem 1.25rem 1.25rem";
+              content.style.maxHeight = content.scrollHeight + "px";
+            }
+          }
+        });
+
+        const ctx = document.getElementById("pricingChart").getContext("2d");
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: [
+              "國中英文",
+              "高中英文",
+              "成人/一般會話 (初階)",
+              "成人/一般會話 (中高階)",
+              "證照考試 (多益/英檢)",
+            ],
+            datasets: [
+              {
+                label: "時薪 (NT$)",
+                data: [500, 600, 700, 900, 1200],
+                backgroundColor: [
+                  "rgba(165, 180, 252, 0.6)",
+                  "rgba(165, 180, 252, 0.6)",
+                  "rgba(251, 191, 36, 0.7)",
+                  "rgba(165, 180, 252, 0.6)",
+                  "rgba(165, 180, 252, 0.6)",
+                ],
+                borderColor: [
+                  "rgba(129, 140, 248, 1)",
+                  "rgba(129, 140, 248, 1)",
+                  "rgba(245, 158, 11, 1)",
+                  "rgba(129, 140, 248, 1)",
+                  "rgba(129, 140, 248, 1)",
+                ],
+                borderWidth: 2,
+                borderRadius: 5,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function (value) {
+                    return "NT$ " + value;
+                  },
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                display: false,
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    if (context.parsed.y !== null) {
+                      label += new Intl.NumberFormat("zh-TW", {
+                        style: "currency",
+                        currency: "TWD",
+                        minimumFractionDigits: 0,
+                      }).format(context.parsed.y);
+                    }
+                    return label;
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        mobileMenuButton.addEventListener("click", () => {
+          mobileMenu.classList.toggle("hidden");
+        });
+        mobileMenu.addEventListener("click", () => {
+          mobileMenu.classList.add("hidden");
+        });
+
+        const navLinks = document.querySelectorAll(".nav-link, #mobile-menu a");
+        const sections = document.querySelectorAll("section");
+        window.addEventListener("scroll", () => {
+          let current = "";
+          sections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 80) {
+              current = section.getAttribute("id");
+            }
+          });
+          navLinks.forEach((link) => {
+            link.classList.remove("active");
+            if (link.getAttribute("href").includes(current)) {
+              link.classList.add("active");
+            }
+          });
+
+          document.querySelectorAll(".section-fade-in").forEach((section) => {
+            const rect = section.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom >= 0) {
+              section.classList.add("visible");
+            }
+          });
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute("href")).scrollIntoView({
+              behavior: "smooth",
+            });
+          });
+        });
+
+        document.querySelectorAll(".section-fade-in").forEach((section) => {
+          const rect = section.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom >= 0) {
+            section.classList.add("visible");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
