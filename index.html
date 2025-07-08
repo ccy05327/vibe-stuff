@@ -16,6 +16,29 @@
         font-family: "Inter", sans-serif;
         background: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);
       }
+      .section-content {
+        transition: all 0.3s ease-in-out;
+        overflow: hidden;
+      }
+      .section-content.collapsed {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      .section-toggle {
+        transition: transform 0.3s ease-in-out;
+      }
+      .section-toggle.collapsed {
+        transform: rotate(-90deg);
+      }
+      .section-header {
+        cursor: pointer;
+        user-select: none;
+      }
+      .section-header:hover {
+        opacity: 0.8;
+      }
     </style>
   </head>
   <body
@@ -36,11 +59,18 @@
         <!-- Life Section -->
         <section>
           <h2
-            class="text-lg md:text-xl lg:text-2xl font-bold text-blue-700 mb-2 md:mb-4 flex items-center"
+            class="section-header text-lg md:text-xl lg:text-2xl font-bold text-blue-700 mb-2 md:mb-4 flex items-center justify-between"
+            onclick="toggleSection('life')"
           >
-            <span class="mr-2 text-base md:text-lg lg:text-xl">🌱</span>Life
+            <div class="flex items-center">
+              <span class="mr-2 text-base md:text-lg lg:text-xl">🌱</span>Life
+            </div>
+            <span class="section-toggle text-lg">▼</span>
           </h2>
-          <div class="space-y-2 md:space-y-3 lg:space-y-4">
+          <div
+            id="life-content"
+            class="section-content space-y-2 md:space-y-3 lg:space-y-4"
+          >
             <a
               href="life/mbti.html"
               class="block bg-white rounded-xl shadow-md hover:shadow-lg transition p-3 md:p-4 lg:p-5 border border-blue-100 hover:border-blue-300 relative min-h-[64px] md:min-h-[56px]"
@@ -103,11 +133,18 @@
         <!-- Travel Section -->
         <section>
           <h2
-            class="text-lg md:text-xl lg:text-2xl font-bold text-green-700 mb-2 md:mb-4 flex items-center"
+            class="section-header text-lg md:text-xl lg:text-2xl font-bold text-green-700 mb-2 md:mb-4 flex items-center justify-between"
+            onclick="toggleSection('travel')"
           >
-            <span class="mr-2 text-base md:text-lg lg:text-xl">🌏</span>Travel
+            <div class="flex items-center">
+              <span class="mr-2 text-base md:text-lg lg:text-xl">🌏</span>Travel
+            </div>
+            <span class="section-toggle text-lg">▼</span>
           </h2>
-          <div class="space-y-2 md:space-y-3 lg:space-y-4">
+          <div
+            id="travel-content"
+            class="section-content space-y-2 md:space-y-3 lg:space-y-4"
+          >
             <a
               href="travel/淡蘭古道.html"
               class="block bg-white rounded-xl shadow-md hover:shadow-lg transition p-3 md:p-4 lg:p-5 border border-green-100 hover:border-green-300 relative min-h-[64px] md:min-h-[56px]"
@@ -197,11 +234,19 @@
         <!-- Learning Section -->
         <section>
           <h2
-            class="text-lg md:text-xl lg:text-2xl font-bold text-yellow-600 mb-2 md:mb-4 flex items-center"
+            class="section-header text-lg md:text-xl lg:text-2xl font-bold text-yellow-600 mb-2 md:mb-4 flex items-center justify-between"
+            onclick="toggleSection('learning')"
           >
-            <span class="mr-2 text-base md:text-lg lg:text-xl">💡</span>Learning
+            <div class="flex items-center">
+              <span class="mr-2 text-base md:text-lg lg:text-xl">💡</span
+              >Learning
+            </div>
+            <span class="section-toggle text-lg">▼</span>
           </h2>
-          <div class="space-y-2 md:space-y-3 lg:space-y-4">
+          <div
+            id="learning-content"
+            class="section-content space-y-2 md:space-y-3 lg:space-y-4"
+          >
             <a
               href="learning/iPAS_certification/"
               class="block bg-white rounded-xl shadow-md hover:shadow-lg transition p-3 md:p-4 lg:p-5 border border-yellow-100 hover:border-yellow-300 relative min-h-[64px] md:min-h-[56px]"
@@ -353,12 +398,19 @@
         <!-- Miscellaneous Section -->
         <section>
           <h2
-            class="text-lg md:text-xl lg:text-2xl font-bold text-purple-700 mb-2 md:mb-4 flex items-center"
+            class="section-header text-lg md:text-xl lg:text-2xl font-bold text-purple-700 mb-2 md:mb-4 flex items-center justify-between"
+            onclick="toggleSection('miscellaneous')"
           >
-            <span class="mr-2 text-base md:text-lg lg:text-xl">🔧</span
-            >Miscellaneous
+            <div class="flex items-center">
+              <span class="mr-2 text-base md:text-lg lg:text-xl">🔧</span
+              >Miscellaneous
+            </div>
+            <span class="section-toggle text-lg">▼</span>
           </h2>
-          <div class="space-y-2 md:space-y-3 lg:space-y-4">
+          <div
+            id="miscellaneous-content"
+            class="section-content space-y-2 md:space-y-3 lg:space-y-4"
+          >
             <a
               href="miscellaneous/US_BTS.html"
               class="block bg-white rounded-xl shadow-md hover:shadow-lg transition p-3 md:p-4 lg:p-5 border border-purple-100 hover:border-purple-300 relative min-h-[64px] md:min-h-[56px]"
@@ -427,5 +479,38 @@
         Cursor
       </footer>
     </main>
+
+    <script>
+      function toggleSection(sectionName) {
+        const content = document.getElementById(sectionName + "-content");
+        const toggle = document.querySelector(
+          `[onclick="toggleSection('${sectionName}')"] .section-toggle`
+        );
+
+        if (content.classList.contains("collapsed")) {
+          // Expand
+          content.classList.remove("collapsed");
+          content.style.maxHeight = content.scrollHeight + "px";
+          toggle.classList.remove("collapsed");
+        } else {
+          // Collapse
+          content.style.maxHeight = content.scrollHeight + "px";
+          // Force reflow
+          content.offsetHeight;
+          content.style.maxHeight = "0";
+          content.classList.add("collapsed");
+          toggle.classList.add("collapsed");
+        }
+      }
+
+      // Initialize all sections as expanded on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        const sections = ["life", "travel", "learning", "miscellaneous"];
+        sections.forEach((sectionName) => {
+          const content = document.getElementById(sectionName + "-content");
+          content.style.maxHeight = content.scrollHeight + "px";
+        });
+      });
+    </script>
   </body>
 </html>
