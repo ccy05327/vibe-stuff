@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iPAS AI 應用規劃師 - 互動策略藍圖</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: A user-centric, single-page application designed as a personal strategy dashboard. The structure deviates from the report's linear flow to a more intuitive, task-oriented design: 1. Hero/Intro, 2. Profile Analysis (Self-Assessment Dashboard), 3. Strategic Choice (Interactive Path Comparison), 4. Learning Roadmap (Expandable Battle Plan), 5. Training Tool Demo (iPAS Planner Pro Mockup), 6. Career Outlook. This structure allows the user to quickly grasp the core recommendation, visualize their personal skill gap, interact with the decision-making process, and explore the study plan in a non-linear, drill-down fashion, enhancing engagement and comprehension for a technically-proficient user. -->
+    <!-- Visualization & Content Choices: 1. Knowledge Gap (Table 1) -> Goal: Inform/Compare -> Viz: Radar Chart (Chart.js/Canvas) -> Interaction: Hover tooltips -> Justification: Provides an immediate, holistic view of skill distribution, far more intuitive than a table for comparing multiple dimensions. 2. Certification Comparison (Table 2) -> Goal: Compare/Guide -> Viz: Side-by-side interactive cards (HTML/Tailwind) -> Interaction: Clickable toggle to highlight the recommended path -> Justification: Transforms a static comparison into an active choice, making the recommendation more impactful. 3. Study Plan (Table 3) -> Goal: Organize/Instruct -> Viz: Accordion/Timeline layout (HTML/Tailwind) -> Interaction: Click-to-expand sections -> Justification: Manages information density, allowing users to focus on one study area at a time. 4. Web App Blueprint (Table 4) -> Goal: Demonstrate/Engage -> Viz: Mock application UI (HTML/Tailwind) -> Interaction: Clickable tabs and a simulated interactive question -> Justification: Makes the abstract concept of the learning tool concrete and exciting. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+        background-color: #f8f9fa;
+        color: #343a40;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 300px;
+        max-height: 400px;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 400px;
+        }
+      }
+      .section-title {
+        font-size: 1.875rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #1a202c;
+        text-align: center;
+      }
+      .section-subtitle {
+        font-size: 1.125rem;
+        color: #4a5568;
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 3rem auto;
+      }
+      .nav-link {
+        transition: color 0.3s ease;
+      }
+      .nav-link:hover {
+        color: #2563eb;
+      }
+      .card {
+        background-color: white;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+      }
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+        font-weight: 500;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        transition: background-color 0.3s ease;
+      }
+      .btn-primary:hover {
+        background-color: #2563eb;
+      }
+      .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out;
+      }
+      .accordion-item.active .accordion-content {
+        max-height: 1000px;
+      }
+      .accordion-item.active .accordion-icon {
+        transform: rotate(180deg);
+      }
+      .accordion-icon {
+        transition: transform 0.3s ease;
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <a
+      id="backHomeBtn"
+      class="fixed top-20 left-6 z-40 flex items-center px-4 py-2 bg-blue-700 text-white rounded-full shadow-md hover:bg-blue-800 transition-colors text-sm font-semibold"
+      style="box-shadow: 0 2px 8px 0 rgba(29, 78, 216, 0.08)"
+    >
+      <svg
+        class="w-4 h-4 mr-2"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15 19l-7-7 7-7"
+        />
+      </svg>
+      返回首頁
+    </a>
+    <script>
+      // Dynamically set the homepage link for local and GitHub Pages
+      const btn = document.getElementById("backHomeBtn");
+      if (
+        location.hostname === "localhost" ||
+        location.hostname === "127.0.0.1"
+      ) {
+        btn.href = "/";
+      } else {
+        btn.href = "/vibe-stuff/";
+      }
+    </script>
+    <header class="bg-white/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+      <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex-shrink-0">
+            <h1 class="text-xl font-bold text-gray-800">iPAS 策略藍圖</h1>
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a
+                href="#profile"
+                class="nav-link text-gray-600 font-medium px-3 py-2 rounded-md text-sm"
+                >個人化分析</a
+              >
+              <a
+                href="#choice"
+                class="nav-link text-gray-600 font-medium px-3 py-2 rounded-md text-sm"
+                >認證路徑選擇</a
+              >
+              <a
+                href="#roadmap"
+                class="nav-link text-gray-600 font-medium px-3 py-2 rounded-md text-sm"
+                >備考戰鬥藍圖</a
+              >
+              <a
+                href="#demotool"
+                class="nav-link text-gray-600 font-medium px-3 py-2 rounded-md text-sm"
+                >學習工具預覽</a
+              >
+              <a
+                href="#outlook"
+                class="nav-link text-gray-600 font-medium px-3 py-2 rounded-md text-sm"
+                >職業前景</a
+              >
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section id="hero" class="py-20 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p class="text-base font-semibold text-blue-600">
+            專為倫敦大學電腦科學畢業生打造
+          </p>
+          <h2
+            class="mt-2 text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl"
+          >
+            您的 iPAS AI 應用規劃師認證之路
+          </h2>
+          <p class="mt-6 max-w-2xl mx-auto text-lg text-gray-500">
+            這份互動指南將您的技術深度與商業策略相結合，為您規劃一條從「技術建構者」成功轉型為「策略規劃師」的最優路徑。
+          </p>
+          <div class="mt-8">
+            <a href="#profile" class="btn-primary">開始探索您的路徑</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="profile" class="py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="section-title">您的個人化技能分析</h2>
+          <p class="section-subtitle">
+            您的倫敦大學電腦科學背景為您打下了堅實的「建構者」基礎。然而，iPAS
+            認證要求的是「規劃師」的思維。下圖視覺化了您的技能分佈，清晰地揭示了您的既有優勢與待發展的策略能力。
+          </p>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="chart-container">
+              <canvas id="skillRadarChart"></canvas>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold mb-4 text-gray-800">
+                從「建構者」到「規劃師」的思維轉變
+              </h3>
+              <p class="text-gray-600 mb-4">
+                您的學位教會您<span class="font-bold text-blue-600">如何</span
+                >建構AI模型，而iPAS則檢驗您是否知道<span
+                  class="font-bold text-red-600"
+                  >為何</span
+                >及<span class="font-bold text-red-600">何時</span
+                >部署AI。這是一場從技術實現到商業價值的思維升級。
+              </p>
+              <ul class="space-y-4">
+                <li class="flex items-start">
+                  <span class="flex-shrink-0 h-6 w-6 text-2xl">🛠️</span>
+                  <div class="ml-3">
+                    <h4 class="font-semibold text-gray-800">
+                      您的優勢 (建構者)
+                    </h4>
+                    <p class="text-gray-500">
+                      演算法、機器學習理論、程式設計、自然語言處理。您的技術深度遠超考試要求。
+                    </p>
+                  </div>
+                </li>
+                <li class="flex items-start">
+                  <span class="flex-shrink-0 h-6 w-6 text-2xl">🎯</span>
+                  <div class="ml-3">
+                    <h4 class="font-semibold text-gray-800">
+                      您的目標 (規劃師)
+                    </h4>
+                    <p class="text-gray-500">
+                      商業整合、ROI評估、風險治理、台灣本地法規遵循。這是您備考的核心。
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="choice" class="py-16 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="section-title">策略選擇：您的最佳認證路徑</h2>
+          <p class="section-subtitle">
+            時間是您最寶貴的資源。基於您的學術背景，投入在刀刃上至關重要。以下是初級與中級認證的直接對比，以及我們基於投資回報率的明確建議。
+          </p>
+          <div class="mt-8 flex justify-center">
+            <button id="recommendationBtn" class="btn-primary text-lg">
+              顯示我的最佳路徑
+            </button>
+          </div>
+          <div
+            id="pathComparison"
+            class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+          >
+            <div
+              id="juniorPath"
+              class="card p-8 border-2 border-transparent transition-all duration-500"
+            >
+              <h3 class="text-2xl font-bold text-gray-800">初級認證</h3>
+              <p class="text-gray-500 mt-2">一場不必要的複習</p>
+              <ul class="mt-6 space-y-4 text-gray-600">
+                <li class="flex items-center">
+                  <span class="mr-3 text-xl">📉</span>
+                  <strong>必要性:</strong> 低，內容與您所學高度重疊。
+                </li>
+                <li class="flex items-center">
+                  <span class="mr-3 text-xl">🤔</span>
+                  <strong>專業價值:</strong> 有限，主要針對非技術人員。
+                </li>
+                <li class="flex items-center">
+                  <span class="mr-3 text-xl">✅</span>
+                  <strong>技術難度:</strong> 極低，對您缺乏挑戰。
+                </li>
+                <li class="flex items-center">
+                  <span class="mr-3 text-xl">💸</span>
+                  <strong>時間ROI:</strong> 低，無法顯著提升您的專業形象。
+                </li>
+              </ul>
+            </div>
+            <div
+              id="intermediatePath"
+              class="card p-8 border-2 border-transparent transition-all duration-500"
+            >
+              <h3 class="text-2xl font-bold text-gray-800">中級認證</h3>
+              <p class="text-green-600 font-semibold mt-2">
+                通往專業的正確軌道
+              </p>
+              <ul class="mt-6 space-y-4 text-gray-600">
+                <li class="flex items-center">
+                  <span class="mr-3 text-xl">📈</span>
+                  <strong>必要性:</strong> 高，彌補商業策略與法規的空白。
+                </li>
+                <li class="flex items-center">
+                  <span class="mr-3 text-xl">🏆</span>
+                  <strong>專業價值:</strong> 高，證明您高階的規劃能力。
+                </li>
+                <li class="flex items-center">
+                  <span class="mr-3 text-xl">💪</span>
+                  <strong>策略難度:</strong> 高，全面測試「規劃師」技能。
+                </li>
+                <li class="flex items-center">
+                  <span class="mr-3 text-xl">🚀</span>
+                  <strong>時間ROI:</strong> 極高，能最大化您的市場競爭力。
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="roadmap" class="py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="section-title">中級認證備考戰鬥藍圖</h2>
+          <p class="section-subtitle">
+            這份學習計畫專為您量身打造，旨在將您的學習時間集中投入到最高價值的知識缺口上。請依序展開，逐一擊破。
+          </p>
+          <div id="accordionContainer" class="max-w-3xl mx-auto">
+            <div class="accordion-item border-b">
+              <button
+                class="accordion-header w-full text-left py-4 px-2 flex justify-between items-center"
+              >
+                <span class="text-xl font-medium text-gray-800"
+                  >第一階段：掌握 AI 導入與規劃</span
+                >
+                <span
+                  class="accordion-icon text-2xl transform transition-transform"
+                  >▼</span
+                >
+              </button>
+              <div class="accordion-content px-2 pb-4 text-gray-600">
+                <p class="mb-2">
+                  這是從技術思維轉向商業思維的第一步。您需要學習如何評估一個AI專案的商業可行性與策略價值。
+                </p>
+                <ul class="list-disc list-inside space-y-1">
+                  <li>
+                    <strong>核心概念：</strong
+                    >需求訪談、痛點識別、SWOT分析、ROI計算。
+                  </li>
+                  <li>
+                    <strong>學習目標：</strong
+                    >能夠撰寫一份基礎的AI導入提案，包含目標、預期效益與績效指標(KPI)。
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="accordion-item border-b">
+              <button
+                class="accordion-header w-full text-left py-4 px-2 flex justify-between items-center"
+              >
+                <span class="text-xl font-medium text-gray-800"
+                  >第二階段：深耕風險管理與倫理</span
+                >
+                <span
+                  class="accordion-icon text-2xl transform transition-transform"
+                  >▼</span
+                >
+              </button>
+              <div class="accordion-content px-2 pb-4 text-gray-600">
+                <p class="mb-2">
+                  負責任的AI是企業應用的基石。您需要理解技術背後的社會與倫理意涵。
+                </p>
+                <ul class="list-disc list-inside space-y-1">
+                  <li>
+                    <strong>核心概念：</strong
+                    >資料安全與隱私、演算法偏見、倫理風險評估、風險緩解/轉移策略。
+                  </li>
+                  <li>
+                    <strong>學習目標：</strong
+                    >能在一項AI應用情境中，識別出潛在的公平性、隱私與安全風險，並提出緩解策略。
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="accordion-item border-b">
+              <button
+                class="accordion-header w-full text-left py-4 px-2 flex justify-between items-center"
+              >
+                <span class="text-xl font-medium text-gray-800"
+                  >第三階段：攻克台灣 AI 監管環境 (關鍵)</span
+                >
+                <span
+                  class="accordion-icon text-2xl transform transition-transform"
+                  >▼</span
+                >
+              </button>
+              <div class="accordion-content px-2 pb-4 text-gray-600">
+                <p class="mb-2">
+                  這是您最關鍵的知識差距，也是考試中最具區分度的部分。必須熟讀官方文件。
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                  <li>
+                    <strong
+                      >關鍵文件一：《行政院及所屬機關構使用生成式AI參考指引》</strong
+                    >
+                    <ul class="list-circle list-inside ml-4">
+                      <li>重點：機密禁用、人為審核、適當揭露。</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>關鍵文件二：《金融業運用AI指引》</strong>
+                    <ul class="list-circle list-inside ml-4">
+                      <li>重點：六大核心原則、AI生命週期四階段管理。</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>學習目標：</strong
+                    >在模擬情境題中，能準確判斷行為是否違反台灣本地法規。
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="accordion-item border-b">
+              <button
+                class="accordion-header w-full text-left py-4 px-2 flex justify-between items-center"
+              >
+                <span class="text-xl font-medium text-gray-800"
+                  >第四階段：複習與整合 (您的強項)</span
+                >
+                <span
+                  class="accordion-icon text-2xl transform transition-transform"
+                  >▼</span
+                >
+              </button>
+              <div class="accordion-content px-2 pb-4 text-gray-600">
+                <p class="mb-2">
+                  這部分對應中級考試的選修科目`機器學習技術與應用`。對您而言，這是複習與強化的過程。
+                </p>
+                <ul class="list-disc list-inside space-y-1">
+                  <li>
+                    <strong>核心概念：</strong
+                    >機器學習建模流程（特徵工程、模型評估、超參數調校）。
+                  </li>
+                  <li>
+                    <strong>學習目標：</strong
+                    >將您的技術知識與前述的商業、風險、法規框架結合，形成一個完整的AI專案規劃思維。
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="demotool" class="py-16 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="section-title">學習工具預覽: iPAS Planner Pro</h2>
+          <p class="section-subtitle">
+            傳統學習方式對您可能效率不高。為此，我們設計了一個遊戲化的互動學習平台概念，讓您在模擬的商業情境中，透過決策來學習「規劃師」的思維。
+          </p>
+
+          <div class="card max-w-4xl mx-auto overflow-hidden">
+            <div class="bg-gray-800 p-4 flex items-center">
+              <div class="flex space-x-2">
+                <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+              </div>
+              <div class="flex-grow text-center text-gray-400 text-sm">
+                iPAS Planner Pro - 學習中心
+              </div>
+            </div>
+            <div class="p-6 md:p-8">
+              <div class="flex border-b">
+                <button
+                  data-tab="sandbox"
+                  class="tab-btn flex-1 py-2 font-medium border-b-2 border-blue-600 text-blue-600"
+                >
+                  規劃師沙盒
+                </button>
+                <button
+                  data-tab="navigator"
+                  class="tab-btn flex-1 py-2 font-medium border-b-2 border-transparent text-gray-500"
+                >
+                  法規導航儀
+                </button>
+                <button
+                  data-tab="exam"
+                  class="tab-btn flex-1 py-2 font-medium border-b-2 border-transparent text-gray-500"
+                >
+                  模擬考場
+                </button>
+              </div>
+              <div id="tabContent" class="mt-6"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="outlook" class="py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="section-title">您的職業前景：獨特的價值主張</h2>
+          <p class="section-subtitle">
+            當您的頂尖學位與iPAS中級認證相結合，您將在台灣的AI就業市場中建立起強大的差異化優勢。
+          </p>
+          <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-8 text-center">
+            <div class="card p-6">
+              <div class="text-4xl mb-4">🎓</div>
+              <h3 class="font-bold text-lg text-gray-800">世界級「建構者」</h3>
+              <p class="text-gray-600 mt-2">
+                倫敦大學學位證明您卓越的技術與理論能力。
+              </p>
+            </div>
+            <div
+              class="flex items-center justify-center text-4xl font-bold text-blue-600"
+            >
+              +
+            </div>
+            <div class="card p-6">
+              <div class="text-4xl mb-4">🇹🇼</div>
+              <h3 class="font-bold text-lg text-gray-800">在地化「規劃師」</h3>
+              <p class="text-gray-600 mt-2">
+                iPAS中級認證證明您了解台灣商業需求與法規。
+              </p>
+            </div>
+          </div>
+          <div
+            class="mt-8 text-center p-8 bg-blue-50 rounded-lg max-w-4xl mx-auto"
+          >
+            <p class="text-3xl font-bold text-blue-800 mb-4">=</p>
+            <h3 class="text-2xl font-bold text-gray-900">
+              極具競爭力的雙重專家
+            </h3>
+            <p class="mt-2 text-gray-700">
+              您不僅懂技術，更懂商業策略與在地實踐。這讓您完美契合<span
+                class="font-semibold"
+                >AI顧問、AI產品經理、AI策略師</span
+              >等高價值職位，開啟您在台灣AI產業的快速職業通道。
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p>&copy; 2025 iPAS AI 應用規劃師互動策略藍圖。專為您的成功而設計。</p>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const skillData = {
+          labels: [
+            "機器學習理論",
+            "演算法與程式設計",
+            "自然語言處理",
+            "商業整合與ROI",
+            "風險管理與治理",
+            "台灣本地法規",
+          ],
+          datasets: [
+            {
+              label: "您的技能分佈",
+              data: [5, 5, 4, 2, 2, 1],
+              backgroundColor: "rgba(59, 130, 246, 0.2)",
+              borderColor: "rgba(59, 130, 246, 1)",
+              pointBackgroundColor: "rgba(59, 130, 246, 1)",
+              pointBorderColor: "#fff",
+              pointHoverBackgroundColor: "#fff",
+              pointHoverBorderColor: "rgba(59, 130, 246, 1)",
+              borderWidth: 2,
+            },
+          ],
+        };
+
+        const config = {
+          type: "radar",
+          data: skillData,
+          options: {
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                angleLines: { color: "rgba(0, 0, 0, 0.1)" },
+                grid: { color: "rgba(0, 0, 0, 0.1)" },
+                pointLabels: {
+                  font: { size: 12, family: "'Noto Sans TC', sans-serif" },
+                },
+                ticks: {
+                  backdropColor: "transparent",
+                  stepSize: 1,
+                  max: 5,
+                  min: 0,
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  font: { size: 14, family: "'Noto Sans TC', sans-serif" },
+                },
+              },
+            },
+          },
+        };
+
+        const skillRadarChart = new Chart(
+          document.getElementById("skillRadarChart"),
+          config
+        );
+
+        document
+          .getElementById("recommendationBtn")
+          .addEventListener("click", () => {
+            const juniorPath = document.getElementById("juniorPath");
+            const intermediatePath =
+              document.getElementById("intermediatePath");
+
+            juniorPath.style.opacity = "0.3";
+            juniorPath.style.transform = "scale(0.95)";
+            intermediatePath.classList.add(
+              "border-green-500",
+              "shadow-2xl",
+              "scale-105"
+            );
+            intermediatePath.classList.remove("border-transparent");
+          });
+
+        const accordionItems = document.querySelectorAll(".accordion-item");
+        accordionItems.forEach((item) => {
+          const header = item.querySelector(".accordion-header");
+          header.addEventListener("click", () => {
+            const currentlyActive = document.querySelector(
+              ".accordion-item.active"
+            );
+            if (currentlyActive && currentlyActive !== item) {
+              currentlyActive.classList.remove("active");
+            }
+            item.classList.toggle("active");
+          });
+        });
+
+        const tabs = document.querySelectorAll(".tab-btn");
+        const tabContentContainer = document.getElementById("tabContent");
+
+        const tabContents = {
+          sandbox: `
+                    <h4 class="text-xl font-bold mb-2 text-gray-800">情境：金融業 AI 客服</h4>
+                    <p class="text-gray-600 mb-4">一家銀行希望導入AI客服以降低成本。您需要評估一個基於大型語言模型(LLM)的方案。根據金管會的《金融業運用AI指引》，您首先應關注哪個核心原則？</p>
+                    <div class="space-y-2">
+                        <button class="mock-option block w-full text-left p-3 bg-gray-100 hover:bg-gray-200 rounded-lg">A. 系統穩健性與安全性</button>
+                        <button class="mock-option block w-full text-left p-3 bg-gray-100 hover:bg-gray-200 rounded-lg">B. 透明性與可解釋性</button>
+                        <button id="correct-answer" class="mock-option block w-full text-left p-3 bg-gray-100 hover:bg-gray-200 rounded-lg">C. 治理與問責機制</button>
+                    </div>
+                    <p id="mock-feedback" class="mt-4 text-sm font-medium"></p>
+                `,
+          navigator: `
+                    <h4 class="text-xl font-bold mb-2 text-gray-800">遊戲化法規挑戰</h4>
+                    <p class="text-gray-600">此模組將繁雜的法規條文轉化為快問快答的遊戲。例如，系統會給出一個情境：「某公務員將一份非機密的業務報告草稿上傳至公開的生成式AI工具尋求潤飾建議。」您需要快速判斷此行為是否合規，並在真實的法規PDF中找出對應條文。透過這種方式，您將牢固地記憶關鍵法規。</p>
+                `,
+          exam: `
+                    <h4 class="text-xl font-bold mb-2 text-gray-800">全真模擬考場</h4>
+                    <p class="text-gray-600">這裡提供完全模擬iPAS中級考試的環境，包含計時、題型分佈與情境分析題。考後，系統會產生一份詳細的分析報告，指出您的知識弱點，並將錯題連結回「規劃師沙盒」或「法規導航儀」進行針對性複習，實現最高效的查漏補缺。</p>
+                `,
+        };
+
+        function updateTabContent(tabName) {
+          tabContentContainer.innerHTML = tabContents[tabName];
+          if (tabName === "sandbox") {
+            const options = document.querySelectorAll(".mock-option");
+            const feedback = document.getElementById("mock-feedback");
+            options.forEach((option) => {
+              option.addEventListener("click", () => {
+                feedback.classList.remove("text-green-600", "text-red-600");
+                if (option.id === "correct-answer") {
+                  feedback.textContent =
+                    "正確！建立清晰的治理與問責機制是導入任何AI系統的第一步，確保有人對AI的決策負責。";
+                  feedback.classList.add("text-green-600");
+                } else {
+                  feedback.textContent =
+                    "再想想。雖然A和B也很重要，但根據指引，建立權責分明的治理架構是所有原則的基礎。";
+                  feedback.classList.add("text-red-600");
+                }
+              });
+            });
+          }
+        }
+
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            tabs.forEach((t) => {
+              t.classList.remove("border-blue-600", "text-blue-600");
+              t.classList.add("border-transparent", "text-gray-500");
+            });
+            tab.classList.add("border-blue-600", "text-blue-600");
+            tab.classList.remove("border-transparent", "text-gray-500");
+            updateTabContent(tab.dataset.tab);
+          });
+        });
+
+        updateTabContent("sandbox");
+
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute("href")).scrollIntoView({
+              behavior: "smooth",
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
