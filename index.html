@@ -72,7 +72,7 @@
         <input
           type="text"
           id="searchInput"
-          placeholder="Search your content... (supports English & 中文)"
+          placeholder="Filter by date and search content... (e.g., '2025 travel' or 'June learning')"
           class="w-full p-3 md:p-4 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-200 text-sm md:text-base"
           oninput="filterItems()"
         />
@@ -557,11 +557,29 @@
         }
       }
 
+      function parseSearchInput(searchInput) {
+        const terms = searchInput.toLowerCase().trim().split(/\s+/);
+        let dateFilter = "";
+        let contentTerms = [];
+
+        terms.forEach((term) => {
+          if (isDateSearch(term)) {
+            dateFilter = term;
+          } else {
+            contentTerms.push(term);
+          }
+        });
+
+        return {
+          dateFilter,
+          contentSearch: contentTerms.join(" "),
+          hasDateFilter: dateFilter !== "",
+          hasContentSearch: contentTerms.length > 0,
+        };
+      }
+
       function filterItems() {
-        const searchTerm = document
-          .getElementById("searchInput")
-          .value.toLowerCase()
-          .trim();
+        const searchInput = document.getElementById("searchInput").value.trim();
         const searchItems = document.querySelectorAll(".search-item");
         const sections = ["life", "travel", "learning", "miscellaneous"];
         const searchResults = document.getElementById("searchResults");
@@ -576,32 +594,53 @@
           hasVisibleItemsInSection[section] = false;
         });
 
-        // Get all search terms including translations
-        const allSearchTerms = getSearchTerms(searchTerm);
+        // Parse search input into date and content components
+        const { dateFilter, contentSearch, hasDateFilter, hasContentSearch } =
+          parseSearchInput(searchInput);
+        const allContentTerms = hasContentSearch
+          ? getSearchTerms(contentSearch)
+          : [];
 
         searchItems.forEach((item) => {
           const title = item.querySelector("h3").textContent.toLowerCase();
           const description = item.querySelector("p").textContent.toLowerCase();
+          const dateElement = item.querySelector("span.whitespace-nowrap");
+          const itemDate = dateElement ? dateElement.textContent.trim() : "";
 
-          // Check if any of the search terms (including translations) match
-          let isMatch = false;
-          let matchedTerm = "";
+          let passesDateFilter = true;
+          let passesContentFilter = true;
+          let matchedDateTerm = "";
+          let matchedContentTerm = "";
 
-          if (searchTerm !== "") {
-            for (const term of allSearchTerms) {
+          // Apply date filter first
+          if (hasDateFilter) {
+            passesDateFilter = matchesDateSearch(itemDate, dateFilter);
+            if (passesDateFilter) {
+              matchedDateTerm = dateFilter;
+            }
+          }
+
+          // Apply content filter to date-filtered results
+          if (hasContentSearch && passesDateFilter) {
+            passesContentFilter = false;
+            for (const term of allContentTerms) {
               const termLower = term.toLowerCase();
               if (
                 title.includes(termLower) ||
                 description.includes(termLower)
               ) {
-                isMatch = true;
-                matchedTerm = term;
+                passesContentFilter = true;
+                matchedContentTerm = term;
                 break;
               }
             }
           }
 
-          if (searchTerm === "" || isMatch) {
+          // Show item if it passes all active filters
+          const shouldShow =
+            searchInput === "" || (passesDateFilter && passesContentFilter);
+
+          if (shouldShow) {
             item.classList.remove("hidden");
             visibleCount++;
 
@@ -614,15 +653,38 @@
 
             // Remove any existing highlights and add new ones
             removeHighlights(item);
-            if (searchTerm !== "" && isMatch) {
-              // Highlight the original search term for consistency
-              highlightText(item, searchTerm);
-              // Also highlight the matched translation term if different
-              if (
-                matchedTerm !== searchTerm &&
-                matchedTerm.toLowerCase() !== searchTerm.toLowerCase()
-              ) {
-                highlightText(item, matchedTerm);
+
+            if (searchInput !== "") {
+              // Highlight date filter matches
+              if (hasDateFilter && passesDateFilter && dateElement) {
+                const originalDate =
+                  dateElement.getAttribute("data-original-date") ||
+                  dateElement.textContent;
+                if (!dateElement.getAttribute("data-original-date")) {
+                  dateElement.setAttribute("data-original-date", originalDate);
+                }
+                const regex = new RegExp(
+                  `(${escapeRegex(matchedDateTerm)})`,
+                  "gi"
+                );
+                const highlightedDate = originalDate.replace(
+                  regex,
+                  '<span class="search-highlight">$1</span>'
+                );
+                dateElement.innerHTML = highlightedDate;
+              }
+
+              // Highlight content filter matches
+              if (hasContentSearch && passesContentFilter) {
+                highlightText(item, contentSearch);
+                // Also highlight matched translation term if different
+                if (
+                  matchedContentTerm !== contentSearch &&
+                  matchedContentTerm.toLowerCase() !==
+                    contentSearch.toLowerCase()
+                ) {
+                  highlightText(item, matchedContentTerm);
+                }
               }
             }
           } else {
@@ -641,9 +703,9 @@
           );
           const toggle = sectionHeader.querySelector(".section-toggle");
 
-          if (searchTerm === "" || hasVisibleItemsInSection[sectionName]) {
+          if (searchInput === "" || hasVisibleItemsInSection[sectionName]) {
             sectionHeader.style.display = "flex";
-            if (searchTerm !== "") {
+            if (searchInput !== "") {
               // Auto-expand sections with results
               sectionContent.classList.remove("collapsed");
               sectionContent.style.maxHeight =
@@ -662,7 +724,7 @@
         });
 
         // Update search results display
-        if (searchTerm === "") {
+        if (searchInput === "") {
           searchResults.classList.add("hidden");
           noResults.classList.add("hidden");
 
@@ -686,10 +748,27 @@
           });
         } else {
           if (visibleCount > 0) {
-            const usingTranslations = allSearchTerms.length > 1;
+            let filterInfo = [];
+
+            if (hasDateFilter) {
+              filterInfo.push(`date: ${dateFilter}`);
+            }
+
+            if (hasContentSearch) {
+              const usingTranslations = allContentTerms.length > 1;
+              if (usingTranslations) {
+                filterInfo.push(`content: ${contentSearch} (bilingual)`);
+              } else {
+                filterInfo.push(`content: ${contentSearch}`);
+              }
+            }
+
+            const filterText =
+              filterInfo.length > 0 ? ` (${filterInfo.join(", ")})` : "";
+
             resultsCount.textContent = `Found ${visibleCount} item${
               visibleCount === 1 ? "" : "s"
-            }${usingTranslations ? " (bilingual search)" : ""}`;
+            }${filterText}`;
             searchResults.classList.remove("hidden");
             noResults.classList.add("hidden");
           } else {
@@ -747,6 +826,7 @@
       function removeHighlights(item) {
         const title = item.querySelector("h3");
         const description = item.querySelector("p");
+        const dateElement = item.querySelector("span.whitespace-nowrap");
 
         [title, description].forEach((element) => {
           const originalText = element.getAttribute("data-original-text");
@@ -754,6 +834,14 @@
             element.textContent = originalText;
           }
         });
+
+        // Also restore original date text
+        if (dateElement) {
+          const originalDate = dateElement.getAttribute("data-original-date");
+          if (originalDate) {
+            dateElement.textContent = originalDate;
+          }
+        }
       }
 
       function escapeRegex(string) {
@@ -896,6 +984,83 @@
 
         // Remove duplicates and return
         return [...new Set(terms)];
+      }
+
+      function isDateSearch(searchTerm) {
+        // Check if the search term looks like a date
+        const datePatterns = [
+          /^\d{4}$/, // Year: 2025
+          /^\d{4}\/\d{1,2}$/, // Year/Month: 2025/06 or 2025/6
+          /^\d{4}\/\d{1,2}\/\d{1,2}$/, // Full date: 2025/06/28
+          /^\d{1,2}\/\d{4}$/, // Month/Year: 06/2025
+          /^\d{1,2}\/\d{1,2}\/\d{4}$/, // Month/Day/Year: 06/28/2025
+          /^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i, // Month names
+          /^(january|february|march|april|may|june|july|august|september|october|november|december)/i,
+        ];
+
+        return datePatterns.some((pattern) => pattern.test(searchTerm.trim()));
+      }
+
+      function matchesDateSearch(dateString, searchTerm) {
+        if (!dateString || !searchTerm) return false;
+
+        const search = searchTerm.toLowerCase().trim();
+
+        // Extract date parts from the item's date (format: 2025/06/28)
+        const dateParts = dateString.split("/");
+        if (dateParts.length !== 3) return false;
+
+        const [year, month, day] = dateParts;
+        const monthNum = parseInt(month);
+        const dayNum = parseInt(day);
+
+        // Month name mappings
+        const monthNames = {
+          1: ["jan", "january"],
+          2: ["feb", "february"],
+          3: ["mar", "march"],
+          4: ["apr", "april"],
+          5: ["may", "may"],
+          6: ["jun", "june"],
+          7: ["jul", "july"],
+          8: ["aug", "august"],
+          9: ["sep", "september"],
+          10: ["oct", "october"],
+          11: ["nov", "november"],
+          12: ["dec", "december"],
+        };
+
+        // Check various date format matches
+        if (search === year) return true; // Year match: 2025
+        if (search === `${year}/${month}` || search === `${year}/${monthNum}`)
+          return true; // 2025/06 or 2025/6
+        if (search === dateString) return true; // Exact match: 2025/06/28
+        if (search === `${month}/${year}` || search === `${monthNum}/${year}`)
+          return true; // 06/2025
+        if (
+          search === `${month}/${day}/${year}` ||
+          search === `${monthNum}/${dayNum}/${year}`
+        )
+          return true; // 06/28/2025
+
+        // Month name matching
+        if (monthNames[monthNum]) {
+          for (const monthName of monthNames[monthNum]) {
+            if (search.includes(monthName)) {
+              // Check if year is also specified
+              if (search.includes(year)) return true;
+              // Or just month name match
+              if (search === monthName) return true;
+            }
+          }
+        }
+
+        // Partial matches for flexible searching
+        if (search.includes(year) || year.includes(search)) return true;
+        if (search.includes(month) || month.includes(search)) return true;
+        if (search.includes(day) || day.includes(search)) return true;
+
+        return false;
       }
 
       // Initialize all sections as expanded on page load
