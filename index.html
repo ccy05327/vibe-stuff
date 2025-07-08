@@ -72,7 +72,7 @@
         <input
           type="text"
           id="searchInput"
-          placeholder="Search your content..."
+          placeholder="Search your content... (supports English & 中文)"
           class="w-full p-3 md:p-4 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-200 text-sm md:text-base"
           oninput="filterItems()"
         />
@@ -576,11 +576,30 @@
           hasVisibleItemsInSection[section] = false;
         });
 
+        // Get all search terms including translations
+        const allSearchTerms = getSearchTerms(searchTerm);
+
         searchItems.forEach((item) => {
           const title = item.querySelector("h3").textContent.toLowerCase();
           const description = item.querySelector("p").textContent.toLowerCase();
-          const isMatch =
-            title.includes(searchTerm) || description.includes(searchTerm);
+
+          // Check if any of the search terms (including translations) match
+          let isMatch = false;
+          let matchedTerm = "";
+
+          if (searchTerm !== "") {
+            for (const term of allSearchTerms) {
+              const termLower = term.toLowerCase();
+              if (
+                title.includes(termLower) ||
+                description.includes(termLower)
+              ) {
+                isMatch = true;
+                matchedTerm = term;
+                break;
+              }
+            }
+          }
 
           if (searchTerm === "" || isMatch) {
             item.classList.remove("hidden");
@@ -596,7 +615,15 @@
             // Remove any existing highlights and add new ones
             removeHighlights(item);
             if (searchTerm !== "" && isMatch) {
+              // Highlight the original search term for consistency
               highlightText(item, searchTerm);
+              // Also highlight the matched translation term if different
+              if (
+                matchedTerm !== searchTerm &&
+                matchedTerm.toLowerCase() !== searchTerm.toLowerCase()
+              ) {
+                highlightText(item, matchedTerm);
+              }
             }
           } else {
             item.classList.add("hidden");
@@ -659,9 +686,10 @@
           });
         } else {
           if (visibleCount > 0) {
+            const usingTranslations = allSearchTerms.length > 1;
             resultsCount.textContent = `Found ${visibleCount} item${
               visibleCount === 1 ? "" : "s"
-            }`;
+            }${usingTranslations ? " (bilingual search)" : ""}`;
             searchResults.classList.remove("hidden");
             noResults.classList.add("hidden");
           } else {
@@ -692,18 +720,27 @@
         const description = item.querySelector("p");
 
         [title, description].forEach((element) => {
-          const originalText =
-            element.getAttribute("data-original-text") || element.textContent;
+          // Store original text only once
           if (!element.getAttribute("data-original-text")) {
-            element.setAttribute("data-original-text", originalText);
+            element.setAttribute("data-original-text", element.textContent);
           }
 
+          // Get current content (which might already have highlights)
+          const currentContent = element.innerHTML;
           const regex = new RegExp(`(${escapeRegex(searchTerm)})`, "gi");
-          const highlightedText = originalText.replace(
-            regex,
-            '<span class="search-highlight">$1</span>'
-          );
-          element.innerHTML = highlightedText;
+
+          // Only add highlights if this term isn't already highlighted
+          if (
+            !currentContent.includes(`>${searchTerm}<`) &&
+            !currentContent.includes(`>${searchTerm.toLowerCase()}<`) &&
+            !currentContent.includes(`>${searchTerm.toUpperCase()}<`)
+          ) {
+            const highlightedText = currentContent.replace(
+              regex,
+              '<span class="search-highlight">$1</span>'
+            );
+            element.innerHTML = highlightedText;
+          }
         });
       }
 
@@ -721,6 +758,144 @@
 
       function escapeRegex(string) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      }
+
+      // Bilingual translation dictionary for search enhancement
+      const translationMap = {
+        // Travel related
+        travel: ["旅行", "旅遊", "出遊"],
+        trip: ["旅行", "行程", "旅遊"],
+        journey: ["旅程", "行程"],
+        planning: ["規劃", "計畫"],
+        itinerary: ["行程"],
+
+        // Learning/Research related
+        research: ["研究", "調查"],
+        study: ["學習", "研究"],
+        learning: ["學習", "學會"],
+        analysis: ["分析", "研究"],
+        comparison: ["比較", "對比"],
+        interactive: ["互動", "互動式"],
+        dashboard: ["儀表板", "控制台"],
+
+        // Health related
+        health: ["健康", "健檢"],
+        medical: ["醫療", "醫學"],
+        checkup: ["健檢", "檢查"],
+
+        // Technology related
+        certification: ["認證", "證照"],
+        application: ["應用", "申請"],
+        planner: ["規劃師", "規劃"],
+        portal: ["入口", "門戶"],
+
+        // Life related
+        life: ["生活", "人生"],
+        personal: ["個人", "私人"],
+        questboard: ["任務板", "清單"],
+        tracker: ["追蹤", "記錄"],
+        calendar: ["日曆", "行事曆"],
+
+        // General terms
+        cost: ["成本", "費用", "價格"],
+        price: ["價格", "費用"],
+        shopping: ["購物", "買東西"],
+        city: ["城市", "都市"],
+        urban: ["城市", "都市"],
+        magnetic: ["磁性", "吸引", "黏性"],
+        humidity: ["濕度", "潮濕"],
+        global: ["全球", "世界"],
+        world: ["世界", "全球"],
+        snap: ["快速", "速判"],
+        judgement: ["判斷", "速判"],
+        judgment: ["判斷", "速判"],
+        secret: ["秘密", "神秘"],
+        upcoming: ["即將", "未來"],
+
+        // Specific content terms
+        mbti: ["MBTI", "人格", "性格"],
+        personality: ["人格", "性格", "MBTI"],
+        apple: ["蘋果", "Apple"],
+        hongkong: ["香港", "HK"],
+        taiwan: ["台灣", "TW", "臺灣"],
+        ipas: ["iPAS", "認證"],
+        trail: ["古道", "步道"],
+        hiking: ["健行", "登山", "徒步"],
+        genetics: ["基因", "遺傳", "染色體"],
+        chromosome: ["染色體", "基因"],
+        dsd: ["DSD", "性發育"],
+
+        // Chinese to English
+        旅行: ["travel", "trip", "journey"],
+        旅遊: ["travel", "tourism", "trip"],
+        行程: ["itinerary", "schedule", "trip"],
+        規劃: ["planning", "plan"],
+        計畫: ["plan", "planning"],
+        研究: ["research", "study", "analysis"],
+        學習: ["learning", "study"],
+        分析: ["analysis", "analyze"],
+        比較: ["comparison", "compare"],
+        互動: ["interactive"],
+        儀表板: ["dashboard"],
+        健康: ["health"],
+        健檢: ["health checkup", "medical checkup"],
+        認證: ["certification"],
+        應用: ["application"],
+        規劃師: ["planner"],
+        生活: ["life"],
+        個人: ["personal"],
+        成本: ["cost"],
+        費用: ["cost", "price", "fee"],
+        價格: ["price", "cost"],
+        購物: ["shopping"],
+        城市: ["city", "urban"],
+        都市: ["city", "urban"],
+        濕度: ["humidity"],
+        全球: ["global", "world"],
+        世界: ["world", "global"],
+        速判: ["snap judgment", "quick judgment"],
+        判斷: ["judgment", "judgement"],
+        秘密: ["secret"],
+        即將: ["upcoming"],
+        未來: ["future", "upcoming"],
+
+        // Specific content reverse mappings
+        人格: ["personality", "mbti"],
+        性格: ["personality", "character", "mbti"],
+        蘋果: ["apple"],
+        香港: ["hongkong", "hk"],
+        台灣: ["taiwan", "tw"],
+        臺灣: ["taiwan", "tw"],
+        古道: ["trail", "path"],
+        步道: ["trail", "hiking path"],
+        健行: ["hiking"],
+        登山: ["hiking", "climbing"],
+        徒步: ["hiking", "walking"],
+        基因: ["genetics", "gene"],
+        遺傳: ["genetics", "heredity"],
+        染色體: ["chromosome"],
+        性發育: ["dsd", "sexual development"],
+      };
+
+      function getSearchTerms(searchTerm) {
+        const terms = [searchTerm];
+        const lowerTerm = searchTerm.toLowerCase();
+
+        // Add translations if they exist
+        if (translationMap[lowerTerm]) {
+          terms.push(...translationMap[lowerTerm]);
+        }
+
+        // Also check for partial matches in translation keys
+        Object.keys(translationMap).forEach((key) => {
+          if (key.includes(lowerTerm) || lowerTerm.includes(key)) {
+            terms.push(key);
+            terms.push(...translationMap[key]);
+          }
+        });
+
+        // Remove duplicates and return
+        return [...new Set(terms)];
       }
 
       // Initialize all sections as expanded on page load
