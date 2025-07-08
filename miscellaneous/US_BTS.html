@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>北美Apple購物成本分析儀表板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Warm Neutrals (Stone, with Teal accent) -->
+    <!-- Application Structure Plan: The application is designed as a top-down narrative dashboard. It starts with the final answer (the "Bottom Line") to immediately provide value. It then flows into an interactive "City Showdown" section allowing users to visually compare cities and drill down into details, transforming the static report table into an engaging element. Next, it provides a "Mission Plan" for the winning city, San Francisco, with a visual itinerary and budget breakdown. A dedicated section simplifies the complex product and tax calculations. The structure concludes with actionable strategic advice. This non-linear, answer-first approach prioritizes user understanding and exploration over simply replicating the report's linear format. -->
+    <!-- Visualization & Content Choices: 
+        - City Comparison: Goal: Compare. Viz: Grouped Bar Chart (Chart.js). Interaction: Clickable buttons update a detail panel. Justification: Visually highlights cost differences across key vectors (flight, accommodation, tax) and encourages user exploration.
+        - SFO Budget Breakdown: Goal: Inform. Viz: Donut Chart (Chart.js). Interaction: None. Justification: Provides a quick, digestible visual summary of the trip's cost proportions.
+        - Mission Itinerary & Cost Calculation: Goal: Organize/Inform. Viz: Styled HTML/CSS cards in a step-by-step flow. Interaction: None. Justification: Breaks down complex information (itinerary, tax math) into simple, easy-to-follow visual steps.
+        - All other elements use structured HTML with Tailwind CSS for clean, readable presentation.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        max-height: 50vh;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      @media (max-width: 768px) {
+        .chart-container {
+          height: 300px;
+          max-height: 60vh;
+        }
+      }
+      .active-btn {
+        background-color: #0d9488;
+        color: white;
+      }
+      .inactive-btn {
+        background-color: #f1f5f9;
+        color: #334155;
+      }
+    </style>
+  </head>
+  <body class="bg-stone-50 text-stone-800">
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+      <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-teal-800 mb-2">
+          北美 Back to School 購物任務分析
+        </h1>
+        <p class="text-lg text-stone-600">
+          一份為您量身打造的互動式成本效益儀表板
+        </p>
+      </header>
+
+      <main class="space-y-16">
+        <!-- Section 1: The Bottom Line -->
+        <section
+          id="conclusion"
+          class="bg-white p-8 rounded-2xl shadow-lg border border-stone-200"
+        >
+          <h2 class="text-3xl font-bold text-center mb-4 text-teal-700">
+            最終結論：最佳目的地與總預算
+          </h2>
+          <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
+            經過對北美西岸五大主要城市的機票、住宿、當地消費及稅務成本進行綜合比較分析，我們為您的「Back
+            to
+            School」購物任務找到了最佳解答。本節直接呈現最終建議與預估總開銷。
+          </p>
+          <div
+            class="flex flex-col md:flex-row justify-center items-center gap-8 text-center"
+          >
+            <div class="bg-teal-50 p-6 rounded-xl w-full md:w-1/2">
+              <h3 class="text-xl font-semibold text-teal-800 mb-2">
+                🏆 唯一最佳選擇
+              </h3>
+              <p class="text-5xl font-bold text-teal-600">舊金山</p>
+              <p class="text-stone-500 mt-1">(San Francisco, SFO)</p>
+            </div>
+            <div class="bg-amber-50 p-6 rounded-xl w-full md:w-1/2">
+              <h3 class="text-xl font-semibold text-amber-800 mb-2">
+                💰 預估總支出
+              </h3>
+              <p class="text-5xl font-bold text-amber-600">$2,182</p>
+              <p class="text-stone-500 mt-1">美元 (約 NT$63,278)</p>
+            </div>
+          </div>
+          <p class="text-center text-sm text-stone-500 mt-6">
+            此預估包含來回機票、住宿、最低生活開銷，以及完全稅後的產品成本。儘管波特蘭為免稅州，但高昂的機票成本使其總體開銷反而更高。
+          </p>
+        </section>
+
+        <!-- Section 2: City Showdown -->
+        <section id="comparison">
+          <h2 class="text-3xl font-bold text-center mb-4 text-teal-700">
+            城市對決：成本比較分析
+          </h2>
+          <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
+            哪個城市在關鍵成本上勝出？此互動圖表讓您一目了然地比較五個候選城市的「機票+住宿」旅費以及「產品稅金」。點擊城市按鈕來查看詳細數據和我們的初步評估。
+          </p>
+          <div
+            class="bg-white p-4 md:p-8 rounded-2xl shadow-lg border border-stone-200"
+          >
+            <div class="chart-container max-w-4xl">
+              <canvas id="cityComparisonChart"></canvas>
+            </div>
+            <div class="flex justify-center flex-wrap gap-2 md:gap-4 my-6">
+              <button
+                id="btn-sfo"
+                class="city-btn active-btn px-4 py-2 rounded-full font-semibold transition-colors duration-200"
+              >
+                舊金山 (SFO)
+              </button>
+              <button
+                id="btn-lax"
+                class="city-btn inactive-btn px-4 py-2 rounded-full font-semibold transition-colors duration-200"
+              >
+                洛杉磯 (LAX)
+              </button>
+              <button
+                id="btn-sea"
+                class="city-btn inactive-btn px-4 py-2 rounded-full font-semibold transition-colors duration-200"
+              >
+                西雅圖 (SEA)
+              </button>
+              <button
+                id="btn-yvr"
+                class="city-btn inactive-btn px-4 py-2 rounded-full font-semibold transition-colors duration-200"
+              >
+                溫哥華 (YVR)
+              </button>
+              <button
+                id="btn-pdx"
+                class="city-btn inactive-btn px-4 py-2 rounded-full font-semibold transition-colors duration-200"
+              >
+                波特蘭 (PDX)
+              </button>
+            </div>
+            <div
+              id="city-details"
+              class="mt-6 bg-stone-100 p-6 rounded-lg min-h-[200px] transition-all duration-300"
+            >
+              <!-- Details will be populated by JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: Detailed Cost Breakdown Table -->
+        <section id="detailed-breakdown">
+          <h2 class="text-3xl font-bold text-center mb-4 text-teal-700">
+            詳細成本分解表
+          </h2>
+          <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
+            下表為您列出了構成總成本的每一個細項，重點比較舊金山與波特蘭（免稅州）的成本結構差異。所有數據均透明公開，匯率以
+            1 USD = 29 TWD 計算。
+          </p>
+          <div
+            class="overflow-x-auto bg-white p-2 rounded-2xl shadow-lg border border-stone-200"
+          >
+            <table class="w-full text-sm text-left text-stone-600">
+              <thead class="text-xs text-stone-700 uppercase bg-stone-100">
+                <tr>
+                  <th scope="col" class="px-6 py-3 rounded-l-lg">成本項目</th>
+                  <th scope="col" class="px-6 py-3 text-center">
+                    方案一：舊金山 (SFO)
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-center">
+                    方案二：波特蘭 (PDX)
+                  </th>
+                  <th scope="col" class="px-6 py-3 rounded-r-lg text-center">
+                    成本差異 (PDX vs SFO)
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-white border-b">
+                  <th
+                    colspan="4"
+                    class="px-6 py-2 font-bold text-teal-800 bg-teal-50"
+                  >
+                    旅程成本 (A)
+                  </th>
+                </tr>
+                <tr class="bg-white border-b">
+                  <td class="px-6 py-4">🔹 來回機票</td>
+                  <td class="px-6 py-4 text-center">$573.00</td>
+                  <td class="px-6 py-4 text-center">$884.00</td>
+                  <td class="px-6 py-4 text-center text-red-600 font-semibold">
+                    +$311.00
+                  </td>
+                </tr>
+                <tr class="bg-white border-b">
+                  <td class="px-6 py-4">🔹 住宿 (2晚)</td>
+                  <td class="px-6 py-4 text-center">$42.00</td>
+                  <td class="px-6 py-4 text-center">$80.00</td>
+                  <td class="px-6 py-4 text-center text-red-600">+$38.00</td>
+                </tr>
+                <tr class="bg-white border-b">
+                  <td class="px-6 py-4">🔹 機場交通</td>
+                  <td class="px-6 py-4 text-center">$10.20</td>
+                  <td class="px-6 py-4 text-center">$5.00</td>
+                  <td class="px-6 py-4 text-center text-green-600">-$5.20</td>
+                </tr>
+                <tr class="bg-white border-b">
+                  <td class="px-6 py-4">🔹 餐飲雜支</td>
+                  <td class="px-6 py-4 text-center">$75.00</td>
+                  <td class="px-6 py-4 text-center">$75.00</td>
+                  <td class="px-6 py-4 text-center">$0.00</td>
+                </tr>
+                <tr class="bg-stone-50 font-bold">
+                  <td class="px-6 py-4">旅程小計</td>
+                  <td class="px-6 py-4 text-center">$700.20</td>
+                  <td class="px-6 py-4 text-center">$1,044.00</td>
+                  <td class="px-6 py-4 text-center text-red-600">+$343.80</td>
+                </tr>
+                <tr class="bg-white border-b">
+                  <th
+                    colspan="4"
+                    class="px-6 py-2 font-bold text-teal-800 bg-teal-50"
+                  >
+                    產品落地成本 (B)
+                  </th>
+                </tr>
+                <tr class="bg-white border-b">
+                  <td class="px-6 py-4">🔹 產品標價</td>
+                  <td class="px-6 py-4 text-center">$1,299.00</td>
+                  <td class="px-6 py-4 text-center">$1,299.00</td>
+                  <td class="px-6 py-4 text-center">$0.00</td>
+                </tr>
+                <tr class="bg-white border-b">
+                  <td class="px-6 py-4">🔹 當地銷售稅</td>
+                  <td class="px-6 py-4 text-center">$112.04 (8.625%)</td>
+                  <td class="px-6 py-4 text-center">$0.00 (0%)</td>
+                  <td
+                    class="px-6 py-4 text-center text-green-600 font-semibold"
+                  >
+                    -$112.04
+                  </td>
+                </tr>
+                <tr class="bg-white border-b">
+                  <td class="px-6 py-4">🔹 台灣進口稅 (5%)</td>
+                  <td class="px-6 py-4 text-center">$70.55</td>
+                  <td class="px-6 py-4 text-center">$64.95</td>
+                  <td class="px-6 py-4 text-center text-green-600">-$5.60</td>
+                </tr>
+                <tr class="bg-stone-50 font-bold">
+                  <td class="px-6 py-4">產品小計</td>
+                  <td class="px-6 py-4 text-center">$1,481.59</td>
+                  <td class="px-6 py-4 text-center">$1,363.95</td>
+                  <td class="px-6 py-4 text-center text-green-600">-$117.64</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="font-semibold text-stone-900 bg-stone-200">
+                  <th scope="row" class="px-6 py-4 text-base rounded-l-lg">
+                    最終總成本 (A+B)
+                  </th>
+                  <td class="px-6 py-4 text-center text-lg">$2,181.79</td>
+                  <td class="px-6 py-4 text-center text-lg">$2,407.95</td>
+                  <td
+                    class="px-6 py-4 text-center text-lg text-red-600 rounded-r-lg"
+                  >
+                    +$226.16
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="mt-6 bg-amber-50 p-6 rounded-xl">
+            <h4 class="text-lg font-bold text-amber-800 mb-2">
+              🔍 關鍵洞察：稅務天堂的陷阱
+            </h4>
+            <p class="text-amber-700">
+              波特蘭雖然是免稅州，在產品成本上確實節省了
+              $117.64，但其高昂的機票費用（多出
+              $311）完全抵銷了稅務優勢，最終反而比舊金山貴出
+              $226.16。這證明了**航空公司的定價策略比地方稅收政策對總成本影響更大**。
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: SFO Mission Plan -->
+        <section id="plan">
+          <h2 class="text-3xl font-bold text-center mb-4 text-teal-700">
+            舊金山任務計畫：行程與預算
+          </h2>
+          <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
+            確定目的地後，接下來是具體的行動計畫。我們為您規劃了一個為期三天兩夜的最低成本行程，並將所有非產品相關的旅程費用進行了視覺化拆解，助您精準掌控預算。
+          </p>
+          <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <div
+              class="lg:col-span-3 bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-stone-200"
+            >
+              <h3 class="text-2xl font-bold mb-6 text-center">
+                最低成本行程 (三天兩夜)
+              </h3>
+              <ol class="relative border-l border-teal-200 ml-4">
+                <li class="mb-10 ml-6">
+                  <span
+                    class="absolute flex items-center justify-center w-6 h-6 bg-teal-100 rounded-full -left-3 ring-8 ring-white"
+                    >✈️</span
+                  >
+                  <h4
+                    class="flex items-center mb-1 text-lg font-semibold text-stone-900"
+                  >
+                    第一天：抵達與安頓
+                  </h4>
+                  <p
+                    class="block mb-2 text-sm font-normal leading-none text-stone-500"
+                  >
+                    抵達SFO機場 → 搭乘SamTrans 292號巴士 → 青年旅舍Check-in
+                  </p>
+                </li>
+                <li class="mb-10 ml-6">
+                  <span
+                    class="absolute flex items-center justify-center w-6 h-6 bg-teal-100 rounded-full -left-3 ring-8 ring-white"
+                    >🛍️</span
+                  >
+                  <h4 class="text-lg font-semibold text-stone-900">
+                    第二天：購物任務
+                  </h4>
+                  <p class="text-sm font-normal text-stone-500">
+                    前往 Apple Union Square 完成購買 → 市區步行探索
+                  </p>
+                </li>
+                <li class="ml-6">
+                  <span
+                    class="absolute flex items-center justify-center w-6 h-6 bg-teal-100 rounded-full -left-3 ring-8 ring-white"
+                    >🏠</span
+                  >
+                  <h4 class="text-lg font-semibold text-stone-900">
+                    第三天：返程
+                  </h4>
+                  <p class="text-sm font-normal text-stone-500">
+                    青年旅舍Check-out → 搭乘SamTrans 292號巴士 → 前往SFO機場
+                  </p>
+                </li>
+              </ol>
+            </div>
+            <div
+              class="lg:col-span-2 bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-stone-200"
+            >
+              <h3 class="text-2xl font-bold mb-2 text-center">
+                旅程總成本: $700.20
+              </h3>
+              <p class="text-center text-stone-500 mb-4">(不含產品)</p>
+              <div
+                class="chart-container"
+                style="height: 280px; max-height: 280px"
+              >
+                <canvas id="sfoBudgetChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5: Product Cost Breakdown -->
+        <section id="product-cost">
+          <h2 class="text-3xl font-bold text-center mb-4 text-teal-700">
+            MacBook Air 總落地成本解析
+          </h2>
+          <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
+            產品的最終價格不只是標價。從舊金山的銷售稅到台灣海關的進口稅，我們將整個成本鏈條拆解給您看，讓您清楚了解每一分錢的去向。
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+            <!-- Step 1 -->
+            <div
+              class="bg-white p-6 rounded-xl shadow-md border border-stone-200"
+            >
+              <div class="text-4xl mb-2">①</div>
+              <h3 class="text-lg font-semibold">產品標價</h3>
+              <p class="text-3xl font-bold text-stone-700 mt-2">$1,299.00</p>
+            </div>
+            <!-- Step 2 -->
+            <div
+              class="bg-white p-6 rounded-xl shadow-md border border-stone-200 relative"
+            >
+              <div
+                class="absolute top-1/2 -left-4 text-2xl text-stone-400 hidden md:block"
+              >
+                +
+              </div>
+              <div
+                class="absolute top-1/2 -right-4 text-2xl text-stone-400 hidden md:block"
+              >
+                +
+              </div>
+              <div class="text-4xl mb-2">②</div>
+              <h3 class="text-lg font-semibold">舊金山銷售稅 (8.625%)</h3>
+              <p class="text-3xl font-bold text-stone-700 mt-2">$112.04</p>
+            </div>
+            <!-- Step 3 -->
+            <div
+              class="bg-white p-6 rounded-xl shadow-md border border-stone-200 relative"
+            >
+              <div
+                class="absolute top-1/2 -left-4 text-2xl text-stone-400 hidden md:block"
+              >
+                +
+              </div>
+              <div class="text-4xl mb-2">③</div>
+              <h3 class="text-lg font-semibold">台灣進口營業稅 (5%)</h3>
+              <p class="text-3xl font-bold text-stone-700 mt-2">$70.55</p>
+            </div>
+          </div>
+          <div
+            class="mt-8 bg-teal-800 text-white p-8 rounded-2xl shadow-xl text-center"
+          >
+            <h3 class="text-xl font-semibold opacity-80">MacBook Air 總成本</h3>
+            <p class="text-5xl font-bold my-2">$1,481.59</p>
+            <p class="opacity-80">約 NT$42,966 (以 1:29 匯率估算)</p>
+          </div>
+        </section>
+
+        <!-- Section 6: Final Advice -->
+        <section id="advice">
+          <h2 class="text-3xl font-bold text-center mb-4 text-teal-700">
+            戰略建議與無形價值
+          </h2>
+          <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
+            除了數字，還有一些關鍵策略能讓您的採購之旅更順利、更具價值。請記住以下要點，以確保您能最大化本次任務的效益。
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div
+              class="bg-white p-6 rounded-lg shadow-md border border-stone-200"
+            >
+              <h3 class="font-bold text-lg mb-2">🎁 善用教育優惠</h3>
+              <p class="text-sm text-stone-600">
+                別忘了「Back to
+                School」附贈的價值約$150美元禮品卡或贈品，這能有效降低您的淨支出。
+              </p>
+            </div>
+            <div
+              class="bg-white p-6 rounded-lg shadow-md border border-stone-200"
+            >
+              <h3 class="font-bold text-lg mb-2">⚖️ 誠實申報</h3>
+              <p class="text-sm text-stone-600">
+                返台時務必經由紅線通道向海關申報，繳納5%營業稅，以避免觸法及罰款。
+              </p>
+            </div>
+            <div
+              class="bg-white p-6 rounded-lg shadow-md border border-stone-200"
+            >
+              <h3 class="font-bold text-lg mb-2">🚌 精明交通</h3>
+              <p class="text-sm text-stone-600">
+                在舊金山，選擇 SamTrans
+                巴士往返機場，而非BART，來回可省下約$14美元。
+              </p>
+            </div>
+            <div
+              class="bg-white p-6 rounded-lg shadow-md border border-stone-200"
+            >
+              <h3 class="font-bold text-lg mb-2">📈 注意匯率風險</h3>
+              <p class="text-sm text-stone-600">
+                最終的新台幣成本會受交易當下匯率影響，建議在匯率較好時完成換匯或刷卡。
+              </p>
+            </div>
+          </div>
+
+          <!-- Final Strategic Takeaway -->
+          <div class="mt-8 bg-teal-50 p-8 rounded-2xl border border-teal-200">
+            <h3 class="text-2xl font-bold text-teal-800 mb-4 text-center">
+              💡 核心戰略洞察
+            </h3>
+            <p class="text-teal-700 text-center max-w-3xl mx-auto">
+              本次分析的關鍵發現是：**對於從台北出發的購物任務，航空公司的定價策略遠比地方政府的稅收政策對總成本的影響更大**。舊金山作為主要國際航空樞紐，其低廉的機票價格建立了無法撼動的成本優勢，即使面對免稅州的競爭也能保持領先。請專注執行舊金山方案，以達成最低總體支出的目標。
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="text-center mt-16 pt-8 border-t border-stone-200">
+        <p class="text-sm text-stone-500">
+          此分析報告基於2024年9月數據模擬，實際費用可能因時間、預訂平台及個人消費習慣而異。匯率以
+          1 USD = 29 TWD 計算。
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      const cityData = {
+        sfo: {
+          name: "舊金山 (SFO)",
+          flight: 573,
+          accommodation: 42,
+          totalTrip: 700.2,
+          taxRate: 8.625,
+          taxAmount: 112.04,
+          totalCost: 2181.79,
+          assessment:
+            "<strong>初步評估：</strong> 舊金山在所有關鍵指標上均處於領先地位：最低的機票費用、極具競爭力的住宿價格，以及合理的銷售稅率。即使與免稅州波特蘭相比，舊金山仍因其優秀的航空連接性而保持成本優勢。這是我們的首選推薦。",
+        },
+        lax: {
+          name: "洛杉磯 (LAX)",
+          flight: 593,
+          accommodation: 40,
+          totalTrip: 633,
+          taxRate: 9.5,
+          taxAmount: 123.41,
+          totalCost: 2197.41,
+          assessment:
+            "<strong>初步評估：</strong> 由於極低的住宿成本，洛杉磯是一個強力的競爭者。然而，其略高的機票費用和銷售稅率，使其在與舊金山的直接比較中處於次要位置。",
+        },
+        sea: {
+          name: "西雅圖 (SEA)",
+          flight: 606,
+          accommodation: 92,
+          totalTrip: 698,
+          taxRate: 10.35,
+          taxAmount: 134.45,
+          totalCost: 2374.45,
+          assessment:
+            "<strong>初步評估：</strong> 較高的住宿成本和高稅率使其整體競爭力遜於舊金山和洛杉磯。",
+        },
+        yvr: {
+          name: "溫哥華 (YVR)",
+          flight: 706,
+          accommodation: 60,
+          totalTrip: 766,
+          taxRate: 12.0,
+          taxAmount: 155.88,
+          totalCost: 2463.88,
+          assessment:
+            "<strong>初步評估：</strong> 雖然旅費具有一定競爭力，但高達12%的銷售稅率是所有候選城市中最高的，這將對高價值產品產生顯著的成本劣勢。",
+        },
+        pdx: {
+          name: "波特蘭 (PDX)",
+          flight: 884,
+          accommodation: 80,
+          totalTrip: 1044,
+          taxRate: 0.0,
+          taxAmount: 0.0,
+          totalCost: 2407.95,
+          assessment:
+            "<strong>初步評估：</strong> 作為免稅州，波特蘭在產品稅務上具有明顯優勢，節省了$112.04的銷售稅。然而，高昂的機票費用（比舊金山貴$311）完全抵銷了稅務節省，反而使總成本增加$226.16。這完美詮釋了「稅務天堂的陷阱」概念。",
+        },
+      };
+
+      const cityLabels = [
+        "舊金山 (SFO)",
+        "洛杉磯 (LAX)",
+        "西雅圖 (SEA)",
+        "溫哥華 (YVR)",
+        "波特蘭 (PDX)",
+      ];
+      const cityKeys = ["sfo", "lax", "sea", "yvr", "pdx"];
+
+      // Chart 1: City Comparison
+      const ctx1 = document
+        .getElementById("cityComparisonChart")
+        .getContext("2d");
+      const cityComparisonChart = new Chart(ctx1, {
+        type: "bar",
+        data: {
+          labels: cityLabels,
+          datasets: [
+            {
+              label: "旅費 (機票+住宿+雜支)",
+              data: cityKeys.map((key) => cityData[key].totalTrip),
+              backgroundColor: "#0d9488", // teal-600
+              borderColor: "#0f766e", // teal-700
+              borderWidth: 1,
+            },
+            {
+              label: "產品稅金",
+              data: cityKeys.map((key) => cityData[key].taxAmount),
+              backgroundColor: "#f59e0b", // amber-500
+              borderColor: "#d97706", // amber-600
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: "成本 (美元)",
+              },
+            },
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  let label = context.dataset.label || "";
+                  if (label) {
+                    label += ": ";
+                  }
+                  if (context.parsed.y !== null) {
+                    label += new Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    }).format(context.parsed.y);
+                  }
+                  return label;
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // Chart 2: SFO Budget Breakdown
+      const ctx2 = document.getElementById("sfoBudgetChart").getContext("2d");
+      const sfoBudgetChart = new Chart(ctx2, {
+        type: "doughnut",
+        data: {
+          labels: [
+            "機票 ($573)",
+            "住宿 ($42)",
+            "維生費 ($75)",
+            "當地交通 ($10.2)",
+          ],
+          datasets: [
+            {
+              label: "SFO 旅程預算",
+              data: [573, 42, 75, 10.2],
+              backgroundColor: [
+                "#0d9488", // teal-600
+                "#14b8a6", // teal-500
+                "#f59e0b", // amber-500
+                "#fbbf24", // amber-400
+              ],
+              hoverOffset: 4,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: {
+                boxWidth: 12,
+                padding: 15,
+              },
+            },
+          },
+        },
+      });
+
+      // Interactive City Details
+      const cityDetailsContainer = document.getElementById("city-details");
+      const cityButtons = document.querySelectorAll(".city-btn");
+
+      function updateCityDetails(cityKey) {
+        const data = cityData[cityKey];
+        cityDetailsContainer.innerHTML = `
+                <h4 class="text-xl font-bold mb-4 text-teal-800">${
+                  data.name
+                } - 詳細數據</h4>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+                    <div>
+                        <p class="text-sm text-stone-500">旅費小計</p>
+                        <p class="text-2xl font-semibold text-stone-800">$${
+                          data.totalTrip
+                        }</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-stone-500">銷售稅率</p>
+                        <p class="text-2xl font-semibold text-stone-800">${
+                          data.taxRate
+                        }%</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-stone-500">產品稅金</p>
+                        <p class="text-2xl font-semibold text-stone-800">$${data.taxAmount.toFixed(
+                          2
+                        )}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-stone-500">總計成本</p>
+                        <p class="text-2xl font-semibold text-teal-600">$${data.totalCost.toFixed(
+                          2
+                        )}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-stone-500">排名</p>
+                        <p class="text-2xl font-semibold ${
+                          cityKey === "sfo"
+                            ? "text-emerald-600"
+                            : "text-stone-600"
+                        }">${
+          cityKey === "sfo"
+            ? "🏆 #1"
+            : cityKey === "lax"
+            ? "#2"
+            : cityKey === "sea"
+            ? "#3"
+            : cityKey === "pdx"
+            ? "#4"
+            : "#5"
+        }</p>
+                    </div>
+                </div>
+                <p class="mt-4 text-stone-600 text-sm md:text-base">${
+                  data.assessment
+                }</p>
+            `;
+
+        cityButtons.forEach((btn) => {
+          btn.classList.remove("active-btn");
+          btn.classList.add("inactive-btn");
+        });
+        document.getElementById(`btn-${cityKey}`).classList.add("active-btn");
+        document
+          .getElementById(`btn-${cityKey}`)
+          .classList.remove("inactive-btn");
+      }
+
+      cityButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const cityKey = button.id.split("-")[1];
+          updateCityDetails(cityKey);
+        });
+      });
+
+      // Initial load
+      updateCityDetails("sfo");
+    </script>
+  </body>
+</html>
