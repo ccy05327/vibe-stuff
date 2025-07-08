@@ -181,6 +181,123 @@
       .footer-text {
         color: var(--text-accent) !important;
       }
+
+      /* View Toggle Styles */
+      .section-content.grid-view {
+        display: grid !important;
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+
+      @media (min-width: 640px) {
+        .section-content.grid-view {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.75rem;
+        }
+      }
+
+      @media (min-width: 768px) {
+        .section-content.grid-view {
+          gap: 1rem;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .section-content.grid-view {
+          gap: 1.25rem;
+        }
+      }
+
+      .section-content.grid-view .search-item {
+        height: auto;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1rem !important;
+      }
+
+      .section-content.grid-view .search-item .flex {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      .section-content.grid-view .search-item .flex > span:first-child {
+        margin: 0 0 0.75rem 0;
+        font-size: 1.5rem;
+      }
+
+      .section-content.grid-view .search-item .min-w-0 {
+        min-width: 100%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .section-content.grid-view
+        .search-item
+        .flex.items-start.justify-between {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        height: 100%;
+      }
+
+      .section-content.grid-view .search-item .card-title {
+        margin-bottom: 0.5rem !important;
+        text-align: center;
+        padding-right: 0 !important;
+        line-height: 1.3;
+        order: 1;
+      }
+
+      .section-content.grid-view .search-item .card-date {
+        margin: 0.5rem 0 !important;
+        align-self: center;
+        order: 2;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        position: static !important;
+      }
+
+      .section-content.grid-view .search-item .card-description {
+        text-align: center;
+        margin-top: auto;
+        order: 3;
+        line-height: 1.4;
+        margin-bottom: 0;
+      }
+
+      /* Fix the nested flex container in grid view */
+      .section-content.grid-view
+        .search-item
+        .flex.items-start.justify-between {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        margin-bottom: 0 !important;
+      }
+
+      .section-content.grid-view
+        .search-item
+        .flex.items-start.justify-between
+        > h3 {
+        order: 1;
+        margin-bottom: 0.5rem;
+      }
+
+      .section-content.grid-view
+        .search-item
+        .flex.items-start.justify-between
+        > span {
+        order: 2;
+        margin-bottom: 0.5rem;
+      }
     </style>
   </head>
   <body class="min-h-screen flex flex-col items-center justify-center">
@@ -218,6 +335,43 @@
             stroke-linejoin="round"
             stroke-width="2"
             d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+          ></path>
+        </svg>
+      </button>
+
+      <!-- View Toggle -->
+      <button
+        id="viewToggle"
+        class="theme-toggle fixed top-4 right-16 md:top-6 md:right-20 z-50"
+        onclick="toggleView()"
+        aria-label="Toggle grid view"
+      >
+        <svg
+          id="listIcon"
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 10h16M4 14h16M4 18h16"
+          ></path>
+        </svg>
+        <svg
+          id="gridIcon"
+          class="w-5 h-5 hidden"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
           ></path>
         </svg>
       </button>
@@ -1278,6 +1432,43 @@
         }
       }
 
+      // View toggle functionality
+      function toggleView() {
+        const listIcon = document.getElementById("listIcon");
+        const gridIcon = document.getElementById("gridIcon");
+        const sections = ["life", "travel", "learning", "miscellaneous"];
+
+        // Get current view state
+        const isGridView = !listIcon.classList.contains("hidden");
+
+        // Toggle icon visibility
+        listIcon.classList.toggle("hidden");
+        gridIcon.classList.toggle("hidden");
+
+        // Toggle grid view class on all sections
+        sections.forEach((sectionName) => {
+          const sectionContent = document.getElementById(
+            sectionName + "-content"
+          );
+          if (isGridView) {
+            sectionContent.classList.add("grid-view");
+          } else {
+            sectionContent.classList.remove("grid-view");
+          }
+
+          // Recalculate heights for expanded sections after layout change
+          if (!sectionContent.classList.contains("collapsed")) {
+            setTimeout(() => {
+              sectionContent.style.maxHeight =
+                sectionContent.scrollHeight + "px";
+            }, 50);
+          }
+        });
+
+        // Save view preference
+        localStorage.setItem("viewMode", isGridView ? "grid" : "list");
+      }
+
       // Initialize theme on page load
       function initializeTheme() {
         // Check for saved theme preference or default to 'light'
@@ -1297,10 +1488,43 @@
         }
       }
 
+      // Initialize view mode
+      function initializeView() {
+        const savedView = localStorage.getItem("viewMode") || "list";
+        const listIcon = document.getElementById("listIcon");
+        const gridIcon = document.getElementById("gridIcon");
+        const sections = ["life", "travel", "learning", "miscellaneous"];
+
+        if (savedView === "grid") {
+          listIcon.classList.add("hidden");
+          gridIcon.classList.remove("hidden");
+
+          sections.forEach((sectionName) => {
+            const sectionContent = document.getElementById(
+              sectionName + "-content"
+            );
+            sectionContent.classList.add("grid-view");
+          });
+        } else {
+          listIcon.classList.remove("hidden");
+          gridIcon.classList.add("hidden");
+
+          sections.forEach((sectionName) => {
+            const sectionContent = document.getElementById(
+              sectionName + "-content"
+            );
+            sectionContent.classList.remove("grid-view");
+          });
+        }
+      }
+
       // Initialize all sections as expanded on page load
       document.addEventListener("DOMContentLoaded", function () {
         // Initialize theme first
         initializeTheme();
+
+        // Initialize view mode
+        initializeView();
 
         const sections = ["life", "travel", "learning", "miscellaneous"];
         sections.forEach((sectionName) => {
