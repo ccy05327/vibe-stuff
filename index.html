@@ -12,9 +12,67 @@
       rel="stylesheet"
     />
     <style>
+      :root {
+        /* Light mode colors */
+        --bg-primary: #f8fafc;
+        --bg-secondary: #e0e7ef;
+        --bg-gradient: linear-gradient(
+          135deg,
+          var(--bg-primary) 0%,
+          var(--bg-secondary) 100%
+        );
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --text-accent: #9ca3af;
+        --card-bg: #ffffff;
+        --card-border: rgba(59, 130, 246, 0.1);
+        --card-hover-border: rgba(59, 130, 246, 0.3);
+        --search-bg: #ffffff;
+        --search-border: #e5e7eb;
+        --search-focus-border: #60a5fa;
+        --search-focus-ring: rgba(59, 130, 246, 0.1);
+        --highlight-bg: #fef3c7;
+        --section-blue: #1d4ed8;
+        --section-green: #059669;
+        --section-yellow: #d97706;
+        --section-purple: #7c3aed;
+        --toggle-bg: #e5e7eb;
+        --toggle-hover: #d1d5db;
+      }
+
+      [data-theme="dark"] {
+        /* Dark mode colors */
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-gradient: linear-gradient(
+          135deg,
+          var(--bg-primary) 0%,
+          var(--bg-secondary) 100%
+        );
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --text-accent: #64748b;
+        --card-bg: #1e293b;
+        --card-border: rgba(59, 130, 246, 0.2);
+        --card-hover-border: rgba(59, 130, 246, 0.4);
+        --search-bg: #1e293b;
+        --search-border: #374151;
+        --search-focus-border: #60a5fa;
+        --search-focus-ring: rgba(59, 130, 246, 0.2);
+        --highlight-bg: #fbbf24;
+        --section-blue: #3b82f6;
+        --section-green: #10b981;
+        --section-yellow: #f59e0b;
+        --section-purple: #8b5cf6;
+        --toggle-bg: #374151;
+        --toggle-hover: #4b5563;
+      }
+
       body {
         font-family: "Inter", sans-serif;
-        background: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);
+        background: var(--bg-gradient);
+        color: var(--text-primary);
+        transition: background 0.3s ease, color 0.3s ease;
       }
       .section-content {
         transition: all 0.3s ease-in-out;
@@ -46,22 +104,134 @@
         display: none;
       }
       .search-highlight {
-        background-color: #fef3c7;
+        background-color: var(--highlight-bg);
+        color: var(--text-primary);
         padding: 1px 2px;
         border-radius: 2px;
       }
+
+      .theme-toggle {
+        background: var(--toggle-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        margin-left: 20px;
+      }
+
+      .theme-toggle:hover {
+        background: var(--toggle-hover);
+        border-color: var(--card-hover-border);
+        transform: scale(1.05);
+      }
+
+      .theme-toggle svg {
+        color: var(--text-secondary);
+        transition: all 0.3s ease;
+      }
+
+      .search-item {
+        background: var(--card-bg) !important;
+        border: 1px solid var(--card-border) !important;
+        transition: all 0.3s ease !important;
+      }
+
+      .search-item:hover {
+        border-color: var(--card-hover-border) !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+      }
+
+      [data-theme="dark"] .search-item:hover {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3),
+          0 4px 6px -2px rgba(0, 0, 0, 0.2) !important;
+      }
+
+      .card-title {
+        color: var(--section-blue) !important;
+      }
+
+      .travel-section .card-title {
+        color: var(--section-green) !important;
+      }
+
+      .learning-section .card-title {
+        color: var(--section-yellow) !important;
+      }
+
+      .miscellaneous-section .card-title {
+        color: var(--section-purple) !important;
+      }
+
+      .card-description {
+        color: var(--text-secondary) !important;
+      }
+
+      .card-date {
+        color: var(--text-accent) !important;
+        background: var(--card-bg) !important;
+      }
+
+      .footer-text {
+        color: var(--text-accent) !important;
+      }
     </style>
   </head>
-  <body
-    class="min-h-screen flex flex-col items-center justify-center text-gray-800 bg-gradient-to-br from-slate-50 to-blue-50"
-  >
-    <header class="mb-6 mt-6 md:mb-10 md:mt-12 text-center px-3">
+  <body class="min-h-screen flex flex-col items-center justify-center">
+    <header class="mb-6 mt-6 md:mb-10 md:mt-12 text-center px-3 relative">
+      <!-- Theme Toggle -->
+      <button
+        id="themeToggle"
+        class="theme-toggle fixed top-4 right-4 md:top-6 md:right-6 z-50"
+        onclick="toggleTheme()"
+        aria-label="Toggle dark mode"
+      >
+        <svg
+          id="sunIcon"
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+          ></path>
+        </svg>
+        <svg
+          id="moonIcon"
+          class="w-5 h-5 hidden"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+          ></path>
+        </svg>
+      </button>
+
       <h1
-        class="text-2xl md:text-3xl lg:text-5xl font-extrabold text-blue-700 mb-1 md:mb-2 leading-tight"
+        class="text-2xl md:text-3xl lg:text-5xl font-extrabold mb-1 md:mb-2 leading-tight"
+        style="color: var(--section-blue)"
       >
         Vibe Stuff Portal
       </h1>
-      <p class="text-sm md:text-base lg:text-lg text-gray-500">
+      <p
+        class="text-sm md:text-base lg:text-lg"
+        style="color: var(--text-secondary)"
+      >
         歡迎來到我的Vibe Coding小天地
       </p>
     </header>
@@ -73,11 +243,19 @@
           type="text"
           id="searchInput"
           placeholder="Filter by date and search content... (e.g., '2025 travel' or 'June learning')"
-          class="w-full p-3 md:p-4 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-200 text-sm md:text-base"
+          class="w-full p-3 md:p-4 rounded-xl outline-none transition-all duration-200 text-sm md:text-base"
+          style="
+            background: var(--search-bg);
+            border: 1px solid var(--search-border);
+            color: var(--text-primary);
+          "
           oninput="filterItems()"
+          onfocus="this.style.borderColor='var(--search-focus-border)'; this.style.boxShadow='0 0 0 3px var(--search-focus-ring)'"
+          onblur="this.style.borderColor='var(--search-border)'; this.style.boxShadow='none'"
         />
         <div
-          class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          class="absolute right-3 top-1/2 transform -translate-y-1/2"
+          style="color: var(--text-accent)"
         >
           <svg
             class="w-5 h-5"
@@ -94,14 +272,25 @@
           </svg>
         </div>
       </div>
-      <div id="searchResults" class="mt-2 text-sm text-gray-500 hidden">
+      <div
+        id="searchResults"
+        class="mt-2 text-sm hidden"
+        style="color: var(--text-secondary)"
+      >
         <span id="resultsCount"></span>
       </div>
-      <div id="noResults" class="mt-4 text-center text-gray-500 hidden">
+      <div
+        id="noResults"
+        class="mt-4 text-center hidden"
+        style="color: var(--text-secondary)"
+      >
         <p class="text-sm">No items found matching your search.</p>
         <button
           onclick="clearSearch()"
-          class="mt-2 text-blue-600 hover:text-blue-800 text-sm underline"
+          class="mt-2 text-sm underline transition-colors"
+          style="color: var(--section-blue)"
+          onmouseover="this.style.opacity='0.8'"
+          onmouseout="this.style.opacity='1'"
         >
           Clear search
         </button>
@@ -113,7 +302,8 @@
         <!-- Life Section -->
         <section>
           <h2
-            class="section-header text-lg md:text-xl lg:text-2xl font-bold text-blue-700 mb-2 md:mb-4 flex items-center justify-between"
+            class="section-header text-lg md:text-xl lg:text-2xl font-bold mb-2 md:mb-4 flex items-center justify-between"
+            style="color: var(--section-blue)"
             onclick="toggleSection('life')"
           >
             <div class="flex items-center">
@@ -123,7 +313,7 @@
           </h2>
           <div
             id="life-content"
-            class="section-content space-y-2 md:space-y-3 lg:space-y-4"
+            class="section-content life-section space-y-2 md:space-y-3 lg:space-y-4"
           >
             <a
               href="life/mbti.html"
@@ -137,17 +327,17 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="text-sm md:text-base lg:text-lg font-bold text-blue-700 leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
                     >
                       My MBTI Journey
                     </h3>
                     <span
-                      class="text-xs text-blue-400 bg-white bg-opacity-80 rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
                     >
                       2025/06/28
                     </span>
                   </div>
-                  <p class="text-gray-500 text-xs md:text-sm leading-tight">
+                  <p class="card-description text-xs md:text-sm leading-tight">
                     歷年來的MBTI紀錄跟變化
                   </p>
                 </div>
@@ -165,17 +355,17 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="text-sm md:text-base lg:text-lg font-bold text-blue-700 leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
                     >
                       Questboard Portal
                     </h3>
                     <span
-                      class="text-xs text-blue-400 bg-white bg-opacity-80 rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
                     >
                       2025/06/25
                     </span>
                   </div>
-                  <p class="text-gray-500 text-xs md:text-sm leading-tight">
+                  <p class="card-description text-xs md:text-sm leading-tight">
                     Personal planner, checklist, and event tracker with
                     countdowns and calendar.
                   </p>
@@ -187,7 +377,8 @@
         <!-- Travel Section -->
         <section>
           <h2
-            class="section-header text-lg md:text-xl lg:text-2xl font-bold text-green-700 mb-2 md:mb-4 flex items-center justify-between"
+            class="section-header text-lg md:text-xl lg:text-2xl font-bold mb-2 md:mb-4 flex items-center justify-between"
+            style="color: var(--section-green)"
             onclick="toggleSection('travel')"
           >
             <div class="flex items-center">
@@ -197,7 +388,7 @@
           </h2>
           <div
             id="travel-content"
-            class="section-content space-y-2 md:space-y-3 lg:space-y-4"
+            class="section-content travel-section space-y-2 md:space-y-3 lg:space-y-4"
           >
             <a
               href="travel/淡蘭古道.html"
@@ -211,17 +402,17 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="text-sm md:text-base lg:text-lg font-bold text-green-700 leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
                     >
                       淡蘭北路
                     </h3>
                     <span
-                      class="text-xs text-blue-400 bg-white bg-opacity-80 rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
                     >
                       2025/07/04
                     </span>
                   </div>
-                  <p class="text-gray-500 text-xs md:text-sm leading-tight">
+                  <p class="card-description text-xs md:text-sm leading-tight">
                     詳細規劃三天兩夜的淡蘭古道北路行程
                   </p>
                 </div>
@@ -239,17 +430,17 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="text-sm md:text-base lg:text-lg font-bold text-green-700 leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
                     >
                       Upcoming Secret Trip
                     </h3>
                     <span
-                      class="text-xs text-blue-400 bg-white bg-opacity-80 rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
                     >
                       2025/06/27
                     </span>
                   </div>
-                  <p class="text-gray-500 text-xs md:text-sm leading-tight">
+                  <p class="card-description text-xs md:text-sm leading-tight">
                     👀 upcoming ST9 trip
                   </p>
                 </div>
@@ -267,17 +458,17 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="text-sm md:text-base lg:text-lg font-bold text-green-700 leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
                     >
                       ST8 Trip
                     </h3>
                     <span
-                      class="text-xs text-gray-500 bg-white bg-opacity-80 rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
                     >
                       2025/06/25
                     </span>
                   </div>
-                  <p class="text-gray-500 text-xs md:text-sm leading-tight">
+                  <p class="card-description text-xs md:text-sm leading-tight">
                     從計畫、預算、事後回顧，都詳細記錄了
                   </p>
                 </div>
@@ -288,7 +479,8 @@
         <!-- Learning Section -->
         <section>
           <h2
-            class="section-header text-lg md:text-xl lg:text-2xl font-bold text-yellow-600 mb-2 md:mb-4 flex items-center justify-between"
+            class="section-header text-lg md:text-xl lg:text-2xl font-bold mb-2 md:mb-4 flex items-center justify-between"
+            style="color: var(--section-yellow)"
             onclick="toggleSection('learning')"
           >
             <div class="flex items-center">
@@ -299,7 +491,7 @@
           </h2>
           <div
             id="learning-content"
-            class="section-content space-y-2 md:space-y-3 lg:space-y-4"
+            class="section-content learning-section space-y-2 md:space-y-3 lg:space-y-4"
           >
             <a
               href="learning/iPAS_certification/"
@@ -313,17 +505,17 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="text-sm md:text-base lg:text-lg font-bold text-yellow-600 leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
                     >
                       iPAS AI 應用規劃師認證攻略
                     </h3>
                     <span
-                      class="text-xs text-gray-500 bg-white bg-opacity-80 rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
                     >
                       2025/07/08
                     </span>
                   </div>
-                  <p class="text-gray-500 text-xs md:text-sm leading-tight">
+                  <p class="card-description text-xs md:text-sm leading-tight">
                     中文 | 專為倫敦大學電腦科學畢業生打造的iPAS
                     AI應用規劃師認證互動策略藍圖
                   </p>
@@ -342,17 +534,17 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="text-sm md:text-base lg:text-lg font-bold text-yellow-600 leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
                     >
                       The Magnetic City "黏"性最高的城市
                     </h3>
                     <span
-                      class="text-xs text-gray-500 bg-white bg-opacity-80 rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
                     >
                       2025/07/05
                     </span>
                   </div>
-                  <p class="text-gray-500 text-xs md:text-sm leading-tight">
+                  <p class="card-description text-xs md:text-sm leading-tight">
                     中&英 | IG上 @seasia.news @seasia.stats
                     發文啟發的研究，英文版比較全面
                   </p>
@@ -371,17 +563,17 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="text-sm md:text-base lg:text-lg font-bold text-yellow-600 leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
                     >
                       全球濕度比較
                     </h3>
                     <span
-                      class="text-xs text-gray-500 bg-white bg-opacity-80 rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
                     >
                       2025/06/28
                     </span>
                   </div>
-                  <p class="text-gray-500 text-xs md:text-sm leading-tight">
+                  <p class="card-description text-xs md:text-sm leading-tight">
                     中文 |
                     互動式儀表板，探索世界主要城市與台灣濕度的比較與氣候知識
                   </p>
@@ -400,17 +592,17 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="text-sm md:text-base lg:text-lg font-bold text-yellow-600 leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
                     >
                       Snap Judgement 速判
                     </h3>
                     <span
-                      class="text-xs text-gray-500 bg-white bg-opacity-80 rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
                     >
                       2025/06/28
                     </span>
                   </div>
-                  <p class="text-gray-500 text-xs md:text-sm leading-tight">
+                  <p class="card-description text-xs md:text-sm leading-tight">
                     中&英 | 在IG上看到@a_day_mag的發文在講Snap
                     Judgement，想知道背後故事跟學習媒體識讀，就跑去做研究產生了這個網站
                   </p>
@@ -430,17 +622,17 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="text-sm md:text-base lg:text-lg font-bold text-yellow-600 leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
                     >
                       香港台灣健檢大比較
                     </h3>
                     <span
-                      class="text-xs text-gray-500 bg-white bg-opacity-80 rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
                     >
                       2025/06/16
                     </span>
                   </div>
-                  <p class="text-gray-500 text-xs md:text-sm leading-tight">
+                  <p class="card-description text-xs md:text-sm leading-tight">
                     中文 |
                     本只是跟朋友聊到她要去做健檢，我問了價格發現比台灣便宜覺得困惑，按照香港物價/薪資所得，應該要比較貴才對，然後就產生這篇研究
                   </p>
@@ -452,7 +644,8 @@
         <!-- Miscellaneous Section -->
         <section>
           <h2
-            class="section-header text-lg md:text-xl lg:text-2xl font-bold text-purple-700 mb-2 md:mb-4 flex items-center justify-between"
+            class="section-header text-lg md:text-xl lg:text-2xl font-bold mb-2 md:mb-4 flex items-center justify-between"
+            style="color: var(--section-purple)"
             onclick="toggleSection('miscellaneous')"
           >
             <div class="flex items-center">
@@ -463,7 +656,7 @@
           </h2>
           <div
             id="miscellaneous-content"
-            class="section-content space-y-2 md:space-y-3 lg:space-y-4"
+            class="section-content miscellaneous-section space-y-2 md:space-y-3 lg:space-y-4"
           >
             <a
               href="miscellaneous/US_BTS.html"
@@ -477,17 +670,17 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="text-sm md:text-base lg:text-lg font-bold text-purple-700 leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
                     >
                       北美Apple購物成本分析儀表板
                     </h3>
                     <span
-                      class="text-xs text-gray-500 bg-white bg-opacity-80 rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
                     >
                       2025/07/08
                     </span>
                   </div>
-                  <p class="text-gray-500 text-xs md:text-sm leading-tight">
+                  <p class="card-description text-xs md:text-sm leading-tight">
                     中文 | 互動式儀表板分析北美西岸四大城市的Back to
                     School購物成本，包含機票、住宿、稅務及產品總成本比較
                   </p>
@@ -506,17 +699,17 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="text-sm md:text-base lg:text-lg font-bold text-purple-700 leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
                     >
                       46,XX DSD & PAR1 Deletion
                     </h3>
                     <span
-                      class="text-xs text-gray-500 bg-white bg-opacity-80 rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
                     >
                       2025/06/19
                     </span>
                   </div>
-                  <p class="text-gray-500 text-xs md:text-sm leading-tight">
+                  <p class="card-description text-xs md:text-sm leading-tight">
                     英文 | 幫朋友測試gemini deep
                     research功能，協助同事工作上的事
                   </p>
@@ -527,7 +720,7 @@
         </section>
       </div>
       <footer
-        class="mt-8 md:mt-12 text-center text-xs text-gray-400 px-3 leading-relaxed"
+        class="mt-8 md:mt-12 text-center text-xs px-3 leading-relaxed footer-text"
       >
         &copy; 2025 Vibe Stuff, prompted by Cynthia using Gemini Deep Research +
         Cursor
@@ -1063,8 +1256,52 @@
         return false;
       }
 
+      // Theme toggle functionality
+      function toggleTheme() {
+        const currentTheme =
+          document.documentElement.getAttribute("data-theme");
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+        document.documentElement.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+
+        // Toggle icon visibility
+        const sunIcon = document.getElementById("sunIcon");
+        const moonIcon = document.getElementById("moonIcon");
+
+        if (newTheme === "dark") {
+          sunIcon.classList.add("hidden");
+          moonIcon.classList.remove("hidden");
+        } else {
+          sunIcon.classList.remove("hidden");
+          moonIcon.classList.add("hidden");
+        }
+      }
+
+      // Initialize theme on page load
+      function initializeTheme() {
+        // Check for saved theme preference or default to 'light'
+        const savedTheme = localStorage.getItem("theme") || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+
+        // Set initial icon state
+        const sunIcon = document.getElementById("sunIcon");
+        const moonIcon = document.getElementById("moonIcon");
+
+        if (savedTheme === "dark") {
+          sunIcon.classList.add("hidden");
+          moonIcon.classList.remove("hidden");
+        } else {
+          sunIcon.classList.remove("hidden");
+          moonIcon.classList.add("hidden");
+        }
+      }
+
       // Initialize all sections as expanded on page load
       document.addEventListener("DOMContentLoaded", function () {
+        // Initialize theme first
+        initializeTheme();
+
         const sections = ["life", "travel", "learning", "miscellaneous"];
         sections.forEach((sectionName) => {
           const content = document.getElementById(sectionName + "-content");
