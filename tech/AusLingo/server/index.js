@@ -10,6 +10,15 @@ const port = 4001;
 app.use(cors()); // Allow requests from your React frontend
 app.use(express.json()); // Allow the server to parse JSON in request bodies
 
+// Health check endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'Server is running!', 
+    endpoints: ['/api/generate-lesson'],
+    timestamp: new Date().toISOString()
+  });
+});
+
 // API Endpoint for generating lessons
 app.post("/api/generate-lesson", async (req, res) => {
   try {
@@ -45,7 +54,7 @@ Generate the content now.
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "qwen:latest", // Using the specified qwen model
+        model: "qwen3:latest", // Using the available qwen3 model
         prompt: constructedPrompt,
         format: "json", // Crucial for getting a clean JSON response
         stream: false,

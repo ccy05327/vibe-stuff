@@ -96,7 +96,7 @@
             "title": "Develop Daily Lesson Generation Logic",
             "description": "Create the backend function that generates a new, interactive lesson plan upon user request.",
             "details": "Use Cursor Pro. Create a serverless function in Supabase that, when triggered, calls the Ollama API. The function should take the user's level, desired duration, and skill weaknesses as input. It will then use prompts (see subtasks in EPIC 4) to generate a JSON object representing the day's lesson plan.",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [
               6
             ]
@@ -260,7 +260,7 @@
     ],
     "metadata": {
       "created": "2025-07-09T10:30:00.000Z",
-      "updated": "2025-07-09T05:22:34.898Z",
+      "updated": "2025-07-09T07:48:08.744Z",
       "version": "1.0",
       "project": "Aussie English Interactive Learning Website",
       "description": "Tasks for master context"
