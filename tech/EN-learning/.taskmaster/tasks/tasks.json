@@ -7,7 +7,7 @@
         "description": "Define the project's core requirements, user flow, and visual design. This phase focuses on planning and creating a comprehensive blueprint before coding begins.",
         "priority": "high",
         "dependencies": [],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -32,7 +32,7 @@
             "title": "Create UI/UX Mockups with Gemini Ideas",
             "description": "Generate ideas for a clean, intuitive, and motivating user interface.",
             "details": "Use Gemini to get design inspiration. Prompt: 'Generate UI/UX ideas for a language learning dashboard. The design should be minimalist and focus on a daily streak counter, a chart for minutes studied, and clear entry points to the day's interactive lesson. Provide layout suggestions for the vocabulary, listening, reading, writing, and speaking modules.' Use these ideas to create wireframes in a tool like Figma or directly with Cursor Pro.",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [
               1
             ]
@@ -47,14 +47,14 @@
         "dependencies": [
           1
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 4,
             "title": "Initialize Supabase Project",
             "description": "Set up the Supabase project and configure the database based on the schema design.",
             "details": "Use Cursor Pro. Create a new project in Supabase. Use the SQL editor to create the tables defined in task 102 (`users`, `daily_progress`, `streaks`, `skill_data`).",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               2
             ]
@@ -64,7 +64,7 @@
             "title": "Implement User Authentication",
             "description": "Code the sign-up, login, and session management functionality using Supabase Auth.",
             "details": "Use Cursor Pro. Implement email/password and potentially social login (e.g., Google) flows. Ensure user sessions are managed securely and that a user's ID is linked to their data in the database.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               4
             ]
@@ -260,7 +260,7 @@
     ],
     "metadata": {
       "created": "2025-07-09T10:30:00.000Z",
-      "updated": "2025-07-09T05:03:39.340Z",
+      "updated": "2025-07-09T05:22:34.898Z",
       "version": "1.0",
       "project": "Aussie English Interactive Learning Website",
       "description": "Tasks for master context"
