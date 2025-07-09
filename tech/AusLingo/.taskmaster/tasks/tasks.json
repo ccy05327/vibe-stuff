@@ -86,7 +86,7 @@
             "title": "Build Initial Level Assessment",
             "description": "Create a one-time test for new users to set their initial difficulty level.",
             "details": "Use Cursor Pro for the frontend logic. Use Gemini to generate the content. Gemini Prompt: 'Create a C1/C2 English level assessment focused on Australian English. It should have 3 sections: 1. Vocabulary quiz with subtle differences in word choice. 2. A short audio listening comprehension with questions about inference and tone. 3. A prompt for a short written response to an informal situation.' The user's score will set a baseline difficulty.",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               5
             ]
@@ -95,8 +95,8 @@
             "id": 7,
             "title": "Develop Daily Lesson Generation Logic",
             "description": "Create the backend function that generates a new, interactive lesson plan upon user request.",
-            "details": "Use Cursor Pro. Create a serverless function in Supabase that, when triggered, calls the Gemini API. The function should take the user's level, desired duration, and skill weaknesses as input. It will then use prompts (see subtasks in EPIC 4) to generate a JSON object representing the day's lesson plan.",
-            "status": "pending",
+            "details": "Use Cursor Pro. Create a serverless function in Supabase that, when triggered, calls the Ollama API. The function should take the user's level, desired duration, and skill weaknesses as input. It will then use prompts (see subtasks in EPIC 4) to generate a JSON object representing the day's lesson plan.",
+            "status": "in-progress",
             "dependencies": [
               6
             ]
