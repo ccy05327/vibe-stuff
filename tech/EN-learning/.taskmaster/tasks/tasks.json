@@ -1,268 +1,269 @@
 {
-    "master": {
-        "tasks": [
-            {
-                "id": 1,
-                "title": "EPIC 1: Project Foundation & UX/UI Design",
-                "description": "Define the project's core requirements, user flow, and visual design. This phase focuses on planning and creating a comprehensive blueprint before coding begins.",
-                "priority": "high",
-                "dependencies": [],
-                "status": "pending",
-                "subtasks": [
-                    {
-                        "id": 1,
-                        "title": "Flesh out PRD with Gemini",
-                        "description": "Expand on the initial PRD requirements to cover all edge cases and user stories.",
-                        "details": "Use Gemini to brainstorm potential features, user interaction flows, and content strategies. Prompt: 'Based on the provided PRD for a C1/C2 Australian English learning app, generate detailed user stories for each feature: daily lesson generation, the 5 skill sections (Vocab, Listen, Read, Write, Speak), progress tracking, and the initial level assessment. Focus on making every interaction practical and audio-based.'",
-                        "status": "pending",
-                        "dependencies": []
-                    },
-                    {
-                        "id": 2,
-                        "title": "Design Database Schema for Supabase",
-                        "description": "Define the structure for the user data, progress, and content.",
-                        "details": "Use Gemini to generate a logical schema. Prompt: 'Design a set of database tables for a Supabase project for an English learning app. The schema needs to store user profiles (auth integration), daily study duration, streaks, skill-specific progress, and user responses for the adaptive difficulty algorithm.'",
-                        "status": "pending",
-                        "dependencies": [
-                            1
-                        ]
-                    },
-                    {
-                        "id": 3,
-                        "title": "Create UI/UX Mockups with Gemini Ideas",
-                        "description": "Generate ideas for a clean, intuitive, and motivating user interface.",
-                        "details": "Use Gemini to get design inspiration. Prompt: 'Generate UI/UX ideas for a language learning dashboard. The design should be minimalist and focus on a daily streak counter, a chart for minutes studied, and clear entry points to the day's interactive lesson. Provide layout suggestions for the vocabulary, listening, reading, writing, and speaking modules.' Use these ideas to create wireframes in a tool like Figma or directly with Cursor Pro.",
-                        "status": "pending",
-                        "dependencies": [
-                            1
-                        ]
-                    }
-                ]
-            },
-            {
-                "id": 2,
-                "title": "EPIC 2: Backend Setup with Supabase & Cursor Pro",
-                "description": "Establish the backend infrastructure, including the database and user authentication services.",
-                "priority": "high",
-                "dependencies": [
-                    1
-                ],
-                "status": "pending",
-                "subtasks": [
-                    {
-                        "id": 4,
-                        "title": "Initialize Supabase Project",
-                        "description": "Set up the Supabase project and configure the database based on the schema design.",
-                        "details": "Use Cursor Pro. Create a new project in Supabase. Use the SQL editor to create the tables defined in task 102 (`users`, `daily_progress`, `streaks`, `skill_data`).",
-                        "status": "pending",
-                        "dependencies": [
-                            2
-                        ]
-                    },
-                    {
-                        "id": 5,
-                        "title": "Implement User Authentication",
-                        "description": "Code the sign-up, login, and session management functionality using Supabase Auth.",
-                        "details": "Use Cursor Pro. Implement email/password and potentially social login (e.g., Google) flows. Ensure user sessions are managed securely and that a user's ID is linked to their data in the database.",
-                        "status": "pending",
-                        "dependencies": [
-                            4
-                        ]
-                    }
-                ]
-            },
-            {
-                "id": 3,
-                "title": "EPIC 3: Core Learning & Content Generation Engine",
-                "description": "Develop the system that creates and tailors daily learning content for the user.",
-                "priority": "high",
-                "dependencies": [
-                    2
-                ],
-                "status": "pending",
-                "subtasks": [
-                    {
-                        "id": 6,
-                        "title": "Build Initial Level Assessment",
-                        "description": "Create a one-time test for new users to set their initial difficulty level.",
-                        "details": "Use Cursor Pro for the frontend logic. Use Gemini to generate the content. Gemini Prompt: 'Create a C1/C2 English level assessment focused on Australian English. It should have 3 sections: 1. Vocabulary quiz with subtle differences in word choice. 2. A short audio listening comprehension with questions about inference and tone. 3. A prompt for a short written response to an informal situation.' The user's score will set a baseline difficulty.",
-                        "status": "pending",
-                        "dependencies": [
-                            5
-                        ]
-                    },
-                    {
-                        "id": 7,
-                        "title": "Develop Daily Lesson Generation Logic",
-                        "description": "Create the backend function that generates a new, interactive lesson plan upon user request.",
-                        "details": "Use Cursor Pro. Create a serverless function in Supabase that, when triggered, calls the Gemini API. The function should take the user's level, desired duration, and skill weaknesses as input. It will then use prompts (see subtasks in EPIC 4) to generate a JSON object representing the day's lesson plan.",
-                        "status": "pending",
-                        "dependencies": [
-                            6
-                        ]
-                    },
-                    {
-                        "id": 8,
-                        "title": "Implement Adaptive Difficulty Algorithm",
-                        "description": "Code the logic that adjusts content difficulty based on user performance.",
-                        "details": "Use Cursor Pro. After a user completes a daily lesson, their answers are saved to Supabase. Write a function that analyzes these results. If the user scores >90%, increase the difficulty parameter for the next Gemini call. If <70%, decrease it. This parameter will be passed to the lesson generation function (task 302).",
-                        "status": "pending",
-                        "dependencies": [
-                            7
-                        ]
-                    }
-                ]
-            },
-            {
-                "id": 4,
-                "title": "EPIC 4: Frontend - Interactive Learning Modules",
-                "description": "Build the user-facing components for each of the five learning sections using Cursor Pro.",
-                "priority": "medium",
-                "dependencies": [
-                    3
-                ],
-                "status": "pending",
-                "subtasks": [
-                    {
-                        "id": 9,
-                        "title": "Build Vocabulary Module",
-                        "description": "Interactive vocabulary exercises with audio.",
-                        "details": "Use Cursor Pro. The module will fetch vocabulary tasks from the daily lesson JSON. Gemini Prompt for content: 'Generate 5 Australian English C1-level vocabulary words. For each, provide a definition, an audio pronunciation key (for text-to-speech), and an interactive quiz question (e.g., fill-in-the-blank in a sentence that provides context).'",
-                        "status": "pending",
-                        "dependencies": [
-                            7
-                        ]
-                    },
-                    {
-                        "id": 10,
-                        "title": "Build Listening Module",
-                        "description": "Listen to dialogues and answer questions.",
-                        "details": "Use Cursor Pro. Gemini Prompt for content: 'Create a 1-minute audio script of an informal conversation between two Australians discussing weekend plans. Include slang like 'arvo' and 'brekkie'. Then, create 3 multiple-choice questions about the speakers' attitudes and implied meanings, not just literal facts.' Use a text-to-speech API to generate the audio.",
-                        "status": "pending",
-                        "dependencies": [
-                            7
-                        ]
-                    },
-                    {
-                        "id": 11,
-                        "title": "Build Reading Module",
-                        "description": "Read a short text with audio and interact with it.",
-                        "details": "Use Cursor Pro. This is not passive reading. The UI should show a short article (e.g., from an Australian news site) and have an accompanying human-like audio version. The user can click on paragraphs to hear them. The task is to re-order jumbled sentences from the text or answer comprehension questions. Gemini Prompt: 'Find a short, interesting news snippet (approx. 250 words) from an Australian source. Generate 3 comprehension questions and create a sentence-scramble exercise from one of its paragraphs.'",
-                        "status": "pending",
-                        "dependencies": [
-                            7
-                        ]
-                    },
-                    {
-                        "id": 12,
-                        "title": "Build Writing Module",
-                        "description": "Respond to a practical, real-world prompt.",
-                        "details": "Use Cursor Pro. The user is presented with a scenario (e.g., an audio message from a friend) and must write a reply. Gemini Prompt for content: 'Create a prompt for a writing task. The user has just listened to a 30-second voicemail from an Australian friend complaining about a difficult colleague. The task is to write a short, empathetic email or text message back, offering advice.' The user's text can be saved for self-review.",
-                        "status": "pending",
-                        "dependencies": [
-                            7
-                        ]
-                    },
-                    {
-                        "id": 13,
-                        "title": "Build Speaking Module",
-                        "description": "Respond to prompts using voice input.",
-                        "details": "Use Cursor Pro. Integrate a Web Speech API for speech-to-text. The module presents a question or a situation, and the user must speak their answer. Gemini Prompt for content: 'Generate 3 open-ended questions that would elicit a spoken response. For example: 'Describe your favourite Australian holiday spot and explain why it's great.' or 'What's your opinion on the coffee culture in Melbourne?'' The user's transcribed text is shown for them to check against their intended speech.",
-                        "status": "pending",
-                        "dependencies": [
-                            7
-                        ]
-                    }
-                ]
-            },
-            {
-                "id": 5,
-                "title": "EPIC 5: Frontend - Dashboard & Gamification",
-                "description": "Develop the user dashboard, including progress tracking and the streak system.",
-                "priority": "medium",
-                "dependencies": [
-                    2,
-                    4
-                ],
-                "status": "pending",
-                "subtasks": [
-                    {
-                        "id": 14,
-                        "title": "Implement Progress Tracker",
-                        "description": "Code the logic to save and display daily study time.",
-                        "details": "Use Cursor Pro. Create a timer that runs while the user is interacting with the learning modules. When a session ends, save the total minutes to the `daily_progress` table in Supabase for that day.",
-                        "status": "pending",
-                        "dependencies": [
-                            5,
-                            9,
-                            10,
-                            11,
-                            12,
-                            13
-                        ]
-                    },
-                    {
-                        "id": 15,
-                        "title": "Build Streak System Logic",
-                        "description": "Implement the backend logic for calculating and updating user streaks.",
-                        "details": "Use Cursor Pro. Create a nightly Supabase function that checks if the user completed a session that day. If yes, increment their streak. If no, reset the streak to zero. This ensures accuracy even if the user doesn't log in.",
-                        "status": "pending",
-                        "dependencies": [
-                            14
-                        ]
-                    },
-                    {
-                        "id": 16,
-                        "title": "Design and Build Dashboard UI",
-                        "description": "Create the main dashboard view for the user.",
-                        "details": "Use Cursor Pro. Based on the mockups from task 103, build the UI that fetches and displays the current streak, and a bar chart showing study minutes for the last 7 days. This data comes from the Supabase tables.",
-                        "status": "pending",
-                        "dependencies": [
-                            3,
-                            14,
-                            15
-                        ]
-                    }
-                ]
-            },
-            {
-                "id": 6,
-                "title": "EPIC 6: Testing and Deployment",
-                "description": "Conduct end-to-end testing and deploy the application.",
-                "priority": "low",
-                "dependencies": [
-                    5
-                ],
-                "status": "pending",
-                "subtasks": [
-                    {
-                        "id": 17,
-                        "title": "End-to-End Testing",
-                        "description": "Perform a full user journey test from sign-up to completing a lesson.",
-                        "details": "Manually run through the entire application. Sign up as a new user, take the initial assessment, generate a daily lesson, complete all 5 modules, check if progress and streak are updated on the dashboard. Note any bugs or UI issues.",
-                        "status": "pending",
-                        "dependencies": [
-                            16
-                        ]
-                    },
-                    {
-                        "id": 18,
-                        "title": "Deploy to Production",
-                        "description": "Deploy the frontend and backend to a live environment.",
-                        "details": "Use Cursor Pro. Configure deployment settings (e.g., on Vercel, Netlify) for the frontend application. Ensure all environment variables (like Supabase keys) are set correctly for the production environment.",
-                        "status": "pending",
-                        "dependencies": [
-                            17
-                        ]
-                    }
-                ]
-            }
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "EPIC 1: Project Foundation & UX/UI Design",
+        "description": "Define the project's core requirements, user flow, and visual design. This phase focuses on planning and creating a comprehensive blueprint before coding begins.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "in-progress",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Flesh out PRD with Gemini",
+            "description": "Expand on the initial PRD requirements to cover all edge cases and user stories.",
+            "details": "Use Gemini to brainstorm potential features, user interaction flows, and content strategies. Prompt: 'Based on the provided PRD for a C1/C2 Australian English learning app, generate detailed user stories for each feature: daily lesson generation, the 5 skill sections (Vocab, Listen, Read, Write, Speak), progress tracking, and the initial level assessment. Focus on making every interaction practical and audio-based.'",
+            "status": "done",
+            "dependencies": []
+          },
+          {
+            "id": 2,
+            "title": "Design Database Schema for Supabase",
+            "description": "Define the structure for the user data, progress, and content.",
+            "details": "Use Gemini to generate a logical schema. Prompt: 'Design a set of database tables for a Supabase project for an English learning app. The schema needs to store user profiles (auth integration), daily study duration, streaks, skill-specific progress, and user responses for the adaptive difficulty algorithm.'",
+            "status": "done",
+            "dependencies": [
+              1
+            ]
+          },
+          {
+            "id": 3,
+            "title": "Create UI/UX Mockups with Gemini Ideas",
+            "description": "Generate ideas for a clean, intuitive, and motivating user interface.",
+            "details": "Use Gemini to get design inspiration. Prompt: 'Generate UI/UX ideas for a language learning dashboard. The design should be minimalist and focus on a daily streak counter, a chart for minutes studied, and clear entry points to the day's interactive lesson. Provide layout suggestions for the vocabulary, listening, reading, writing, and speaking modules.' Use these ideas to create wireframes in a tool like Figma or directly with Cursor Pro.",
+            "status": "in-progress",
+            "dependencies": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "EPIC 2: Backend Setup with Supabase & Cursor Pro",
+        "description": "Establish the backend infrastructure, including the database and user authentication services.",
+        "priority": "high",
+        "dependencies": [
+          1
         ],
-        "metadata": {
-            "created": "2025-07-09T10:30:00.000Z",
-            "updated": "2025-07-09T10:30:00.000Z",
-            "version": "1.0",
-            "project": "Aussie English Interactive Learning Website"
-        }
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 4,
+            "title": "Initialize Supabase Project",
+            "description": "Set up the Supabase project and configure the database based on the schema design.",
+            "details": "Use Cursor Pro. Create a new project in Supabase. Use the SQL editor to create the tables defined in task 102 (`users`, `daily_progress`, `streaks`, `skill_data`).",
+            "status": "pending",
+            "dependencies": [
+              2
+            ]
+          },
+          {
+            "id": 5,
+            "title": "Implement User Authentication",
+            "description": "Code the sign-up, login, and session management functionality using Supabase Auth.",
+            "details": "Use Cursor Pro. Implement email/password and potentially social login (e.g., Google) flows. Ensure user sessions are managed securely and that a user's ID is linked to their data in the database.",
+            "status": "pending",
+            "dependencies": [
+              4
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "EPIC 3: Core Learning & Content Generation Engine",
+        "description": "Develop the system that creates and tailors daily learning content for the user.",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 6,
+            "title": "Build Initial Level Assessment",
+            "description": "Create a one-time test for new users to set their initial difficulty level.",
+            "details": "Use Cursor Pro for the frontend logic. Use Gemini to generate the content. Gemini Prompt: 'Create a C1/C2 English level assessment focused on Australian English. It should have 3 sections: 1. Vocabulary quiz with subtle differences in word choice. 2. A short audio listening comprehension with questions about inference and tone. 3. A prompt for a short written response to an informal situation.' The user's score will set a baseline difficulty.",
+            "status": "pending",
+            "dependencies": [
+              5
+            ]
+          },
+          {
+            "id": 7,
+            "title": "Develop Daily Lesson Generation Logic",
+            "description": "Create the backend function that generates a new, interactive lesson plan upon user request.",
+            "details": "Use Cursor Pro. Create a serverless function in Supabase that, when triggered, calls the Gemini API. The function should take the user's level, desired duration, and skill weaknesses as input. It will then use prompts (see subtasks in EPIC 4) to generate a JSON object representing the day's lesson plan.",
+            "status": "pending",
+            "dependencies": [
+              6
+            ]
+          },
+          {
+            "id": 8,
+            "title": "Implement Adaptive Difficulty Algorithm",
+            "description": "Code the logic that adjusts content difficulty based on user performance.",
+            "details": "Use Cursor Pro. After a user completes a daily lesson, their answers are saved to Supabase. Write a function that analyzes these results. If the user scores >90%, increase the difficulty parameter for the next Gemini call. If <70%, decrease it. This parameter will be passed to the lesson generation function (task 302).",
+            "status": "pending",
+            "dependencies": [
+              7
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "EPIC 4: Frontend - Interactive Learning Modules",
+        "description": "Build the user-facing components for each of the five learning sections using Cursor Pro.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 9,
+            "title": "Build Vocabulary Module",
+            "description": "Interactive vocabulary exercises with audio.",
+            "details": "Use Cursor Pro. The module will fetch vocabulary tasks from the daily lesson JSON. Gemini Prompt for content: 'Generate 5 Australian English C1-level vocabulary words. For each, provide a definition, an audio pronunciation key (for text-to-speech), and an interactive quiz question (e.g., fill-in-the-blank in a sentence that provides context).'",
+            "status": "pending",
+            "dependencies": [
+              7
+            ]
+          },
+          {
+            "id": 10,
+            "title": "Build Listening Module",
+            "description": "Listen to dialogues and answer questions.",
+            "details": "Use Cursor Pro. Gemini Prompt for content: 'Create a 1-minute audio script of an informal conversation between two Australians discussing weekend plans. Include slang like 'arvo' and 'brekkie'. Then, create 3 multiple-choice questions about the speakers' attitudes and implied meanings, not just literal facts.' Use a text-to-speech API to generate the audio.",
+            "status": "pending",
+            "dependencies": [
+              7
+            ]
+          },
+          {
+            "id": 11,
+            "title": "Build Reading Module",
+            "description": "Read a short text with audio and interact with it.",
+            "details": "Use Cursor Pro. This is not passive reading. The UI should show a short article (e.g., from an Australian news site) and have an accompanying human-like audio version. The user can click on paragraphs to hear them. The task is to re-order jumbled sentences from the text or answer comprehension questions. Gemini Prompt: 'Find a short, interesting news snippet (approx. 250 words) from an Australian source. Generate 3 comprehension questions and create a sentence-scramble exercise from one of its paragraphs.'",
+            "status": "pending",
+            "dependencies": [
+              7
+            ]
+          },
+          {
+            "id": 12,
+            "title": "Build Writing Module",
+            "description": "Respond to a practical, real-world prompt.",
+            "details": "Use Cursor Pro. The user is presented with a scenario (e.g., an audio message from a friend) and must write a reply. Gemini Prompt for content: 'Create a prompt for a writing task. The user has just listened to a 30-second voicemail from an Australian friend complaining about a difficult colleague. The task is to write a short, empathetic email or text message back, offering advice.' The user's text can be saved for self-review.",
+            "status": "pending",
+            "dependencies": [
+              7
+            ]
+          },
+          {
+            "id": 13,
+            "title": "Build Speaking Module",
+            "description": "Respond to prompts using voice input.",
+            "details": "Use Cursor Pro. Integrate a Web Speech API for speech-to-text. The module presents a question or a situation, and the user must speak their answer. Gemini Prompt for content: 'Generate 3 open-ended questions that would elicit a spoken response. For example: 'Describe your favourite Australian holiday spot and explain why it's great.' or 'What's your opinion on the coffee culture in Melbourne?'' The user's transcribed text is shown for them to check against their intended speech.",
+            "status": "pending",
+            "dependencies": [
+              7
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "EPIC 5: Frontend - Dashboard & Gamification",
+        "description": "Develop the user dashboard, including progress tracking and the streak system.",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 14,
+            "title": "Implement Progress Tracker",
+            "description": "Code the logic to save and display daily study time.",
+            "details": "Use Cursor Pro. Create a timer that runs while the user is interacting with the learning modules. When a session ends, save the total minutes to the `daily_progress` table in Supabase for that day.",
+            "status": "pending",
+            "dependencies": [
+              5,
+              9,
+              10,
+              11,
+              12,
+              13
+            ]
+          },
+          {
+            "id": 15,
+            "title": "Build Streak System Logic",
+            "description": "Implement the backend logic for calculating and updating user streaks.",
+            "details": "Use Cursor Pro. Create a nightly Supabase function that checks if the user completed a session that day. If yes, increment their streak. If no, reset the streak to zero. This ensures accuracy even if the user doesn't log in.",
+            "status": "pending",
+            "dependencies": [
+              14
+            ]
+          },
+          {
+            "id": 16,
+            "title": "Design and Build Dashboard UI",
+            "description": "Create the main dashboard view for the user.",
+            "details": "Use Cursor Pro. Based on the mockups from task 103, build the UI that fetches and displays the current streak, and a bar chart showing study minutes for the last 7 days. This data comes from the Supabase tables.",
+            "status": "pending",
+            "dependencies": [
+              3,
+              14,
+              15
+            ]
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "EPIC 6: Testing and Deployment",
+        "description": "Conduct end-to-end testing and deploy the application.",
+        "priority": "low",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 17,
+            "title": "End-to-End Testing",
+            "description": "Perform a full user journey test from sign-up to completing a lesson.",
+            "details": "Manually run through the entire application. Sign up as a new user, take the initial assessment, generate a daily lesson, complete all 5 modules, check if progress and streak are updated on the dashboard. Note any bugs or UI issues.",
+            "status": "pending",
+            "dependencies": [
+              16
+            ]
+          },
+          {
+            "id": 18,
+            "title": "Deploy to Production",
+            "description": "Deploy the frontend and backend to a live environment.",
+            "details": "Use Cursor Pro. Configure deployment settings (e.g., on Vercel, Netlify) for the frontend application. Ensure all environment variables (like Supabase keys) are set correctly for the production environment.",
+            "status": "pending",
+            "dependencies": [
+              17
+            ]
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-07-09T10:30:00.000Z",
+      "updated": "2025-07-09T05:03:39.340Z",
+      "version": "1.0",
+      "project": "Aussie English Interactive Learning Website",
+      "description": "Tasks for master context"
     }
+  }
 }
