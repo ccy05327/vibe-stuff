@@ -301,10 +301,45 @@
   </head>
   <body class="min-h-screen flex flex-col items-center justify-center">
     <header class="mb-6 mt-6 md:mb-10 md:mt-12 text-center px-3 relative">
-      <!-- Theme Toggle -->
+      <!-- Fixed toggles for mobile, flex for desktop -->
+      <button
+        id="viewToggle"
+        class="theme-toggle fixed top-4 left-1 z-50 md:static md:mr-4"
+        onclick="toggleView()"
+        aria-label="Toggle grid view"
+      >
+        <svg
+          id="listIcon"
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 10h16M4 14h16M4 18h16"
+          ></path>
+        </svg>
+        <svg
+          id="gridIcon"
+          class="w-5 h-5 hidden"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
+          ></path>
+        </svg>
+      </button>
       <button
         id="themeToggle"
-        class="theme-toggle fixed top-4 right-4 md:top-6 md:right-6 z-50"
+        class="theme-toggle fixed top-4 right-4 z-50 md:static md:ml-4"
         onclick="toggleTheme()"
         aria-label="Toggle dark mode"
       >
@@ -338,43 +373,6 @@
         </svg>
       </button>
 
-      <!-- View Toggle -->
-      <button
-        id="viewToggle"
-        class="theme-toggle fixed top-4 right-16 md:top-6 md:right-20 z-50"
-        onclick="toggleView()"
-        aria-label="Toggle grid view"
-      >
-        <svg
-          id="listIcon"
-          class="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 10h16M4 14h16M4 18h16"
-          ></path>
-        </svg>
-        <svg
-          id="gridIcon"
-          class="w-5 h-5 hidden"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
-          ></path>
-        </svg>
-      </button>
-
       <h1
         class="text-2xl md:text-3xl lg:text-5xl font-extrabold mb-1 md:mb-2 leading-tight"
         style="color: var(--section-blue)"
@@ -395,7 +393,7 @@
         <input
           type="text"
           id="searchInput"
-          placeholder="Filter by date and search content... (e.g., '2025 travel' or 'June learning')"
+          placeholder="Filter..."
           class="w-full p-3 md:p-4 rounded-xl outline-none transition-all duration-200 text-sm md:text-base"
           style="
             background: var(--search-bg);
@@ -406,6 +404,23 @@
           onfocus="this.style.borderColor='var(--search-focus-border)'; this.style.boxShadow='0 0 0 3px var(--search-focus-ring)'"
           onblur="this.style.borderColor='var(--search-border)'; this.style.boxShadow='none'"
         />
+        <script>
+          // Responsive placeholder for search input
+          function updateSearchPlaceholder() {
+            const input = document.getElementById("searchInput");
+            if (window.innerWidth < 640) {
+              input.placeholder = "Search...";
+            } else {
+              input.placeholder =
+                "Filter by date and search content... (e.g., '2025 travel' or 'June learning')";
+            }
+          }
+          window.addEventListener("resize", updateSearchPlaceholder);
+          document.addEventListener(
+            "DOMContentLoaded",
+            updateSearchPlaceholder
+          );
+        </script>
         <div
           class="absolute right-3 top-1/2 transform -translate-y-1/2"
           style="color: var(--text-accent)"
