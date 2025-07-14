@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>您的專屬泰國七日遊行程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #fef3c7; 
+        }
+        .tab-button-main {
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .tab-button-main.active {
+            background-color: #0d9488;
+            color: #ffffff;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 320px;
+            width: 100%;
+            max-width: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+                max-width: 600px;
+            }
+        }
+        .tab-button.active {
+            background-color: #14b8a6;
+            color: #ffffff;
+        }
+        .activity-card {
+            border-left: 4px solid #fcd34d; /* 類似時間軸的黃色線 */
+        }
+        .activity-card-icon {
+            color: #fcd34d; /* 黃色圓點 */
+        }
+    </style>
+</head>
+<body class="bg-amber-50 text-stone-800">
+
+    <!-- Back to Home Button -->
+    <a
+      id="backHomeBtn"
+      href="/vibe-stuff/"
+      class="fixed top-4 left-4 z-50 px-3 py-1.5 rounded-full shadow border flex items-center backdrop-blur-sm transition-all"
+      style="
+        background: #fcd34d;
+        color: #0d9488;
+        border-color: #fbbf24;
+        font-size: 1rem;
+      "
+      onmouseover="this.style.background='#fde68a'"
+      onmouseout="this.style.background='#fcd34d'"
+    >
+      <span class="mr-2">&#8592;</span> 回首頁
+    </a>
+    <script>
+      // Dynamically set the homepage link for local and GitHub Pages
+      const btn = document.getElementById("backHomeBtn");
+      if (
+        location.hostname === "localhost" ||
+        location.hostname === "127.0.0.1"
+      ) {
+        btn.href = "/";
+      } else {
+        btn.href = "/vibe-stuff/";
+      }
+    </script>
+
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-teal-700 mb-2">泰國精省七日遊</h1>
+            <p class="text-lg text-stone-600">曼谷 & 清邁的自然、建築與人文互動之旅</p>
+        </div>
+        
+        <div id="main-tabs-container" class="flex flex-wrap justify-center gap-2 mb-8 sticky top-16 z-40 bg-amber-50 py-2 rounded-b-lg shadow-sm">
+            <button data-tab="overview" class="tab-button-main active px-3 py-2 rounded-md text-sm font-medium">行程總覽</button>
+            <button data-tab="transport" class="tab-button-main px-3 py-2 rounded-md text-sm font-medium">交通住宿</button>
+            <button data-tab="daily-plan" class="tab-button-main px-3 py-2 rounded-md text-sm font-medium">每日行程</button>
+            <button data-tab="food-guide" class="tab-button-main px-3 py-2 rounded-md text-sm font-medium">美食地圖</button>
+            <button data-tab="unique-experiences" class="tab-button-main px-3 py-2 rounded-md text-sm font-medium">特色體驗</button>
+            <button data-tab="checklist" class="tab-button-main px-3 py-2 rounded-md text-sm font-medium">行前準備</button>
+        </div>
+
+        <section id="overview" class="tab-content mb-16">
+             <div class="p-6 bg-white rounded-2xl shadow-lg mb-8">
+                <h3 class="text-2xl font-bold text-teal-600 mb-4 text-center">✈️ 航班資訊</h3>
+                <div class="grid md:grid-cols-3 gap-4 text-center">
+                    <div class="bg-amber-100/50 p-4 rounded-lg">
+                        <p class="font-semibold">去程 (TPE → BKK)</p>
+                        <p>7/26 (六) 19:40 - 22:25</p>
+                    </div>
+                    <div class="bg-amber-100/50 p-4 rounded-lg">
+                        <p class="font-semibold">中段 (BKK → CNX)</p>
+                        <p>7/29 (二) 13:35 - 14:50</p>
+                    </div>
+                    <div class="bg-amber-100/50 p-4 rounded-lg">
+                        <p class="font-semibold">回程 (CNX → TPE)</p>
+                        <p>8/02 (六) 00:05 - 04:45</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h3 class="text-2xl font-bold text-teal-600 mb-6 text-center">💰 預算總覽 (總計 NT$ 15,000)</h3>
+                <p class="text-stone-600 mb-6 text-center max-w-2xl mx-auto">這份預算規劃旨在最大化您的旅遊體驗，同時嚴格控制在總預算內。圖表清晰展示了各項支出的佔比，讓您對資金流向一目了然。住宿和餐飲佔據了機票外的大部分預算，這也反映了我們在選擇高CP值青旅和品嚐地道街頭小吃上的策略。</p>
+                <div class="chart-container">
+                    <canvas id="budgetChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="transport" class="tab-content hidden mb-16">
+            <h2 class="text-3xl font-bold text-center mb-10 text-teal-700">🚗 交通與住宿</h2>
+             <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-2xl font-bold text-teal-600 mb-4">🏨 推薦住宿</h3>
+                    <p class="text-stone-600 mb-6">為您精選了兼具便宜、乾淨、安全且交通便利的青年旅館，這些選擇不僅能節省開銷，更能提供與來自世界各地的旅人交流的機會。對於獨自旅行的女性，我們特別推薦那些擁有良好評價、安全設施（如電子鎖、女性專用樓層/房型）和活躍社交氛圍的青旅，讓您在旅途中也能感到安心與溫暖。</p>
+                    <div class="space-y-4">
+                        <div class="bg-amber-100/50 p-4 rounded-lg">
+                            <h4 class="font-bold text-stone-700">曼谷: Lub d Bangkok Siam</h4>
+                            <p class="text-sm text-stone-600">近BTS站，交通極便利，社交氛圍活絡。**特別適合獨行女性，因其安全措施良好且有許多女性旅客。**</p>
+                            <p class="text-sm font-semibold text-teal-600">約 NT$300-390 / 晚</p>
+                        </div>
+                         <div class="bg-amber-100/50 p-4 rounded-lg">
+                            <h4 class="font-bold text-stone-700">清邁: 84 Gallery</h4>
+                            <p class="text-sm text-stone-600">CP值極高，價格實惠，近週六夜市。**評價良好，注重清潔與基本安全。**</p>
+                             <p class="text-sm font-semibold text-teal-600">約 NT$150-320 / 晚</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-2xl font-bold text-teal-600 mb-4">📊 交通方式比較</h3>
+                    <p class="text-stone-600 mb-6">在泰國，選擇正確的交通工具是省錢省時的關鍵。此圖表比較了各種交通方式的預估費用與時間，幫助您根據當下需求（例如，趕時間選BTS，省錢選公車）做出最明智的決策。**對於獨行女性，建議優先選擇安全、有固定路線和價格透明的交通方式。**</p>
+                    <div class="chart-container">
+                         <canvas id="transportChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="daily-plan" class="tab-content hidden mb-16">
+            <h2 class="text-3xl font-bold text-center mb-10 text-teal-700">📅 每日行程</h2>
+            <p class="text-stone-600 mb-8 text-center max-w-3xl mx-auto">這是您旅程的核心，我們將每日的活動以卡片方式呈現。點擊下方的日期按鈕即可切換。每個活動都包含了預估時間、費用和交通建議，並附上Google Maps連結，讓您輕鬆導航，無後顧後憂。**對於獨行女性，我們特別在行程中加入了安全注意事項和實用建議。**</p>
+            <div id="day-tabs" class="flex flex-wrap justify-center gap-2 mb-8">
+            </div>
+            <div id="timeline-container" class="space-y-6">
+            </div>
+        </section>
+
+        <section id="food-guide" class="tab-content hidden mb-16">
+            <h2 class="text-3xl font-bold text-center mb-10 text-teal-700">🍜 美食地圖</h2>
+            <p class="text-stone-600 mb-8 text-center max-w-3xl mx-auto">泰國是美食的天堂！這裡為您整理了一份必吃清單，從米其林推薦的街頭小吃到地道的泰北風味菜。您可以使用下方的篩選器，快速找到符合您當下城市、口味或預算的選擇。**獨自用餐也很自在，可以選擇人潮較多的店家，或嘗試美食廣場。**</p>
+            <div id="food-filters" class="flex flex-wrap justify-center gap-2 mb-8">
+                <button data-filter="all" class="filter-button bg-teal-500 text-white py-2 px-4 rounded-full text-sm font-semibold">全部顯示</button>
+                <button data-filter="bangkok" class="filter-button bg-white text-stone-700 py-2 px-4 rounded-full text-sm font-semibold">曼谷</button>
+                <button data-filter="chiang-mai" class="filter-button bg-white text-stone-700 py-2 px-4 rounded-full text-sm font-semibold">清邁</button>
+                <button data-filter="street-food" class="filter-button bg-white text-stone-700 py-2 px-4 rounded-full text-sm font-semibold">街頭小吃</button>
+                <button data-filter="restaurant" class="filter-button bg-white text-stone-700 py-2 px-4 rounded-full text-sm font-semibold">餐廳</button>
+                <button data-filter="non-spicy" class="filter-button bg-white text-stone-700 py-2 px-4 rounded-full text-sm font-semibold">不辣/小辣</button>
+            </div>
+            <div id="food-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+        </section>
+
+        <section id="unique-experiences" class="tab-content hidden mb-16">
+            <h2 class="text-3xl font-bold text-center mb-10 text-teal-700">✨ 特色體驗項目</h2>
+            <p class="text-stone-600 mb-8 text-center max-w-3xl mx-auto">除了行程中已規劃的活動，泰國還有許多獨具特色的體驗，讓您的旅程更加豐富。以下是根據您的偏好和預算考量，為您精選的一些建議。**這些體驗通常有完善的旅遊業者安排，對於獨行者而言相對安全。**</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-2xl font-bold text-teal-600 mb-4">曼谷體驗</h3>
+                    <ul class="space-y-4 text-stone-700">
+                        <li>
+                            <h4 class="font-bold text-lg mb-1">泰式烹飪課程 (Thai Cooking Class)</h4>
+                            <p class="text-sm text-stone-600 mb-2">深入體驗泰國飲食文化，親手製作泰國菜，並學習當地食材知識。適合喜歡「與人互動」和「體驗當地文化」的您。**通常是小團體課程，有機會結識新朋友，非常適合獨行者。**</p>
+                            <p class="text-sm font-semibold">💰 預估費用: 約 ฿800-1500 (約 NT$720-1350) / 半天課程。</p>
+                            <p class="text-xs text-teal-600">💡 備註: 可選擇包含市場導覽的課程，費用會稍高。這筆費用可從餐飲或雜項預算中挪用。</p>
+                        </li>
+                        <li>
+                            <h4 class="font-bold text-lg mb-1">當地水上市場深度遊 (Local Floating Market - Klong Lat Mayom / Taling Chan)</h4>
+                            <p class="text-sm text-stone-600 mb-2">比觀光化的丹能莎朵更具在地生活氣息，可以與當地攤販互動，品嚐地道美食，感受水上人家的日常。符合「與人互動」和「看風景」的偏好。**建議白天前往，並留意個人財物。**</p>
+                            <p class="text-sm font-semibold">💰 預估費用: 交通費約 ฿50-100 (約 NT$45-90) + 餐飲購物。</p>
+                            <p class="text-xs text-teal-600">💡 備註: 僅週末開放。交通相對方便，可搭乘BTS轉計程車。</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-2xl font-bold text-teal-600 mb-4">清邁體驗</h3>
+                    <ul class="space-y-4 text-stone-700">
+                        <li>
+                            <h4 class="font-bold text-lg mb-1">僧侶對談 (Monk Chat)</h4>
+                            <p class="text-sm text-stone-600 mb-2">在寺廟中與年輕僧侶進行非正式的對話，了解佛教文化、泰國生活和僧侶日常。這是非常獨特且深具意義的「與人互動」體驗，同時能「坐在一個地方看風景」並沉思。**通常在寺廟的開放時間內進行，環境莊重安全。**</p>
+                            <p class="text-sm font-semibold">💰 預估費用: 免費 (鼓勵隨喜捐贈)。</p>
+                            <p class="text-xs text-teal-600">💡 備註: 通常在特定寺廟（如瓦素帖寺或清邁大學的悟孟寺）有固定時間。</p>
+                        </li>
+                        <li>
+                            <h4 class="font-bold text-lg mb-1">倫理大象保護區志工體驗 (Ethical Elephant Sanctuary Visit)</h4>
+                            <p class="text-sm text-stone-600 mb-2">在不騎乘大象的前提下，近距離照顧、餵食、與大象互動，了解牠們的故事和保育工作。這是極為難得的「看大自然」和「與動物互動」的體驗。**此類行程通常有專車接送，並有專業導遊帶領，安全性高。**</p>
+                            <p class="text-sm font-semibold">💰 預估費用: 半日遊約 ฿2000-3000 (約 NT$1800-2700)。</p>
+                            <p class="text-xs text-red-600">⚠️ 備註: 費用較高，會大幅超出每日預算，但若您願意調整總預算或犧牲其他開銷，這將是非常值得的體驗。請務必選擇強調「無騎乘、無表演」的倫理保護區。</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="checklist" class="tab-content hidden">
+            <h2 class="text-3xl font-bold text-center mb-10 text-teal-700">✅ 行前準備清單</h2>
+            <p class="text-stone-600 mb-8 text-center max-w-3xl mx-auto">俗話說「準備齊全，旅途減半」。這份清單涵蓋了從簽證到打包的所有關鍵事項，請在出發前逐一確認，確保您的旅程萬無一失。**對於獨自旅行的女性，更需多一份細心與警覺。**</p>
+            <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6">
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="text-teal-500 text-xl mr-3">🛂</span>
+                        <div>
+                            <h4 class="font-bold">簽證與文件 (2025年7月更新)</h4>
+                            <p class="text-stone-600 text-sm">
+                                **台灣護照持有者於2025年7月前往泰國觀光，是免簽證的。**<br>
+                                您可免簽證入境泰國，每次停留最長60天。
+                                <br><br>
+                                **重要提醒：**
+                                <ul class="list-disc list-inside ml-4 text-sm text-stone-600">
+                                    <li>**泰國數位入境卡 (TDAC)**：自2025年5月1日起，所有外國旅客需於抵泰前72小時內完成線上申請TDAC，並於入境時出示QR Code。</li>
+                                    <li>**必備文件**：
+                                        <ul class="list-disc list-inside ml-4 text-sm text-stone-600">
+                                            <li>有效護照：效期至少6個月以上。</li>
+                                            <li>住宿證明：例如飯店訂房確認單。</li>
+                                            <li>足夠財力證明：建議準備至少20,000泰銖現金或等值外幣，以備移民官抽查。</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                         <span class="text-teal-500 text-xl mr-3">💵</span>
+                        <div>
+                            <h4 class="font-bold">貨幣與支付</h4>
+                            <p class="text-stone-600 text-sm">準備足夠泰銖現金應對小額支付，並攜帶信用卡以備不時之需。**建議將現金分開存放，不要將所有財物放在同一個地方。**</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-teal-500 text-xl mr-3">📶</span>
+                        <div>
+                            <h4 class="font-bold">網路與通訊</h4>
+                            <p class="text-stone-600 text-sm">購買當地SIM卡或租用Wi-Fi機，保持網路暢通。**隨時保持手機有電，以利緊急聯絡或使用地圖導航。**</p>
+                        </div>
+                    </li>
+                     <li class="flex items-start">
+                        <span class="text-teal-500 text-xl mr-3">👕</span>
+                        <div>
+                            <h4 class="font-bold">服裝與禮儀</h4>
+                            <p class="text-stone-600 text-sm">準備輕便透氣的夏裝，並為參觀寺廟準備長褲/長裙及有袖上衣。**在公共場合穿著得體，避免過於暴露，有助於融入當地文化並減少不必要的關注。**</p>
+                        </div>
+                    </li>
+                     <li class="flex items-start">
+                         <span class="text-teal-500 text-xl mr-3">💊</span>
+                        <div>
+                            <h4 class="font-bold">安全與健康</h4>
+                            <p class="text-stone-600 text-sm">購買旅遊保險、準備個人常備藥品（腸胃藥、防蚊液等）。**獨自旅行更需注意人身安全：避免深夜獨行，尤其是在偏僻或不熟悉的區域。在人潮擁擠的市集和景點，務必看管好個人財物，背包建議前背。搭乘計程車或Grab時，可將車牌號碼或行程資訊傳送給家人或朋友。遇到任何可疑情況，請保持冷靜並尋求協助。**</p>
+                            <p class="text-sm text-teal-600 mt-2">**語言溝通：** 您流利的英文在泰國主要旅遊區、酒店、餐廳和機場基本暢通無阻。在當地市場或與小販交流時，簡單的英文單詞或使用翻譯App（如Google翻譯）將會非常有幫助。泰國人普遍友善，若遇到困難，可嘗試向當地人求助。</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-stone-800 text-white mt-16">
+        <div class="container mx-auto py-6 px-4 text-center">
+            <p>&copy; 2025 為您客製化的泰國旅遊計畫。祝旅途愉快！</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const budgetData = {
+                labels: ['機票 (已付)', '住宿', '餐飲', '交通', '景點/活動', '簽證', '雜項'],
+                datasets: [{
+                    label: '預算分配',
+                    data: [6482, 2800, 2100, 1000, 800, 1200, 618],
+                    backgroundColor: [
+                        '#0d9488',
+                        '#0f766e',
+                        '#115e59',
+                        '#f59e0b',
+                        '#d97706',
+                        '#b45309',
+                        '#92400e'
+                    ],
+                    borderColor: '#fef3c7',
+                    hoverOffset: 4
+                }]
+            };
+
+            const transportData = {
+                labels: ['BTS/MRT', '曼谷公車', '昭披耶河快船', 'Grab (曼谷)', '雙條車', '清邁公車', 'Grab (清邁)'],
+                datasets: [
+                {
+                    label: '預估費用 (泰銖)',
+                    data: [35, 15, 15, 150, 30, 30, 100],
+                    backgroundColor: '#14b8a6',
+                    yAxisID: 'y-cost',
+                },
+                {
+                    label: '預估時間 (分鐘)',
+                    data: [20, 40, 20, 30, 15, 25, 20],
+                    backgroundColor: '#f59e0b',
+                    yAxisID: 'y-time',
+                }
+              ]
+            };
+            
+            const dailyPlanData = [
+                {
+                    day: "Day 1",
+                    date: "7/26 (六)",
+                    title: "抵達曼谷",
+                    timeline: [
+                        { time: "19:40-22:25", event: "飛行", desc: "台北 (TPE) ✈️ 曼谷 (BKK)", transport: "✈️ 飛機", cost_thb: "0", cost_ntd: "6482 (已付)", duration: "2小時45分", payment: "已付", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "22:25-23:30", event: "入境", desc: "辦理入境手續、領取行李。", transport: "步行", cost_thb: "0", cost_ntd: "0", duration: "1小時5分", payment: "無", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "23:30-00:30", event: "前往住宿", desc: "搭乘機場快線轉BTS/Grab。**建議使用Grab App叫車，並將行程資訊分享給信任的親友。**", transport: "🚆 機場快線/Grab", cost_thb: "145-245", cost_ntd: "130-220", duration: "1小時", payment: "現金/部分可刷卡", ticket_advice: "" , map: "#", safety_note: "深夜抵達，務必選擇正規交通工具，避免搭乘來路不明的計程車。" },
+                        { time: "00:30-01:30", event: "宵夜 & 休息", desc: "青旅Check-in，便利店補給。**選擇燈光明亮、人潮適中的便利店。**", transport: "步行", cost_thb: "100-200", cost_ntd: "90-180", duration: "1小時", payment: "現金/便利店可刷卡", ticket_advice: "" , map: "#", safety_note: "深夜外出，請務必注意周遭環境，避免前往偏僻區域。" },
+                    ]
+                },
+                {
+                    day: "Day 2",
+                    date: "7/27 (日)",
+                    title: "曼谷文化與高空視野",
+                    timeline: [
+                        { time: "08:00-09:00", event: "早餐", desc: "在青旅享用或探索當地街頭小吃。", transport: "步行", cost_thb: "50-100", cost_ntd: "45-90", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "09:00-12:00", event: "大皇宮 & 玉佛寺", desc: "參觀泰國最宏偉的建築群。", transport: "BTS+船", cost_thb: "500 (門票)+45-65 (交通)", cost_ntd: "450 (門票)+40-60 (交通)", duration: "3小時 (建議停留2-3小時)", payment: "門票可刷卡/交通現金", ticket_advice: "建議現場購票，或透過Klook/KKday購買套票可能更優惠" , map: "https://maps.app.goo.gl/uXjvyEEbY8sKbrD1A", safety_note: "人潮眾多，務必看管好個人財物，尤其是背包和手機。" },
+                        { time: "12:00-13:00", event: "午餐", desc: "在大皇宮附近尋找街頭小吃或小餐館。", transport: "步行", cost_thb: "80-150", cost_ntd: "70-135", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "13:00-15:00", event: "臥佛寺", desc: "探訪巨大的臥佛像。", transport: "步行", cost_thb: "300 (門票)", cost_ntd: "270 (門票)", duration: "2小時 (建議停留1.5-2小時)", payment: "門票可刷卡/建議現金", ticket_advice: "建議現場購票" , map: "https://maps.app.goo.gl/m3K1w1f4d9E4hQdC8", safety_note: "注意服裝禮儀，避免穿著暴露。" },
+                        { time: "15:00-16:30", event: "鄭王廟", desc: "攀登黎明寺，俯瞰河景。", transport: "渡輪", cost_thb: "50 (門票)+5 (交通)", cost_ntd: "45 (門票)+5 (交通)", duration: "1小時30分 (建議停留1-1.5小時)", payment: "現金", ticket_advice: "建議現場購票" , map: "https://maps.app.goo.gl/g6s8E6y1r7aM7qQdA", safety_note: "攀爬時請注意腳步，穿著舒適的鞋子。" },
+                        { time: "16:30-17:30", event: "返回住宿休息", desc: "搭乘渡輪返回Tha Thien Pier，轉乘昭披耶河快船至Saphan Taksin站，再轉BTS/MRT。", transport: "船+BTS/MRT", cost_thb: "50-70", cost_ntd: "45-65", duration: "1小時", payment: "現金/部分可刷卡", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "18:30-20:00", event: "晚餐 (Terminal 21 Pier 21 Food Court)", desc: "以街頭小吃的價格提供高品質的泰國菜，每餐約30-50泰銖。", transport: "BTS", cost_thb: "100-150", cost_ntd: "90-135", duration: "1小時30分", payment: "可刷卡 (儲值卡)", ticket_advice: "" , map: "https://maps.app.goo.gl/Wq4F7oWn3Y9wP5jN7", safety_note: "美食廣場人潮多，用餐時留意隨身物品。" },
+                        { time: "20:00-21:30", event: "Mahanakhon SkyWalk", desc: "泰國最高的觀景台，提供360度全景視野和刺激的玻璃天空步道。", transport: "BTS", cost_thb: "850-1050 (門票)+30-50 (交通)", cost_ntd: "765-945 (門票)+27-45 (交通)", duration: "1小時30分 (建議停留1.5小時)", payment: "門票可刷卡/交通現金", ticket_advice: "建議事先透過Klook/KKday購買，通常比現場優惠且可省去排隊時間" , map: "https://maps.app.goo.gl/M4hE4bH3s9c8b7fK9", safety_note: "觀景台安全措施完善，但仍請遵守規定，尤其在玻璃步道上。" },
+                        { time: "21:30-22:00", event: "返回住宿", desc: "搭乘BTS。", transport: "BTS", cost_thb: "30-50", cost_ntd: "27-45", duration: "30分", payment: "現金", ticket_advice: "" , map: "#", safety_note: "夜間搭乘BTS相對安全，但仍請保持警覺，避免在車站外逗留。" },
+                    ]
+                },
+                {
+                    day: "Day 3",
+                    date: "7/28 (一)",
+                    title: "曼谷自然與水上市場",
+                    timeline: [
+                        { time: "07:00-08:00", event: "早餐", desc: "街頭小吃或當地餐館。", transport: "步行", cost_thb: "50-100", cost_ntd: "45-90", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "08:00-16:00", event: "丹能莎朵水上市場 半日遊", desc: "體驗泰國傳統水上市場文化，與當地人互動，感受水上交易的獨特氛圍。", transport: "巴士/小巴+船", cost_thb: "600-700 (交通+船費)", cost_ntd: "540-630 (交通+船費)", duration: "8小時 (建議停留3-4小時)", payment: "團費可刷卡/市場現金", ticket_advice: "建議事先透過Klook/KKday購買半日遊行程，包含交通和船費，較方便且價格透明" , map: "https://maps.app.goo.gl/yYvT6q9aN1H8E2zE6", safety_note: "參加當地團體遊較安全。在市場內人潮多，注意隨身物品，避免與陌生人過多肢體接觸。" },
+                        { time: "16:00-17:30", event: "返回曼谷市區", desc: "巴士或團體交通（已計入水上市場費用）。", transport: "巴士/小巴", cost_thb: "0", cost_ntd: "0", duration: "1小時30分", payment: "無", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "17:30-19:00", event: "休息", desc: "返回住宿休息。", transport: "步行", cost_thb: "0", cost_ntd: "0", duration: "1小時30分", payment: "無", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "19:00-20:30", event: "晚餐 (Wang Lang Market)", desc: "體驗當地市集美食，選擇非辣或小辣的特色菜餚，感受道地泰國生活。", transport: "步行", cost_thb: "100-200", cost_ntd: "90-180", duration: "1小時30分", payment: "現金", ticket_advice: "" , map: "https://maps.app.goo.gl/eBwGjT5H7c1X9wN6A", safety_note: "市集人潮擁擠，請務必看管好個人財物，背包建議前背。" },
+                        { time: "20:30-22:00", event: "Bang Krachao (曼谷綠肺)", desc: "這座人工島被譽為曼谷的「綠肺」，擁有茂密的綠植、紅樹林和高架步道，是遠離城市喧囂的寧靜之地。可租借自行車探索。**建議將此行程安排在白天前往，傍晚後該區域人煙稀少，對於獨行女性安全性較低。若仍想前往，請務必在天黑前離開。**", transport: "渡輪+自行車", cost_thb: "55-110 (交通+租金)", cost_ntd: "50-100 (交通+租金)", duration: "1小時30分 (建議停留1-2小時)", payment: "現金", ticket_advice: "" , map: "https://maps.app.goo.gl/k9zT5Jk6R9x3F4Gv5", safety_note: "該區域較為自然原始，夜間燈光可能不足，獨行請特別小心。考慮將此行程調整至白天，或替換為其他市區活動。" },
+                    ]
+                },
+                {
+                    day: "Day 4",
+                    date: "7/29 (二)",
+                    title: "前往清邁與古城初探",
+                    timeline: [
+                        { time: "08:00-09:00", event: "早餐", desc: "青旅或當地小吃。", transport: "步行", cost_thb: "50-100", cost_ntd: "45-90", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "09:00-11:30", event: "曼谷自由活動/購物", desc: "可在住宿附近的Siam Square區域進行輕鬆的購物或漫步。", transport: "步行/BTS", cost_thb: "0-30", cost_ntd: "0-27", duration: "2小時30分", payment: "部分可刷卡", ticket_advice: "" , map: "https://maps.app.goo.gl/L8T6K3Z4n2mP6yFf6", safety_note: "購物區人潮多，留意隨身物品。" },
+                        { time: "11:30-12:30", event: "前往曼谷機場 (BKK)", desc: "搭乘BTS/MRT轉機場快線。", transport: "BTS/MRT+機場快線", cost_thb: "100-150", cost_ntd: "90-135", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "13:35-14:50", event: "飛行", desc: "曼谷 (BKK) ✈️ 清邁 (CNX)", transport: "✈️ 飛機", cost_thb: "0", cost_ntd: "已付", duration: "1小時15分", payment: "已付", ticket_advice: "" , map: "#", safety_note: "飛行期間請遵守航空公司規定。" },
+                        { time: "14:50-15:30", event: "抵達清邁機場，領取行李", desc: "抵達清邁機場，領取行李。", transport: "步行", cost_thb: "0", cost_ntd: "0", duration: "40分", payment: "無", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "15:30-16:30", event: "從清邁機場前往清邁市區住宿", desc: "搭乘清邁機場巴士 (Chiang Mai Bus)。**機場巴士是安全且經濟的選擇。若搭雙條車，上車前務必確認價格。若搭Grab，同樣建議使用App。**", transport: "🚌 機場巴士/雙條車/Grab", cost_thb: "30-150", cost_ntd: "27-135", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "避免搭乘來路不明的計程車或雙條車，尤其在機場。" },
+                        { time: "16:30-17:00", event: "辦理青旅入住，安頓行李", desc: "辦理青旅入住，安頓行李。", transport: "步行", cost_thb: "0", cost_ntd: "0", duration: "30分", payment: "無", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "17:00-18:30", event: "塔佩門", desc: "清邁古城東側的標誌性大門，適合拍照、餵鴿子，並觀察當地生活。", transport: "步行/雙條車", cost_thb: "0-30", cost_ntd: "0-27", duration: "1小時30分 (建議停留1小時)", payment: "無", ticket_advice: "" , map: "https://maps.app.goo.gl/G6Lg5oY5F9u9d6pZA", safety_note: "塔佩門廣場人潮較多，留意隨身物品。" },
+                        { time: "18:30-20:00", event: "晚餐", desc: "在古城內餐廳或夜市嘗試清邁特色美食，例如Khao Soi（可要求不辣或小辣）。", transport: "步行/雙條車", cost_thb: "100-200", cost_ntd: "90-180", duration: "1小時30分", payment: "現金", ticket_advice: "" , map: "#", safety_note: "選擇人潮較多的餐廳或攤位，用餐時留意周遭環境。" },
+                        { time: "20:00-21:30", event: "清邁古城夜間漫步", desc: "探索古城內的寺廟夜景，感受夜晚古城的寧靜與魅力。", transport: "步行", cost_thb: "0", cost_ntd: "0", duration: "1小時30分 (建議停留1.5小時)", payment: "無", ticket_advice: "" , map: "https://maps.app.goo.gl/xN1fV9d8vG4uL5b8A", safety_note: "古城內主要街道夜晚仍有遊客，但仍請避免走入過於昏暗或偏僻的小巷。" },
+                    ]
+                },
+                 {
+                    day: "Day 5",
+                    date: "7/30 (三)",
+                    title: "清邁山林與寺廟",
+                    timeline: [
+                        { time: "08:00-09:00", event: "早餐", desc: "青旅或當地小吃。", transport: "步行", cost_thb: "50-100", cost_ntd: "45-90", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "09:00-13:00", event: "素帖寺 (雙龍寺)", desc: "位於素帖山頂，是清邁的標誌性寺廟，可俯瞰清邁全景，擁有金碧輝煌的佛塔。", transport: "雙條車", cost_thb: "50 (門票)+30-60 (交通)", cost_ntd: "45 (門票)+27-54 (交通)", duration: "4小時 (建議停留2-3小時)", payment: "現金", ticket_advice: "建議現場購票" , map: "https://maps.app.goo.gl/B9p6F3b9g2c8aH7S7", safety_note: "搭乘雙條車上山時，若車上只有您一位乘客，可等待其他乘客一同上車，或考慮支付包車費用確保安全。山區道路彎曲，請抓穩扶手。" },
+                        { time: "13:00-14:00", event: "午餐", desc: "在素帖山下或返回市區後尋找當地小吃。", transport: "步行/雙條車", cost_thb: "80-150", cost_ntd: "70-135", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "14:00-16:00", event: "松達寺 (Wat Suan Dok) 或 悟孟寺 (Wat Umong)", desc: "探索獨特的森林寺廟或白色佛塔群。", transport: "步行/雙條車", cost_thb: "0-30", cost_ntd: "0-27", duration: "2小時 (建議停留1-1.5小時)", payment: "無", ticket_advice: "" , map: "https://maps.app.goo.gl/vJk8Y6K7M2n8oP9s7", safety_note: "悟孟寺位於森林中，請確保白天前往，並注意防蚊。若人煙稀少，請保持警覺。" },
+                        { time: "16:00-18:00", event: "清邁大學湖畔休閒", desc: "在大學湖畔散步、休息，感受學術氛圍和自然景色。", transport: "步行/雙條車", cost_thb: "0-30", cost_ntd: "0-27", duration: "2小時 (建議停留1-1.5小時)", payment: "無", ticket_advice: "" , map: "https://maps.app.goo.gl/a8rB6Z3mH1jJ5pD1A", safety_note: "大學校園內相對安全，但仍請留意個人財物。" },
+                        { time: "18:00-19:00", event: "返回住宿休息", desc: "雙條車或步行。", transport: "雙條車/步行", cost_thb: "0-30", cost_ntd: "0-27", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "19:00-20:30", event: "晚餐 (Huen Muan Jai 或 Dash Teak House)", desc: "嘗試更多北泰特色美食，如Gaeng Hang Lay（緬甸咖哩）。", transport: "步行/雙條車", cost_thb: "150-300", cost_ntd: "135-270", duration: "1小時30分", payment: "部分餐廳可刷卡/建議現金", ticket_advice: "" , map: "https://maps.app.goo.gl/tH4sJ7F2K6y8R9x1A", safety_note: "" },
+                    ]
+                },
+                 {
+                    day: "Day 6",
+                    date: "7/31 (四)",
+                    title: "清邁古城與市集體驗",
+                    timeline: [
+                        { time: "08:00-09:00", event: "早餐", desc: "青旅或當地小吃。", transport: "步行", cost_thb: "50-100", cost_ntd: "45-90", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "09:00-12:00", event: "清邁古城寺廟巡禮", desc: "步行參觀柴迪隆寺、帕辛寺等。", transport: "步行", cost_thb: "0-20 (門票)", cost_ntd: "0-18 (門票)", duration: "3小時 (建議停留每座1-1.5小時)", payment: "現金", ticket_advice: "建議現場購票" , map: "https://maps.app.goo.gl/xN1fV9d8vG4uL5b8A", safety_note: "古城寺廟人潮多，注意財物，並遵守寺廟服裝規定。" },
+                        { time: "12:00-13:00", event: "午餐", desc: "在古城內尋找街頭小吃或前往Coconut Shell Thai Food。", transport: "步行", cost_thb: "80-150", cost_ntd: "70-135", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "13:00-17:00", event: "瓦洛洛市場 (Warorot Market / Kad Luang)", desc: "體驗清邁最地道的當地市場，購買特產、品嚐小吃，並與當地人互動。", transport: "步行/雙條車", cost_thb: "0-30", cost_ntd: "0-27", duration: "4小時 (建議停留2-3小時)", payment: "現金", ticket_advice: "" , map: "https://maps.app.goo.gl/L3gR7uN7wH8P2mYk7", safety_note: "市場非常擁擠，務必將背包前背，並對過於熱情的推銷保持警覺。" },
+                        { time: "17:00-19:00", event: "休息/自由活動", desc: "返回住宿休息或自由活動。", transport: "步行", cost_thb: "0", cost_ntd: "0", duration: "2小時", payment: "無", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "19:00-20:30", event: "晚餐", desc: "探索清邁夜市，有各種當地小吃和特色菜餚。", transport: "步行/雙條車", cost_thb: "100-200", cost_ntd: "90-180", duration: "1小時30分", payment: "現金", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "20:30-22:00", event: "清邁週日夜市 / 長康路夜市", desc: "體驗清邁熱鬧的夜市文化，購物、品嚐美食、觀看表演。", transport: "步行/雙條車", cost_thb: "0-30", cost_ntd: "0-27", duration: "1小時30分 (建議停留1.5小時)", payment: "現金", ticket_advice: "" , map: "https://maps.app.goo.gl/N9sH8P5fR7d2aGkX6", safety_note: "夜市人潮眾多，請務必留意隨身物品。若有陌生人搭訕，保持禮貌但堅定的態度。" },
+                    ]
+                },
+                 {
+                    day: "Day 7",
+                    date: "8/1 (五)",
+                    title: "清邁國家公園與返程",
+                    timeline: [
+                        { time: "07:00-08:00", event: "早餐", desc: "青旅或當地小吃。", transport: "步行", cost_thb: "50-100", cost_ntd: "45-90", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "08:00-16:00", event: "茵他儂國家公園一日遊", desc: "泰國最高峰，擁有壯麗的瀑布、多樣的步道和著名的國王皇后雙塔。", transport: "🚐 拼團遊", cost_thb: "1000-1200 (團費)", cost_ntd: "900-1080 (團費)", duration: "8小時 (建議停留6-7小時)", payment: "團費可刷卡/園區現金", ticket_advice: "建議事先透過Klook/KKday購買一日遊行程，通常包含門票和交通，較方便且價格透明" , map: "https://maps.app.goo.gl/A4qG5H8t9k2fM7xR7", safety_note: "參加正規旅行團較為安全，務必確認旅行社的評價和行程內容。在國家公園內請遵守指示，不要獨自走入非開放區域。" },
+                        { time: "16:00-17:30", event: "返回清邁市區", desc: "團體交通（已計入團費）。", transport: "🚐 拼團遊", cost_thb: "0", cost_ntd: "0", duration: "1小時30分", payment: "無", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "17:30-19:00", event: "休息/整理行李", desc: "由於是凌晨航班，建議提前與青旅協商延遲退房或寄放行李，以便白天活動。**務必確保行李安全。**", transport: "步行", cost_thb: "0", cost_ntd: "0", duration: "1小時30分", payment: "無", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "19:00-20:30", event: "告別晚餐", desc: "選擇一家喜歡的餐廳，好好享受。", transport: "步行/雙條車", cost_thb: "150-250", cost_ntd: "135-225", duration: "1小時30分", payment: "部分餐廳可刷卡", ticket_advice: "" , map: "#", safety_note: "" },
+                        { time: "20:30-22:00", event: "自由活動/購買伴手禮", desc: "自由活動或購買伴手禮。", transport: "步行", cost_thb: "0", cost_ntd: "0", duration: "1小時30分", payment: "無", ticket_advice: "" , map: "#", safety_note: "夜間購物請留意周遭環境，避免前往人煙稀少的地方。" },
+                        { time: "22:00-23:00", event: "前往清邁機場 (CNX)", desc: "搭乘雙條車或Grab。**建議提前預約Grab或請青旅協助叫車，避免深夜在路邊攔車。**", transport: "🛻 雙條車/Grab", cost_thb: "150", cost_ntd: "135", duration: "1小時", payment: "現金", ticket_advice: "" , map: "#", safety_note: "深夜前往機場，務必確保交通工具的安全性。抵達機場後，待在人多且燈光明亮的區域。" },
+                        { time: "00:05-04:45", event: "飛行", desc: "清邁 (CNX) ✈️ 台北 (TPE)", transport: "✈️ 飛機", cost_thb: "0", cost_ntd: "已付", duration: "4小時40分", payment: "已付", ticket_advice: "" , map: "#", safety_note: "" },
+                    ]
+                },
+            ];
+            
+            const foodData = [
+                { name: "Terminal 21 Pier 21", city: "bangkok", type: "street-food", spicy: "non-spicy", desc: "平價美食廣場，選擇多樣，CP值爆表。", map: "https://maps.app.goo.gl/Wq4F7oWn3Y9wP5jN7" },
+                { name: "Thip Samai Pad Thai", city: "bangkok", type: "restaurant", spicy: "non-spicy", desc: "米其林推薦的泰式炒河粉，蝦油風味獨特。", map: "https://maps.app.goo.gl/jS5p2T6K8gH7rFwN9" },
+                { name: "Wang Lang Market", city: "bangkok", type: "street-food", spicy: "non-spicy", desc: "地道市集，充滿各種便宜美味的小吃與甜點。", map: "https://maps.app.goo.gl/eBwGjT5H7c1X9wN6A" },
+                { name: "Khao Soi Lung Prakit", city: "chiang-mai", type: "restaurant", spicy: "mild-spicy", desc: "濃郁的泰北金麵，牛肉或雞肉湯頭都非常推薦。", map: "https://maps.app.goo.gl/vH7j3K6L8gP9wTzM9" },
+                { name: "Coconut Shell Thai Food", city: "chiang-mai", type: "restaurant", spicy: "non-spicy", desc: "價格極其親民，菜單上多數品項低於50泰銖。", map: "https://maps.app.goo.gl/nS8p5T6K7gH9rFwN8" },
+                { name: "Huen Muan Jai", city: "chiang-mai", type: "restaurant", spicy: "mild-spicy", desc: "品嚐正宗泰北菜的好去處，如泰北香腸、緬甸咖哩。", map: "https://maps.app.goo.gl/tH4sJ7F2K6y8R9x1A" },
+                { name: "清邁夜市小吃", city: "chiang-mai", type: "street-food", spicy: "mild-spicy", desc: "在夜市可以找到各種泰北小吃，如烤肉串、炸物等。", map: "https://maps.app.goo.gl/N9sH8P5fR7d2aGkX6" },
+                { name: "Pad See Ew (醬油炒粿條)", city: "bangkok", type: "street-food", spicy: "non-spicy", desc: "不辣的經典炒粉，味道鹹甜，大人小孩都愛。", map: "#" },
+                { name: "Sai Ua (泰北香腸)", city: "chiang-mai", type: "street-food", spicy: "mild-spicy", desc: "充滿香料風味的豬肉香腸，是泰北代表性小吃。", map: "#" },
+            ];
+
+            const renderCharts = () => {
+                const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+                // Destroy existing chart instance if it exists
+                if (window.budgetChartInstance) {
+                    window.budgetChartInstance.destroy();
+                }
+                window.budgetChartInstance = new Chart(budgetCtx, {
+                    type: 'doughnut',
+                    data: budgetData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    font: { size: 12 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed !== null) {
+                                            label += new Intl.NumberFormat('zh-TW', { style: 'currency', currency: 'TWD', minimumFractionDigits: 0 }).format(context.parsed);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                const transportCtx = document.getElementById('transportChart').getContext('2d');
+                // Destroy existing chart instance if it exists
+                if (window.transportChartInstance) {
+                    window.transportChartInstance.destroy();
+                }
+                window.transportChartInstance = new Chart(transportCtx, {
+                    type: 'bar',
+                    data: transportData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                           'y-cost': {
+                                type: 'linear',
+                                position: 'left',
+                                title: { display: true, text: '費用 (THB)'}
+                            },
+                           'y-time': {
+                                type: 'linear',
+                                position: 'right',
+                                title: { display: true, text: '時間 (min)'},
+                                grid: { drawOnChartArea: false }
+                            }
+                        },
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            tooltip: { mode: 'index', intersect: false }
+                        }
+                    }
+                });
+            };
+
+            const dayTabsContainer = document.getElementById('day-tabs');
+            const timelineContainer = document.getElementById('timeline-container');
+            
+            dailyPlanData.forEach((dayData, index) => {
+                const tabButton = document.createElement('button');
+                tabButton.className = `tab-button py-2 px-4 rounded-full text-sm font-semibold transition-colors duration-300 ${index === 0 ? 'active' : 'bg-white text-stone-700'}`;
+                tabButton.textContent = `${dayData.day} (${dayData.date})`;
+                tabButton.dataset.day = dayData.day;
+                dayTabsContainer.appendChild(tabButton);
+
+                const activitiesHTML = dayData.timeline.map(item => `
+                    <div class="activity-card bg-white rounded-xl shadow-lg p-6 flex flex-col space-y-2">
+                        <div class="flex items-center space-x-3">
+                            <span class="activity-card-icon text-2xl">•</span>
+                            <div>
+                                <h4 class="font-bold text-stone-800 text-lg">${item.event}</h4>
+                                <p class="text-sm text-stone-600">${item.desc}</p>
+                            </div>
+                        </div>
+                        <div class="text-sm text-stone-700 ml-8 space-y-1">
+                            <p>🚌 交通: ${item.transport}</p>
+                            <p>🕒 時間: ${item.time} (${item.duration})</p>
+                            ${item.cost_thb !== "0" ? `<p class="font-bold">💰 費用: ฿${item.cost_thb} (約 NT$${item.cost_ntd})</p>` : ''}
+                            ${item.cost_thb === "0" && item.cost_ntd !== "0" ? `<p class="font-bold">💰 費用: NT$${item.cost_ntd}</p>` : ''}
+                            ${item.payment ? `<p>💳 支付: ${item.payment}</p>` : ''}
+                            ${item.ticket_advice ? `<p class="text-xs text-teal-600">💡 購票建議: ${item.ticket_advice}</p>` : ''}
+                            ${item.map !== '#' ? `<p><a href="${item.map}" target="_blank" class="text-blue-600 hover:underline">📍 Google Maps 上查看</a></p>` : ''}
+                            ${item.safety_note ? `<p class="text-xs text-red-600">⚠️ 安全提醒: ${item.safety_note}</p>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                const dayContent = document.createElement('div');
+                dayContent.id = dayData.day;
+                dayContent.className = `day-content space-y-6 ${index !== 0 ? 'hidden' : ''}`;
+                dayContent.innerHTML = `
+                    <h3 class="text-2xl font-bold text-center mb-6 text-teal-600">${dayData.title}</h3>
+                    ${activitiesHTML}
+                `;
+                timelineContainer.appendChild(dayContent);
+            });
+
+            dayTabsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('tab-button')) {
+                    const selectedDay = e.target.dataset.day;
+                    
+                    document.querySelectorAll('.tab-button').forEach(btn => {
+                        btn.classList.remove('active', 'bg-teal-500', 'text-white');
+                        btn.classList.add('bg-white', 'text-stone-700');
+                    });
+                    e.target.classList.add('active', 'bg-teal-500', 'text-white');
+                    e.target.classList.remove('bg-white', 'text-stone-700');
+
+                    document.querySelectorAll('.day-content').forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.getElementById(selectedDay).classList.remove('hidden');
+                }
+            });
+
+            const foodGrid = document.getElementById('food-grid');
+            const renderFoodCards = (filter = 'all') => {
+                foodGrid.innerHTML = '';
+                const filteredData = foodData.filter(item => {
+                    if (filter === 'all') return true;
+                    return item.city === filter || item.type.includes(filter) || item.spicy.includes(filter);
+                });
+
+                filteredData.forEach(food => {
+                    const card = document.createElement('div');
+                    card.className = "food-card bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105";
+                    card.innerHTML = `
+                        <div class="p-6">
+                            <h4 class="text-lg font-bold text-stone-800 mb-2">${food.name}</h4>
+                            <p class="text-sm text-stone-600 mb-4">${food.desc}</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex gap-2">
+                                    <span class="text-xs bg-amber-200 text-amber-800 px-2 py-1 rounded-full">${food.city === 'bangkok' ? '曼谷' : '清邁'}</span>
+                                    <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded-full">${food.type === 'street-food' ? '小吃' : '餐廳'}</span>
+                                </div>
+                                <a href="${food.map}" target="_blank" class="text-blue-600 hover:underline text-sm font-semibold">地圖 ➔</a>
+                            </div>
+                        </div>
+                    `;
+                    foodGrid.appendChild(card);
+                });
+            };
+
+            const foodFilters = document.getElementById('food-filters');
+            foodFilters.addEventListener('click', (e) => {
+                if(e.target.tagName === 'BUTTON') {
+                    const filter = e.target.dataset.filter;
+                    document.querySelectorAll('.filter-button').forEach(btn => {
+                        btn.classList.remove('bg-teal-500', 'text-white');
+                        btn.classList.add('bg-white', 'text-stone-700');
+                    });
+                    e.target.classList.add('bg-teal-500', 'text-white');
+                    e.target.classList.remove('bg-white', 'text-stone-700');
+                    renderFoodCards(filter);
+                }
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+
+                document.querySelectorAll('#mobile-menu button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                        // Trigger main tab click for mobile menu as well
+                        const targetTab = button.dataset.tab;
+                        const mainTabButton = document.querySelector(`#main-tabs-container .tab-button-main[data-tab="${targetTab}"]`);
+                        if (mainTabButton) {
+                            mainTabButton.click(); // Simulate click on the main tab button
+                        }
+                    });
+                });
+            }
+
+            const mainTabButtons = document.querySelectorAll('#main-tabs-container .tab-button-main');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            mainTabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.dataset.tab;
+
+                    mainTabButtons.forEach(btn => {
+                        btn.classList.remove('active', 'bg-teal-500', 'text-white');
+                        btn.classList.add('text-stone-600'); // Keep default text color for inactive tabs
+                    });
+                    button.classList.add('active', 'bg-teal-500', 'text-white');
+                    button.classList.remove('text-stone-600'); // Remove default text color for active tab
+
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.getElementById(targetTab).classList.remove('hidden');
+
+                    // Re-render charts when their tab becomes active
+                    if (targetTab === 'overview' || targetTab === 'transport') {
+                        renderCharts(); 
+                    }
+                });
+            });
+
+            // Set initial active tab and content
+            document.querySelector('#main-tabs-container .tab-button-main[data-tab="overview"]').click();
+            renderFoodCards(); // Initial render for food cards
+        });
+    </script>
+</body>
+</html>
