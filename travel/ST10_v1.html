@@ -44,6 +44,13 @@
         .activity-card-icon {
             color: #fcd34d; /* 黃色圓點 */
         }
+        /* Style for unique experience cards */
+        .experience-card {
+            background-color: #ffffff;
+            border-radius: 1rem; /* rounded-2xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            padding: 1.5rem; /* p-6 */
+        }
     </style>
 </head>
 <body class="bg-amber-50 text-stone-800">
@@ -112,8 +119,8 @@
                 </div>
             </div>
             <div class="bg-white rounded-2xl shadow-lg p-6">
-                <h3 class="text-2xl font-bold text-teal-600 mb-6 text-center">💰 預算總覽 (總計 NT$ 15,000)</h3>
-                <p class="text-stone-600 mb-6 text-center max-w-2xl mx-auto">這份預算規劃旨在最大化您的旅遊體驗，同時嚴格控制在總預算內。圖表清晰展示了各項支出的佔比，讓您對資金流向一目了然。住宿和餐飲佔據了機票外的大部分預算，這也反映了我們在選擇高CP值青旅和品嚐地道街頭小吃上的策略。</p>
+                <h3 class="text-2xl font-bold text-teal-600 mb-6 text-center">💰 預算總覽 (總預估 NT$ <span id="finalBudgetTotal"></span>)</h3>
+                <p class="text-stone-600 mb-6 text-center max-w-2xl mx-auto">這份預算規劃旨在最大化您的旅遊體驗。根據詳細行程估算，<strong>總預估花費約為新台幣17,403元</strong>，略高於您期望的1萬5千元預算。主要增加來自於高價值景點門票/活動的選擇。圖表清晰展示了各項支出的佔比，讓您對資金流向一目了然。住宿和餐飲佔據了機票外的大部分預算，這也反映了我們在選擇高CP值青旅和品嚐地道街頭小吃上的策略。</p>
                 <div class="chart-container">
                     <canvas id="budgetChart"></canvas>
                 </div>
@@ -129,19 +136,19 @@
                     <div class="space-y-4">
                         <div class="bg-amber-100/50 p-4 rounded-lg">
                             <h4 class="font-bold text-stone-700">曼谷: Lub d Bangkok Siam</h4>
-                            <p class="text-sm text-stone-600">近BTS站，交通極便利，社交氛圍活絡。**特別適合獨行女性，因其安全措施良好且有許多女性旅客。**</p>
+                            <p class="text-sm text-stone-600">近BTS站，交通極便利，社交氛圍活絡。<strong>特別適合獨行女性，因其安全措施良好且有許多女性旅客。</strong></p>
                             <p class="text-sm font-semibold text-teal-600">約 NT$300-390 / 晚</p>
                         </div>
                          <div class="bg-amber-100/50 p-4 rounded-lg">
                             <h4 class="font-bold text-stone-700">清邁: 84 Gallery</h4>
-                            <p class="text-sm text-stone-600">CP值極高，價格實惠，近週六夜市。**評價良好，注重清潔與基本安全。**</p>
+                            <p class="text-sm text-stone-600">CP值極高，價格實惠，近週六夜市。<strong>評價良好，注重清潔與基本安全。</strong></p>
                              <p class="text-sm font-semibold text-teal-600">約 NT$150-320 / 晚</p>
                         </div>
                     </div>
                 </div>
                 <div class="bg-white rounded-2xl shadow-lg p-6">
                     <h3 class="text-2xl font-bold text-teal-600 mb-4">📊 交通方式比較</h3>
-                    <p class="text-stone-600 mb-6">在泰國，選擇正確的交通工具是省錢省時的關鍵。此圖表比較了各種交通方式的預估費用與時間，幫助您根據當下需求（例如，趕時間選BTS，省錢選公車）做出最明智的決策。**對於獨行女性，建議優先選擇安全、有固定路線和價格透明的交通方式。**</p>
+                    <p class="text-stone-600 mb-6">在泰國，選擇正確的交通工具是省錢省時的關鍵。此圖表比較了各種交通方式的預估費用與時間，幫助您根據當下需求（例如，趕時間選BTS，省錢選公車）做出最明智的決策。<strong>對於獨行女性，建議優先選擇安全、有固定路線和價格透明的交通方式。</strong></p>
                     <div class="chart-container">
                          <canvas id="transportChart"></canvas>
                     </div>
@@ -151,7 +158,7 @@
         
         <section id="daily-plan" class="tab-content hidden mb-16">
             <h2 class="text-3xl font-bold text-center mb-10 text-teal-700">📅 每日行程</h2>
-            <p class="text-stone-600 mb-8 text-center max-w-3xl mx-auto">這是您旅程的核心，我們將每日的活動以卡片方式呈現。點擊下方的日期按鈕即可切換。每個活動都包含了預估時間、費用和交通建議，並附上Google Maps連結，讓您輕鬆導航，無後顧後憂。**對於獨行女性，我們特別在行程中加入了安全注意事項和實用建議。**</p>
+            <p class="text-stone-600 mb-8 text-center max-w-3xl mx-auto">這是您旅程的核心，我們將每日的活動以卡片方式呈現。點擊下方的日期按鈕即可切換。每個活動都包含了預估時間、費用和交通建議，並附上Google Maps連結，讓您輕鬆導航，無後顧後憂。<strong>對於獨行女性，我們特別在行程中加入了安全注意事項和實用建議。</strong></p>
             <div id="day-tabs" class="flex flex-wrap justify-center gap-2 mb-8">
             </div>
             <div id="timeline-container" class="space-y-6">
@@ -160,7 +167,7 @@
 
         <section id="food-guide" class="tab-content hidden mb-16">
             <h2 class="text-3xl font-bold text-center mb-10 text-teal-700">🍜 美食地圖</h2>
-            <p class="text-stone-600 mb-8 text-center max-w-3xl mx-auto">泰國是美食的天堂！這裡為您整理了一份必吃清單，從米其林推薦的街頭小吃到地道的泰北風味菜。您可以使用下方的篩選器，快速找到符合您當下城市、口味或預算的選擇。**獨自用餐也很自在，可以選擇人潮較多的店家，或嘗試美食廣場。**</p>
+            <p class="text-stone-600 mb-8 text-center max-w-3xl mx-auto">泰國是美食的天堂！這裡為您整理了一份必吃清單，從米其林推薦的街頭小吃到地道的泰北風味菜。您可以使用下方的篩選器，快速找到符合您當下城市、口味或預算的選擇。<strong>獨自用餐也很自在，可以選擇人潮較多的店家，或嘗試美食廣場。</strong></p>
             <div id="food-filters" class="flex flex-wrap justify-center gap-2 mb-8">
                 <button data-filter="all" class="filter-button bg-teal-500 text-white py-2 px-4 rounded-full text-sm font-semibold">全部顯示</button>
                 <button data-filter="bangkok" class="filter-button bg-white text-stone-700 py-2 px-4 rounded-full text-sm font-semibold">曼谷</button>
@@ -175,48 +182,51 @@
 
         <section id="unique-experiences" class="tab-content hidden mb-16">
             <h2 class="text-3xl font-bold text-center mb-10 text-teal-700">✨ 特色體驗項目</h2>
-            <p class="text-stone-600 mb-8 text-center max-w-3xl mx-auto">除了行程中已規劃的活動，泰國還有許多獨具特色的體驗，讓您的旅程更加豐富。以下是根據您的偏好和預算考量，為您精選的一些建議。**這些體驗通常有完善的旅遊業者安排，對於獨行者而言相對安全。**</p>
+            <p class="text-stone-600 mb-8 text-center max-w-3xl mx-auto">除了行程中已規劃的活動，泰國還有許多獨具特色的體驗，讓您的旅程更加豐富。以下是根據您的偏好和預算考量，為您精選的一些建議。<strong>這些體驗通常有完善的旅遊業者安排，對於獨行者而言相對安全。</strong></p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white rounded-2xl shadow-lg p-6">
+                <div class="space-y-6"> <!-- 曼谷體驗列 -->
                     <h3 class="text-2xl font-bold text-teal-600 mb-4">曼谷體驗</h3>
-                    <ul class="space-y-4 text-stone-700">
-                        <li>
-                            <h4 class="font-bold text-lg mb-1">泰式烹飪課程 (Thai Cooking Class)</h4>
-                            <p class="text-sm text-stone-600 mb-2">深入體驗泰國飲食文化，親手製作泰國菜，並學習當地食材知識。適合喜歡「與人互動」和「體驗當地文化」的您。**通常是小團體課程，有機會結識新朋友，非常適合獨行者。**</p>
-                            <p class="text-sm font-semibold">💰 預估費用: 約 ฿800-1500 (約 NT$720-1350) / 半天課程。</p>
-                            <p class="text-xs text-teal-600">💡 備註: 可選擇包含市場導覽的課程，費用會稍高。這筆費用可從餐飲或雜項預算中挪用。</p>
-                        </li>
-                        <li>
-                            <h4 class="font-bold text-lg mb-1">當地水上市場深度遊 (Local Floating Market - Klong Lat Mayom / Taling Chan)</h4>
-                            <p class="text-sm text-stone-600 mb-2">比觀光化的丹能莎朵更具在地生活氣息，可以與當地攤販互動，品嚐地道美食，感受水上人家的日常。符合「與人互動」和「看風景」的偏好。**建議白天前往，並留意個人財物。**</p>
-                            <p class="text-sm font-semibold">💰 預估費用: 交通費約 ฿50-100 (約 NT$45-90) + 餐飲購物。</p>
-                            <p class="text-xs text-teal-600">💡 備註: 僅週末開放。交通相對方便，可搭乘BTS轉計程車。</p>
-                        </li>
-                    </ul>
+                    <div class="experience-card">
+                        <h4 class="font-bold text-lg mb-1">泰式烹飪課程 (Thai Cooking Class)</h4>
+                        <p class="text-sm text-stone-600 mb-2">深入體驗泰國飲食文化，親手製作泰國菜，並學習當地食材知識。適合喜歡「與人互動」和「體驗當地文化」的您。<strong>通常是小團體課程，有機會結識新朋友，非常適合獨行者。</strong></p>
+                        <p class="text-sm font-semibold">💰 預估費用: 約 ฿800-1500 (約 NT$720-1350) / 半天課程。</p>
+                        <p class="text-xs text-teal-600">💡 備註: 可選擇包含市場導覽的課程，費用會稍高。這筆費用可從餐飲或雜項預算中挪用。</p>
+                    </div>
+                    <div class="experience-card">
+                        <h4 class="font-bold text-lg mb-1">當地水上市場深度遊 (Local Floating Market - Klong Lat Mayom / Taling Chan)</h4>
+                        <p class="text-sm text-stone-600 mb-2">比觀光化的丹能莎朵更具在地生活氣息，可以與當地攤販互動，品嚐地道美食，感受水上人家的日常。符合「與人互動」和「看風景」的偏好。<strong>建議白天前往，並留意個人財物。</strong></p>
+                        <p class="text-sm font-semibold">💰 預估費用: 交通費約 ฿50-100 (約 NT$45-90) + 餐飲購物。</p>
+                        <p class="text-xs text-teal-600">💡 備註: 僅週末開放。交通相對方便，可搭乘BTS轉計程車。</p>
+                    </div>
                 </div>
-                <div class="bg-white rounded-2xl shadow-lg p-6">
+                <div class="space-y-6"> <!-- 清邁體驗列 -->
                     <h3 class="text-2xl font-bold text-teal-600 mb-4">清邁體驗</h3>
-                    <ul class="space-y-4 text-stone-700">
-                        <li>
-                            <h4 class="font-bold text-lg mb-1">僧侶對談 (Monk Chat)</h4>
-                            <p class="text-sm text-stone-600 mb-2">在寺廟中與年輕僧侶進行非正式的對話，了解佛教文化、泰國生活和僧侶日常。這是非常獨特且深具意義的「與人互動」體驗，同時能「坐在一個地方看風景」並沉思。**通常在寺廟的開放時間內進行，環境莊重安全。**</p>
-                            <p class="text-sm font-semibold">💰 預估費用: 免費 (鼓勵隨喜捐贈)。</p>
-                            <p class="text-xs text-teal-600">💡 備註: 通常在特定寺廟（如瓦素帖寺或清邁大學的悟孟寺）有固定時間。</p>
-                        </li>
-                        <li>
-                            <h4 class="font-bold text-lg mb-1">倫理大象保護區志工體驗 (Ethical Elephant Sanctuary Visit)</h4>
-                            <p class="text-sm text-stone-600 mb-2">在不騎乘大象的前提下，近距離照顧、餵食、與大象互動，了解牠們的故事和保育工作。這是極為難得的「看大自然」和「與動物互動」的體驗。**此類行程通常有專車接送，並有專業導遊帶領，安全性高。**</p>
-                            <p class="text-sm font-semibold">💰 預估費用: 半日遊約 ฿2000-3000 (約 NT$1800-2700)。</p>
-                            <p class="text-xs text-red-600">⚠️ 備註: 費用較高，會大幅超出每日預算，但若您願意調整總預算或犧牲其他開銷，這將是非常值得的體驗。請務必選擇強調「無騎乘、無表演」的倫理保護區。</p>
-                        </li>
-                    </ul>
+                    <div class="experience-card">
+                        <h4 class="font-bold text-lg mb-1">僧侶對談 (Monk Chat)</h4>
+                        <p class="text-sm text-stone-600 mb-2">在寺廟中與年輕僧侶進行非正式的對話，了解佛教文化、泰國生活和僧侶日常。這是非常獨特且深具意義的「與人互動」體驗，同時能「坐在一個地方看風景」並沉思。<strong>通常在寺廟的開放時間內進行，環境莊重安全。</strong></p>
+                        <p class="text-sm font-semibold">💰 預估費用: 免費 (鼓勵隨喜捐贈)。</p>
+                        <p class="text-xs text-teal-600">💡 備註: 通常在特定寺廟（如瓦素帖寺或清邁大學的悟孟寺）有固定時間。</p>
+                    </div>
+                    <div class="experience-card">
+                        <h4 class="font-bold text-lg mb-1">倫理大象保護區志工體驗 (Ethical Elephant Sanctuary Visit)</h4>
+                        <p class="text-sm text-stone-600 mb-2">在不騎乘大象的前提下，近距離照顧、餵食、與大象互動，了解牠們的故事和保育工作。這是極為難得的「看大自然」和「與動物互動」的體驗。<strong>此類行程通常有專車接送，並有專業導遊帶領，安全性高。</strong></p>
+                        <p class="text-sm font-semibold">💰 預估費用: 半日遊約 ฿2000-3000 (約 NT$1800-2700)。</p>
+                        <p class="text-xs text-red-600">⚠️ 備註: 費用較高，會大幅超出每日預算，但若您願意調整總預算或犧牲其他開銷，這將是非常值得的體驗。請務必選擇強調「無騎乘、無表演」的倫理保護區。</p>
+                    </div>
+                    <div class="experience-card">
+                        <h4 class="font-bold text-lg mb-1">僧侶小徑徒步 (Monk's Trail) 到帕拉特寺 (Wat Pha Lat)</h4>
+                        <p class="text-sm text-stone-600 mb-2">一條從素帖山腳下通往隱秘寺廟的徒步路線，沿途林蔭密佈，環境清幽，寺廟本身也極具禪意與建築特色。非常適合喜歡「爬山走路」、「看大自然」和「看建築」的您。</p>
+                        <p class="text-sm font-semibold">📍 登山口交通: 從清邁古城搭乘雙條車至清邁大學後門或素帖山路口，車程約15-25分鐘，費用約฿30-50 (約NT$27-45)。從登山口步行至寺廟約10-15分鐘。<strong>總通勤時間約30-40分鐘。</strong></p>
+                        <p class="text-sm font-semibold">💰 預估費用: 免費 (交通至登山口費用另計)。</p>
+                        <p class="text-xs text-teal-600">💡 備註: 全程約 1-2 小時，難度不高但有坡度。<strong>若天氣適宜（非雨季、地面不濕滑），非常推薦。七月為雨季，路面可能濕滑，蚊蟲較多。獨行時請務必告知青旅或朋友您的計畫，並下載離線地圖。若能找到伴同行會更安全。</strong></p>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section id="checklist" class="tab-content hidden">
             <h2 class="text-3xl font-bold text-center mb-10 text-teal-700">✅ 行前準備清單</h2>
-            <p class="text-stone-600 mb-8 text-center max-w-3xl mx-auto">俗話說「準備齊全，旅途減半」。這份清單涵蓋了從簽證到打包的所有關鍵事項，請在出發前逐一確認，確保您的旅程萬無一失。**對於獨自旅行的女性，更需多一份細心與警覺。**</p>
+            <p class="text-stone-600 mb-8 text-center max-w-3xl mx-auto">俗話說「準備齊全，旅途減半」。這份清單涵蓋了從簽證到打包的所有關鍵事項，請在出發前逐一確認，確保您的旅程萬無一失。<strong>對於獨自旅行的女性，更需多一份細心與警覺。</strong></p>
             <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6">
                 <ul class="space-y-4">
                     <li class="flex items-start">
@@ -224,13 +234,13 @@
                         <div>
                             <h4 class="font-bold">簽證與文件 (2025年7月更新)</h4>
                             <p class="text-stone-600 text-sm">
-                                **台灣護照持有者於2025年7月前往泰國觀光，是免簽證的。**<br>
+                                <strong>台灣護照持有者於2025年7月前往泰國觀光，是免簽證的。</strong><br>
                                 您可免簽證入境泰國，每次停留最長60天。
                                 <br><br>
-                                **重要提醒：**
+                                <strong>重要提醒：</strong>
                                 <ul class="list-disc list-inside ml-4 text-sm text-stone-600">
-                                    <li>**泰國數位入境卡 (TDAC)**：自2025年5月1日起，所有外國旅客需於抵泰前72小時內完成線上申請TDAC，並於入境時出示QR Code。</li>
-                                    <li>**必備文件**：
+                                    <li><strong>泰國數位入境卡 (TDAC)</strong>：自2025年5月1日起，所有外國旅客需於抵泰前72小時內完成線上申請TDAC，並於入境時出示QR Code。</li>
+                                    <li><strong>必備文件**：
                                         <ul class="list-disc list-inside ml-4 text-sm text-stone-600">
                                             <li>有效護照：效期至少6個月以上。</li>
                                             <li>住宿證明：例如飯店訂房確認單。</li>
@@ -245,29 +255,29 @@
                          <span class="text-teal-500 text-xl mr-3">💵</span>
                         <div>
                             <h4 class="font-bold">貨幣與支付</h4>
-                            <p class="text-stone-600 text-sm">準備足夠泰銖現金應對小額支付，並攜帶信用卡以備不時之需。**建議將現金分開存放，不要將所有財物放在同一個地方。**</p>
+                            <p class="text-stone-600 text-sm">準備足夠泰銖現金應對小額支付，並攜帶信用卡以備不時之需。<strong>建議將現金分開存放，不要將所有財物放在同一個地方。</strong></p>
                         </div>
                     </li>
                     <li class="flex items-start">
                         <span class="text-teal-500 text-xl mr-3">📶</span>
                         <div>
                             <h4 class="font-bold">網路與通訊</h4>
-                            <p class="text-stone-600 text-sm">購買當地SIM卡或租用Wi-Fi機，保持網路暢通。**隨時保持手機有電，以利緊急聯絡或使用地圖導航。**</p>
+                            <p class="text-stone-600 text-sm">購買當地SIM卡或租用Wi-Fi機，保持網路暢通。<strong>隨時保持手機有電，以利緊急聯絡或使用地圖導航。</strong></p>
                         </div>
                     </li>
                      <li class="flex items-start">
                         <span class="text-teal-500 text-xl mr-3">👕</span>
                         <div>
                             <h4 class="font-bold">服裝與禮儀</h4>
-                            <p class="text-stone-600 text-sm">準備輕便透氣的夏裝，並為參觀寺廟準備長褲/長裙及有袖上衣。**在公共場合穿著得體，避免過於暴露，有助於融入當地文化並減少不必要的關注。**</p>
+                            <p class="text-stone-600 text-sm">準備輕便透氣的夏裝，並為參觀寺廟準備長褲/長裙及有袖上衣。<strong>在公共場合穿著得體，避免過於暴露，有助於融入當地文化並減少不必要的關注。</strong></p>
                         </div>
                     </li>
                      <li class="flex items-start">
                          <span class="text-teal-500 text-xl mr-3">💊</span>
                         <div>
                             <h4 class="font-bold">安全與健康</h4>
-                            <p class="text-stone-600 text-sm">購買旅遊保險、準備個人常備藥品（腸胃藥、防蚊液等）。**獨自旅行更需注意人身安全：避免深夜獨行，尤其是在偏僻或不熟悉的區域。在人潮擁擠的市集和景點，務必看管好個人財物，背包建議前背。搭乘計程車或Grab時，可將車牌號碼或行程資訊傳送給家人或朋友。遇到任何可疑情況，請保持冷靜並尋求協助。**</p>
-                            <p class="text-sm text-teal-600 mt-2">**語言溝通：** 您流利的英文在泰國主要旅遊區、酒店、餐廳和機場基本暢通無阻。在當地市場或與小販交流時，簡單的英文單詞或使用翻譯App（如Google翻譯）將會非常有幫助。泰國人普遍友善，若遇到困難，可嘗試向當地人求助。</p>
+                            <p class="text-stone-600 text-sm">購買旅遊保險、準備個人常備藥品（腸胃藥、防蚊液等）。<strong>獨自旅行更需注意人身安全：避免深夜獨行，尤其是在偏僻或不熟悉的區域。在人潮擁擠的市集和景點，務必看管好個人財物，背包建議前背。搭乘計程車或Grab時，可將車牌號碼或行程資訊傳送給家人或朋友。遇到任何可疑情況，請保持冷靜並尋求協助。</strong></p>
+                            <p class="text-sm text-teal-600 mt-2"><strong>語言溝通：</strong> 您流利的英文在泰國主要旅遊區、酒店、餐廳和機場基本暢通無阻。在當地市場或與小販交流時，簡單的英文單詞或使用翻譯App（如Google翻譯）將會非常有幫助。泰國人普遍友善，若遇到困難，可嘗試向當地人求助。</p>
                         </div>
                     </li>
                 </ul>
@@ -656,6 +666,24 @@
             // Set initial active tab and content
             document.querySelector('#main-tabs-container .tab-button-main[data-tab="overview"]').click();
             renderFoodCards(); // Initial render for food cards
+
+            // Calculated budget data based on detailed itinerary
+            const calculatedBudget = {
+                flights: 6482,
+                visa: 1200,
+                accommodation: 2800, // Fixed cost from original plan
+                food: 2295, // Sum of daily food estimates
+                localTransport: 1143, // Sum of daily local transport estimates
+                attractions: 3483 // Sum of daily attraction/activity estimates
+            };
+
+            const totalCalculatedCostNTD = calculatedBudget.flights + calculatedBudget.visa + calculatedBudget.accommodation +
+                                         calculatedBudget.food + calculatedBudget.localTransport + calculatedBudget.attractions;
+
+            const budgetTotalElem = document.getElementById('finalBudgetTotal');
+            if (budgetTotalElem) {
+                budgetTotalElem.textContent = totalCalculatedCostNTD.toLocaleString('zh-TW');
+            }
         });
     </script>
 </body>
