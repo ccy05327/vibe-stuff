@@ -220,6 +220,23 @@
 
 
 
+      /* Shopping list toggle styles */
+      .section-content {
+        transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+        overflow: hidden;
+        opacity: 1;
+      }
+
+      .section-content.collapsed {
+        max-height: 0 !important;
+        opacity: 0;
+        overflow: hidden;
+      }
+
+      .section-toggle {
+        transition: transform 0.3s ease;
+      }
+
       /* Text size adjustments for mobile */
       @media (max-width: 767px) {
         .timeline-item p {
@@ -606,6 +623,102 @@
           </div>
         </div>
       </section>
+
+      <section id="shopping-list" class="content-section">
+        <h2 class="section-title">購物清單</h2>
+        <div class="container mx-auto max-w-4xl px-4">
+          <div class="card p-4 md:p-6">
+            <div 
+              class="section-header cursor-pointer flex items-center justify-between"
+              onclick="toggleShoppingList()"
+            >
+              <h3 class="text-xl md:text-2xl font-bold text-emerald-800">
+                霞喀羅古道：最後衝刺採買清單
+              </h3>
+              <span id="shopping-toggle" class="section-toggle text-lg">▼</span>
+            </div>
+            
+            <div id="shopping-content" class="section-content collapsed mt-4">
+              <div class="space-y-6">
+                <p class="text-gray-700 text-sm md:text-base">
+                  這份清單專為無炊具、全程外食的兩人兩天一夜行程設計，所有品項皆可在便利商店或全聯超市購得。
+                </p>
+                
+                <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                  <h4 class="font-bold text-emerald-800 mb-2">採買總原則</h4>
+                  <ul class="list-disc list-inside space-y-1 text-sm text-emerald-700">
+                    <li><strong>熱量密度高：</strong> 選擇重量輕、熱量高的食物</li>
+                    <li><strong>方便即食：</strong> 無需加熱、無需烹煮</li>
+                    <li><strong>拆除包裝：</strong> 出發前盡量拆掉多餘的紙盒、塑膠包裝，減輕重量與體積</li>
+                  </ul>
+                </div>
+
+                <div class="grid gap-6 lg:grid-cols-2">
+                  <div class="card p-4">
+                    <h4 class="font-bold text-emerald-800 mb-3">一、主食正餐 (兩人份)</h4>
+                    <p class="text-sm text-gray-600 mb-3">這是您們主要的熱量來源，建議在竹東最後補給時再購買麵包類，以確保新鮮。</p>
+                    
+                    <div class="space-y-4">
+                      <div>
+                        <h5 class="font-semibold text-gray-800 mb-2">Day 1 午餐 & Day 2 早餐：</h5>
+                        <ul class="list-disc list-inside space-y-1 text-sm text-gray-700 ml-4">
+                          <li><strong>麵包類 (共4-6個):</strong> 建議選擇肉鬆麵包、菠蘿麵包、紅豆麵包等。吐司較佔體積，但也是選項。</li>
+                          <li><strong>御飯糰 (2-4個):</strong> 這是 Day 1 午餐的最佳選擇，請務必在竹東的便利商店購買，上山後盡快吃完。</li>
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h5 class="font-semibold text-gray-800 mb-2">Day 1 晚餐 & Day 2 午餐：</h5>
+                        <ul class="list-disc list-inside space-y-1 text-sm text-gray-700 ml-4">
+                          <li><strong>營養口糧 / 能量棒 (每人2份):</strong> 作為正餐的替代品，能快速補充能量。</li>
+                          <li><strong>肉乾或德式香腸 (2-3包):</strong> 提供必要的蛋白質與鹽分，真空包裝方便攜帶。</li>
+                          <li><strong>鮪魚/鯖魚罐頭 (2罐):</strong> 如果不介意重量，這是很好的蛋白質來源。建議買拉環式的。</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card p-4">
+                    <h4 class="font-bold text-emerald-800 mb-3">二、行動糧 (隨時補充)</h4>
+                    <p class="text-sm text-gray-600 mb-3">這些是健行中最重要的能量補充品，少量多次取用。</p>
+                    
+                    <ul class="list-disc list-inside space-y-1 text-sm text-gray-700">
+                      <li><strong>巧克力 / 士力架 (4-6條):</strong> 快速補充熱量的首選。</li>
+                      <li><strong>堅果隨手包 (4-6包):</strong> 提供優質脂肪與飽足感。</li>
+                      <li><strong>糖果 (1大包):</strong> 準備一些硬糖或軟糖，爬坡時含在嘴裡可分散注意力、補充糖分。鹽糖尤其重要，可補充流失的電解質。</li>
+                      <li><strong>餅乾 / 威化餅 (2-3包):</strong> 選擇自己喜歡的口味，作為轉換心情的零食。</li>
+                      <li><strong>果乾 (1包):</strong> 天然的糖分來源，如葡萄乾、芒果乾。</li>
+                    </ul>
+                  </div>
+
+                  <div class="card p-4">
+                    <h4 class="font-bold text-emerald-800 mb-3">三、飲品</h4>
+                    <p class="text-sm text-gray-600 mb-3">除了您自備的咖啡，以下是維持體力的關鍵。</p>
+                    
+                    <ul class="list-disc list-inside space-y-1 text-sm text-gray-700">
+                      <li><strong>寶礦力水得粉末包 (每人2-3包):</strong> 必備！在大量流汗時，能快速補充水分與電解質，遠比只喝白水有效。</li>
+                      <li><strong>電解質發泡錠 (1管):</strong> 可作為寶礦力之外的另一種選擇，投入水中即可飲用。</li>
+                    </ul>
+                  </div>
+
+                  <div class="card p-4">
+                    <h4 class="font-bold text-emerald-800 mb-3">四、其他重要小物</h4>
+                    <p class="text-sm text-gray-600 mb-3">最後檢查，這些東西在山上沒有就是沒有了。</p>
+                    
+                    <ul class="list-disc list-inside space-y-1 text-sm text-gray-700">
+                      <li><strong>濕紙巾 (1大包):</strong> 在無法洗澡的情況下，這是您最好的朋友。</li>
+                      <li><strong>衛生紙 (2包):</strong> 務必用夾鏈袋包好防水。</li>
+                      <li><strong>小型垃圾袋 (3-5個):</strong> 自己的垃圾自己帶下山，一個都不能少。</li>
+                      <li><strong>OK繃 / 優碘棉片:</strong> 即使有急救包，多帶幾個以備不時之需。</li>
+                      <li><strong>打火機 (1個):</strong> 即使不用於生火，也是重要的緊急求生工具。</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <script>
@@ -618,6 +731,24 @@
           checkbox.style.color = "white"; // Show checkmark
         } else {
           checkbox.style.color = "transparent"; // Hide checkmark
+        }
+      }
+
+      // Shopping list toggle functionality
+      function toggleShoppingList() {
+        const content = document.getElementById("shopping-content");
+        const toggle = document.getElementById("shopping-toggle");
+
+        if (content.classList.contains("collapsed")) {
+          // Expand
+          content.classList.remove("collapsed");
+          content.style.maxHeight = content.scrollHeight + "px";
+          toggle.textContent = "▲";
+        } else {
+          // Collapse
+          content.classList.add("collapsed");
+          content.style.maxHeight = "0";
+          toggle.textContent = "▼";
         }
       }
 
