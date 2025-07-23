@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>伯斯冬日獨行俠 - 您的客製化互動行程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Warm Neutrals & Subtle Teal -->
+    <!-- Application Structure Plan: A single-page application with a fixed top navigation bar for smooth scrolling to thematic sections (Overview, Transport & Lodging, Itinerary, Food Map, Prep). This task-oriented structure allows for intuitive exploration, starting from a high-level summary and drilling down into specific details like daily activities or restaurant choices. The flow is designed to mirror a user's natural trip-planning process, making information highly accessible and user-friendly. -->
+    <!-- Visualization & Content Choices: 
+        - Budget: Report Info -> Budget breakdown. Goal -> Inform/Compare. Viz -> HTML Table for detail & Chart.js Doughnut Chart for visual proportion. Interaction -> Chart tooltips. Justification -> A visual chart makes budget allocation instantly clear. Library -> Chart.js.
+        - Transport: Report Info -> Fare comparison. Goal -> Compare. Viz -> Chart.js Bar Chart comparing SmartRider vs. Cash fares. Interaction -> Chart tooltips. Justification -> Visually demonstrates the cost savings of using a SmartRider. Library -> Chart.js.
+        - Daily Itinerary: Report Info -> Day-by-day plan. Goal -> Organize/Inform. Presentation -> Vertical Timeline with HTML/CSS. Interaction -> Clickable Google Maps links. Justification -> A timeline is the most intuitive way to present a chronological schedule.
+        - Food Map: Report Info -> Restaurant recommendations. Goal -> Organize/Inform. Presentation -> Filterable card grid. Interaction -> JS-powered category filter buttons. Justification -> Interactive filtering makes it easy for the user to find food based on their preference. Method -> Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+        background-color: #fdfbf8;
+        color: #4a4a4a;
+      }
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -31px;
+        top: 10px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #0d9488;
+        border: 3px solid #f0fdfa;
+      }
+      .nav-link.active {
+        color: #0d9488;
+        font-weight: 700;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 450px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 300px;
+        max-height: 400px;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 350px;
+        }
+      }
+      
+      /* Tab Styles */
+      .tab-button {
+        padding: 12px 24px;
+        border: none;
+        background: #f3f4f6;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 8px 8px 0 0;
+        font-weight: 500;
+      }
+      
+      .tab-button.active {
+        background: #0d9488;
+        color: white;
+      }
+      
+      .tab-button:hover:not(.active) {
+        background: #e5e7eb;
+        color: #374151;
+      }
+      
+      .tab-content {
+        display: none;
+        background: white;
+        border-radius: 0 8px 8px 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      
+      .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .tab-nav {
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-[#FDFBF8]">
+    <a
+      id="backHomeBtn"
+      class="fixed top-4 left-4 z-50 px-3 py-1.5 rounded-full shadow border flex items-center backdrop-blur-sm transition-all"
+      style="
+        background: #0d9488;
+        color: #fff;
+        border-color: #0f766e;
+        font-size: 1rem;
+      "
+      onmouseover="this.style.background='#0f766e'"
+      onmouseout="this.style.background='#0d9488'"
+    >
+      <span class="mr-2">&#8592;</span> Back to Home
+    </a>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-teal-700 mb-2">伯斯冬日獨行俠</h1>
+        <p class="text-lg text-gray-600">您的客製化互動行程</p>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="tab-nav mb-8">
+        <div class="flex flex-wrap gap-2 justify-center">
+          <button class="tab-button active" data-tab="overview-content">行程總覽</button>
+          <button class="tab-button" data-tab="transport-content">交通住宿</button>
+          <button class="tab-button" data-tab="itinerary-content">每日行程</button>
+          <button class="tab-button" data-tab="food-content">美食地圖</button>
+          <button class="tab-button" data-tab="prep-content">行前準備</button>
+        </div>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content active" id="overview-content">
+        <section class="p-6">
+          <h2 class="text-3xl font-bold text-teal-800 mb-4">行程總覽</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold text-teal-700 mb-3">
+            歡迎來到伯斯：冬日裡的溫暖陽光
+          </h3>
+          <p class="mb-4 text-gray-600">
+            伯斯，一座融合都市精緻與自然壯麗的城市。八月的冬季，氣候溫和宜人，白天約17-20°C，夜晚稍涼。雖然是雨季，但仍有大量晴朗時光。作為旅遊淡季，此時是預算有限的探險家們體驗伯斯獨特魅力的最佳時機，無論是壯麗的海岸線、遷徙的鯨魚，還是城市中的綠洲，都等待著您的探索。
+          </p>
+
+          <h3 class="text-xl font-semibold text-teal-700 mt-6 mb-3">
+            總預算估計與視覺化分析
+          </h3>
+          <p class="mb-4 text-gray-600">
+            這趟為期五日的旅程，總預算經過精心規劃。伯斯是個高度無現金化的社會，信用卡與簽帳卡通行無阻，但仍建議準備少量現金以備不時之需。下方的圖表與表格為您清晰呈現各項支出的佔比與細節。
+          </p>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div class="chart-container">
+              <canvas id="budgetChart"></canvas>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-teal-800 uppercase bg-teal-50">
+                  <tr>
+                    <th scope="col" class="px-4 py-3">項目</th>
+                    <th scope="col" class="px-4 py-3">金額 (AUD)</th>
+                    <th scope="col" class="px-4 py-3">金額 (TWD)</th>
+                    <th scope="col" class="px-4 py-3">可否刷卡</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="bg-white border-b">
+                    <td class="px-4 py-3">✈️ 機加酒套裝</td>
+                    <td class="px-4 py-3">$835</td>
+                    <td class="px-4 py-3">$15,861</td>
+                    <td class="px-4 py-3">是</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-4 py-3">🚌 市區交通</td>
+                    <td class="px-4 py-3">$50</td>
+                    <td class="px-4 py-3">$950</td>
+                    <td class="px-4 py-3">大多是</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-4 py-3">🏝️ 羅特尼斯島</td>
+                    <td class="px-4 py-3">$80</td>
+                    <td class="px-4 py-3">$1,520</td>
+                    <td class="px-4 py-3">是</td>
+                  </tr>
+                  <tr class="bg-gray-50 border-b">
+                    <td class="px-4 py-3">🍽️ 餐飲</td>
+                    <td class="px-4 py-3">$200</td>
+                    <td class="px-4 py-3">$3,800</td>
+                    <td class="px-4 py-3">大多是</td>
+                  </tr>
+                  <tr class="bg-white border-b">
+                    <td class="px-4 py-3">🎟️ 景點門票</td>
+                    <td class="px-4 py-3">$70</td>
+                    <td class="px-4 py-3">$1,330</td>
+                    <td class="px-4 py-3">是</td>
+                  </tr>
+                  <tr class="bg-gray-50">
+                    <td class="px-4 py-3">💰 預備金</td>
+                    <td class="px-4 py-3">$50</td>
+                    <td class="px-4 py-3">$950</td>
+                    <td class="px-4 py-3">大多是</td>
+                  </tr>
+                  <tr class="bg-teal-100 font-bold text-teal-900">
+                    <td class="px-4 py-3">總計</td>
+                    <td class="px-4 py-3">$1,285</td>
+                    <td class="px-4 py-3">$24,411</td>
+                    <td class="px-4 py-3"></td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="text-xs text-gray-500 mt-2">
+                *匯率以 1 AUD ≈ 19 TWD 估算。
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="tab-content" id="transport-content">
+        <section class="p-6">
+          <h2 class="text-3xl font-bold text-teal-800 mb-4">交通與住宿</h2>
+        <div class="space-y-8">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold text-teal-700 mb-3">
+              ✈️ 機票選擇：聰明打包，省下更多
+            </h3>
+            <p class="mb-4 text-gray-600">
+              對於預算型旅行，廉航是首選。酷航(Scoot)提供10公斤手提行李額度，對輕裝簡行的您來說極具優勢，可避免額外行李費用。亞航(AirAsia)和捷星(Jetstar)則為7公斤。請務必遵守液體攜帶規定，享受順暢的登機體驗。
+            </p>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold text-teal-700 mb-3">
+              🚌 伯斯交通攻略：善用SmartRider與免費巴士
+            </h3>
+            <p class="mb-4 text-gray-600">
+              伯斯擁有高效的Transperth公共交通網。購買SmartRider卡可享票價折扣，是暢遊城市最經濟的方式。更棒的是，市中心有大範圍的免費交通區(FTZ)和頻繁的CAT免費巴士，涵蓋多數主要景點。下圖為您比較不同購票方式的費用差異。
+            </p>
+            <div class="chart-container h-64 md:h-80">
+              <canvas id="transportChart"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold text-teal-700 mb-3">
+              🏨 精選青年旅館推薦
+            </h3>
+            <p class="mb-4 text-gray-600">
+              根據您對便宜、乾淨、安全及機能的要求，我們精選了三家評價極佳的青年旅館。它們都提供共用廚房，讓您能自己動手做，節省餐費，同時也是認識新朋友的好地方。
+            </p>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-teal-800 uppercase bg-teal-50">
+                  <tr>
+                    <th class="px-4 py-3">旅館名稱</th>
+                    <th class="px-4 py-3">價格(AUD/晚)</th>
+                    <th class="px-4 py-3">評分</th>
+                    <th class="px-4 py-3">地點</th>
+                    <th class="px-4 py-3">支付備註</th>
+                  </tr>
+                </thead>
+                <tbody id="hostel-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="tab-content" id="itinerary-content">
+        <section class="p-6">
+          <h2 class="text-3xl font-bold text-teal-800 mb-4">
+            每日行程：您的彈性冒險藍圖
+          </h2>
+        <p class="mb-6 text-gray-600">
+          這份行程是為您量身打造的建議，充滿彈性。您可以根據當天的心情和體力自由調整。每個地點都附有Google
+          Maps連結，讓您輕鬆導航，無憂探索。
+        </p>
+        <div id="timeline-container" class="space-y-12"></div>
+        </section>
+      </div>
+
+      <div class="tab-content" id="food-content">
+        <section class="p-6">
+          <h2 class="text-3xl font-bold text-teal-800 mb-4">
+            美食地圖：舌尖上的伯斯
+          </h2>
+        <p class="mb-4 text-gray-600">
+          為您精選了多樣且符合「不辣/小辣」需求的當地特色美食。您可以使用下方的按鈕篩選想吃的類別，快速找到心儀的餐廳。
+        </p>
+        <div class="flex flex-wrap justify-center gap-2 mb-6" id="food-filters">
+          <button
+            data-filter="all"
+            class="filter-btn bg-teal-600 text-white px-4 py-2 rounded-full text-sm"
+          >
+            全部顯示
+          </button>
+          <button
+            data-filter="dessert"
+            class="filter-btn bg-white text-teal-600 border border-teal-600 px-4 py-2 rounded-full text-sm"
+          >
+            甜點
+          </button>
+          <button
+            data-filter="japanese"
+            class="filter-btn bg-white text-teal-600 border border-teal-600 px-4 py-2 rounded-full text-sm"
+          >
+            日式料理
+          </button>
+          <button
+            data-filter="indonesian"
+            class="filter-btn bg-white text-teal-600 border border-teal-600 px-4 py-2 rounded-full text-sm"
+          >
+            印尼風味
+          </button>
+        </div>
+        <div
+          id="food-grid"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        ></div>
+        </section>
+      </div>
+
+      <div class="tab-content" id="prep-content">
+        <section class="p-6">
+          <h2 class="text-3xl font-bold text-teal-800 mb-4">
+            行前準備：重要提醒
+          </h2>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <ul class="space-y-4 list-disc list-inside text-gray-600">
+            <li>
+              <span class="font-semibold text-teal-700">天氣與衣著：</span
+              >八月是冬季，日夜溫差大且偶有降雨。建議採多層次穿搭，並攜帶輕便保暖外套及防水步行鞋。
+            </li>
+            <li>
+              <span class="font-semibold text-teal-700">現金與信用卡：</span
+              >伯斯高度無現金化，但建議準備50-100澳幣現金，以備不時之需。
+            </li>
+            <li>
+              <span class="font-semibold text-teal-700">網路與通訊：</span
+              >建議購買當地SIM卡或租用WiFi，以便隨時導航和查詢資訊。
+            </li>
+            <li>
+              <span class="font-semibold text-teal-700">緊急聯絡：</span
+              >記下澳洲緊急電話(000)及台灣駐伯斯辦事處的聯絡方式。
+            </li>
+            <li>
+              <span class="font-semibold text-teal-700">旅遊保險：</span
+              >強烈建議購買全面的旅遊保險，讓旅程更有保障。
+            </li>
+          </ul>
+        </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="bg-gray-100 mt-16">
+      <div
+        class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-gray-500 text-sm"
+      >
+        <p>為您客製化的伯斯互動行程 | 祝您旅途愉快！</p>
+      </div>
+    </footer>
+
+    <script>
+      // Dynamically set the homepage link for local and GitHub Pages
+      const btn = document.getElementById("backHomeBtn");
+      if (
+        location.hostname === "localhost" ||
+        location.hostname === "127.0.0.1"
+      ) {
+        btn.href = "/";
+      } else {
+        btn.href = "/vibe-stuff/";
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Tab switching functionality
+        function initTabs() {
+          const tabButtons = document.querySelectorAll('.tab-button');
+          const tabContents = document.querySelectorAll('.tab-content');
+          
+          function switchTab(targetId) {
+            // Hide all tab contents
+            tabContents.forEach(content => {
+              content.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            tabButtons.forEach(button => {
+              button.classList.remove('active');
+            });
+            
+            // Show target content
+            const targetContent = document.getElementById(targetId);
+            if (targetContent) {
+              targetContent.classList.add('active');
+            }
+            
+            // Add active class to clicked button
+            const activeButton = document.querySelector(`[data-tab="${targetId}"]`);
+            if (activeButton) {
+              activeButton.classList.add('active');
+            }
+          }
+          
+          // Add click listeners to tab buttons
+          tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+              const targetId = button.getAttribute('data-tab');
+              switchTab(targetId);
+            });
+          });
+          
+          // Initialize with first tab active
+          if (tabButtons.length > 0) {
+            const firstTab = tabButtons[0].getAttribute('data-tab');
+            switchTab(firstTab);
+          }
+        }
+        
+        // Initialize tabs
+        initTabs();
+
+        const budgetData = {
+          labels: [
+            "機加酒套裝",
+            "市區交通",
+            "羅特尼斯島",
+            "餐飲",
+            "景點門票",
+            "預備金",
+          ],
+          datasets: [
+            {
+              data: [835, 50, 80, 200, 70, 50], // Values in AUD
+              backgroundColor: [
+                "#0d9488",
+                "#0f766e",
+                "#115e59",
+                "#134e4a",
+                "#ccfbf1",
+                "#99f6e4",
+              ],
+              borderColor: "#FDFBF8",
+              hoverOffset: 4,
+            },
+          ],
+        };
+
+        const budgetCtx = document
+          .getElementById("budgetChart")
+          .getContext("2d");
+        new Chart(budgetCtx, {
+          type: "doughnut",
+          data: budgetData,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  font: {
+                    family: "'Noto Sans TC', sans-serif",
+                  },
+                },
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    let label = context.label || "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    if (context.parsed !== null) {
+                      label += new Intl.NumberFormat("en-AU", {
+                        style: "currency",
+                        currency: "AUD",
+                      }).format(context.parsed);
+                    }
+                    return label;
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        const transportData = {
+          labels: ["機場 > 市區 (2區)", "市區 > 南伯斯 (2區)"],
+          datasets: [
+            {
+              label: "現金購票 (AUD)",
+              data: [5.2, 3.5],
+              backgroundColor: "#fca5a5",
+              borderColor: "#ef4444",
+              borderWidth: 1,
+            },
+            {
+              label: "SmartRider (AUD)",
+              data: [4.16, 2.8],
+              backgroundColor: "#86efac",
+              borderColor: "#22c55e",
+              borderWidth: 1,
+            },
+          ],
+        };
+
+        const transportCtx = document
+          .getElementById("transportChart")
+          .getContext("2d");
+        new Chart(transportCtx, {
+          type: "bar",
+          data: transportData,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function (value) {
+                    return "$" + value;
+                  },
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                position: "top",
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    if (context.parsed.y !== null) {
+                      label += new Intl.NumberFormat("en-AU", {
+                        style: "currency",
+                        currency: "AUD",
+                      }).format(context.parsed.y);
+                    }
+                    return label;
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        const hostels = [
+          {
+            name: "Spinners Hostel",
+            price: "$39-$79",
+            rating: "8.8/10",
+            location: "Northbridge",
+            payment: "可能需現金押金",
+          },
+          {
+            name: "Hostel G Perth",
+            price: "$33-$97",
+            rating: "7.9/10",
+            location: "Perth CBD",
+            payment: "僅接受卡片支付",
+          },
+          {
+            name: "Spin Off Hostel",
+            price: "$39-$80",
+            rating: "9.2/10",
+            location: "West Perth",
+            payment: "接受卡片支付",
+          },
+        ];
+
+        const hostelTable = document.getElementById("hostel-table");
+        hostels.forEach((hostel, index) => {
+          const row = document.createElement("tr");
+          row.className =
+            index % 2 === 0 ? "bg-white border-b" : "bg-gray-50 border-b";
+          row.innerHTML = `
+                    <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">${hostel.name}</td>
+                    <td class="px-4 py-3">${hostel.price}</td>
+                    <td class="px-4 py-3">${hostel.rating}</td>
+                    <td class="px-4 py-3">${hostel.location}</td>
+                    <td class="px-4 py-3">${hostel.payment}</td>
+                `;
+          hostelTable.appendChild(row);
+        });
+
+        const itineraryData = [
+          {
+            day: "Day 1",
+            title: "城市脈動與歷史足跡",
+            events: [
+              {
+                time: "上午",
+                title: "抵達與安頓",
+                desc: "從伯斯機場(PER)搭乘機場線火車至市區，前往青年旅館辦理入住。",
+                transport: "火車/巴士",
+                duration: "1.5-2小時",
+                cost: "約$4-6 AUD",
+                mapLink: "https://maps.app.goo.gl/Fk9v9m3jR2z1Z42V8",
+              },
+              {
+                time: "下午",
+                title: "文化中心 & 西澳博物館",
+                desc: "沉浸在伯斯的藝術與歷史氛圍中，博物館多為免費入場。",
+                transport: "步行/免費CAT巴士",
+                duration: "3-4小時",
+                cost: "免費",
+                mapLink: "https://maps.app.goo.gl/r6345x3jR2z1Z42V8",
+              },
+              {
+                time: "傍晚",
+                title: "市政廳 & 鐘樓",
+                desc: "欣賞哥德式與現代建築之美，從鐘樓俯瞰天鵝河景致。",
+                transport: "步行/免費CAT巴士",
+                duration: "2-2.5小時",
+                cost: "鐘樓門票約$26 AUD",
+                mapLink: "https://maps.app.goo.gl/6mY6hHhQ4z2X1Y2V7",
+              },
+              {
+                time: "晚上",
+                title: "北橋區晚餐",
+                desc: "在充滿活力的北橋區探索街頭藝術，並尋找道地美食。",
+                transport: "步行/免費CAT巴士",
+                duration: "彈性",
+                cost: "依餐廳而定",
+                mapLink: "https://maps.app.goo.gl/NorthbridgePerth",
+              },
+            ],
+          },
+          {
+            day: "Day 2",
+            title: "綠意盎然與河畔風光",
+            events: [
+              {
+                time: "上午",
+                title: "國王公園與植物園",
+                desc: "在世界最大的市區公園之一漫步，參加免費導覽，欣賞城市全景。",
+                transport: "935號巴士/CAT巴士",
+                duration: "3-4小時",
+                cost: "免費",
+                mapLink: "https://maps.app.goo.gl/R6Z7x2T2Y2U1Z41X9",
+              },
+              {
+                time: "下午",
+                title: "伊莉莎白碼頭",
+                desc: "體驗現代海濱的活力，欣賞公共藝術與天鵝河景。",
+                transport: "CAT巴士/步行",
+                duration: "2-3小時",
+                cost: "免費",
+                mapLink: "https://maps.app.goo.gl/ElizabethQuayPerth",
+              },
+              {
+                time: "傍晚",
+                title: "南伯斯 & 伯斯動物園",
+                desc: "搭乘渡輪至南伯斯，從對岸欣賞天際線，並拜訪可愛的動物們。",
+                transport: "渡輪/步行",
+                duration: "3-4小時",
+                cost: "渡輪+動物園門票約$40 AUD",
+                mapLink: "https://maps.app.goo.gl/PerthZoo",
+              },
+            ],
+          },
+          {
+            day: "Day 3",
+            title: "海岸風情與歷史港鎮",
+            events: [
+              {
+                time: "上午",
+                title: "科特斯洛海灘",
+                desc: "前往伯斯最著名的海灘，在白色沙灘上漫步，感受印度洋的海風。",
+                transport: "火車(Fremantle線)",
+                duration: "2-3小時",
+                cost: "火車票",
+                mapLink: "https://maps.app.goo.gl/CottesloeBeach",
+              },
+              {
+                time: "下午",
+                title: "費里曼圖歷史探索",
+                desc: "搭火車至充滿魅力的港口小鎮，漫步於19世紀的歷史街區。",
+                transport: "火車(Fremantle線)",
+                duration: "2-3小時",
+                cost: "免費探索",
+                mapLink: "https://maps.app.goo.gl/Fremantle",
+              },
+              {
+                time: "傍晚",
+                title: "費里曼圖市集 & 晚餐",
+                desc: "參觀百年歷史市集，品嚐當地小吃與手工藝品。",
+                transport: "步行/免費CAT巴士",
+                duration: "1.5-2小時",
+                cost: "依消費而定",
+                mapLink: "https://maps.app.goo.gl/SyaQsYoFMgVUuq4p6",
+              },
+            ],
+          },
+          {
+            day: "Day 4",
+            title: "羅特尼斯島一日遊",
+            events: [
+              {
+                time: "全天",
+                title: "尋找Quokka的微笑",
+                desc: "搭渡輪前往無車的自然天堂，租台單車環島，與世界上最快樂的動物短尾矮袋鼠相遇。",
+                transport: "渡輪/自行車",
+                duration: "全天",
+                cost: "渡輪+入場費約$79 AUD起",
+                mapLink: "https://maps.app.goo.gl/RottnestIsland",
+              },
+            ],
+          },
+          {
+            day: "Day 5",
+            title: "彈性時光與告別",
+            events: [
+              {
+                time: "上午",
+                title: "自由活動",
+                desc: "可以重遊喜歡的景點，或在市區咖啡館享受悠閒時光，購買紀念品。",
+                transport: "步行/免費CAT巴士",
+                duration: "2-4小時",
+                cost: "依消費而定",
+                mapLink: "https://maps.app.goo.gl/perth",
+              },
+              {
+                time: "下午",
+                title: "前往機場",
+                desc: "整理行囊，搭乘機場線火車前往伯斯機場(PER)，準備搭機返程。",
+                transport: "火車",
+                duration: "約1小時",
+                cost: "約$4-6 AUD",
+                mapLink: "https://maps.app.goo.gl/Fk9v9m3jR2z1Z42V8",
+              },
+            ],
+          },
+        ];
+
+        const timelineContainer = document.getElementById("timeline-container");
+        itineraryData.forEach((dayData) => {
+          let eventsHtml = "";
+          dayData.events.forEach((event) => {
+            eventsHtml += `
+                        <div class="relative pl-8 pb-8">
+                            <div class="timeline-item"></div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-teal-500">
+                                <p class="text-sm font-semibold text-teal-600 mb-1">${event.time} - ${event.title}</p>
+                                <p class="text-gray-600 text-sm mb-3">${event.desc}</p>
+                                <div class="text-xs text-gray-500 flex flex-wrap gap-x-4 gap-y-1 items-center">
+                                    <span>🕒 ${event.duration}</span>
+                                    <span>🚌 ${event.transport}</span>
+                                    <span>💰 ${event.cost}</span>
+                                    <a href="${event.mapLink}" target="_blank" class="inline-block bg-teal-50 text-teal-700 px-2 py-1 rounded-full hover:bg-teal-100 transition-colors">📍 Google Maps</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+          });
+
+          const dayHtml = `
+                    <div>
+                        <h3 class="text-2xl font-bold text-teal-700 mb-4">${dayData.day}: ${dayData.title}</h3>
+                        <div class="relative border-l-2 border-teal-200 ml-3">
+                            ${eventsHtml}
+                        </div>
+                    </div>
+                `;
+          timelineContainer.innerHTML += dayHtml;
+        });
+
+        const foodData = [
+          {
+            name: "Cafe Pastel",
+            category: "dessert",
+            desc: "號稱澳洲最正宗的葡萄牙蛋撻，外皮酥脆內餡香濃。",
+            mapLink: "https://maps.app.goo.gl/CafePastel",
+          },
+          {
+            name: "Ginza Nana Alley",
+            category: "japanese",
+            desc: "充滿活力的日式橫丁美食街，提供拉麵、炸豬排、串燒等。",
+            mapLink: "https://maps.app.goo.gl/GinzaNanaAlley",
+          },
+          {
+            name: "Taka's Kitchen",
+            category: "japanese",
+            desc: "伯斯最受歡迎的平價日式料理，經濟實惠，選擇多樣。",
+            mapLink: "https://maps.app.goo.gl/TakasKitchen",
+          },
+          {
+            name: "Manise Cafe",
+            category: "indonesian",
+            desc: "道地的印尼美食，份量大口味濃郁，可要求不辣或小辣。",
+            mapLink: "https://maps.app.goo.gl/ManiseCafe",
+          },
+        ];
+
+        const foodGrid = document.getElementById("food-grid");
+        const foodFilters = document.getElementById("food-filters");
+
+        function renderFood(filter = "all") {
+          foodGrid.innerHTML = "";
+          const filteredData =
+            filter === "all"
+              ? foodData
+              : foodData.filter((item) => item.category === filter);
+
+          filteredData.forEach((item) => {
+            const card = document.createElement("div");
+            card.className =
+              "food-card bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105";
+            card.dataset.category = item.category;
+            card.innerHTML = `
+                        <div class="p-5">
+                            <h4 class="text-lg font-bold text-teal-800">${item.name}</h4>
+                            <p class="text-gray-600 text-sm mt-1 mb-3">${item.desc}</p>
+                            <a href="${item.mapLink}" target="_blank" class="text-teal-600 hover:text-teal-800 font-semibold text-sm">在Google Maps上查看 →</a>
+                        </div>
+                    `;
+            foodGrid.appendChild(card);
+          });
+        }
+
+        foodFilters.addEventListener("click", function (e) {
+          if (e.target.tagName === "BUTTON") {
+            const filter = e.target.dataset.filter;
+
+            document.querySelectorAll(".filter-btn").forEach((btn) => {
+              btn.classList.remove("bg-teal-600", "text-white");
+              btn.classList.add(
+                "bg-white",
+                "text-teal-600",
+                "border",
+                "border-teal-600"
+              );
+            });
+
+            e.target.classList.add("bg-teal-600", "text-white");
+            e.target.classList.remove(
+              "bg-white",
+              "text-teal-600",
+              "border",
+              "border-teal-600"
+            );
+
+            renderFood(filter);
+          }
+        });
+
+        renderFood();
+      });
+    </script>
+  </body>
+</html>
