@@ -43,64 +43,9 @@
         background-color: #a5f3fc;
       } /* cyan-200 */
 
-      .tag-hike {
-        background-color: #a7f3d0;
-        border-color: #34d399;
-        color: #065f46;
-      }
-      .tag-study {
-        background-color: #bfdbfe;
-        border-color: #60a5fa;
-        color: #1e40af;
-      }
-      .tag-entertainment {
-        background-color: #e9d5ff;
-        border-color: #c084fc;
-        color: #6b21a8;
-      }
-
-      .event-done .event-text,
-      .task-done .task-title {
+      .event-done .event-text {
         text-decoration: line-through;
         opacity: 0.6;
-      }
-
-      .custom-checkbox input {
-        display: none;
-      }
-      .custom-checkbox .checkmark {
-        width: 24px;
-        height: 24px;
-        min-width: 24px;
-        min-height: 24px;
-        border-width: 2px;
-        border-style: solid;
-        border-radius: 6px;
-        display: inline-block;
-        position: relative;
-        transition: all 0.2s;
-        cursor: pointer;
-      }
-      .custom-checkbox input:checked + .checkmark::after {
-        content: "";
-        position: absolute;
-        left: 7px;
-        top: 3px;
-        width: 6px;
-        height: 12px;
-        border: solid white;
-        border-width: 0 3px 3px 0;
-        transform: rotate(45deg);
-      }
-      .task-checkbox,
-      .subtask-checkbox {
-        min-width: 0;
-        min-height: 0;
-        font-size: 1rem;
-      }
-      .subtask-done {
-        text-decoration: line-through;
-        color: #9ca3af;
       }
 
       /* Mobile-first container and modal styles */
@@ -152,7 +97,7 @@
         background: #f1f5f9;
         z-index: 10;
       }
-      /* Checklist and countdown vertical stacking */
+      /* Countdown vertical stacking */
       .flex.items-center.p-3 {
         flex-direction: column;
         align-items: flex-start;
@@ -452,23 +397,6 @@
             description: "Natural Language Processing 的期中考試。",
           },
           {
-            id: 3,
-            title: "淡蘭古道南路",
-            type: "Hike",
-            startDate: "2025-07-14",
-            endDate: "2025-07-16",
-            description: "與七月中要入營的朋友完成。時程為建議，可彈性調整。",
-          },
-          {
-            id: 4,
-            title: "碧山巖露營",
-            type: "Hike",
-            startDate: "2025-07-03",
-            endDate: "2025-07-04",
-            description:
-              "過夜一次，選擇天氣好的週一或週四。時程為建議，可彈性調整。",
-          },
-          {
             id: 5,
             title: "接案工作",
             type: "Work",
@@ -478,11 +406,11 @@
           },
           {
             id: 6,
-            title: "可能的接案工作",
-            type: "Work",
-            startDate: "2025-08-13",
-            endDate: "2025-08-17",
-            description: "還沒確定，滿力 泌尿科會議展覽。",
+            title: "ST9",
+            type: "Travel",
+            startDate: "2025-08-18",
+            endDate: "2025-08-24",
+            description: "ST9 旅行。",
           },
           {
             id: 7,
@@ -512,33 +440,24 @@
             id: 10,
             title: "霞喀羅古道",
             type: "Hike",
-            startDate: "2025-09-18",
-            endDate: "2025-09-19",
-            description: "在白石駐在所過夜。時程為建議，可彈性調整。",
-          },
-          {
-            id: 11,
-            title: "台北大縱走",
-            type: "Hike",
-            startDate: "2025-07-01",
-            endDate: "2025-08-31",
-            description:
-              "利用七、八月的零碎時間，化整為零，逐段完成\n已完成徽章數: 第五段 (7)、第六段 (1)、第八段 (2)\n未完成: 第一段、第二段、第三段、第四段、第六段、第七段、第八段\n一二最後，先走完六七八段，然後再走一二三四段。",
+            startDate: "2025-07-18",
+            endDate: "2025-07-19",
+            description: "與Robinson前往",
           },
           {
             id: 12,
             title: "Mobile Dev 作業",
             type: "Study",
-            startDate: "2025-07-01",
-            endDate: "2025-09-20",
+            startDate: "2025-08-08",
+            endDate: "2025-09-24",
             description: "趁其他作業空檔先完成下學期作業，在出發前完成即可。",
           },
           {
             id: 13,
             title: "出發澳洲！",
             type: "Travel",
-            startDate: "2025-09-22",
-            endDate: "2025-09-22",
+            startDate: "2025-09-25",
+            endDate: "2025-09-25",
             description: "新的旅程開始！",
           },
           {
@@ -575,97 +494,14 @@
           },
         ];
 
-        let checklistTasks = [
-          {
-            id: 101,
-            title: "霞喀羅古道",
-            status: "pending",
-            tag: "戶外",
-            duration: "2天1夜",
-            subtasks: [],
-          },
-          {
-            id: 102,
-            title: "碧山巖露營",
-            status: "pending",
-            tag: "戶外",
-            duration: "1晚",
-            subtasks: ["預約7/3營地"],
-          },
-          {
-            id: 103,
-            title: "淡蘭古道南路",
-            status: "pending",
-            tag: "戶外",
-            duration: "3天2夜",
-            subtasks: ["跟R確定日期", "確認路線"],
-          },
-          {
-            id: 104,
-            title: "台北大縱走",
-            status: "pending",
-            tag: "戶外",
-            duration: "多日",
-            subtasks: [
-              "第六段",
-              "第七段",
-              "第八段",
-              "第三段",
-              "第四段",
-              "第一段",
-              "第二段",
-            ],
-          },
-          {
-            id: 105,
-            title: "完成FP",
-            status: "pending",
-            tag: "學校",
-            duration: "3個月",
-            subtasks: [],
-          },
-          {
-            id: 106,
-            title: "完成NLP",
-            status: "pending",
-            tag: "學校",
-            duration: "2週",
-            subtasks: [],
-          },
-          {
-            id: 107,
-            title: "完成 Mobile Dev 作業",
-            status: "pending",
-            tag: "學校",
-            duration: "4週",
-            subtasks: [
-              "使用Stich製作wireframe",
-              "使用Firebase Studio做出prototype",
-              "使用Task Master + ollama做計畫跟進度追蹤",
-              "使用Cursor做出App",
-            ],
-          },
-        ];
-
-        // Normalize subtasks to always be objects
-        checklistTasks = checklistTasks.map((task) => ({
-          ...task,
-          subtasks: (task.subtasks || []).map((sub, idx) =>
-            typeof sub === "string"
-              ? { id: Date.now() + idx, text: sub, completed: false }
-              : sub
-          ),
-        }));
-
         const tabs = [
           { id: "overview", name: "Overview" },
           { id: "weekly", name: "Week" },
-          { id: "checklist", name: "Checklist" },
           { id: "countdowns", name: "Countdown" },
         ];
 
         let deadlineCountdowns = [
-          { id: 1, name: "✈️ 出發", date: "2025-09-22" },
+          { id: 1, name: "✈️ 出發", date: "2025-09-25" },
           { id: 2, name: "NLP midterm", date: "2025-06-30" },
           { id: 3, name: "FP exam", date: "2025-09-08" },
           { id: 4, name: "NLP exam", date: "2025-09-10" },
@@ -675,14 +511,14 @@
         // Update events array
         events.forEach((event) => {
           if (event.title === "出發澳洲！") {
-            event.startDate = "2025-09-22";
-            event.endDate = "2025-09-22";
+            event.startDate = "2025-09-25";
+            event.endDate = "2025-09-25";
           }
         });
         // Update deadlineCountdowns
         deadlineCountdowns.forEach((cd) => {
           if (cd.name === "✈️ 出發") {
-            cd.date = "2025-09-22";
+            cd.date = "2025-09-25";
           }
         });
 
@@ -734,12 +570,6 @@
         const nextBtn = document.getElementById("next-btn");
         const todayBtn = document.getElementById("today-btn");
 
-        const tagColorMap = {
-          戶外: "#34d399",
-          學校: "#60a5fa",
-          娛樂: "#c084fc",
-        };
-
         const eventTypeColorMap = {
           Hike: "#a7f3d0", // green
           Study: "#bfdbfe", // blue
@@ -754,15 +584,6 @@
           if (!dateString) return null;
           const [y, m, d] = dateString.split("-").map(Number);
           return new Date(y, m - 1, d);
-        }
-
-        function getTagClass(tag) {
-          const classMap = {
-            戶外: "tag-hike",
-            學校: "tag-study",
-            娛樂: "tag-entertainment",
-          };
-          return classMap[tag] || "bg-gray-200 border-gray-400 text-gray-800";
         }
 
         function getEventTypeHexColor(type) {
@@ -842,322 +663,15 @@
 
         function renderContentForActiveView() {
           subNavContainer.style.display = "flex";
-          if (activeView === "checklist" || activeView === "countdowns") {
+          if (activeView === "countdowns") {
             subNavContainer.style.display = "none";
-            if (activeView === "checklist") renderChecklistPage();
-            if (activeView === "countdowns") renderCountdownsPage();
+            renderCountdownsPage();
           } else if (activeView === "weekly") {
             renderWeekView();
             renderWeekNav();
           } else if (activeView === "overview") {
             renderMonthView();
             renderMonthNav();
-          }
-        }
-
-        function renderChecklistPage() {
-          const pendingTasks = checklistTasks.filter(
-            (t) => t.status === "pending"
-          );
-          const completedTasks = checklistTasks.filter(
-            (t) => t.status === "completed"
-          );
-
-          const taskToHtml = (task) => {
-            const tagClasses = getTagClass(task.tag);
-            const tagColor = tagColorMap[task.tag] || "#9ca3af";
-            const isCompleted = task.status === "completed";
-
-            let checkboxStyle = `border-color: ${tagColor};`;
-            if (isCompleted) checkboxStyle += ` background-color: ${tagColor};`;
-
-            const bgColorClass = isCompleted
-              ? tagClasses.split(" ")[0]
-              : "bg-white";
-
-            return `<div class="p-3 rounded-lg border border-gray-200 ${bgColorClass}">
-                        <div class="flex items-start">
-                            <label class="custom-checkbox mt-1">
-                                <input type="checkbox" class="task-checkbox" data-id="${
-                                  task.id
-                                }" ${isCompleted ? "checked" : ""}>
-                                <span class="checkmark" style="${checkboxStyle}"></span>
-                            </label>
-                            <div class="flex-grow ml-3">
-                                <p class="font-semibold task-title ${
-                                  isCompleted ? "task-done" : ""
-                                }">${task.title}</p>
-                                <div class="mt-2 space-y-1">
-                                    ${task.subtasks
-                                      .map(
-                                        (sub) => `
-                                        <label class="flex items-center text-sm text-gray-600">
-                                            <input type="checkbox" class="subtask-checkbox mr-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" data-task-id="${
-                                              task.id
-                                            }" data-subtask-id="${sub.id}" ${
-                                          sub.completed ? "checked" : ""
-                                        }>
-                                            <span class="${
-                                              sub.completed
-                                                ? "subtask-done"
-                                                : ""
-                                            }">${sub.text}</span>
-                                        </label>
-                                    `
-                                      )
-                                      .join("")}
-                                </div>
-                            </div>
-                            <div class="text-right ml-4 flex-shrink-0">
-                                <p class="text-sm font-medium text-gray-700">${
-                                  task.duration || ""
-                                }</p>
-                                <div class="mt-2 space-x-1">
-                                    <button class="edit-task-btn p-1 text-xs hover:bg-gray-200 rounded-full" data-id="${
-                                      task.id
-                                    }">✏️</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-          };
-
-          let html = `
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-gray-700">Task Checklist</h2>
-                        <button id="add-task-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors">Add Task</button>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <h3 class="font-semibold text-gray-600 mb-2">To Do</h3>
-                            <div class="space-y-3">
-                                ${
-                                  pendingTasks.length > 0
-                                    ? pendingTasks.map(taskToHtml).join("")
-                                    : '<p class="text-gray-400 text-sm">No tasks to do</p>'
-                                }
-                            </div>
-                        </div>
-                         <div>
-                            <h3 class="font-semibold text-gray-600 mb-2 mt-6">Completed</h3>
-                            <div class="space-y-3">
-                                ${
-                                  completedTasks.length > 0
-                                    ? completedTasks.map(taskToHtml).join("")
-                                    : '<p class="text-gray-400 text-sm">No completed tasks yet</p>'
-                                }
-                            </div>
-                        </div>
-                    </div>
-                `;
-          tabContentContainer.innerHTML = html;
-          addChecklistEventListeners();
-        }
-
-        function addChecklistEventListeners() {
-          document
-            .getElementById("add-task-btn")
-            .addEventListener("click", () => openChecklistModal());
-          document
-            .querySelectorAll(".task-checkbox")
-            .forEach((cb) =>
-              cb.addEventListener("change", (e) =>
-                toggleTaskStatus(parseInt(e.target.dataset.id))
-              )
-            );
-          document
-            .querySelectorAll(".subtask-checkbox")
-            .forEach((cb) =>
-              cb.addEventListener("change", (e) =>
-                toggleSubtaskStatus(
-                  parseInt(e.target.dataset.taskId),
-                  parseInt(e.target.dataset.subtaskId)
-                )
-              )
-            );
-          document.querySelectorAll(".edit-task-btn").forEach((btn) =>
-            btn.addEventListener("click", (e) => {
-              const task = checklistTasks.find(
-                (t) => t.id === parseInt(e.currentTarget.dataset.id)
-              );
-              openChecklistModal(task);
-            })
-          );
-        }
-
-        function openChecklistModal(task = null) {
-          const isEditing = task !== null;
-          let subtasksHTML = "";
-          if (isEditing) {
-            task.subtasks.forEach((sub) => {
-              subtasksHTML += `<div class="flex items-center mb-2"><input type="text" class="subtask-input flex-grow border-gray-300 rounded-md shadow-sm sm:text-sm" value="${sub.text}"><button type="button" class="remove-subtask-btn ml-2 text-red-500 font-bold"> &times; </button></div>`;
-            });
-          }
-
-          const modalHTML = `
-                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-2xl font-bold text-gray-800">${
-                          isEditing ? "編輯計畫" : "新增計畫"
-                        }</h3>
-                        <button id="close-btn" class="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button>
-                    </div>
-                    <form id="checklist-form">
-                        <div class="mb-4">
-                            <label for="task-title" class="block text-sm font-medium text-gray-700">標題</label>
-                            <input type="text" id="task-title" value="${
-                              isEditing ? task.title : ""
-                            }" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label for="task-tag" class="block text-sm font-medium text-gray-700">標籤</label>
-                                <select id="task-tag" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                                    <option ${
-                                      isEditing && task.tag === "戶外"
-                                        ? "selected"
-                                        : ""
-                                    }>戶外</option>
-                                    <option ${
-                                      isEditing && task.tag === "學校"
-                                        ? "selected"
-                                        : ""
-                                    }>學校</option>
-                                    <option ${
-                                      isEditing && task.tag === "娛樂"
-                                        ? "selected"
-                                        : ""
-                                    }>娛樂</option>
-                                </select>
-                            </div>
-                             <div>
-                                <label for="task-duration" class="block text-sm font-medium text-gray-700">所需時長</label>
-                                <input type="text" id="task-duration" value="${
-                                  isEditing ? task.duration : ""
-                                }" placeholder="例如: 3小時, 2天" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">子任務</label>
-                            <div id="subtasks-container" class="mt-1 space-y-2">${subtasksHTML}</div>
-                            <button type="button" id="add-subtask-btn" class="mt-2 text-sm text-blue-600 hover:text-blue-800">+ 新增子任務</button>
-                        </div>
-                        <div class="flex justify-end space-x-2">
-                            ${
-                              isEditing
-                                ? `<button type="button" id="delete-task-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition-colors">刪除</button>`
-                                : ""
-                            }
-                            <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors">${
-                              isEditing ? "儲存" : "新增"
-                            }</button>
-                        </div>
-                    </form>
-                `;
-          modalContent.innerHTML = modalHTML;
-          modal.classList.remove("hidden");
-          setTimeout(
-            () => modalContent.classList.remove("scale-95", "opacity-0"),
-            10
-          );
-
-          const subtasksContainer =
-            document.getElementById("subtasks-container");
-          const addSubtask = () => {
-            const div = document.createElement("div");
-            div.className = "flex items-center mb-2";
-            div.innerHTML = `<input type="text" class="subtask-input flex-grow border-gray-300 rounded-md shadow-sm sm:text-sm" value=""><button type="button" class="remove-subtask-btn ml-2 text-red-500 font-bold"> &times; </button>`;
-            div.querySelector(".remove-subtask-btn").onclick = () =>
-              div.remove();
-            subtasksContainer.appendChild(div);
-          };
-
-          document.getElementById("add-subtask-btn").onclick = addSubtask;
-          document
-            .querySelectorAll(".remove-subtask-btn")
-            .forEach(
-              (btn) => (btn.onclick = (e) => e.target.parentElement.remove())
-            );
-
-          modalContent
-            .querySelector("#close-btn")
-            .addEventListener("click", closeModal);
-          modalContent
-            .querySelector("#checklist-form")
-            .addEventListener("submit", (e) => {
-              e.preventDefault();
-              const title = document.getElementById("task-title").value;
-              const tag = document.getElementById("task-tag").value;
-              const duration = document.getElementById("task-duration").value;
-              const subtasks = Array.from(
-                document.querySelectorAll(".subtask-input")
-              )
-                .map((input, i) => ({
-                  id: (isEditing && task.subtasks[i]?.id) || Date.now() + i,
-                  text: input.value,
-                  completed:
-                    (isEditing && task.subtasks[i]?.completed) || false,
-                }))
-                .filter((s) => s.text);
-
-              if (isEditing) {
-                updateTask(task.id, { title, tag, duration, subtasks });
-              } else {
-                addTask({ title, tag, duration, subtasks });
-              }
-            });
-
-          if (isEditing) {
-            document.getElementById("delete-task-btn").onclick = function () {
-              if (window.confirm("確定要刪除此計畫嗎？此操作無法復原。")) {
-                deleteTask(task.id);
-                closeModal();
-              }
-            };
-          }
-        }
-
-        function addTask(taskData) {
-          const newTask = { id: Date.now(), status: "pending", ...taskData };
-          checklistTasks.push(newTask);
-          saveDataToLocalStorage();
-          closeModal();
-          render();
-        }
-
-        function updateTask(id, updatedData) {
-          const taskIndex = checklistTasks.findIndex((t) => t.id === id);
-          if (taskIndex !== -1)
-            checklistTasks[taskIndex] = {
-              ...checklistTasks[taskIndex],
-              ...updatedData,
-            };
-          saveDataToLocalStorage();
-          closeModal();
-          render();
-        }
-
-        function deleteTask(id) {
-          checklistTasks = checklistTasks.filter((t) => t.id !== id);
-          saveDataToLocalStorage();
-          render();
-        }
-
-        function toggleTaskStatus(id) {
-          const task = checklistTasks.find((t) => t.id === id);
-          if (task) {
-            task.status = task.status === "pending" ? "completed" : "pending";
-            saveDataToLocalStorage();
-            render();
-          }
-        }
-
-        function toggleSubtaskStatus(taskId, subtaskId) {
-          const task = checklistTasks.find((t) => t.id === taskId);
-          const subtask = task?.subtasks.find((s) => s.id === subtaskId);
-          if (subtask) {
-            subtask.completed = !subtask.completed;
-            saveDataToLocalStorage();
-            render();
           }
         }
 
@@ -1393,10 +907,17 @@
               timeDisplay = `<span class="text-lg font-bold text-blue-600">${d.daysLeft} days</span>`;
             }
 
-            html += `<div class="flex items-center p-3 rounded-lg bg-gray-50 border border-gray-200">
+            // Add greyed out styling for overdue countdowns
+            const greyedOutClass = d.isOverdue
+              ? "opacity-50 bg-gray-100"
+              : "bg-gray-50";
+            const nameColor = d.isOverdue ? "text-gray-500" : "text-gray-800";
+            const dateColor = d.isOverdue ? "text-gray-400" : "text-gray-500";
+
+            html += `<div class="flex items-center p-3 rounded-lg ${greyedOutClass} border border-gray-200">
                                 <div class="flex-grow">
-                                    <p class="font-semibold text-gray-800">${d.name}</p>
-                                    <p class="text-sm text-gray-500">${d.date}</p>
+                                    <p class="font-semibold ${nameColor}">${d.name}</p>
+                                    <p class="text-sm ${dateColor}">${d.date}</p>
                                 </div>
                                 <div class="text-right mx-4">
                                     ${timeDisplay}
@@ -1490,18 +1011,14 @@
                 isOverdue: false,
               };
             })
-            .filter((d) => !d.isOverdue || d.daysLeft >= -7) // Show overdue items for up to 7 days
+            .filter((d) => !d.isOverdue) // Hide overdue items from banner
             .sort((a, b) => a.daysLeft - b.daysLeft);
 
           if (allCountdownsEl) {
             allCountdownsEl.innerHTML = allCountdownItems
               .map((d) => {
                 let timeDisplay;
-                if (d.isOverdue) {
-                  timeDisplay = `<span class="font-bold text-red-600">Overdue ${Math.abs(
-                    d.daysLeft
-                  )} days</span>`;
-                } else if (d.daysLeft === 0) {
+                if (d.daysLeft === 0) {
                   timeDisplay = `<span class="font-bold text-orange-600">${d.hoursLeft}h ${d.minutesLeft}m ${d.secondsLeft}s</span>`;
                 } else if (d.daysLeft === 1) {
                   timeDisplay = `<span class="font-bold text-orange-600">${d.daysLeft} day</span>`;
@@ -1740,22 +1257,12 @@
         // --- DATA ---
         function saveDataToLocalStorage() {
           localStorage.setItem(
-            "checklistTasks",
-            JSON.stringify(checklistTasks)
-          );
-          localStorage.setItem(
             "deadlineCountdowns",
             JSON.stringify(deadlineCountdowns)
           );
         }
         function loadDataFromLocalStorage() {
-          const tasks = localStorage.getItem("checklistTasks");
           const countdowns = localStorage.getItem("deadlineCountdowns");
-          if (tasks) {
-            try {
-              checklistTasks = JSON.parse(tasks);
-            } catch {}
-          }
           if (countdowns) {
             try {
               deadlineCountdowns = JSON.parse(countdowns);
