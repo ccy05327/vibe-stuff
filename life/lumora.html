@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Lumora: Interactive Quest Log</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0f172a; /* slate-900 */
+        color: #f1f5f9; /* slate-100 */
+      }
+      .font-orbitron {
+        font-family: "Orbitron", sans-serif;
+      }
+      .task-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      }
+      .task-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2),
+          0 4px 6px -2px rgba(0, 0, 0, 0.1);
+      }
+      .drop-zone {
+        border: 2px dashed #475569; /* slate-600 */
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+      }
+      .drop-zone-over {
+        background-color: #1e293b; /* slate-800 */
+        border-color: #64748b; /* slate-500 */
+      }
+      .filter-btn {
+        transition: all 0.2s ease;
+      }
+      .filter-btn-active {
+        background-color: #4f46e5 !important; /* indigo-600 */
+        color: #ffffff !important;
+        box-shadow: 0 0 15px rgba(79, 70, 229, 0.5);
+      }
+      .strikethrough {
+        text-decoration: line-through;
+        opacity: 0.6;
+      }
+      .sprint-item.completed .sprint-goal {
+        text-decoration: line-through;
+        opacity: 0.6;
+      }
+    </style>
+  </head>
+  <body class="p-4 sm:p-6 md:p-8">
+    <div class="max-w-7xl mx-auto">
+      <!-- Header -->
+      <header class="text-center mb-8">
+        <h1
+          class="text-4xl sm:text-5xl font-bold font-orbitron text-indigo-400 tracking-wider"
+        >
+          Project Lumora
+        </h1>
+        <p class="text-xl text-slate-400 mt-2">Interactive Quest Log</p>
+      </header>
+
+      <!-- Weekly Sprints -->
+      <section class="mb-10">
+        <h2
+          class="text-2xl font-bold mb-4 text-slate-300 border-b-2 border-slate-700 pb-2"
+        >
+          Weekly Sprints
+        </h2>
+        <div
+          id="sprints-container"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        >
+          <!-- Sprints will be injected here -->
+        </div>
+      </section>
+
+      <!-- Main Content: Quests -->
+      <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column: Master Quest Log -->
+        <div class="lg:col-span-2">
+          <h2
+            class="text-2xl font-bold mb-4 text-slate-300 border-b-2 border-slate-700 pb-2"
+          >
+            Master Quest Log
+          </h2>
+
+          <!-- Filters -->
+          <div id="filters-container" class="flex flex-wrap gap-2 mb-6">
+            <!-- Filter buttons will be injected here -->
+          </div>
+
+          <!-- Quest List -->
+          <div
+            id="master-quest-log"
+            class="space-y-4 h-[600px] overflow-y-auto pr-2"
+          >
+            <!-- Tasks will be injected here -->
+          </div>
+        </div>
+
+        <!-- Right Column: Today's Focus -->
+        <div>
+          <h2
+            class="text-2xl font-bold mb-4 text-slate-300 border-b-2 border-slate-700 pb-2"
+          >
+            Today's Focus
+          </h2>
+          <div
+            id="today-focus-zone"
+            class="drop-zone bg-slate-800/50 rounded-lg p-4 min-h-[600px] space-y-4"
+          >
+            <!-- Today's tasks will appear here -->
+            <p id="drop-prompt" class="text-center text-slate-500">
+              Drag quests here to start your day
+            </p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // --- DATA ---
+      const sprints = [
+        {
+          id: 1,
+          week: "Week 1 (Jul 22-27)",
+          goal: "Stabilize Foundation - Fix OAuth",
+          status: "todo",
+        },
+        {
+          id: 2,
+          week: "Week 2 (Jul 28-Aug 3)",
+          goal: "AI Engine - Select & Test 3 Models",
+          status: "todo",
+        },
+        {
+          id: 3,
+          week: "Week 3 (Aug 4-10)",
+          goal: "AI Engine - Build Integration Layer",
+          status: "todo",
+        },
+        {
+          id: 4,
+          week: "Week 4 (Aug 11-17)",
+          goal: "Connect System - Implement Core Logic",
+          status: "todo",
+        },
+        {
+          id: 5,
+          week: "Week 5 (Aug 18-24)",
+          goal: "UNAVAILABLE (TRAVEL)",
+          status: "done",
+        },
+        {
+          id: 6,
+          week: "Week 6 (Aug 25-31)",
+          goal: "Exam Prep & Demo Recording",
+          status: "todo",
+        },
+        {
+          id: 7,
+          week: "Week 7 (Sept 1-7)",
+          goal: "Final Report (Thesis) Writing",
+          status: "todo",
+        },
+        {
+          id: 8,
+          week: "Week 8 (Sept 8-15)",
+          goal: "Final Polish, Bug Fixes & Submission",
+          status: "todo",
+        },
+      ];
+
+      const tasks = [
+        // Phase 1
+        {
+          id: 101,
+          phase: 1,
+          text: "Debug and stabilize the custom Google OAuth flow.",
+          energy: 3,
+          status: "todo",
+        },
+        {
+          id: 102,
+          phase: 1,
+          text: "Refactor the session management code to be more robust.",
+          energy: 2,
+          status: "todo",
+        },
+        {
+          id: 103,
+          phase: 1,
+          text: "Create a new table in Supabase for storing mood logs.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 104,
+          phase: 1,
+          text: "Tidy up the project's file and folder structure.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 105,
+          phase: 1,
+          text: "Add comments to the existing authentication code.",
+          energy: 1,
+          status: "todo",
+        },
+        // Phase 2
+        {
+          id: 201,
+          phase: 2,
+          text: "Research and choose a final Speech-to-Text API/model.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 202,
+          phase: 2,
+          text: "Research and choose a final Weather API.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 203,
+          phase: 2,
+          text: "Get API keys for all three chosen AI/data services.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 204,
+          phase: 2,
+          text: "Write server-side function for Emotion Classification model.",
+          energy: 2,
+          status: "todo",
+        },
+        {
+          id: 205,
+          phase: 2,
+          text: "Write server-side function for Speech-to-Text model.",
+          energy: 2,
+          status: "todo",
+        },
+        {
+          id: 206,
+          phase: 2,
+          text: "Write server-side function for Weather API.",
+          energy: 2,
+          status: "todo",
+        },
+        {
+          id: 207,
+          phase: 2,
+          text: "Design the rules for the adaptive prioritization algorithm.",
+          energy: 3,
+          status: "todo",
+        },
+        {
+          id: 208,
+          phase: 2,
+          text: "Implement the prioritization algorithm.",
+          energy: 3,
+          status: "todo",
+        },
+        // Phase 3
+        {
+          id: 301,
+          phase: 3,
+          text: "Build the final UI component for mood entry.",
+          energy: 2,
+          status: "todo",
+        },
+        {
+          id: 302,
+          phase: 3,
+          text: 'Add a "Record Audio" button to the UI.',
+          energy: 2,
+          status: "todo",
+        },
+        {
+          id: 303,
+          phase: 3,
+          text: "Design how a re-prioritized task will look in the UI.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 304,
+          phase: 3,
+          text: "Implement the visual change for prioritized tasks.",
+          energy: 2,
+          status: "todo",
+        },
+        {
+          id: 305,
+          phase: 3,
+          text: "Write clear, friendly placeholder text and labels.",
+          energy: 1,
+          status: "todo",
+        },
+        // Phase 4
+        {
+          id: 401,
+          phase: 4,
+          text: "Create a simple feedback survey for testers.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 402,
+          phase: 4,
+          text: "Ask 3-5 friends to test the app.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 403,
+          phase: 4,
+          text: "Conduct one user testing session and take notes.",
+          energy: 2,
+          status: "todo",
+        },
+        {
+          id: 404,
+          phase: 4,
+          text: "Transcribe notes from a testing session.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 405,
+          phase: 4,
+          text: "Analyze feedback and identify 3 key takeaways.",
+          energy: 2,
+          status: "todo",
+        },
+        // Phase 5
+        {
+          id: 501,
+          phase: 5,
+          text: 'Write the main "Implementation" section of the report.',
+          energy: 2,
+          status: "todo",
+        },
+        {
+          id: 502,
+          phase: 5,
+          text: 'Write the "Evaluation" section of the report.',
+          energy: 2,
+          status: "todo",
+        },
+        {
+          id: 503,
+          phase: 5,
+          text: "Find and add 3-5 new academic references.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 504,
+          phase: 5,
+          text: "Create a polished system architecture diagram.",
+          energy: 2,
+          status: "todo",
+        },
+        {
+          id: 505,
+          phase: 5,
+          text: "Proofread one section of the report.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 506,
+          phase: 5,
+          text: "Format all citations correctly using ACM style.",
+          energy: 1,
+          status: "todo",
+        },
+        // Phase 6
+        {
+          id: 601,
+          phase: 6,
+          text: "Write bullet points for Exam Question 2.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 602,
+          phase: 6,
+          text: "Write bullet points for Exam Question 3.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 603,
+          phase: 6,
+          text: "Write bullet points for Exam Question 4.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 604,
+          phase: 6,
+          text: "Write bullet points for Exam Question 5.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 605,
+          phase: 6,
+          text: "Write bullet points for Exam Question 6.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 606,
+          phase: 6,
+          text: "Record your 5-minute, unedited video demo.",
+          energy: 2,
+          status: "todo",
+        },
+        {
+          id: 607,
+          phase: 6,
+          text: "Tidy up your code repository and write a good README.md.",
+          energy: 1,
+          status: "todo",
+        },
+        {
+          id: 608,
+          phase: 6,
+          text: "Package all files for the final submission.",
+          energy: 1,
+          status: "todo",
+        },
+      ];
+
+      let currentFilter = "all";
+
+      // --- DOM Elements ---
+      const sprintsContainer = document.getElementById("sprints-container");
+      const filtersContainer = document.getElementById("filters-container");
+      const masterQuestLog = document.getElementById("master-quest-log");
+      const todayFocusZone = document.getElementById("today-focus-zone");
+      const dropPrompt = document.getElementById("drop-prompt");
+
+      // --- Helper Functions ---
+      function getEnergyClass(energy) {
+        if (energy === 1) return "bg-green-800/50 border-green-500/50";
+        if (energy === 2) return "bg-yellow-800/50 border-yellow-500/50";
+        if (energy === 3) return "bg-red-800/50 border-red-500/50";
+        return "bg-slate-700";
+      }
+
+      function getEnergyEmoji(energy) {
+        if (energy === 1) return "🧠";
+        if (energy === 2) return "🧠🧠";
+        if (energy === 3) return "🧠🧠🧠";
+        return "";
+      }
+
+      // --- Render Functions ---
+      function renderSprints() {
+        sprintsContainer.innerHTML = "";
+        sprints.forEach((sprint) => {
+          const isCompleted = sprint.status === "done";
+          const sprintEl = document.createElement("div");
+          sprintEl.className = `sprint-item bg-slate-800 p-4 rounded-lg border-l-4 border-indigo-500 ${
+            isCompleted ? "completed" : ""
+          }`;
+          sprintEl.innerHTML = `
+                    <div class="flex items-center">
+                        <input type="checkbox" id="sprint-${
+                          sprint.id
+                        }" class="h-4 w-4 rounded bg-slate-700 border-slate-500 text-indigo-600 focus:ring-indigo-500" ${
+            isCompleted ? "checked" : ""
+          } onchange="toggleSprintStatus(${sprint.id})">
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-slate-400">${
+                              sprint.week
+                            }</p>
+                            <p class="text-md font-semibold text-slate-200 sprint-goal">${
+                              sprint.goal
+                            }</p>
+                        </div>
+                    </div>
+                `;
+          sprintsContainer.appendChild(sprintEl);
+        });
+      }
+
+      function renderFilters() {
+        const phases = [...new Set(tasks.map((t) => t.phase))];
+        let buttonsHTML = `<button data-filter="all" class="filter-btn px-4 py-2 text-sm font-semibold bg-slate-700 text-slate-200 rounded-md hover:bg-slate-600">All</button>`;
+        phases.forEach((phase) => {
+          buttonsHTML += `<button data-filter="${phase}" class="filter-btn px-4 py-2 text-sm font-semibold bg-slate-700 text-slate-200 rounded-md hover:bg-slate-600">Phase ${phase}</button>`;
+        });
+        filtersContainer.innerHTML = buttonsHTML;
+
+        // Add event listeners
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            currentFilter = btn.dataset.filter;
+            updateUI();
+          });
+        });
+      }
+
+      function renderMasterQuestLog() {
+        masterQuestLog.innerHTML = "";
+        const filteredTasks = tasks.filter((task) => {
+          return (
+            task.status === "todo" &&
+            (currentFilter === "all" || task.phase == currentFilter)
+          );
+        });
+
+        if (filteredTasks.length === 0) {
+          masterQuestLog.innerHTML = `<p class="text-center text-slate-500 mt-10">No quests in this phase. Great job!</p>`;
+        } else {
+          filteredTasks.forEach((task) => {
+            const taskEl = document.createElement("div");
+            taskEl.id = `task-${task.id}`;
+            taskEl.className = `task-card cursor-grab p-4 rounded-lg border-l-4 ${getEnergyClass(
+              task.energy
+            )}`;
+            taskEl.draggable = true;
+            taskEl.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <p class="text-slate-200 pr-4">${task.text}</p>
+                            <span class="text-xl whitespace-nowrap">${getEnergyEmoji(
+                              task.energy
+                            )}</span>
+                        </div>
+                    `;
+            taskEl.addEventListener("dragstart", (e) => {
+              e.dataTransfer.setData("text/plain", task.id);
+              e.target.style.opacity = "0.5";
+            });
+            taskEl.addEventListener("dragend", (e) => {
+              e.target.style.opacity = "1";
+            });
+            masterQuestLog.appendChild(taskEl);
+          });
+        }
+      }
+
+      function renderTodayFocus() {
+        const todayTasks = tasks.filter(
+          (t) => t.status === "today" || t.status === "done_today"
+        );
+
+        if (todayTasks.length > 0) {
+          dropPrompt.style.display = "none";
+        } else {
+          dropPrompt.style.display = "block";
+        }
+
+        // Clear only the tasks, not the prompt
+        todayFocusZone
+          .querySelectorAll(".task-card")
+          .forEach((el) => el.remove());
+
+        todayTasks.forEach((task) => {
+          const taskEl = document.createElement("div");
+          taskEl.id = `today-task-${task.id}`;
+          taskEl.className = `task-card p-4 rounded-lg border-l-4 ${getEnergyClass(
+            task.energy
+          )} ${task.status === "done_today" ? "strikethrough" : ""}`;
+          taskEl.innerHTML = `
+                    <div class="flex items-center">
+                        <input type="checkbox" id="check-${
+                          task.id
+                        }" class="h-5 w-5 rounded bg-slate-700 border-slate-500 text-indigo-600 focus:ring-indigo-500" ${
+            task.status === "done_today" ? "checked" : ""
+          } onchange="toggleTaskStatus(${task.id})">
+                        <p class="text-slate-200 ml-3">${task.text}</p>
+                    </div>
+                `;
+          todayFocusZone.appendChild(taskEl);
+        });
+      }
+
+      function updateUI() {
+        renderMasterQuestLog();
+        renderTodayFocus();
+        renderSprints();
+
+        // Update active filter button
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.classList.toggle(
+            "filter-btn-active",
+            btn.dataset.filter === currentFilter
+          );
+        });
+      }
+
+      // --- Event Handlers & Logic ---
+      window.toggleSprintStatus = (sprintId) => {
+        const sprint = sprints.find((s) => s.id === sprintId);
+        if (sprint) {
+          sprint.status = sprint.status === "done" ? "todo" : "done";
+          updateUI();
+        }
+      };
+
+      window.toggleTaskStatus = (taskId) => {
+        const task = tasks.find((t) => t.id === taskId);
+        if (task) {
+          task.status = task.status === "done_today" ? "today" : "done_today";
+          updateUI();
+        }
+      };
+
+      todayFocusZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        todayFocusZone.classList.add("drop-zone-over");
+      });
+
+      todayFocusZone.addEventListener("dragleave", () => {
+        todayFocusZone.classList.remove("drop-zone-over");
+      });
+
+      todayFocusZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        todayFocusZone.classList.remove("drop-zone-over");
+        const taskId = parseInt(e.dataTransfer.getData("text/plain"));
+        const task = tasks.find((t) => t.id === taskId);
+        if (task && task.status === "todo") {
+          task.status = "today";
+          updateUI();
+        }
+      });
+
+      // --- Initial Load ---
+      document.addEventListener("DOMContentLoaded", () => {
+        renderFilters();
+        updateUI();
+      });
+    </script>
+  </body>
+</html>
