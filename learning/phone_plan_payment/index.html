@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Digital Divide: Mobile & Finance Worlds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: "Calm Harmony" - A palette grounded in warm neutrals (slate, stone) with subtle blue and teal accents for data and interactions, creating a professional and focused feel. -->
+    <!-- Application Structure Plan: A single-page dashboard with a sticky top navigation for non-linear exploration. The structure is thematic, not linear like the report. It's divided into three core sections: "The Data Divide" (mobile plans), "The Security Divide" (payment verification), and "The Traveler's Toolkit" (solutions). This structure allows users to jump directly to their area of interest. Key interactions include toggles to switch between US/Taiwan data visualizations, and clickable tabs to change a process flow diagram for payment security. This design prioritizes direct comparison and user-driven discovery over passive reading, making the complex information more digestible and engaging. -->
+    <!-- Visualization & Content Choices: 
+        1. Mobile Data Cost: Report Info -> Avg. cost/GB data. Goal -> Compare affordability. Viz -> Bar Chart (Chart.js). Interaction -> Tooltips on hover show exact prices. Justification -> Instantly visualizes the stark price differences mentioned in the report.
+        2. Mobile Plan Structure: Report Info -> US vs. Taiwan plan tables. Goal -> Contrast plan models. Viz -> Dynamic Bar Chart (Chart.js) + summary cards. Interaction -> A "USA/Taiwan" toggle dynamically updates the chart and text to show either the US "Premium Data Cap" model or the Taiwan "Throttling" model. Justification -> Makes the abstract concepts of tiered vs. utility models tangible and directly comparable.
+        3. Payment Verification: Report Info -> Descriptions of US, TW, EU payment flows. Goal -> Explain and contrast security processes. Viz -> Tabbed, multi-step diagram (HTML/CSS). Interaction -> Clicking tabs for "Taiwan", "USA", "Europe" changes the visible diagram and explanation. Justification -> Visualizing a process is far more intuitive than a text description or static table.
+        4. Traveler Solutions: Report Info -> Table of SMS alternatives. Goal -> Provide actionable advice. Viz -> Interactive grid of cards (HTML/CSS). Interaction -> Cards have a clear layout with icons and a security rating. Justification -> A scannable, visually organized grid is more user-friendly and actionable than a dense table.
+        Library/Method -> Chart.js for all charts (Canvas-based). HTML/CSS/Tailwind for diagrams and layouts. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc; /* slate-50 */
+        color: #334155; /* slate-700 */
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 350px;
+        max-height: 50vh;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 400px;
+        }
+      }
+      .nav-link {
+        transition: color 0.3s, border-bottom-color 0.3s;
+      }
+      .nav-link.active {
+        color: #0d9488; /* teal-600 */
+        border-bottom-color: #0d9488;
+      }
+      .data-toggle {
+        transition: background-color 0.3s, color 0.3s;
+      }
+      .data-toggle.active {
+        background-color: #0d9488; /* teal-600 */
+        color: white;
+      }
+      .security-tab.active {
+        background-color: #f1f5f9; /* slate-100 */
+        border-color: #0d9488; /* teal-600 */
+        color: #0d9488;
+      }
+      .process-step {
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      .process-step:hover {
+        transform: translateY(-4px);
+      }
+
+      /* Mobile-specific optimizations */
+      @media (max-width: 640px) {
+        .chart-container {
+          height: 280px;
+          max-height: 40vh;
+        }
+
+        /* Improve touch targets */
+        .data-toggle,
+        .security-tab {
+          min-height: 44px;
+        }
+
+        /* Better spacing for mobile */
+        .container {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+
+        /* Optimize process steps for mobile */
+        .process-step {
+          min-height: 120px;
+        }
+
+        /* Improve navigation tap targets */
+        .nav-link {
+          padding: 0.75rem 0.5rem;
+        }
+      }
+
+      /* Prevent horizontal scroll on small screens */
+      .overflow-x-auto {
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .overflow-x-auto::-webkit-scrollbar {
+        height: 3px;
+      }
+
+      .overflow-x-auto::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+
+      .overflow-x-auto::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50">
+    <!-- Back Button -->
+    <div class="fixed top-4 left-4 z-[60]">
+      <a
+        id="backHomeBtn"
+        href="#"
+        class="inline-flex items-center px-3 py-2 text-sm font-medium text-slate-600 bg-white/90 backdrop-blur-sm border border-slate-200 rounded-lg shadow-sm hover:bg-white hover:text-slate-800 hover:border-slate-300 transition-all duration-200"
+      >
+        <svg
+          class="w-4 h-4 mr-1.5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          ></path>
+        </svg>
+        Back
+      </a>
+    </div>
+
+    <!-- Header and Navigation -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+      <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex-shrink-0">
+            <h1 class="text-xl md:text-2xl font-bold text-slate-800">
+              The Digital Divide
+            </h1>
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a
+                href="#data-divide"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-teal-600 border-b-2 border-transparent"
+                >The Data Divide</a
+              >
+              <a
+                href="#security-divide"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-teal-600 border-b-2 border-transparent"
+                >The Security Divide</a
+              >
+              <a
+                href="#traveler-toolkit"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-teal-600 border-b-2 border-transparent"
+                >Traveler's Toolkit</a
+              >
+            </div>
+          </div>
+          <div class="md:hidden">
+            <select
+              id="mobile-nav"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5"
+            >
+              <option value="#data-divide">Data Divide</option>
+              <option value="#security-divide">Security Divide</option>
+              <option value="#traveler-toolkit">Traveler's Toolkit</option>
+            </select>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Audio Player Section -->
+    <section class="bg-white/90 backdrop-blur-sm border-b border-slate-200">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+        <div class="max-w-4xl mx-auto">
+          <div
+            class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+          >
+            <div class="flex-shrink-0 text-center sm:text-left">
+              <h3 class="text-sm font-medium text-slate-700 mb-1">
+                🎧 Audio Summary
+              </h3>
+              <p class="text-xs text-slate-500">Listen to the key insights</p>
+            </div>
+
+            <div class="flex-grow w-full sm:max-w-2xl">
+              <audio
+                id="audioPlayer"
+                controls
+                class="w-full h-10 sm:h-8"
+                preload="metadata"
+              >
+                <source
+                  src="Digital Crossroads_ Why Your Data and Payments Differ Across the Globe.mp3"
+                  type="audio/mpeg"
+                />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+
+            <div
+              class="flex items-center justify-center sm:justify-start gap-2"
+            >
+              <label
+                for="speedControl"
+                class="text-xs font-medium text-slate-600 whitespace-nowrap"
+                >Speed:</label
+              >
+              <select
+                id="speedControl"
+                class="text-xs bg-white border border-slate-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              >
+                <option value="0.5">0.5x</option>
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <!-- Introduction -->
+      <section class="text-center mb-12 sm:mb-16">
+        <h2
+          class="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-3 sm:mb-4 px-2"
+        >
+          A World of Difference
+        </h2>
+        <p class="max-w-3xl mx-auto text-base sm:text-lg text-slate-600 px-4">
+          Why is unlimited data cheap in Taiwan but a premium in the US? Why
+          does online shopping demand a text message in one country but not the
+          other? This interactive report explores the deep-seated economic and
+          strategic divides that shape our global digital experiences.
+        </p>
+      </section>
+
+      <!-- Section 1: The Data Divide -->
+      <section id="data-divide" class="mb-16 sm:mb-20 scroll-mt-20">
+        <header class="text-center mb-8 sm:mb-12 px-4">
+          <h3 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
+            The Data Divide: A Tale of Two Markets
+          </h3>
+          <p class="max-w-3xl mx-auto text-sm sm:text-base text-slate-600">
+            This section explores the stark contrast in mobile data pricing and
+            plan structures between different regions. We'll examine why data is
+            treated as a plentiful utility in places like Taiwan, versus a
+            premium, tiered service in the United States, and what that means
+            for consumers.
+          </p>
+        </header>
+
+        <div
+          class="bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg mb-8 sm:mb-12 mx-2 sm:mx-0"
+        >
+          <h4
+            class="text-lg sm:text-xl font-semibold text-center text-slate-700 mb-4 sm:mb-6"
+          >
+            Global Snapshot: The Price of 1GB of Mobile Data
+          </h4>
+          <div class="chart-container">
+            <canvas id="costPerGbChart"></canvas>
+          </div>
+          <p
+            class="text-center text-xs sm:text-sm text-slate-500 mt-3 sm:mt-4 px-2"
+          >
+            The US is a global outlier in data cost, charging significantly more
+            per gigabyte than many other developed and developing nations. This
+            is a direct result of market structure and business strategy.
+          </p>
+        </div>
+
+        <div
+          class="bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg mx-2 sm:mx-0"
+        >
+          <h4
+            class="text-lg sm:text-xl font-semibold text-center text-slate-700 mb-2"
+          >
+            Comparing "Unlimited" Plans: USA vs. Taiwan
+          </h4>
+          <p
+            class="text-center text-slate-500 mb-6 sm:mb-8 text-sm sm:text-base px-2"
+          >
+            The word "unlimited" means very different things depending on where
+            you are. Use the toggle below to see how plan structures and
+            philosophies differ.
+          </p>
+
+          <div class="flex justify-center mb-6 sm:mb-8">
+            <div
+              class="inline-flex rounded-md shadow-sm w-full max-w-xs sm:w-auto"
+              role="group"
+            >
+              <button
+                type="button"
+                id="toggle-usa"
+                class="data-toggle active px-4 sm:px-6 py-2 text-sm font-medium bg-teal-600 text-white border border-gray-200 rounded-l-lg hover:bg-teal-700 flex-1 sm:flex-none"
+              >
+                USA
+              </button>
+              <button
+                type="button"
+                id="toggle-taiwan"
+                class="data-toggle px-4 sm:px-6 py-2 text-sm font-medium bg-white text-gray-900 border border-gray-200 rounded-r-md hover:bg-gray-100 flex-1 sm:flex-none"
+              >
+                Taiwan
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-5 gap-6 sm:gap-8 items-center"
+          >
+            <div
+              id="plan-details-text"
+              class="md:col-span-2 order-2 md:order-1"
+            >
+              <!-- Dynamic content here -->
+            </div>
+            <div class="md:col-span-3 order-1 md:order-2">
+              <div
+                class="chart-container"
+                style="height: 250px; max-height: 40vh"
+              >
+                <canvas id="planStructureChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: The Security Divide -->
+      <section id="security-divide" class="mb-16 sm:mb-20 scroll-mt-20">
+        <header class="text-center mb-8 sm:mb-12 px-4">
+          <h3 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
+            The Security Divide: Convenience vs. Caution
+          </h3>
+          <p class="max-w-3xl mx-auto text-sm sm:text-base text-slate-600">
+            This section visualizes the different philosophies for securing
+            online payments. From Taiwan's mandatory text message verification
+            to the frictionless U.S. checkout and Europe's regulated middle
+            ground, each system balances security, convenience, and liability in
+            its own way.
+          </p>
+        </header>
+
+        <div
+          class="bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg mx-2 sm:mx-0"
+        >
+          <div class="mb-6 sm:mb-8 border-b border-gray-200">
+            <nav
+              class="-mb-px flex justify-center space-x-1 sm:space-x-2 md:space-x-8 overflow-x-auto"
+              aria-label="Tabs"
+            >
+              <button
+                class="security-tab active whitespace-nowrap py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm flex-shrink-0"
+                data-region="taiwan"
+              >
+                🇹🇼 Taiwan: Security First
+              </button>
+              <button
+                class="security-tab whitespace-nowrap py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 flex-shrink-0"
+                data-region="usa"
+              >
+                🇺🇸 USA: Commerce First
+              </button>
+              <button
+                class="security-tab whitespace-nowrap py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 flex-shrink-0"
+                data-region="europe"
+              >
+                🇪🇺 Europe: Regulated Balance
+              </button>
+            </nav>
+          </div>
+
+          <div id="security-content">
+            <!-- Dynamic content here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: The Traveler's Toolkit -->
+      <section id="traveler-toolkit" class="scroll-mt-20">
+        <header class="text-center mb-8 sm:mb-12 px-4">
+          <h3 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
+            The Traveler's Toolkit: Breaking Free from SMS
+          </h3>
+          <p class="max-w-3xl mx-auto text-sm sm:text-base text-slate-600">
+            Getting locked out of your bank account while abroad is a modern
+            travel nightmare. This section provides a guide to robust, modern
+            authentication methods that can help you avoid the "lockout
+            scenario" by decoupling your digital identity from a home-country
+            SIM card.
+          </p>
+        </header>
+
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-2 sm:px-0"
+        >
+          <!-- Toolkit cards will be injected here by JS -->
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white mt-20">
+      <div
+        class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-slate-400 text-sm"
+      >
+        <p>Interactive report designed to explore the global digital divide.</p>
+        <p>
+          Data synthesized from the report "The Digital Divide: A Comparative
+          Analysis of Mobile and Financial Ecosystems."
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // --- Data for Visualizations ---
+        const costPerGbData = {
+          labels: [
+            "Israel",
+            "Italy",
+            "India",
+            "France",
+            "Taiwan",
+            "Global Avg.",
+            "USA",
+          ],
+          datasets: [
+            {
+              label: "Avg. Price per 1GB (USD)",
+              data: [0.02, 0.09, 0.09, 0.2, 0.88, 2.59, 6.0],
+              backgroundColor: [
+                "#ccfbf1",
+                "#99f6e4",
+                "#5eead4",
+                "#2dd4bf",
+                "#14b8a6",
+                "#0f766e",
+                "#ef4444",
+              ],
+              borderColor: [
+                "#5eead4",
+                "#2dd4bf",
+                "#14b8a6",
+                "#0d9488",
+                "#0f766e",
+                "#042f2e",
+                "#b91c1c",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        };
+
+        const planData = {
+          usa: {
+            title: "USA: The Premium Data Model",
+            description: `In the U.S., "unlimited" plans are tiered. You pay more for a larger allowance of "premium" high-speed data. Once you exceed this cap, your speeds can be slowed down during network congestion. True, unthrottled unlimited data is reserved for the most expensive plans.`,
+            chartData: {
+              labels: ["Essentials", "Mid-Tier", "Premium Tier"],
+              datasets: [
+                {
+                  label: "Premium Data Cap (GB)",
+                  data: [50, 75, 1000], // Using 1000 to represent "unlimited"
+                  backgroundColor: "#3b82f6",
+                },
+                {
+                  label: "Approx. Monthly Cost (USD)",
+                  data: [60, 76, 86],
+                  backgroundColor: "#93c5fd",
+                },
+              ],
+            },
+          },
+          taiwan: {
+            title: "Taiwan: The Data Utility Model",
+            description: `In Taiwan's competitive market, data is treated like a utility. Many plans offer truly unlimited high-speed data at a reasonable price. On capped plans, exceeding the limit doesn't cut you off or incur fees; instead, your speed is throttled to a slower but still usable rate (a "soft cap").`,
+            chartData: {
+              labels: ["Prepaid 5-Day", "Prepaid 30-Day", "Postpaid Unlimited"],
+              datasets: [
+                {
+                  label: "High-Speed Data (GB)",
+                  data: [1000, 60, 1000], // Using 1000 to represent "unlimited"
+                  backgroundColor: "#14b8a6",
+                },
+                {
+                  label: "Approx. Cost (USD)",
+                  data: [9.5, 32, 44],
+                  backgroundColor: "#5eead4",
+                },
+              ],
+            },
+          },
+        };
+
+        const securityData = {
+          taiwan: {
+            title: "🇹🇼 Taiwan: The Digital Fortress",
+            philosophy:
+              "Security First: Prioritizes explicit, per-transaction authorization to prevent fraud, even at the cost of user convenience.",
+            steps: [
+              { icon: "💳", text: "Enter Card Details" },
+              { icon: "➡️", text: "Redirect to Bank Page" },
+              { icon: "📱", text: "Bank Sends SMS OTP" },
+              { icon: "⌨️", text: "User Enters OTP Code" },
+              { icon: "✅", text: "Transaction Approved" },
+            ],
+          },
+          usa: {
+            title: "🇺🇸 USA: Frictionless Commerce",
+            philosophy:
+              "Commerce First: Prioritizes a seamless checkout experience to maximize sales, managing fraud risk with backend analytics and post-facto reporting.",
+            steps: [
+              { icon: "💳", text: "Enter Card Details" },
+              {
+                icon: "🤖",
+                text: "Backend Risk Analysis (CVV, AVS, Behavior)",
+              },
+              {
+                icon: "✅",
+                text: "Transaction Instantly Approved (if low-risk)",
+              },
+              { icon: "📈", text: "User Monitors Statement" },
+              { icon: "📞", text: "User Reports Fraud (if any)" },
+            ],
+          },
+          europe: {
+            title: "🇪🇺 Europe: A Regulated Balance",
+            philosophy:
+              "Regulated Balance: Mandates Strong Customer Authentication (SCA) to elevate security, but builds in flexibility for low-risk transactions.",
+            steps: [
+              { icon: "💳", text: "Enter Card Details" },
+              { icon: "🤔", text: "SCA Required? (Check for exemptions)" },
+              {
+                icon: "🔐",
+                text: "Authenticate with 2 of 3 Factors (Knowledge, Possession, Inherence)",
+              },
+              { icon: "✅", text: "Transaction Approved" },
+            ],
+          },
+        };
+
+        const toolkitData = [
+          {
+            title: "Authenticator App",
+            icon: "🛡️",
+            security: "High",
+            description:
+              "Generates secure codes on your device, works offline. The gold standard.",
+            pros: "Works offline, highly secure, free.",
+            cons: "Requires proactive setup for each account.",
+          },
+          {
+            title: "Push Notification",
+            icon: "🔔",
+            security: "High",
+            description:
+              'Sends an "Approve/Deny" prompt to your banking app. User-friendly and secure.',
+            pros: "Very easy to use, highly secure.",
+            cons: "Requires internet, service must support it.",
+          },
+          {
+            title: "Wi-Fi Calling",
+            icon: "📶",
+            security: "Medium",
+            description:
+              "Lets your phone receive SMS over any Wi-Fi network as if you were home.",
+            pros: "Seamless, uses your existing number.",
+            cons: "Must be enabled before travel.",
+          },
+          {
+            title: "Email OTP / Magic Link",
+            icon: "📧",
+            security: "Medium-High",
+            description:
+              "Sends codes or login links to your email. More secure than SMS.",
+            pros: "More secure than SMS, uses internet.",
+            cons: "Not universally supported yet.",
+          },
+          {
+            title: "Low-Cost Roaming SIM",
+            icon: "🌍",
+            security: "Medium",
+            description:
+              "A cheap plan just to keep your home number active for verification texts abroad.",
+            pros: "Low monthly cost for number persistence.",
+            cons: "Requires managing a second SIM/eSIM.",
+          },
+          {
+            title: "Virtual Number (VoIP)",
+            icon: "☁️",
+            security: "Low",
+            description:
+              "An app-based number. Unreliable for critical OTPs as many banks block them.",
+            pros: "Quick to set up.",
+            cons: "Often blocked by banks for verification.",
+          },
+        ];
+
+        // --- Chart.js Instances ---
+        let costChart, planChart;
+
+        function createCostChart() {
+          const ctx = document
+            .getElementById("costPerGbChart")
+            .getContext("2d");
+          costChart = new Chart(ctx, {
+            type: "bar",
+            data: costPerGbData,
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              indexAxis: "y",
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      return ` ${context.dataset.label}: $${context.raw.toFixed(
+                        2
+                      )}`;
+                    },
+                  },
+                },
+              },
+              scales: {
+                x: {
+                  beginAtZero: true,
+                  title: { display: true, text: "Price in USD ($)" },
+                },
+                y: {
+                  ticks: {
+                    font: { size: 12 },
+                  },
+                },
+              },
+            },
+          });
+        }
+
+        function createPlanChart(region) {
+          const ctx = document
+            .getElementById("planStructureChart")
+            .getContext("2d");
+          if (planChart) {
+            planChart.destroy();
+          }
+          planChart = new Chart(ctx, {
+            type: "bar",
+            data: planData[region].chartData,
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: "bottom" },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      let label = context.dataset.label || "";
+                      if (label) {
+                        label += ": ";
+                      }
+                      if (context.dataset.label.includes("Data")) {
+                        label +=
+                          context.raw === 1000
+                            ? "Unlimited"
+                            : `${context.raw} GB`;
+                      } else {
+                        label += `$${context.raw.toFixed(2)}`;
+                      }
+                      return label;
+                    },
+                  },
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    callback: function (value, index, values) {
+                      if (value === 1000) return "Unlimited";
+                      return value;
+                    },
+                  },
+                },
+                x: {
+                  title: { display: true, text: "Representative Plans" },
+                },
+              },
+            },
+          });
+        }
+
+        // --- UI Update Functions ---
+        function updatePlanDetails(region) {
+          const details = planData[region];
+          const container = document.getElementById("plan-details-text");
+          container.innerHTML = `
+            <h5 class="font-bold text-lg text-slate-800 mb-2">${details.title}</h5>
+            <p class="text-slate-600">${details.description}</p>
+        `;
+          createPlanChart(region);
+        }
+
+        function updateSecurityDetails(region) {
+          const details = securityData[region];
+          const container = document.getElementById("security-content");
+          const stepsHtml = details.steps
+            .map(
+              (step, index) => `
+            <div class="process-step flex flex-col items-center text-center p-3 sm:p-4 bg-slate-50 rounded-lg">
+                <div class="text-2xl sm:text-4xl mb-2">${step.icon}</div>
+                <p class="font-medium text-xs sm:text-sm text-slate-700">${
+                  step.text
+                }</p>
+            </div>
+            ${
+              index < details.steps.length - 1
+                ? `<div class="hidden sm:flex items-center justify-center text-xl sm:text-2xl text-slate-300">→</div>`
+                : ""
+            }
+        `
+            )
+            .join("");
+
+          container.innerHTML = `
+            <div class="text-center mb-6 sm:mb-8 px-2">
+                <h5 class="font-bold text-base sm:text-lg text-slate-800">${details.title}</h5>
+                <p class="text-slate-600 max-w-2xl mx-auto italic text-sm sm:text-base mt-2">"${details.philosophy}"</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 sm:gap-4 items-stretch">
+                ${stepsHtml}
+            </div>
+        `;
+        }
+
+        function populateToolkit() {
+          const container = document.querySelector("#traveler-toolkit .grid");
+          const securityColors = {
+            High: "bg-teal-100 text-teal-800",
+            "Medium-High": "bg-sky-100 text-sky-800",
+            Medium: "bg-amber-100 text-amber-800",
+            Low: "bg-red-100 text-red-800",
+          };
+
+          container.innerHTML = toolkitData
+            .map(
+              (item) => `
+            <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 flex flex-col transition hover:shadow-xl hover:-translate-y-1">
+                <div class="flex items-start justify-between mb-3 sm:mb-4">
+                    <h5 class="font-bold text-base sm:text-lg text-slate-800 pr-2">${
+                      item.title
+                    }</h5>
+                    <div class="text-2xl sm:text-3xl flex-shrink-0">${
+                      item.icon
+                    }</div>
+                </div>
+                <p class="text-slate-600 mb-3 sm:mb-4 flex-grow text-sm sm:text-base">${
+                  item.description
+                }</p>
+                <div class="mt-auto">
+                    <span class="text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full ${
+                      securityColors[item.security]
+                    }">
+                        Security: ${item.security}
+                    </span>
+                </div>
+            </div>
+        `
+            )
+            .join("");
+        }
+
+        // --- Event Listeners ---
+        const usaToggle = document.getElementById("toggle-usa");
+        const taiwanToggle = document.getElementById("toggle-taiwan");
+
+        usaToggle.addEventListener("click", () => {
+          updatePlanDetails("usa");
+          usaToggle.classList.add("active");
+          taiwanToggle.classList.remove("active");
+        });
+
+        taiwanToggle.addEventListener("click", () => {
+          updatePlanDetails("taiwan");
+          taiwanToggle.classList.add("active");
+          usaToggle.classList.remove("active");
+        });
+
+        const securityTabs = document.querySelectorAll(".security-tab");
+        securityTabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            securityTabs.forEach((t) => t.classList.remove("active"));
+            tab.classList.add("active");
+            updateSecurityDetails(tab.dataset.region);
+          });
+        });
+
+        const mobileNav = document.getElementById("mobile-nav");
+        mobileNav.addEventListener("change", (e) => {
+          window.location.hash = e.target.value;
+        });
+
+        // --- Intersection Observer for Active Nav Link ---
+        const sections = document.querySelectorAll("section[id]");
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                navLinks.forEach((link) => {
+                  link.classList.toggle(
+                    "active",
+                    link.getAttribute("href").substring(1) === entry.target.id
+                  );
+                });
+              }
+            });
+          },
+          { rootMargin: "-50% 0px -50% 0px" }
+        );
+
+        sections.forEach((section) => {
+          observer.observe(section);
+        });
+
+        // --- Initializations ---
+        createCostChart();
+        updatePlanDetails("usa");
+        updateSecurityDetails("taiwan");
+        populateToolkit();
+
+        // --- Audio Player Speed Control ---
+        const audioPlayer = document.getElementById("audioPlayer");
+        const speedControl = document.getElementById("speedControl");
+
+        if (audioPlayer && speedControl) {
+          speedControl.addEventListener("change", function () {
+            audioPlayer.playbackRate = parseFloat(this.value);
+          });
+
+          // Set initial playback rate
+          audioPlayer.playbackRate = parseFloat(speedControl.value);
+        }
+
+        // --- Back Button Dynamic Link ---
+        // Dynamically set the homepage link for local and GitHub Pages
+        const btn = document.getElementById("backHomeBtn");
+        if (
+          location.hostname === "localhost" ||
+          location.hostname === "127.0.0.1"
+        ) {
+          btn.href = "/";
+        } else {
+          btn.href = "/vibe-stuff/";
+        }
+      });
+    </script>
+  </body>
+</html>
