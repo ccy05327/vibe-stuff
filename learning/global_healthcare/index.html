@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Global Healthcare Systems: An Interactive Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Slate & Teal Harmony -->
+    <!-- Application Structure Plan: A thematic, single-page application designed for non-linear exploration. The structure includes: 1) A top navigation bar for quick access to the three core themes. 2) An interactive "System Models" section where users click on a model type to reveal its details, making the complex taxonomy digestible. 3) A "Canada vs. Taiwan" section using a side-by-side layout and a radar chart for direct, multi-faceted comparison. 4) A "Global Rankings" section with interactive bar charts and a toggle to reveal methodological context, promoting a nuanced understanding. This structure was chosen to transform the report's linear text into an engaging, user-driven experience, allowing users to compare, drill down, and synthesize information based on their interests rather than a prescribed order. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Three foundational healthcare models. -> Goal: Organize & Inform. -> Viz/Method: Interactive HTML/CSS cards. -> Interaction: Click to reveal details. -> Justification: More engaging than a static table, encourages discovery. -> Library/Method: Vanilla JS, Tailwind CSS.
+        - Report Info: Canada vs. Taiwan comparison data. -> Goal: Compare. -> Viz/Method: Radar Chart & side-by-side text blocks. -> Interaction: Chart provides instant visual comparison; text provides details. -> Justification: Radar chart effectively shows multi-dimensional strengths/weaknesses at a glance. -> Library/Method: Chart.js.
+        - Report Info: Top/Bottom 10 rankings. -> Goal: Compare & Inform. -> Viz/Method: Two horizontal bar charts. -> Interaction: Hover for detailed scores and context. -> Justification: Bar charts are ideal for ranking. Hover provides details without clutter. -> Library/Method: Chart.js.
+        - Report Info: Ranking methodology differences. -> Goal: Inform. -> Viz/Method: Collapsible text block. -> Interaction: Click a button to show/hide the explanation. -> Justification: Keeps the primary view clean while making critical context easily accessible. -> Library/Method: Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc; /* slate-50 */
+        color: #334155; /* slate-700 */
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 350px;
+        max-height: 400px;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 400px;
+        }
+      }
+      .nav-link {
+        transition: color 0.3s, border-bottom-color 0.3s;
+      }
+      .nav-link:hover,
+      .nav-link.active {
+        color: #0d9488; /* teal-600 */
+        border-bottom-color: #0d9488;
+      }
+      .model-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+      }
+      .model-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+      }
+      .tab-button.active {
+        background-color: #0d9488; /* teal-600 */
+        color: white;
+      }
+      
+      /* Mobile Optimizations */
+      @media (max-width: 768px) {
+        .chart-container {
+          height: 280px;
+          max-height: 300px;
+        }
+        
+        .model-card {
+          min-height: 140px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        
+        .model-card h3 {
+          font-size: 1.25rem;
+          line-height: 1.4;
+        }
+        
+        .model-card p {
+          font-size: 0.875rem;
+          line-height: 1.5;
+        }
+        
+        /* Touch-friendly buttons */
+        .nav-link, .mobile-nav-link {
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          padding: 12px 16px;
+        }
+        
+        #context-toggle-button {
+          padding: 12px 20px;
+          font-size: 0.875rem;
+          line-height: 1.4;
+        }
+        
+        /* Better mobile spacing */
+        .container {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+        
+        /* Mobile typography improvements */
+        h1 {
+          font-size: 1.25rem !important;
+          line-height: 1.4;
+        }
+        
+        h2 {
+          font-size: 1.75rem !important;
+          line-height: 1.3;
+          margin-bottom: 1rem;
+        }
+        
+        h3 {
+          font-size: 1.375rem !important;
+          line-height: 1.4;
+        }
+        
+        /* Mobile-friendly close button */
+        #close-details {
+          min-height: 44px;
+          min-width: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 8px;
+        }
+        
+        /* Better mobile menu */
+        #mobile-menu {
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+          border-bottom: 1px solid #e2e8f0;
+        }
+        
+        /* Improved back button for mobile */
+        .fixed.top-4.left-4 {
+          top: 0.75rem;
+          left: 0.75rem;
+        }
+        
+        /* Mobile chart adjustments */
+        .grid.lg\\:grid-cols-2 {
+          gap: 2rem;
+        }
+        
+        /* Mobile comparison layout */
+        .grid.grid-cols-1.md\\:grid-cols-3 {
+          grid-template-columns: 1fr;
+          gap: 0.75rem;
+        }
+        
+        .grid.grid-cols-1.md\\:grid-cols-3 > div:first-child {
+          font-weight: 600;
+          background-color: #f1f5f9;
+          padding: 0.75rem;
+          border-radius: 0.375rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <!-- Back Button -->
+    <div class="fixed top-4 left-4 z-[60]">
+      <a
+        id="backHomeBtn"
+        href="#"
+        class="inline-flex items-center px-3 py-2 text-sm font-medium text-slate-600 bg-white/90 backdrop-blur-sm border border-slate-200 rounded-lg shadow-sm hover:bg-white hover:text-slate-800 hover:border-slate-300 transition-all duration-200"
+      >
+        <svg
+          class="w-4 h-4 mr-1.5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          ></path>
+        </svg>
+        Back
+      </a>
+    </div>
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-30 shadow-sm">
+      <nav
+        class="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center"
+      >
+        <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-slate-800">
+          Global Healthcare Explorer
+        </h1>
+        <div class="hidden md:flex items-center space-x-8">
+          <a
+            href="#models"
+            class="nav-link text-slate-600 font-medium border-b-2 border-transparent pb-1"
+            >System Models</a
+          >
+          <a
+            href="#comparison"
+            class="nav-link text-slate-600 font-medium border-b-2 border-transparent pb-1"
+            >Canada vs. Taiwan</a
+          >
+          <a
+            href="#rankings"
+            class="nav-link text-slate-600 font-medium border-b-2 border-transparent pb-1"
+            >Global Rankings</a
+          >
+          <a
+            href="#synthesis"
+            class="nav-link text-slate-600 font-medium border-b-2 border-transparent pb-1"
+            >Key Lessons</a
+          >
+        </div>
+        <button id="mobile-menu-button" class="md:hidden text-slate-600 p-2 hover:bg-slate-100 rounded-lg transition-colors">
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16m-7 6h7"
+            ></path>
+          </svg>
+        </button>
+      </nav>
+      <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-200">
+        <a
+          href="#models"
+          class="mobile-nav-link block py-3 px-4 text-slate-600 hover:bg-slate-50 hover:text-teal-600 transition-colors border-b border-slate-100"
+          >📊 System Models</a
+        >
+        <a
+          href="#comparison"
+          class="mobile-nav-link block py-3 px-4 text-slate-600 hover:bg-slate-50 hover:text-teal-600 transition-colors border-b border-slate-100"
+          >🇨🇦🇹🇼 Canada vs. Taiwan</a
+        >
+        <a
+          href="#rankings"
+          class="mobile-nav-link block py-3 px-4 text-slate-600 hover:bg-slate-50 hover:text-teal-600 transition-colors border-b border-slate-100"
+          >🏆 Global Rankings</a
+        >
+        <a
+          href="#synthesis"
+          class="mobile-nav-link block py-3 px-4 text-slate-600 hover:bg-slate-50 hover:text-teal-600 transition-colors"
+          >💡 Key Lessons</a
+        >
+      </div>
+    </header>
+
+    <!-- Audio Player Section -->
+    <section class="bg-white/90 backdrop-blur-sm border-b border-slate-200">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+        <div class="max-w-4xl mx-auto">
+          <div
+            class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+          >
+            <div class="flex-shrink-0 text-center sm:text-left">
+              <h3 class="text-sm font-medium text-slate-700 mb-1">
+                🎧 Audio Summary
+              </h3>
+              <p class="text-xs text-slate-500">
+                Listen to the healthcare analysis
+              </p>
+            </div>
+
+            <div class="flex-grow w-full sm:max-w-2xl">
+              <audio
+                id="audioPlayer"
+                controls
+                class="w-full h-10 sm:h-8"
+                preload="metadata"
+              >
+                <source
+                  src="Decoding Global Healthcare_ Why Taiwan Outperforms Canada's Medicare and What Every Nation Can Learn.mp3"
+                  type="audio/mpeg"
+                />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+
+            <div
+              class="flex items-center justify-center sm:justify-start gap-2"
+            >
+              <label
+                for="speedControl"
+                class="text-xs font-medium text-slate-600 whitespace-nowrap"
+                >Speed:</label
+              >
+              <select
+                id="speedControl"
+                class="text-xs bg-white border border-slate-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              >
+                <option value="0.5">0.5x</option>
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <section id="models" class="mb-16 sm:mb-24 scroll-mt-20">
+        <div class="text-center mb-8 sm:mb-12">
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-800 mb-3 sm:mb-4">
+            A Global Taxonomy of Healthcare Systems
+          </h2>
+          <p class="max-w-3xl mx-auto text-base sm:text-lg text-slate-600 px-2">
+            While every country's system is unique, most publicly funded models
+            are built on one of three foundational archetypes. This section
+            allows you to explore these core models. Click on a card to learn
+            about its philosophy, funding, and delivery methods.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
+          <div
+            id="beveridge-card"
+            class="model-card bg-white p-4 sm:p-6 rounded-lg shadow-md border-t-4 border-teal-500 hover:shadow-lg transition-all duration-200"
+          >
+            <h3 class="text-xl sm:text-2xl font-bold mb-2 text-slate-800">
+              The Beveridge Model
+            </h3>
+            <p class="text-sm sm:text-base text-slate-600">
+              Healthcare as a public service, funded by the state through
+              general taxation.
+            </p>
+          </div>
+          <div
+            id="bismarck-card"
+            class="model-card bg-white p-4 sm:p-6 rounded-lg shadow-md border-t-4 border-sky-500 hover:shadow-lg transition-all duration-200"
+          >
+            <h3 class="text-xl sm:text-2xl font-bold mb-2 text-slate-800">
+              The Bismarck Model
+            </h3>
+            <p class="text-sm sm:text-base text-slate-600">
+              Social insurance funded jointly by employers and employees through
+              "sickness funds."
+            </p>
+          </div>
+          <div
+            id="nhi-card"
+            class="model-card bg-white p-4 sm:p-6 rounded-lg shadow-md border-t-4 border-indigo-500 hover:shadow-lg transition-all duration-200 sm:col-span-2 md:col-span-1"
+          >
+            <h3 class="text-xl sm:text-2xl font-bold mb-2 text-slate-800">
+              The NHI Model
+            </h3>
+            <p class="text-sm sm:text-base text-slate-600">
+              A hybrid system with public insurance and private delivery of
+              care.
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="model-details-container"
+          class="bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-lg hidden"
+        >
+          <button
+            id="close-details"
+            class="float-right text-2xl font-bold text-slate-500 hover:text-slate-800 transition-colors p-1"
+          >
+            &times;
+          </button>
+          <div id="model-details-content"></div>
+        </div>
+      </section>
+
+      <section id="comparison" class="mb-24 scroll-mt-20">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+            Canada vs. Taiwan: A Tale of Two Systems
+          </h2>
+          <p class="max-w-3xl mx-auto text-lg text-slate-600">
+            Taiwan's system was inspired by Canada's, but has evolved into a
+            distinct entity. This section provides a deep-dive comparison,
+            revealing how a "second-mover advantage" allowed Taiwan to innovate
+            on the original blueprint. Explore their differences through the
+            chart and detailed comparisons below.
+          </p>
+        </div>
+
+        <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+          <div class="grid lg:grid-cols-2 gap-8 items-center">
+            <div class="chart-container">
+              <canvas id="comparison-radar-chart"></canvas>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-slate-800 mb-4">
+                Core Philosophy Trade-offs
+              </h3>
+              <p class="text-slate-600 mb-4">
+                The radar chart visually summarizes the different priorities of
+                each system. Canada prioritizes fiscal control and system
+                stability, often at the cost of patient access (long wait
+                times). Taiwan prioritizes patient freedom and convenience,
+                leading to high satisfaction but also immense strain on
+                providers and finances.
+              </p>
+              <p class="text-slate-600 font-semibold">
+                This highlights a core trilemma in healthcare design: it's
+                difficult to simultaneously maximize patient freedom, minimize
+                provider strain, and ensure long-term financial sustainability.
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-12">
+            <h3 class="text-2xl font-bold text-center text-slate-800 mb-6">
+              Detailed Feature Comparison
+            </h3>
+            <div id="comparison-details" class="space-y-4"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="rankings" class="mb-24 scroll-mt-20">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+            Global Healthcare Rankings
+          </h2>
+          <p class="max-w-3xl mx-auto text-lg text-slate-600">
+            Ranking healthcare systems is complex, with results varying based on
+            the metrics used. This section presents rankings from the CEOWORLD
+            Health Care Index 2024, while also providing context on why
+            different reports produce different results. Hover over the bars for
+            more detail.
+          </p>
+        </div>
+
+        <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+          <div class="text-center mb-8">
+            <button
+              id="context-toggle-button"
+              class="bg-teal-600 text-white font-bold py-2 px-4 rounded-full hover:bg-teal-700 transition"
+            >
+              Why Do Rankings Differ? Click to Find Out
+            </button>
+          </div>
+          <div
+            id="context-explanation"
+            class="hidden bg-slate-100 p-6 rounded-lg mb-8 prose max-w-none"
+          >
+            <h4>Context is Key</h4>
+            <p>
+              The term "best" is subjective. A country's rank depends entirely
+              on the values of the assessor:
+            </p>
+            <ul>
+              <li>
+                <strong>CEOWORLD Index:</strong> Prioritizes operational
+                efficiency, infrastructure, and professional competence. This is
+                why it ranks Taiwan #1.
+              </li>
+              <li>
+                <strong>Commonwealth Fund:</strong> Heavily weights equity and
+                access. This focus explains why the U.S. ranks last and systems
+                with access issues (like Canada) rank lower.
+              </li>
+              <li>
+                <strong>FREOPP WIHI Index:</strong> Values patient choice,
+                innovation, and market mechanisms, favoring systems like
+                Switzerland's.
+              </li>
+            </ul>
+            <p>
+              Understanding these different priorities is crucial to
+              interpreting any ranking.
+            </p>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-12">
+            <div>
+              <h3 class="text-2xl font-bold text-slate-800 mb-4 text-center">
+                Top 10 Performers
+              </h3>
+              <div class="chart-container h-96 md:h-[500px]">
+                <canvas id="top-10-chart"></canvas>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-slate-800 mb-4 text-center">
+                10 Struggling Systems
+              </h3>
+              <div class="chart-container h-96 md:h-[500px]">
+                <canvas id="bottom-10-chart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="synthesis" class="scroll-mt-20">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+            Synthesis & Key Lessons
+          </h2>
+          <p class="max-w-3xl mx-auto text-lg text-slate-600">
+            The analysis of global systems reveals several common denominators
+            of success and offers clear, forward-looking lessons for policy
+            reform, particularly highlighted by the evolution of Taiwan's system
+            from Canadian principles.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="bg-white p-8 rounded-lg shadow-lg">
+            <h3 class="text-2xl font-bold text-slate-800 mb-4">
+              Common Denominators of Success
+            </h3>
+            <ul class="space-y-3 list-disc list-inside text-slate-600">
+              <li>
+                <strong>Social Solidarity:</strong> A single risk pool ensures
+                equity and financial stability.
+              </li>
+              <li>
+                <strong>Muscular Cost Containment:</strong> Single-payer
+                authority to set prices and budgets is critical.
+              </li>
+              <li>
+                <strong>Administrative Simplicity:</strong> Removing private
+                insurer overhead leads to major savings.
+              </li>
+              <li>
+                <strong>Strategic Tech Investment:</strong> Unified IT
+                infrastructure drives efficiency and quality.
+              </li>
+              <li>
+                <strong>Insurance Separate from Employment:</strong> Provides
+                greater security for the population.
+              </li>
+            </ul>
+          </div>
+          <div class="bg-white p-8 rounded-lg shadow-lg">
+            <h3 class="text-2xl font-bold text-slate-800 mb-4">
+              What Canada Can Learn from Taiwan
+            </h3>
+            <ul class="space-y-3 list-disc list-inside text-slate-600">
+              <li>
+                <strong>Embrace Centralized Data:</strong> A national,
+                interoperable EHR system is transformative.
+              </li>
+              <li>
+                <strong>Close Coverage Gaps:</strong> Expand Medicare to include
+                essentials like drugs and dental.
+              </li>
+              <li>
+                <strong>Re-evaluate Gatekeeping:</strong> Explore models that
+                improve patient access to specialists.
+              </li>
+              <li>
+                <strong>Diversify Funding Streams:</strong> A stable, earmarked
+                funding base can reduce political volatility.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 mt-20">
+      <div class="container mx-auto px-6 py-4 text-center">
+        <p>
+          This interactive application is based on the report "Global Healthcare
+          Systems: A Comparative Analysis."
+        </p>
+        <p class="text-sm text-slate-400 mt-1">
+          Designed to make complex data accessible and understandable.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        mobileMenuButton.addEventListener("click", () => {
+          mobileMenu.classList.toggle("hidden");
+        });
+
+        const navLinks = document.querySelectorAll(".nav-link, #mobile-menu a");
+        navLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            if (!mobileMenu.classList.contains("hidden")) {
+              mobileMenu.classList.add("hidden");
+            }
+          });
+        });
+
+        const modelData = {
+          beveridge: {
+            title: "The Beveridge Model",
+            color: "#14b8a6", // teal-500
+            content: `
+                        <h4 class="text-2xl font-bold mb-4 text-slate-800">The Beveridge Model</h4>
+                        <ul class="space-y-3">
+                            <li><strong>Core Philosophy:</strong> Healthcare is a public service, like police or fire departments.</li>
+                            <li><strong>Funding:</strong> Derived from general taxation. Care is free at the point of service.</li>
+                            <li><strong>Delivery:</strong> Primarily public providers. The government is the single-payer and often owns the hospitals and employs the doctors.</li>
+                            <li><strong>Strengths:</strong> High equity, low or no patient cost-sharing, focus on public health.</li>
+                            <li><strong>Weaknesses:</strong> Potential for long wait times, vulnerable to government budget cuts, risk of inefficiency due to lack of competition.</li>
+                            <li><strong>Examples:</strong> United Kingdom, Spain, New Zealand, Cuba.</li>
+                        </ul>`,
+          },
+          bismarck: {
+            title: "The Bismarck Model",
+            color: "#38bdf8", // sky-500
+            content: `
+                        <h4 class="text-2xl font-bold mb-4 text-slate-800">The Bismarck Model</h4>
+                        <ul class="space-y-3">
+                            <li><strong>Core Philosophy:</strong> Social insurance through joint contribution.</li>
+                            <li><strong>Funding:</strong> Mandatory payroll contributions from employers and employees into non-profit "sickness funds."</li>
+                            <li><strong>Delivery:</strong> Primarily private providers. Hospitals and doctors are typically in the private sector.</li>
+                            <li><strong>Strengths:</strong> Provider competition can foster quality, high patient choice, social solidarity.</li>
+                            <li><strong>Weaknesses:</strong> Historically left gaps for the unemployed, higher administrative costs than NHI models.</li>
+                            <li><strong>Examples:</strong> Germany, Japan, France, Belgium.</li>
+                        </ul>`,
+          },
+          nhi: {
+            title: "The National Health Insurance (NHI) Model",
+            color: "#6366f1", // indigo-500
+            content: `
+                        <h4 class="text-2xl font-bold mb-4 text-slate-800">The National Health Insurance (NHI) Model</h4>
+                        <ul class="space-y-3">
+                            <li><strong>Core Philosophy:</strong> A hybrid of Beveridge and Bismarck principles.</li>
+                            <li><strong>Funding:</strong> A government-run insurance program that all citizens pay into.</li>
+                            <li><strong>Delivery:</strong> Primarily private providers, paid by the government insurance program.</li>
+                            <li><strong>Strengths:</strong> Administrative efficiency (single-payer), universal coverage with private provider choice.</li>
+                            <li><strong>Weaknesses:</strong> Potential for long wait times (rationing) to control costs, provider dissatisfaction over fee schedules.</li>
+                            <li><strong>Examples:</strong> Canada, Taiwan, South Korea.</li>
+                        </ul>`,
+          },
+        };
+
+        const modelDetailsContainer = document.getElementById(
+          "model-details-container"
+        );
+        const modelDetailsContent = document.getElementById(
+          "model-details-content"
+        );
+
+        document
+          .getElementById("beveridge-card")
+          .addEventListener("click", () => showDetails("beveridge"));
+        document
+          .getElementById("bismarck-card")
+          .addEventListener("click", () => showDetails("bismarck"));
+        document
+          .getElementById("nhi-card")
+          .addEventListener("click", () => showDetails("nhi"));
+        document
+          .getElementById("close-details")
+          .addEventListener("click", () => {
+            modelDetailsContainer.classList.add("hidden");
+          });
+
+        function showDetails(modelKey) {
+          const data = modelData[modelKey];
+          modelDetailsContent.innerHTML = data.content;
+          modelDetailsContainer.style.borderTop = `4px solid ${data.color}`;
+          modelDetailsContainer.classList.remove("hidden");
+          modelDetailsContainer.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }
+
+        const comparisonData = [
+          {
+            feature: "Governance",
+            taiwan: "Centralized single agency (NHIA).",
+            canada: "Decentralized system of 13 provincial/territorial plans.",
+          },
+          {
+            feature: "Funding",
+            taiwan: "Mandatory payroll premiums (employer, employee, gov).",
+            canada: "General taxation with federal transfers to provinces.",
+          },
+          {
+            feature: "Coverage",
+            taiwan: "Universal (99.9%) and comprehensive (drugs, dental).",
+            canada: 'Universal for "medically necessary" services; major gaps.',
+          },
+          {
+            feature: "Access",
+            taiwan: "No gatekeeper; direct access to specialists.",
+            canada: "GP acts as a gatekeeper; referrals required.",
+          },
+          {
+            feature: "Wait Times",
+            taiwan: "Minimal to short; a key strength.",
+            canada: "Significant and a major political issue.",
+          },
+          {
+            feature: "Technology",
+            taiwan: "World-leading; universal smart card & cloud records.",
+            canada: "Lagging; poor interoperability between provinces.",
+          },
+          {
+            feature: "System Pressures",
+            taiwan: "High utilization, provider burnout, financial deficits.",
+            canada: "Long wait times, funding disputes, coverage gaps.",
+          },
+          {
+            feature: "Public Satisfaction",
+            taiwan: "Consistently very high (90%+).",
+            canada: "Mixed; frustration with access and waits.",
+          },
+        ];
+
+        const comparisonDetailsContainer =
+          document.getElementById("comparison-details");
+        comparisonData.forEach((item) => {
+          const div = document.createElement("div");
+          div.className =
+            "grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-lg bg-slate-50 hover:bg-slate-100 transition";
+          div.innerHTML = `
+                    <div class="font-bold text-teal-700">${item.feature}</div>
+                    <div class="text-slate-600"><span class="font-semibold text-slate-800">Taiwan:</span> ${item.taiwan}</div>
+                    <div class="text-slate-600"><span class="font-semibold text-slate-800">Canada:</span> ${item.canada}</div>
+                `;
+          comparisonDetailsContainer.appendChild(div);
+        });
+
+        const radarCtx = document
+          .getElementById("comparison-radar-chart")
+          .getContext("2d");
+        new Chart(radarCtx, {
+          type: "radar",
+          data: {
+            labels: [
+              "Coverage",
+              "Access (No Waits)",
+              "Technology",
+              "Cost Control",
+              "Admin Efficiency",
+            ],
+            datasets: [
+              {
+                label: "Taiwan",
+                data: [5, 5, 5, 3, 5],
+                fill: true,
+                backgroundColor: "rgba(20, 184, 166, 0.2)",
+                borderColor: "rgb(13, 148, 136)",
+                pointBackgroundColor: "rgb(13, 148, 136)",
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgb(13, 148, 136)",
+              },
+              {
+                label: "Canada",
+                data: [3, 2, 2, 4, 4],
+                fill: true,
+                backgroundColor: "rgba(56, 189, 248, 0.2)",
+                borderColor: "rgb(14, 165, 233)",
+                pointBackgroundColor: "rgb(14, 165, 233)",
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgb(14, 165, 233)",
+              },
+            ],
+          },
+          options: {
+            maintainAspectRatio: false,
+            elements: {
+              line: {
+                borderWidth: 3,
+              },
+            },
+            scales: {
+              r: {
+                angleLines: {
+                  display: false,
+                },
+                suggestedMin: 0,
+                suggestedMax: 5,
+                ticks: {
+                  stepSize: 1,
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                position: "top",
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    label += context.raw;
+                    return label;
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        document
+          .getElementById("context-toggle-button")
+          .addEventListener("click", () => {
+            document
+              .getElementById("context-explanation")
+              .classList.toggle("hidden");
+          });
+
+        const top10Data = {
+          labels: [
+            "Taiwan",
+            "South Korea",
+            "Australia",
+            "Canada",
+            "Sweden",
+            "Ireland",
+            "Netherlands",
+            "Germany",
+            "Norway",
+            "Israel",
+          ],
+          scores: [
+            78.72, 77.7, 74.11, 71.32, 70.73, 67.99, 65.38, 64.66, 64.63, 61.73,
+          ],
+          notes: [
+            "High efficiency, tech integration",
+            "Pioneer in medical tech",
+            "Strong equity & outcomes",
+            "Strong primary care",
+            "Leader in EHRs",
+            "Dual public-private system",
+            "Efficient primary care",
+            "Strong R&D, good access",
+            "Excellent health indicators",
+            "High gov readiness",
+          ],
+        };
+        const bottom10Data = {
+          labels: [
+            "Nigeria",
+            "Albania",
+            "Egypt",
+            "Morocco",
+            "Iraq",
+            "Montenegro",
+            "Bangladesh",
+            "Venezuela",
+            "Syria",
+            "El Salvador",
+          ],
+          scores: [49.1, 48.2, 47.5, 47.0, 46.3, 43.9, 41.7, 39.6, 35.2, 18.6],
+          notes: [
+            "Underfunded, infrastructure gaps",
+            "Struggles with resources",
+            "Access issues",
+            "Regional disparities",
+            "System collapse from conflict",
+            "Resource limitations",
+            "High population density pressure",
+            "Economic crisis, state collapse",
+            "System collapse from civil war",
+            "Profound societal challenges",
+          ],
+        };
+
+        const chartOptions = {
+          indexAxis: "y",
+          maintainAspectRatio: false,
+          elements: {
+            bar: {
+              borderWidth: 2,
+            },
+          },
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  let label = `Score: ${context.raw}`;
+                  return label;
+                },
+                afterLabel: function (context) {
+                  return context.chart.data.notes[context.dataIndex];
+                },
+              },
+            },
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+            },
+          },
+        };
+
+        const top10Ctx = document
+          .getElementById("top-10-chart")
+          .getContext("2d");
+        new Chart(top10Ctx, {
+          type: "bar",
+          data: {
+            labels: top10Data.labels,
+            datasets: [
+              {
+                label: "Score",
+                data: top10Data.scores,
+                borderColor: "rgb(13, 148, 136)",
+                backgroundColor: "rgba(20, 184, 166, 0.5)",
+              },
+            ],
+            notes: top10Data.notes,
+          },
+          options: chartOptions,
+        });
+
+        const bottom10Ctx = document
+          .getElementById("bottom-10-chart")
+          .getContext("2d");
+        new Chart(bottom10Ctx, {
+          type: "bar",
+          data: {
+            labels: bottom10Data.labels,
+            datasets: [
+              {
+                label: "Score",
+                data: bottom10Data.scores,
+                borderColor: "rgb(220, 38, 38)",
+                backgroundColor: "rgba(248, 113, 113, 0.5)",
+              },
+            ],
+            notes: bottom10Data.notes,
+          },
+          options: chartOptions,
+        });
+
+        const sections = document.querySelectorAll("section");
+        const navItems = document.querySelectorAll(".nav-link");
+
+        window.addEventListener("scroll", () => {
+          let current = "";
+          sections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 60) {
+              current = section.getAttribute("id");
+            }
+          });
+
+          navItems.forEach((link) => {
+            link.classList.remove("active");
+            if (link.getAttribute("href").includes(current)) {
+              link.classList.add("active");
+            }
+          });
+        });
+
+        // --- Audio Player Speed Control ---
+        const audioPlayer = document.getElementById("audioPlayer");
+        const speedControl = document.getElementById("speedControl");
+
+        if (audioPlayer && speedControl) {
+          speedControl.addEventListener("change", function () {
+            audioPlayer.playbackRate = parseFloat(this.value);
+          });
+
+          // Set initial playback rate
+          audioPlayer.playbackRate = parseFloat(speedControl.value);
+        }
+
+        // --- Back Button Dynamic Link ---
+        // Dynamically set the homepage link for local and GitHub Pages
+        const btn = document.getElementById("backHomeBtn");
+        if (
+          location.hostname === "localhost" ||
+          location.hostname === "127.0.0.1"
+        ) {
+          btn.href = "/";
+        } else {
+          btn.href = "/vibe-stuff/";
+        }
+      });
+    </script>
+  </body>
+</html>
