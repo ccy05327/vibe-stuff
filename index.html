@@ -79,10 +79,12 @@
         overflow: hidden;
       }
       .section-content.collapsed {
-        max-height: 0;
+        max-height: 0 !important;
         opacity: 0;
-        margin-top: 0;
-        margin-bottom: 0;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
       }
       .section-toggle {
         transition: transform 0.3s ease-in-out;
@@ -300,91 +302,95 @@
     </style>
   </head>
   <body class="min-h-screen flex flex-col items-center justify-center">
-    <header class="mb-6 mt-6 md:mb-10 md:mt-12 text-center px-3 relative">
-      <!-- Fixed toggles for mobile, flex for desktop -->
-      <button
-        id="viewToggle"
-        class="theme-toggle fixed top-4 left-1/2 -translate-x-[340px] z-50"
-        onclick="toggleView()"
-        aria-label="Toggle grid view"
-      >
-        <svg
-          id="listIcon"
-          class="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+    <header class="mb-6 mt-6 md:mb-10 md:mt-12 text-center relative">
+      <!-- Toggles positioned at content container edges -->
+      <div class="relative w-full max-w-2xl mx-auto">
+        <button
+          id="viewToggle"
+          class="theme-toggle absolute top-0 left-3"
+          onclick="toggleView()"
+          aria-label="Toggle grid view"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 10h16M4 14h16M4 18h16"
-          ></path>
-        </svg>
-        <svg
-          id="gridIcon"
-          class="w-5 h-5 hidden"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+          <svg
+            id="listIcon"
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 10h16M4 14h16M4 18h16"
+            ></path>
+          </svg>
+          <svg
+            id="gridIcon"
+            class="w-5 h-5 hidden"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
+            ></path>
+          </svg>
+        </button>
+        <button
+          id="themeToggle"
+          class="theme-toggle absolute top-0 right-3"
+          onclick="toggleTheme()"
+          aria-label="Toggle dark mode"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
-          ></path>
-        </svg>
-      </button>
-      <button
-        id="themeToggle"
-        class="theme-toggle fixed top-4 right-1/2 translate-x-[320px] z-50"
-        onclick="toggleTheme()"
-        aria-label="Toggle dark mode"
-      >
-        <svg
-          id="sunIcon"
-          class="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-          ></path>
-        </svg>
-        <svg
-          id="moonIcon"
-          class="w-5 h-5 hidden"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-          ></path>
-        </svg>
-      </button>
+          <svg
+            id="sunIcon"
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+            ></path>
+          </svg>
+          <svg
+            id="moonIcon"
+            class="w-5 h-5 hidden"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+            ></path>
+          </svg>
+        </button>
+      </div>
 
-      <h1
-        class="text-2xl md:text-3xl lg:text-5xl font-extrabold mb-1 md:mb-2 leading-tight"
-        style="color: var(--section-blue)"
-      >
-        Vibe Stuff Portal
-      </h1>
-      <p
-        class="text-sm md:text-base lg:text-lg"
-        style="color: var(--text-secondary)"
-      >
-        歡迎來到我的Vibe Coding小天地
-      </p>
+      <div class="px-3">
+        <h1
+          class="text-2xl md:text-3xl lg:text-5xl font-extrabold mb-1 md:mb-2 leading-tight"
+          style="color: var(--section-blue)"
+        >
+          Vibe Stuff Portal
+        </h1>
+        <p
+          class="text-sm md:text-base lg:text-lg"
+          style="color: var(--text-secondary)"
+        >
+          歡迎來到我的Vibe Coding小天地
+        </p>
+      </div>
     </header>
 
     <!-- Search Section -->
@@ -782,6 +788,68 @@
             class="section-content learning-section space-y-2 md:space-y-3 lg:space-y-4"
           >
             <a
+              href="learning/global_healthcare/"
+              class="search-item block bg-white rounded-xl shadow-md hover:shadow-lg transition p-3 md:p-4 lg:p-5 border border-yellow-100 hover:border-yellow-300 relative min-h-[64px] md:min-h-[56px]"
+            >
+              <div class="flex items-start">
+                <span
+                  class="text-lg md:text-xl lg:text-2xl mr-2 md:mr-3 lg:mr-4 mt-0.5"
+                  >🏥</span
+                >
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-start justify-between mb-2">
+                    <h3
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
+                    >
+                      全球醫療體系互動分析 Global Healthcare Systems: An
+                      Interactive Analysis
+                    </h3>
+                    <span
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      style="color: #6b7280"
+                    >
+                      2025/07/24
+                    </span>
+                  </div>
+                  <p class="card-description text-xs md:text-sm leading-tight">
+                    英文 |
+                    全球醫療體系模式的互動式探索，比較台灣健保制度與加拿大醫療保險，分析世界各國排名並提供完整視覺化圖表
+                  </p>
+                </div>
+              </div>
+            </a>
+            <a
+              href="learning/phone_plan_payment/"
+              class="search-item block bg-white rounded-xl shadow-md hover:shadow-lg transition p-3 md:p-4 lg:p-5 border border-yellow-100 hover:border-yellow-300 relative min-h-[64px] md:min-h-[56px]"
+            >
+              <div class="flex items-start">
+                <span
+                  class="text-lg md:text-xl lg:text-2xl mr-2 md:mr-3 lg:mr-4 mt-0.5"
+                  >📱</span
+                >
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-start justify-between mb-2">
+                    <h3
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
+                    >
+                      數位十字路口：全球行動與支付系統 Digital Crossroads:
+                      Global Mobile & Payment Systems
+                    </h3>
+                    <span
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      style="color: #6b7280"
+                    >
+                      2025/07/24
+                    </span>
+                  </div>
+                  <p class="card-description text-xs md:text-sm leading-tight">
+                    英文 |
+                    互動式分析探討為何各國行動數據與數位支付存在巨大差異，深入研究經濟、監管與技術因素，提供完整數據視覺化
+                  </p>
+                </div>
+              </div>
+            </a>
+            <a
               href="learning/iPAS_certification/"
               class="search-item block bg-white rounded-xl shadow-md hover:shadow-lg transition p-3 md:p-4 lg:p-5 border border-yellow-100 hover:border-yellow-300 relative min-h-[64px] md:min-h-[56px]"
             >
@@ -1024,9 +1092,16 @@
 
         if (content.classList.contains("collapsed")) {
           // Expand
-          content.classList.remove("collapsed");
           content.style.maxHeight = content.scrollHeight + "px";
+          content.classList.remove("collapsed");
           toggle.classList.remove("collapsed");
+
+          // Remove max-height after animation completes to allow natural height
+          setTimeout(() => {
+            if (!content.classList.contains("collapsed")) {
+              content.style.maxHeight = "none";
+            }
+          }, 300);
         } else {
           // Collapse
           content.style.maxHeight = content.scrollHeight + "px";
