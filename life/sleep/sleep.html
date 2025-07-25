@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sleep Pattern Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+      }
+      .calendar-day {
+        min-height: 100px;
+      }
+      .sleep-bar {
+        background-color: #4f46e5;
+        border-radius: 4px;
+        color: white;
+        font-size: 10px;
+        padding: 2px 4px;
+        margin-top: 2px;
+        overflow: hidden;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .sleep-bar:hover {
+        background-color: #6366f1;
+      }
+      .feedback-btn.selected {
+        background-color: #10b981;
+        color: white;
+        border-color: #10b981;
+      }
+      .feedback-btn.selected.inaccurate {
+        background-color: #ef4444;
+        border-color: #ef4444;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <div class="container mx-auto p-4 md:p-8">
+      <header class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900">
+          Sleep Pattern Predictor
+        </h1>
+        <p class="text-gray-600 mt-2">
+          Upload your sleep data to visualize patterns and predict future sleep.
+        </p>
+      </header>
+
+      <div class="grid grid-cols-1 gap-8">
+        <!-- Controls Section -->
+        <div class="bg-white p-6 rounded-xl shadow-md">
+          <h2 class="text-xl font-semibold mb-4">Controls</h2>
+
+          <!-- Timezone Selection -->
+          <div class="mb-6">
+            <label
+              for="timezone-select"
+              class="block text-sm font-medium text-gray-700 mb-2"
+              >1. Select Your Timezone</label
+            >
+            <select
+              id="timezone-select"
+              class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <!-- Timezones will be populated by JS -->
+            </select>
+          </div>
+
+          <!-- Prediction Date -->
+          <div>
+            <label
+              for="prediction-date"
+              class="block text-sm font-medium text-gray-700 mb-2"
+              >2. Select Date for Prediction</label
+            >
+            <input
+              type="date"
+              id="prediction-date"
+              class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            />
+            <button
+              id="predict-btn"
+              class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300 mt-3 disabled:bg-gray-400"
+              disabled
+            >
+              Predict Sleep
+            </button>
+          </div>
+        </div>
+
+        <!-- Prediction & Feedback Section -->
+        <div class="bg-white p-6 rounded-xl shadow-md">
+          <div id="prediction-section" class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Prediction</h2>
+            <div
+              id="prediction-output"
+              class="bg-gray-100 p-4 rounded-lg min-h-[100px] flex items-center justify-center"
+            >
+              <p class="text-gray-500">Predictions will appear here.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Data Calendar Section -->
+        <div class="bg-white p-6 rounded-xl shadow-md">
+          <h2 class="text-xl font-semibold mb-4">Historical Sleep Data</h2>
+          <div class="flex justify-between items-center mb-4">
+            <button
+              id="prev-month-btn"
+              class="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
+            >
+              &lt;
+            </button>
+            <h3 id="calendar-month-year" class="text-lg font-semibold"></h3>
+            <button
+              id="next-month-btn"
+              class="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
+            >
+              &gt;
+            </button>
+          </div>
+          <div class="calendar-grid" id="calendar-grid">
+            <!-- Calendar days will be populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Sleep Details -->
+    <div
+      id="details-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4"
+    >
+      <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        <h3 class="text-lg font-semibold mb-4" id="modal-title">
+          Sleep Details
+        </h3>
+        <div id="modal-body"></div>
+        <button
+          id="close-modal-btn"
+          class="mt-4 w-full bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
+    <script type="module">
+      // --- App State ---
+      let sleepData = [];
+      let processedData = [];
+      let currentDisplayDate = new Date();
+      let selectedTimezone = "";
+
+      // --- UI Elements ---
+      const fileInput = document.getElementById("csv-file");
+      const timezoneSelect = document.getElementById("timezone-select");
+      const predictionDateInput = document.getElementById("prediction-date");
+      const predictBtn = document.getElementById("predict-btn");
+      const calendarGrid = document.getElementById("calendar-grid");
+      const monthYearEl = document.getElementById("calendar-month-year");
+      const prevMonthBtn = document.getElementById("prev-month-btn");
+      const nextMonthBtn = document.getElementById("next-month-btn");
+      const predictionOutput = document.getElementById("prediction-output");
+      const modal = document.getElementById("details-modal");
+      const modalTitle = document.getElementById("modal-title");
+      const modalBody = document.getElementById("modal-body");
+      const closeModalBtn = document.getElementById("close-modal-btn");
+      const accuracyScoreEl = document.getElementById("accuracy-score");
+
+      // --- Event Listeners ---
+      timezoneSelect.addEventListener("change", handleTimezoneChange);
+      predictBtn.addEventListener("click", handlePrediction);
+      prevMonthBtn.addEventListener("click", () => changeMonth(-1));
+      nextMonthBtn.addEventListener("click", () => changeMonth(1));
+      closeModalBtn.addEventListener("click", () =>
+        modal.classList.add("hidden")
+      );
+
+      // --- Initialization ---
+      function init() {
+        populateTimezones();
+        const today = new Date();
+        predictionDateInput.min = today.toISOString().split("T")[0];
+        const maxDate = new Date();
+        maxDate.setDate(today.getDate() + 7);
+        predictionDateInput.max = maxDate.toISOString().split("T")[0];
+        predictionDateInput.value = today.toISOString().split("T")[0];
+
+        renderCalendar();
+        fetchSleepData(); // Fetch sleep data directly
+      }
+
+      // --- Handlers ---
+      async function fetchSleepData() {
+        try {
+          const response = await fetch("./samsung_sleep_data_20250725.csv");
+          if (!response.ok) {
+            throw new Error("Failed to fetch sleep data file.");
+          }
+
+          const csvText = await response.text();
+          Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            complete: (results) => {
+              // Rename columns to be more JS-friendly
+              sleepData = results.data
+                .map((row) => ({
+                  startTime: row["start_time"],
+                  endTime: row["end_time"],
+                  timeOffset: row["timezone"],
+                  duration: +row["sleep_duration"],
+                  score: +row["sleep_score"],
+                  mentalRecovery: +row["mental_recovery"],
+                  physicalRecovery: +row["physical_recovery"],
+                }))
+                .filter((d) => d.startTime && d.endTime && d.timeOffset);
+
+              processAndRender();
+              predictBtn.disabled = false;
+            },
+          });
+        } catch (error) {
+          console.error("Error fetching sleep data:", error);
+        }
+      }
+
+      function handleTimezoneChange() {
+        selectedTimezone = timezoneSelect.value;
+        processAndRender();
+      }
+
+      function processAndRender() {
+        if (sleepData.length === 0) return;
+        processData();
+        renderCalendar();
+      }
+
+      async function handlePrediction() {
+        const targetDateStr = predictionDateInput.value;
+        if (!targetDateStr || processedData.length === 0) {
+          predictionOutput.innerHTML = `<p class="text-red-500">Please upload data and select a date.</p>`;
+          return;
+        }
+
+        const targetDate = new Date(targetDateStr + "T00:00:00");
+        const predictions = predictSleep(targetDate);
+
+        renderPrediction(predictions, targetDate);
+      }
+
+      // --- Prediction Rendering ---
+      function renderPrediction(predictions, targetDate) {
+        predictionOutput.innerHTML = ""; // Clear previous
+        if (predictions.length === 0) {
+          predictionOutput.innerHTML = `<p class="text-gray-500">Could not generate a prediction. Not enough historical data for this day of the week.</p>`;
+          return;
+        }
+
+        const list = document.createElement("ul");
+        list.className = "space-y-3";
+
+        for (const pred of predictions) {
+          const listItem = document.createElement("li");
+          listItem.className =
+            "flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-white rounded-lg shadow-sm w-full sm:w-[600px]"; // Adjusted width
+
+          const timeText = document.createElement("div");
+          timeText.className = "font-medium";
+          timeText.textContent = `Predicted Sleep: ${formatTime(
+            pred.start
+          )} - ${formatTime(pred.end)} (${formatDuration(pred.duration)})`;
+          listItem.appendChild(timeText);
+
+          const feedbackContainer = document.createElement("div");
+          feedbackContainer.className =
+            "flex items-center space-x-2 mt-2 sm:mt-0";
+
+          const accurateBtn = document.createElement("button");
+          accurateBtn.textContent = "✅"; // Changed to emoji
+          accurateBtn.className =
+            "px-3 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300";
+          accurateBtn.onclick = () => savePredictionFeedback(pred, "accurate");
+
+          const notAccurateBtn = document.createElement("button");
+          notAccurateBtn.textContent = "❌"; // Changed to emoji
+          notAccurateBtn.className =
+            "px-3 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300";
+          notAccurateBtn.onclick = () => {
+            savePredictionFeedback(pred, "not-accurate");
+            showActualDataForm(pred);
+          };
+
+          feedbackContainer.appendChild(accurateBtn);
+          feedbackContainer.appendChild(notAccurateBtn);
+          listItem.appendChild(feedbackContainer);
+
+          list.appendChild(listItem);
+        }
+        predictionOutput.appendChild(list);
+      }
+
+      // Save feedback for a specific prediction
+      async function savePredictionFeedback(prediction, feedbackType) {
+        try {
+          const feedbackRow = {
+            start: prediction.start.toISOString(),
+            end: prediction.end.toISOString(),
+            duration: prediction.duration,
+            feedback: feedbackType,
+          };
+
+          // Save updated feedback to the CSV file
+          await saveToCSV("./feedback.csv", feedbackRow);
+          console.log("Feedback saved successfully:", feedbackRow);
+        } catch (error) {
+          console.error("Error saving feedback:", error);
+        }
+      }
+
+      // Utility function to save data to a CSV file
+      async function saveToCSV(filePath, row) {
+        const headers = ["start", "end", "duration", "feedback"];
+        let csvContent = "";
+
+        try {
+          // Fetch existing CSV content
+          const response = await fetch(filePath);
+          if (response.ok) {
+            csvContent = await response.text();
+          }
+        } catch (error) {
+          console.warn("No existing CSV file found, starting fresh.");
+        }
+
+        // Parse existing CSV content and add the new row
+        const rows = csvContent
+          ? csvContent.split("\n").map((line) => line.split(","))
+          : [headers];
+        if (rows[0].join() !== headers.join()) {
+          rows.unshift(headers); // Ensure headers are present
+        }
+        rows.push(headers.map((header) => row[header] || ""));
+
+        // Convert rows back to CSV format
+        const updatedCSV = rows.map((line) => line.join(",")).join("\n");
+
+        // Save the updated CSV content
+        const blob = new Blob([updatedCSV], { type: "text/csv" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = filePath.split("/").pop();
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+
+      // Show form to input actual data for a specific prediction
+      function showActualDataForm(prediction) {
+        const form = document.getElementById("actual-data-form");
+        form.classList.remove("hidden");
+
+        const startTimeInput = document.getElementById("actual-start-time");
+        const endTimeInput = document.getElementById("actual-end-time");
+
+        startTimeInput.value = formatTimeForInput(prediction.start);
+        endTimeInput.value = formatTimeForInput(prediction.end);
+
+        form.onsubmit = (event) => {
+          event.preventDefault();
+          const actualStartTime = startTimeInput.value;
+          const actualEndTime = endTimeInput.value;
+          saveActualData(prediction, actualStartTime, actualEndTime);
+          form.classList.add("hidden");
+        };
+      }
+
+      // Save actual data for a specific prediction
+      function saveActualData(prediction, startTime, endTime) {
+        console.log(
+          `Actual data for prediction: Start - ${startTime}, End - ${endTime}`,
+          prediction
+        );
+        // Add logic to save actual data to database or update local state
+      }
+
+      // Format time for input fields
+      function formatTimeForInput(date) {
+        return date.toISOString().slice(11, 16); // Extract HH:mm from ISO string
+      }
+
+      // --- Data Processing ---
+      function processData() {
+        processedData = sleepData.map((d) => {
+          const start = parseDateWithOffset(d.startTime, d.timeOffset);
+          const end = parseDateWithOffset(d.endTime, d.timeOffset);
+          return { ...d, start, end };
+        });
+      }
+
+      function parseDateWithOffset(dateStr, offsetStr) {
+        const date = new Date(dateStr.replace(" ", "T") + "Z"); // Treat as UTC
+        const offsetMatch = offsetStr.match(/([+-])(\d{2})(\d{2})/);
+        if (!offsetMatch) return date;
+
+        const sign = offsetMatch[1] === "+" ? 1 : -1;
+        const hours = parseInt(offsetMatch[2], 10);
+        const minutes = parseInt(offsetMatch[3], 10);
+        const offsetMillis = (hours * 60 + minutes) * 60 * 1000 * sign;
+
+        // The date string is local to the offset. We need to adjust it to get the true UTC time.
+        // Example: "2023-09-19 14:46:00" with "UTC+0800" means 14:46 in that timezone.
+        // To get UTC, we subtract the offset.
+        return new Date(date.getTime() - offsetMillis);
+      }
+
+      // --- Calendar Rendering ---
+      function renderCalendar() {
+        calendarGrid.innerHTML = "";
+        monthYearEl.textContent = currentDisplayDate.toLocaleDateString(
+          undefined,
+          { month: "long", year: "numeric" }
+        );
+
+        const year = currentDisplayDate.getFullYear();
+        const month = currentDisplayDate.getMonth();
+
+        const firstDayOfMonth = new Date(year, month, 1);
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const startDayOfWeek = firstDayOfMonth.getDay(); // 0 = Sunday
+
+        // Day headers
+        ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach((day) => {
+          const dayEl = document.createElement("div");
+          dayEl.className = "font-semibold text-center text-sm text-gray-500";
+          dayEl.textContent = day;
+          calendarGrid.appendChild(dayEl);
+        });
+
+        // Blank days for grid alignment
+        for (let i = 0; i < startDayOfWeek; i++) {
+          calendarGrid.appendChild(document.createElement("div"));
+        }
+
+        // Calendar days
+        for (let i = 1; i <= daysInMonth; i++) {
+          const dayEl = document.createElement("div");
+          dayEl.className =
+            "calendar-day border border-gray-200 rounded-md p-1 bg-gray-50";
+
+          const date = new Date(year, month, i);
+          const dateStr = date.toISOString().split("T")[0];
+
+          const dayHeader = document.createElement("div");
+          dayHeader.className = "text-xs text-right text-gray-600";
+          dayHeader.textContent = i;
+          dayEl.appendChild(dayHeader);
+
+          const sleepsForDay = getSleepsForDate(date);
+          if (sleepsForDay.length > 0) {
+            dayEl.classList.add("bg-indigo-50");
+            sleepsForDay.forEach((sleep) => {
+              const sleepBar = document.createElement("div");
+              sleepBar.className = "sleep-bar";
+              sleepBar.textContent = `${formatTime(sleep.start)} - ${formatTime(
+                sleep.end
+              )}`;
+              sleepBar.onclick = () => showSleepDetails(sleep);
+              dayEl.appendChild(sleepBar);
+            });
+          }
+          calendarGrid.appendChild(dayEl);
+        }
+      }
+
+      function getSleepsForDate(date) {
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        return processedData.filter((d) => {
+          // This logic includes sleeps that start on this day.
+          return d.start >= startOfDay && d.start <= endOfDay;
+        });
+      }
+
+      function changeMonth(delta) {
+        currentDisplayDate.setMonth(currentDisplayDate.getMonth() + delta);
+        renderCalendar();
+      }
+
+      // --- Prediction Logic ---
+      function predictSleep(targetDate) {
+        const targetDayOfWeek = targetDate.getDay();
+
+        const relevantSleeps = processedData.filter(
+          (d) => d.start.getDay() === targetDayOfWeek
+        );
+        if (relevantSleeps.length < 5) return []; // Not enough data
+
+        const startMinutes = relevantSleeps
+          .map((d) => d.start.getHours() * 60 + d.start.getMinutes())
+          .sort((a, b) => a - b);
+
+        // Simple clustering based on time gap
+        const clusters = [];
+        if (startMinutes.length > 0) {
+          let currentCluster = [startMinutes[0]];
+          for (let i = 1; i < startMinutes.length; i++) {
+            if (
+              startMinutes[i] - currentCluster[currentCluster.length - 1] <
+              120
+            ) {
+              // 2-hour gap
+              currentCluster.push(startMinutes[i]);
+            } else {
+              clusters.push(currentCluster);
+              currentCluster = [startMinutes[i]];
+            }
+          }
+          clusters.push(currentCluster);
+        }
+
+        const predictions = [];
+        for (const cluster of clusters) {
+          if (cluster.length < 3) continue; // Ignore small clusters
+
+          const avgStartMinute =
+            cluster.reduce((a, b) => a + b, 0) / cluster.length;
+
+          const sleepsInCluster = relevantSleeps.filter((d) => {
+            const dMinutes = d.start.getHours() * 60 + d.start.getMinutes();
+            return Math.abs(dMinutes - avgStartMinute) < 90; // 1.5 hour window around average
+          });
+
+          if (sleepsInCluster.length === 0) continue;
+
+          const avgDuration =
+            sleepsInCluster.reduce((sum, d) => sum + d.duration, 0) /
+            sleepsInCluster.length;
+
+          const predStart = new Date(targetDate);
+          predStart.setHours(
+            Math.floor(avgStartMinute / 60),
+            Math.round(avgStartMinute % 60),
+            0,
+            0
+          );
+
+          const predEnd = new Date(
+            predStart.getTime() + avgDuration * 60 * 1000
+          );
+
+          predictions.push({
+            start: predStart,
+            end: predEnd,
+            duration: avgDuration,
+          });
+        }
+
+        return predictions;
+      }
+
+      // --- UI Helpers ---
+      function showSleepDetails(sleep) {
+        modalTitle.textContent = `Sleep on ${sleep.start.toLocaleDateString()}`;
+        modalBody.innerHTML = `
+                <ul class="space-y-2 text-sm">
+                    <li><strong>Time:</strong> ${formatTime(
+                      sleep.start
+                    )} - ${formatTime(sleep.end)}</li>
+                    <li><strong>Duration:</strong> ${formatDuration(
+                      sleep.duration
+                    )}</li>
+                    <li><strong>Sleep Score:</strong> ${
+                      sleep.score || "N/A"
+                    }</li>
+                    <li><strong>Mental Recovery:</strong> ${
+                      sleep.mentalRecovery || "N/A"
+                    }</li>
+                    <li><strong>Physical Recovery:</strong> ${
+                      sleep.physicalRecovery || "N/A"
+                    }</li>
+                </ul>
+            `;
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+
+      function populateTimezones() {
+        const timezones = Intl.supportedValuesOf("timeZone");
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        timezones.forEach((tz) => {
+          const option = document.createElement("option");
+          option.value = tz;
+          option.textContent = tz;
+          if (tz === userTimezone) {
+            option.selected = true;
+          }
+          timezoneSelect.appendChild(option);
+        });
+        selectedTimezone = userTimezone;
+      }
+
+      function formatTime(date) {
+        return date.toLocaleTimeString(undefined, {
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: selectedTimezone || undefined,
+          hour12: true,
+        });
+      }
+
+      function formatDuration(minutes) {
+        if (!minutes && minutes !== 0) return "N/A";
+        const totalMinutes = Math.round(minutes);
+        const h = Math.floor(totalMinutes / 60);
+        const m = totalMinutes % 60;
+        return `${h}h ${m}m`;
+      }
+
+      // --- Run on Load ---
+      init();
+    </script>
+  </body>
+</html>
