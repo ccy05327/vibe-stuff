@@ -162,32 +162,6 @@
     </style>
   </head>
   <body class="bg-[#F8F5F2] text-[#A67B5B]">
-    <script>
-      // Simple password protection
-      const password = "ST9";
-      let entered = false;
-      while (!entered) {
-        const input = prompt(
-          "This page is password protected. Please enter the password:"
-        );
-        if (input === null) {
-          // Redirect to homepage (root on localhost, /vibe-stuff/ on GitHub Pages)
-          if (
-            location.hostname === "localhost" ||
-            location.hostname === "127.0.0.1"
-          ) {
-            window.location = "/";
-          } else {
-            window.location = "/vibe-stuff/";
-          }
-        }
-        if (input === password) {
-          entered = true;
-        } else {
-          alert("Incorrect password. Please try again.");
-        }
-      }
-    </script>
     <a
       id="backHomeBtn"
       class="fixed top-4 left-4 z-50 px-3 py-1.5 rounded-full shadow border flex items-center backdrop-blur-sm transition-all"
@@ -290,8 +264,8 @@
         </h2>
         <p class="text-gray-700 leading-relaxed mb-6">
           已確認機票+住宿套餐價格為 NT$10,794
-          (兩人總計，未含1.5%處理費)。加上簽證、SIM卡及基礎花費後，每人預算約
-          NT$8,761，遠低於最初的1萬5目標。這代表你擁有極大的彈性資金，可以自由地用於購物或體驗更多活動。已確認入住
+          (兩人總計，未含1.5%處理費)。加上簽證、eSIM卡及基礎花費後，每人預算約
+          NT$9,588，遠低於最初的1萬5目標。這代表你擁有極大的彈性資金，可以自由地用於購物或體驗更多活動。已確認入住
           Nicey Ngan Ha Hotel (5晚)。
         </p>
         <div class="grid md:grid-cols-2 gap-8 items-center">
@@ -305,16 +279,16 @@
                 <span class="font-mono font-semibold">NT$ 5,397</span>
               </li>
               <li class="flex justify-between items-center">
-                <span>� 機場接送 (往返)</span>
+                <span>📍 機場接送 (往返)</span>
                 <span class="font-mono font-semibold">NT$ 308</span>
               </li>
               <li class="flex justify-between items-center">
-                <span>�📄 越南電子簽證</span>
+                <span>📄 越南電子簽證</span>
                 <span class="font-mono font-semibold">NT$ 730</span>
               </li>
               <li class="flex justify-between items-center">
-                <span>📱 實體 SIM 卡</span>
-                <span class="font-mono font-semibold">NT$ 135</span>
+                <span>📱 eSIM 卡</span>
+                <span class="font-mono font-semibold">NT$ 193</span>
               </li>
               <li class="flex justify-between items-center">
                 <span>🍜 基礎每日花費 (5天)</span>
@@ -324,12 +298,12 @@
                 class="border-t pt-3 mt-3 flex justify-between items-center text-lg font-bold"
               >
                 <span>💰 基礎總預估</span>
-                <span class="font-mono text-[#A67B5B]">NT$ 9,540</span>
+                <span class="font-mono text-[#A67B5B]">NT$ 9,598</span>
               </li>
             </ul>
             <p class="mt-4 text-sm text-gray-500">
               * 已確認套餐：機票+住宿 NT$10,794
-              (兩人總計)。每人基礎總預算NT$9,540，距離目標預算NT$15,000仍有近NT$5,460的彈性空間！機場交通費以Grab往返約240,000
+              (兩人總計)。每人基礎總預算NT$9,598，距離目標預算NT$15,000仍有近NT$5,402的彈性空間！機場交通費以Grab往返約240,000
               VND (NT$308)計算。
             </p>
           </div>
@@ -364,11 +338,11 @@
           </div>
           <div class="p-4 bg-teal-50 rounded-lg">
             <h3 class="text-xl font-semibold text-teal-800">
-              📱 通訊簡報：SIM卡預先準備
+              📱 通訊簡報：eSIM卡預先準備
             </h3>
             <p class="mt-2 text-gray-700">
-              依你的規劃，SIM卡將在台灣預先購買並設定完成
-              (兩人NT$270，每人NT$135)。這將為你省去抵達機場後尋找及設定的麻煩，實現真正的「落地即上網」，讓你的旅程從一開始就無比順暢。
+              依你的規劃，eSIM卡將在台灣預先購買並設定完成
+              (兩人NT$366，包含2GB/6天及5GB/7天不同需求方案)。這將為你省去抵達機場後尋找及設定的麻煩，實現真正的「落地即上網」，讓你的旅程從一開始就無比順暢。
             </p>
           </div>
           <div class="p-4 bg-green-50 rounded-lg">
@@ -380,13 +354,13 @@
             </p>
             <ul class="mt-2 list-disc list-inside text-gray-700 space-y-1">
               <li>
-                <b>建議兌換金額：</b>建議每人至少兌換
-                <b>3,000,000 VND (約 NT$3,846)</b>
-                的現金，以應付每日的交通、小吃、市集購物與小額門票等開銷。
+                <b>已兌換金額：</b>已兌換共
+                <b>5,000,000 VND ($6,650)</b>
+                的現金，分別應付每日的交通、小吃、市集購物與小額門票等開銷。
               </li>
               <li>
                 <b>兌換地點：</b
-                >可在台灣的銀行預先兌換，或抵達新山一機場後在合法的換匯櫃檯兌換。
+                >台灣銀行 信安分行。
               </li>
             </ul>
           </div>
@@ -584,11 +558,11 @@
           budgetChartInstance = new Chart(budgetCtx.getContext("2d"), {
             type: "doughnut",
             data: {
-              labels: ["機票+住宿", "基礎花費", "簽證 & SIM", "機場交通"],
+              labels: ["機票+住宿", "基礎花費", "簽證 & eSIM", "機場交通"],
               datasets: [
                 {
                   label: "預算分配",
-                  data: [5397, 2970, 865, 308],
+                  data: [5397, 2970, 913, 308],
                   backgroundColor: ["#A67B5B", "#E0DACE", "#C5A481", "#BDB7AB"],
                   borderColor: "#F8F5F2",
                   borderWidth: 4,
