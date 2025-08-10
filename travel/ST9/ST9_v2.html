@@ -223,6 +223,49 @@
                 NT$450，這解釋了為何它並非日常小吃。
               </p>
             </div>
+
+            <div class="mt-8">
+              <h3 class="text-xl font-bold text-teal-700 mb-3">
+                🎧 深度解析音頻
+              </h3>
+              <p class="mb-4 text-stone-600">
+                聆聽更深入的在地觀察與文化洞見，了解胡志明市的真實面貌。
+              </p>
+              <div class="bg-teal-50 p-4 rounded-lg">
+                <div class="mb-4">
+                  <audio
+                    id="st9Audio"
+                    controls
+                    class="w-full mb-3"
+                    style="height: 40px"
+                  >
+                    <source src="ST9.m4a" type="audio/mp4" />
+                    您的瀏覽器不支援音頻播放。
+                  </audio>
+                </div>
+                <div class="flex flex-col sm:flex-row items-center gap-4">
+                  <div class="flex items-center gap-2">
+                    <label for="speedSelect" class="font-semibold text-teal-700"
+                      >播放速度：</label
+                    >
+                    <select
+                      id="speedSelect"
+                      class="p-2 rounded-md border border-teal-300 bg-white focus:ring-2 focus:ring-teal-400 focus:border-teal-400"
+                    >
+                      <option value="0.5">0.5x (慢速)</option>
+                      <option value="0.75">0.75x (較慢)</option>
+                      <option value="1" selected>1x (正常)</option>
+                      <option value="1.25">1.25x (較快)</option>
+                      <option value="1.5">1.5x (快速)</option>
+                      <option value="2">2x (極快)</option>
+                    </select>
+                  </div>
+                  <div class="text-sm text-teal-600">
+                    💡 建議中文學習者使用 0.75x 速度
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="bg-white p-6 rounded-xl shadow-sm">
             <h2 class="text-2xl font-bold text-teal-700 mb-4">
@@ -712,6 +755,15 @@
         const twdValue = vndValue / 880;
         const feelValue = twdValue * 5;
         feelPrice.textContent = `NT$ ${Math.round(feelValue).toLocaleString()}`;
+      });
+
+      // Audio speed control
+      const audio = document.getElementById("st9Audio");
+      const speedSelect = document.getElementById("speedSelect");
+
+      speedSelect.addEventListener("change", () => {
+        const selectedSpeed = parseFloat(speedSelect.value);
+        audio.playbackRate = selectedSpeed;
       });
 
       const salaryData = {
