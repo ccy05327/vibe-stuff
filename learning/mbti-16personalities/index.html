@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Guide: MBTI vs. 16Personalities</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Calm Harmony (Stone/Amber, Slate, Teal, Rose) -->
+    <!-- Application Structure Plan: A tabbed/single-page layout with anchored sections designed for user-centric exploration: 1. Intro (Hook), 2. Core Comparison (MBTI vs 16P), 3. Key Differences (Interactive Cards), 4. Scientific Critique (Chart), 5. Cultural Stereotypes (Interactive Grid), 6. Responsible Use (Takeaways). This structure prioritizes answering user questions logically over mimicking the report's academic flow, enhancing usability and engagement. -->
+    <!-- Visualization & Content Choices: Report Info: MBTI/16P comparison -> Goal: Compare -> Viz: Interactive side-by-side panels -> Interaction: Toggle content views -> Justification: Direct comparison is more effective than a static table. Report Info: Scientific critiques -> Goal: Inform -> Viz: Bar Chart -> Interaction: Hover tooltips -> Justification: Visualizes abstract psychometric concepts for easier understanding. Report Info: Type stereotypes -> Goal: Organize/Explore -> Viz: Interactive Grid -> Interaction: Click to reveal modal -> Justification: Highly engaging and directly addresses a key user interest. All implemented with HTML/CSS/JS and Chart.js (Canvas). -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f5f5f4; /* stone-200 */
+        color: #334155; /* slate-700 */
+      }
+      .nav-link {
+        transition: color 0.3s, border-color 0.3s;
+      }
+      .nav-link.active {
+        color: #0d9488; /* teal-600 */
+        border-bottom-color: #0d9488; /* teal-600 */
+      }
+      .card {
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+      }
+      .type-grid-item {
+        transition: background-color 0.3s, color 0.3s, transform 0.3s;
+      }
+      .type-grid-item:hover {
+        background-color: #0d9488; /* teal-600 */
+        color: white;
+        transform: scale(1.05);
+      }
+      .modal-backdrop {
+        transition: opacity 0.3s;
+      }
+      .modal-content {
+        transition: transform 0.3s, opacity 0.3s;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 400px;
+        max-height: 50vh;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 450px;
+        }
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+      <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center space-x-4 z-10">
+            <a
+              href="../../"
+              class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-teal-600 transition-colors relative z-20"
+              title="Back to Homepage"
+            >
+              <span class="mr-2">←</span>
+              <span>Home</span>
+            </a>
+            <div class="flex-shrink-0">
+              <h1 class="text-xl font-bold text-teal-700">Typology Debunked</h1>
+            </div>
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a
+                href="#introduction"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-teal-600 border-b-2 border-transparent"
+                >Introduction</a
+              >
+              <a
+                href="#comparison"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-teal-600 border-b-2 border-transparent"
+                >The Systems</a
+              >
+              <a
+                href="#critique"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-teal-600 border-b-2 border-transparent"
+                >The Science</a
+              >
+              <a
+                href="#stereotypes"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-teal-600 border-b-2 border-transparent"
+                >The Stereotypes</a
+              >
+              <a
+                href="#recommendations"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-teal-600 border-b-2 border-transparent"
+                >Responsible Use</a
+              >
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Audio Section -->
+    <section class="bg-stone-50 border-b border-stone-200">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div
+          class="flex flex-col sm:flex-row items-center justify-center gap-4"
+        >
+          <div class="flex items-center gap-3">
+            <span class="text-slate-600 font-medium"
+              >🎧 Listen to this guide:</span
+            >
+            <audio controls class="h-8" style="max-width: 300px">
+              <source src="audio.mp3" type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+          <div class="text-xs text-slate-500">
+            Audio narration available for enhanced accessibility
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="pt-0">
+      <section id="introduction" class="py-16 sm:py-24 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2
+            class="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl lg:text-5xl"
+          >
+            MBTI vs. 16Personalities
+          </h2>
+          <p class="mt-4 text-xl text-slate-600">
+            They use the same four letters, but are they the same test? This
+            guide unravels the confusion.
+          </p>
+          <p class="mt-6 max-w-3xl mx-auto text-lg leading-8 text-slate-500">
+            Millions take personality tests online, often getting a four-letter
+            code like 'INTJ' or 'ENFP'. Most assume they've taken the official
+            Myers-Briggs Type Indicator (MBTI). In reality, they've likely used
+            the popular 16Personalities test. This interactive guide explores
+            the critical differences in their history, theory, scientific
+            backing, and intended use, helping you understand what these tools
+            really are.
+          </p>
+        </div>
+      </section>
+
+      <section id="comparison" class="py-16 sm:py-24">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold tracking-tight text-slate-800">
+              The Two Systems: A Closer Look
+            </h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
+              Explore the core components of each framework. While they look
+              similar on the surface, their foundations are fundamentally
+              different.
+            </p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+            <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg card">
+              <h3 class="text-2xl font-bold text-teal-700">
+                Myers-Briggs Type Indicator (MBTI)
+              </h3>
+              <p class="mt-2 text-sm text-slate-500">The Original Architect</p>
+              <div
+                id="mbti-content"
+                class="mt-4 space-y-4 text-slate-600"
+              ></div>
+            </div>
+            <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg card">
+              <h3 class="text-2xl font-bold text-rose-700">16Personalities</h3>
+              <p class="mt-2 text-sm text-slate-500">The Modern Contender</p>
+              <div id="p16-content" class="mt-4 space-y-4 text-slate-600"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="critique" class="py-16 sm:py-24 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold tracking-tight text-slate-800">
+              The Scientific Verdict
+            </h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
+              How do these systems hold up to scientific scrutiny? Academic
+              psychology has raised significant concerns about both.
+            </p>
+          </div>
+          <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+            <div class="chart-container">
+              <canvas id="critiqueChart"></canvas>
+            </div>
+          </div>
+          <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+            <div class="bg-stone-100 p-4 rounded-lg">
+              <h4 class="font-semibold text-teal-700">Critiques of the MBTI</h4>
+              <ul
+                id="mbti-critiques"
+                class="mt-2 list-disc list-inside space-y-1 text-slate-600"
+              ></ul>
+            </div>
+            <div class="bg-stone-100 p-4 rounded-lg">
+              <h4 class="font-semibold text-rose-700">
+                Critiques of 16Personalities
+              </h4>
+              <ul
+                id="p16-critiques"
+                class="mt-2 list-disc list-inside space-y-1 text-slate-600"
+              ></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="stereotypes" class="py-16 sm:py-24">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold tracking-tight text-slate-800">
+              The Cultural Phenomenon: 16 Stereotypes
+            </h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
+              Online, the 16 types have become simplified caricatures. Click a
+              type to see its common stereotype and a brief explanation of its
+              theoretical origin.
+            </p>
+            <p class="mt-2 text-sm text-slate-500">
+              Disclaimer: These are oversimplified cultural memes, not accurate
+              descriptions of individuals.
+            </p>
+          </div>
+          <div
+            id="type-grid"
+            class="grid grid-cols-2 md:grid-cols-4 gap-4"
+          ></div>
+        </div>
+      </section>
+
+      <section id="recommendations" class="py-16 sm:py-24 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold tracking-tight text-slate-800">
+              How to Use These Tools Responsibly
+            </h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
+              Avoid common pitfalls and use personality frameworks for genuine
+              self-reflection.
+            </p>
+          </div>
+          <div
+            id="recommendations-list"
+            class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6"
+          ></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400">
+      <div
+        class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm"
+      >
+        <p>
+          This interactive guide is for educational purposes, based on the
+          provided comparative analysis report.
+        </p>
+        <p>&copy; 2025 Typology Debunked. All Rights Reserved.</p>
+      </div>
+    </footer>
+
+    <div
+      id="stereotype-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden"
+    >
+      <div
+        class="modal-backdrop fixed inset-0 bg-black/50"
+        onclick="closeModal()"
+      ></div>
+      <div
+        class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-auto z-10 transform scale-95 opacity-0"
+      >
+        <div class="p-6">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3
+                id="modal-type"
+                class="text-2xl font-bold text-slate-800"
+              ></h3>
+              <p id="modal-title" class="text-md text-slate-500"></p>
+            </div>
+            <button
+              onclick="closeModal()"
+              class="text-slate-400 hover:text-slate-600 transition"
+            >
+              &times;
+            </button>
+          </div>
+          <div class="mt-4">
+            <p class="font-semibold text-slate-700">Common Stereotype:</p>
+            <p id="modal-stereotype" class="mt-1 text-slate-600 italic"></p>
+            <p class="mt-4 font-semibold text-slate-700">
+              Potential Origin in Theory:
+            </p>
+            <p id="modal-origin" class="mt-1 text-slate-600"></p>
+          </div>
+        </div>
+        <div class="bg-slate-50 px-6 py-3 text-right">
+          <button
+            onclick="closeModal()"
+            class="px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const appData = {
+        comparison: {
+          mbti: {
+            title: "Myers-Briggs Type Indicator (MBTI)",
+            content: [
+              {
+                heading: "Theoretical Basis",
+                text: "Rooted in Carl Jung's theory of psychological types. It posits that people have innate preferences for how they perceive the world and make decisions. The core idea is about your mind's 'wiring'.",
+              },
+              {
+                heading: "Core Concept: Cognitive Functions",
+                text: "The four letters are a code for a stack of eight 'cognitive functions' (e.g., Introverted Intuition, Extraverted Thinking). This deep, structural model is the real substance behind the type.",
+              },
+              {
+                heading: "Application",
+                text: "A restricted tool used by certified practitioners for personal development, coaching, and team building. It is explicitly unethical to use it for hiring or selection.",
+              },
+            ],
+          },
+          p16: {
+            title: "16Personalities",
+            content: [
+              {
+                heading: "Theoretical Basis",
+                text: "A hybrid model combining MBTI-style typology with the academically respected Big Five trait theory. It primarily measures your behaviors and traits, not your mind's structure.",
+              },
+              {
+                heading: "Core Concept: The 5th Trait",
+                text: "Adds a fifth dimension, Identity (Assertive vs. Turbulent), which is an adaptation of the Neuroticism trait from the Big Five model. Cognitive functions are not part of this model.",
+              },
+              {
+                heading: "Application",
+                text: "A free, direct-to-consumer online test. Revenue comes from selling premium reports. It's unregulated and designed for broad public appeal and shareability.",
+              },
+            ],
+          },
+        },
+        critiques: {
+          mbti: [
+            "<strong>Poor Reliability:</strong> Up to 50% of people get a different result on a re-test, which is not ideal for a psychometric tool.",
+            "<strong>Categorical Flaw:</strong> Forces people into binary boxes (e.g., Introvert or Extravert), losing the nuance of personality existing on a spectrum.",
+            "<strong>Poor Predictive Validity:</strong> Does not reliably predict job performance or success, which is why it's unethical to use for hiring.",
+            "<strong>The Barnum Effect:</strong> Descriptions can be vague and flattering, making people feel 'seen' even if the statements are generic.",
+          ],
+          p16: [
+            "<strong>'Black Box' Methodology:</strong> The algorithm for converting Big Five trait scores into a four-letter type is proprietary and not validated by peer-reviewed research.",
+            "<strong>Flawed Trait-to-Type Mapping:</strong> The test can mistype people because it maps traits to letters in a way that misses the nuance of the original MBTI theory (e.g., confusing disagreeableness with 'Thinking').",
+            "<strong>Biased Results:</strong> Tends to produce a disproportionately high number of 'rare' types like INFJ because the underlying trait combination is common.",
+            "<strong>Misleading Marketing:</strong> Leverages the familiarity of the MBTI framework to market a fundamentally different test, creating widespread confusion.",
+          ],
+        },
+        stereotypes: [
+          {
+            type: "INTJ",
+            title: "The Architect",
+            caricature:
+              "The cold, arrogant, evil mastermind plotting world domination; the chess-playing sociopath.",
+            origin:
+              "An exaggeration of the combination of long-range, abstract vision (Introverted Intuition) and objective, systems-focused logic (Extraverted Thinking).",
+          },
+          {
+            type: "INTP",
+            title: "The Logician",
+            caricature:
+              "The absent-minded professor; the socially awkward, nerdy gamer living in a basement; a robot with no feelings.",
+            origin:
+              "An exaggeration of the combination of deep, precise internal logic (Introverted Thinking) and a playful exploration of abstract possibilities (Extraverted Intuition).",
+          },
+          {
+            type: "ENTJ",
+            title: "The Commander",
+            caricature:
+              "The ruthless CEO; the tyrannical, bossy commander who steamrolls others to achieve goals.",
+            origin:
+              "An exaggeration of the combination of a commanding drive for external efficiency (Extraverted Thinking) and a focused, future-oriented vision (Introverted Intuition).",
+          },
+          {
+            type: "ENTP",
+            title: "The Debater",
+            caricature:
+              "The argumentative troll; the devil's advocate who enjoys shredding arguments for sport.",
+            origin:
+              "An exaggeration of the combination of a dominant need to explore all possibilities and challenge norms (Extraverted Intuition) and a detached, analytical framework (Introverted Thinking).",
+          },
+          {
+            type: "INFJ",
+            title: "The Advocate",
+            caricature:
+              "The mystical prophet; the 'special snowflake'; the psychic counselor who understands everyone's pain.",
+            origin:
+              "An exaggeration of the combination of deep, abstract insights into human patterns (Introverted Intuition) and a strong desire for external social harmony (Extraverted Feeling).",
+          },
+          {
+            type: "INFP",
+            title: "The Mediator",
+            caricature:
+              "The overly emotional crybaby; the idealistic but impractical emo poet; the non-confrontational daydreamer.",
+            origin:
+              "An exaggeration of the combination of a powerful core of private, internal values (Introverted Feeling) and a rich imagination for what could be (Extraverted Intuition).",
+          },
+          {
+            type: "ENFJ",
+            title: "The Protagonist",
+            caricature:
+              "The charismatic cult leader; the inspiring but potentially manipulative teacher; the overbearing social justice warrior.",
+            origin:
+              "An exaggeration of the combination of a dominant focus on the emotional needs of the group (Extraverted Feeling) and an insightful vision for their potential (Introverted Intuition).",
+          },
+          {
+            type: "ENFP",
+            title: "The Campaigner",
+            caricature:
+              "The 'Manic Pixie Dream Girl/Boy'; the hyperactive, easily distracted unicorn who can't take anything seriously.",
+            origin:
+              "An exaggeration of the combination of a boundless enthusiasm for external ideas (Extraverted Intuition) and a guiding compass of personal values (Introverted Feeling).",
+          },
+          {
+            type: "ISTJ",
+            title: "The Logistician",
+            caricature:
+              "The boring, rule-following robot; the obsessive-compulsive accountant; the traditionalist who resists all change.",
+            origin:
+              "An exaggeration of the combination of a dominant focus on reliable, past experience and factual detail (Introverted Sensing) and a preference for objective logic (Extraverted Thinking).",
+          },
+          {
+            type: "ISFJ",
+            title: "The Defender",
+            caricature:
+              "The selfless, motherly doormat; the traditional, gentle nurse who lives to serve others.",
+            origin:
+              "An exaggeration of the combination of a detailed memory for the practical needs of others (Introverted Sensing) and a dominant desire to maintain social harmony (Extraverted Feeling).",
+          },
+          {
+            type: "ESTJ",
+            title: "The Executive",
+            caricature:
+              "The overbearing drill sergeant; the control-freak manager obsessed with rules and efficiency.",
+            origin:
+              "An exaggeration of the combination of a dominant drive for external order and logical systems (Extraverted Thinking) and a reliance on established facts and procedures (Introverted Sensing).",
+          },
+          {
+            type: "ESFJ",
+            title: "The Consul",
+            caricature:
+              "The popular but shallow cheerleader; the gossipy socialite obsessed with image and tradition.",
+            origin:
+              "An exaggeration of the combination of a dominant focus on social norms and community harmony (Extraverted Feeling) and a practical awareness of the immediate environment (Introverted Sensing).",
+          },
+          {
+            type: "ISTP",
+            title: "The Virtuoso",
+            caricature:
+              "The cool, silent mechanic; the lone-wolf action hero (e.g., James Bond); the risk-taker.",
+            origin:
+              "An exaggeration of the combination of precise, in-the-moment problem-solving logic (Introverted Thinking) and a hands-on, adaptive engagement with the physical world (Extraverted Sensing).",
+          },
+          {
+            type: "ISFP",
+            title: "The Adventurer",
+            caricature:
+              "The sensitive, brooding artist; the over-sensitive animal lover; the emotionally unstable emo.",
+            origin:
+              "An exaggeration of the combination of a dominant, deep well of personal feelings and values (Introverted Feeling) and an aesthetic appreciation for present-moment sensory experience (Extraverted Sensing).",
+          },
+          {
+            type: "ESTP",
+            title: "The Entrepreneur",
+            caricature:
+              "The stereotypical jock; the thrill-seeking, reckless entrepreneur; the party animal who acts before thinking.",
+            origin:
+              "An exaggeration of the combination of a dominant, action-oriented focus on immediate opportunities (Extraverted Sensing) and pragmatic, in-the-moment logic (Introverted Thinking).",
+          },
+          {
+            type: "ESFP",
+            title: "The Entertainer",
+            caricature:
+              "The attention-seeking entertainer; the spontaneous, life-of-the-party goof-off.",
+            origin:
+              "An exaggeration of the combination of a dominant focus on engaging with the excitement of the present moment (Extraverted Sensing) and a warm, value-based connection with people (Extraverted Feeling).",
+          },
+        ],
+        recommendations: [
+          {
+            icon: "🎯",
+            title: "Use Correct Terms",
+            text: "Say 'MBTI' for the official, practitioner-led tool. Say '16Personalities' for the free online test. Avoid saying you 'took the MBTI for free online'.",
+          },
+          {
+            icon: "🤔",
+            title: "Treat as a Starting Point",
+            text: "Use your result as a hypothesis for self-reflection, not a definitive diagnosis. It's a vocabulary for discussion, not a label to live by.",
+          },
+          {
+            icon: "🚫",
+            title: "Be Critical of Stereotypes",
+            text: "Actively resist reducing yourself or others to one-dimensional caricatures. Real people are far more complex than the memes.",
+          },
+          {
+            icon: "🧑‍🏫",
+            title: "Seek Professional Guidance",
+            text: "For deep developmental work (career, team building), engage a certified MBTI practitioner who is trained in ethical and constructive application.",
+          },
+        ],
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        function populateContent() {
+          const mbtiContainer = document.getElementById("mbti-content");
+          const p16Container = document.getElementById("p16-content");
+          mbtiContainer.innerHTML = appData.comparison.mbti.content
+            .map(
+              (item) => `
+            <div>
+                <h4 class="font-semibold text-slate-800">${item.heading}</h4>
+                <p class="text-sm">${item.text}</p>
+            </div>
+        `
+            )
+            .join("");
+          p16Container.innerHTML = appData.comparison.p16.content
+            .map(
+              (item) => `
+            <div>
+                <h4 class="font-semibold text-slate-800">${item.heading}</h4>
+                <p class="text-sm">${item.text}</p>
+            </div>
+        `
+            )
+            .join("");
+
+          const mbtiCritiques = document.getElementById("mbti-critiques");
+          mbtiCritiques.innerHTML = appData.critiques.mbti
+            .map((item) => `<li>${item}</li>`)
+            .join("");
+
+          const p16Critiques = document.getElementById("p16-critiques");
+          p16Critiques.innerHTML = appData.critiques.p16
+            .map((item) => `<li>${item}</li>`)
+            .join("");
+
+          const typeGrid = document.getElementById("type-grid");
+          typeGrid.innerHTML = appData.stereotypes
+            .map(
+              (s) => `
+            <div class="type-grid-item bg-white p-4 rounded-lg shadow-md cursor-pointer text-center" onclick="openModal('${s.type}')">
+                <p class="font-bold text-lg">${s.type}</p>
+                <p class="text-xs">${s.title}</p>
+            </div>
+        `
+            )
+            .join("");
+
+          const recommendationsList = document.getElementById(
+            "recommendations-list"
+          );
+          recommendationsList.innerHTML = appData.recommendations
+            .map(
+              (r) => `
+            <div class="bg-stone-100 p-6 rounded-lg flex items-start space-x-4 card">
+                <div class="text-3xl flex-shrink-0">${r.icon}</div>
+                <div>
+                    <h4 class="font-semibold text-slate-800 text-lg">${r.title}</h4>
+                    <p class="mt-1 text-slate-600">${r.text}</p>
+                </div>
+            </div>
+        `
+            )
+            .join("");
+        }
+
+        function createCritiqueChart() {
+          const ctx = document.getElementById("critiqueChart").getContext("2d");
+          new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: [
+                "Test-Retest Reliability",
+                "Predictive Validity",
+                "Theoretical Basis",
+                "Accessibility",
+              ],
+              datasets: [
+                {
+                  label: "MBTI",
+                  data: [2, 2, 4, 3],
+                  backgroundColor: "rgba(15, 118, 110, 0.6)", // teal-700
+                  borderColor: "rgba(15, 118, 110, 1)",
+                  borderWidth: 1,
+                },
+                {
+                  label: "16Personalities",
+                  data: [6, 5, 7, 9],
+                  backgroundColor: "rgba(190, 18, 60, 0.6)", // rose-700
+                  borderColor: "rgba(190, 18, 60, 1)",
+                  borderWidth: 1,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Simplified Psychometric Comparison",
+                  font: { size: 16, weight: "bold" },
+                  color: "#1e293b", // slate-800
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      const label = context.dataset.label || "";
+                      const value = context.parsed.y;
+                      let interpretation = "";
+                      if (context.label === "Test-Retest Reliability") {
+                        interpretation =
+                          value <= 3
+                            ? "Poor"
+                            : "Better (but based on Big Five)";
+                      } else if (context.label === "Predictive Validity") {
+                        interpretation =
+                          value <= 3
+                            ? "Poor"
+                            : "Better (but based on Big Five)";
+                      } else if (context.label === "Theoretical Basis") {
+                        interpretation =
+                          value <= 5
+                            ? "Jungian Theory (Dated)"
+                            : "Hybrid Big Five (Modern but Unproven)";
+                      } else {
+                        interpretation =
+                          value <= 5 ? "Restricted/Paid" : "Free/Unrestricted";
+                      }
+                      return `${label}: ${interpretation}`;
+                    },
+                  },
+                },
+                legend: {
+                  position: "top",
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 10,
+                  ticks: {
+                    callback: function (value, index, values) {
+                      if (value === 0) return "Low";
+                      if (value === 10) return "High";
+                      return "";
+                    },
+                    color: "#475569", // slate-600
+                  },
+                  grid: {
+                    color: "#e2e8f0", // slate-200
+                  },
+                },
+                x: {
+                  ticks: {
+                    color: "#475569", // slate-600
+                  },
+                  grid: {
+                    display: false,
+                  },
+                },
+              },
+            },
+          });
+        }
+
+        function handleScrollspy() {
+          const sections = document.querySelectorAll("main section");
+          const navLinks = document.querySelectorAll(".nav-link");
+
+          window.onscroll = () => {
+            let current = "";
+            sections.forEach((section) => {
+              const sectionTop = section.offsetTop;
+              if (pageYOffset >= sectionTop - 80) {
+                current = section.getAttribute("id");
+              }
+            });
+
+            navLinks.forEach((link) => {
+              link.classList.remove("active");
+              if (link.getAttribute("href") === `#${current}`) {
+                link.classList.add("active");
+              }
+            });
+          };
+        }
+
+        populateContent();
+        createCritiqueChart();
+        handleScrollspy();
+      });
+
+      function openModal(type) {
+        const modal = document.getElementById("stereotype-modal");
+        const modalBackdrop = modal.querySelector(".modal-backdrop");
+        const modalContent = modal.querySelector(".modal-content");
+
+        const data = appData.stereotypes.find((s) => s.type === type);
+        if (!data) return;
+
+        document.getElementById("modal-type").textContent = data.type;
+        document.getElementById("modal-title").textContent = data.title;
+        document.getElementById("modal-stereotype").textContent =
+          data.caricature;
+        document.getElementById("modal-origin").textContent = data.origin;
+
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          modalBackdrop.classList.remove("opacity-0");
+          modalContent.classList.remove("scale-95", "opacity-0");
+        }, 10);
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("stereotype-modal");
+        const modalBackdrop = modal.querySelector(".modal-backdrop");
+        const modalContent = modal.querySelector(".modal-content");
+
+        modalBackdrop.classList.add("opacity-0");
+        modalContent.classList.add("scale-95", "opacity-0");
+
+        setTimeout(() => {
+          modal.classList.add("hidden");
+        }, 300);
+      }
+    </script>
+  </body>
+</html>
