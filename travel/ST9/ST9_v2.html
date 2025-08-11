@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>胡志明市旅遊助理 (最終版)</title>
+    <title>胡志明市旅遊</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -66,6 +66,112 @@
       <span class="mr-2">&#8592;</span> 返回版本選擇
     </a>
 
+    <!-- 大型通知欄：西貢法式殖民建築深度導覽 -->
+    <div
+      id="colonialInfoBar"
+      class="fixed inset-0 z-50 flex items-start justify-center bg-black/30"
+      style="backdrop-filter: blur(2px); display: none"
+    >
+      <div
+        class="bg-white shadow-2xl rounded-xl max-w-2xl w-full mt-12 mx-4 p-6 relative border-2 border-amber-400"
+      >
+        <button
+          onclick="document.getElementById('colonialInfoBar').style.display='none'"
+          class="absolute -right-4 -top-4 bg-amber-400 text-white rounded-full w-10 h-10 flex items-center justify-center text-2xl shadow-lg border-2 border-white hover:bg-amber-500 transition"
+        >
+          &times;
+        </button>
+        <h2 class="text-2xl font-bold text-amber-700 mb-2">
+          西貢法式殖民建築深度導覽
+        </h2>
+        <p class="mb-4 text-stone-700">
+          在踏上這趟從歌劇院到紅教堂的旅程前，了解它們的故事，將讓您眼前的磚瓦與雕塑活起來。這不僅是一條觀光路線，更是一條閱讀胡志明市百年歷史的時光隧道。
+        </p>
+        <div
+          class="space-y-6 text-stone-800 text-base max-h-[60vh] overflow-y-auto pr-2"
+        >
+          <div>
+            <h3 class="font-bold text-lg text-amber-600 mb-1">
+              第一站：胡志明市大劇院 (Saigon Opera House)
+            </h3>
+            <ul class="list-disc ml-5 mb-2">
+              <li>一座為殖民者享樂而生的華麗舞台</li>
+            </ul>
+            <strong class="block mb-1">歷史背景</strong>
+            <ul class="list-disc ml-5 mb-2 text-sm">
+              <li>
+                1898年動工，1900年啟用，法國殖民政府為法國僑民與官員欣賞歌劇而建。
+              </li>
+              <li>二戰損毀、1955年改為下議院議事廳，裝飾被拆除。</li>
+              <li>
+                1975年後恢復劇院功能，1998年復原女神雕像等裝飾，重現原貌。
+              </li>
+            </ul>
+            <strong class="block mb-1">建築亮點</strong>
+            <ul class="list-disc ml-5 mb-2 text-sm">
+              <li>華麗風格，靈感來自巴黎小皇宮。</li>
+              <li>正門女神雕像寓意藝術與音樂，花崗岩柱為在地材料。</li>
+              <li>內部可容納約1800人，音響效果一流。</li>
+            </ul>
+            <strong class="block mb-1">行前必知趣聞</strong>
+            <ul class="list-disc ml-5 mb-2 text-sm">
+              <li>1955-1998年外觀樸素，為政治建築。</li>
+              <li>劇院門口廣場曾是市中心最時髦的社交場所。</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg text-amber-600 mb-1">
+              第二站：西貢中心郵政局 (Central Post Office)
+            </h3>
+            <ul class="list-disc ml-5 mb-2">
+              <li>一座仍在呼吸的百年行政心臟</li>
+            </ul>
+            <strong class="block mb-1">歷史背景</strong>
+            <ul class="list-disc ml-5 mb-2 text-sm">
+              <li>1886-1891年建成，法國殖民時期最重要通訊樞紐。</li>
+              <li>
+                「艾菲爾」之謎：設計師實為Alfred Foulhoux與Auguste
+                Vildieu，鋼鐵結構帶有艾菲爾風格。
+              </li>
+            </ul>
+            <strong class="block mb-1">建築亮點</strong>
+            <ul class="list-disc ml-5 mb-2 text-sm">
+              <li>融合哥德式、文藝復興式與法式古典主義。</li>
+              <li>巨型拱頂展現工業革命美學，兩幅古地圖為靈魂。</li>
+              <li>百年電話亭、法國進口磁磚地板。</li>
+            </ul>
+            <strong class="block mb-1">行前必知趣聞</strong>
+            <ul class="list-disc ml-5 mb-2 text-sm">
+              <li>郵局仍正常運作，可買郵票、寄明信片。</li>
+              <li>大廳盡頭胡志明肖像為1975年後增設。</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg text-amber-600 mb-1">
+              第三站：西貢聖母聖殿主教座堂 (紅教堂)
+            </h3>
+            <ul class="list-disc ml-5 mb-2">
+              <li>一座從法國馬賽「搬」來的信仰堡壘</li>
+            </ul>
+            <strong class="block mb-1">歷史背景</strong>
+            <ul class="list-disc ml-5 mb-2 text-sm">
+              <li>1877年動工，1880年完工，彰顯法國國力與信仰。</li>
+              <li>所有建材均從法國進口，紅磚來自馬賽，彩繪玻璃來自沙特爾。</li>
+              <li>1962年升格為聖殿主教座堂。</li>
+            </ul>
+            <strong class="block mb-1">建築亮點</strong>
+            <ul class="list-disc ml-5 mb-2 text-sm">
+              <li>新羅馬式融合哥德式，雙子鐘樓高達58米。</li>
+            </ul>
+            <strong class="block mb-1">行前必知趣聞</strong>
+            <ul class="list-disc ml-5 mb-2 text-sm">
+              <li>2005年聖母像流淚事件，吸引大量信徒。</li>
+              <li>紅教堂長期整修，僅能外部參觀。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="container mx-auto p-4 md:p-8 max-w-5xl">
       <header class="text-center mb-8">
         <h1 class="text-3xl md:text-4xl font-bold text-teal-700">
@@ -720,6 +826,183 @@
                   </ul>
                 </div>
               </div>
+              <div class="day-card border border-stone-200 rounded-lg">
+                <button
+                  class="w-full flex justify-between items-center p-4 bg-stone-100 hover:bg-stone-200 rounded-lg"
+                >
+                  <span class="font-bold text-lg text-amber-600"
+                    >💆‍♂️ 越南按摩＆洗頭服務選擇指南</span
+                  >
+                  <span class="transform transition-transform duration-300"
+                    >▼</span
+                  >
+                </button>
+                <div class="day-details p-4 text-stone-600 space-y-4">
+                  <h4 class="font-bold text-teal-700 mb-2">
+                    在胡志明市，按摩與洗頭不僅是放鬆，更是一種深入在地的文化體驗。這份指南將幫助您和旅伴根據各自的需求，安全、聰明地選擇店家，並了解合理的價格範圍。
+                  </h4>
+                  <ol class="list-decimal list-inside space-y-2">
+                    <li>
+                      <strong>如何選擇店家＆避免踩雷</strong><br />
+                      在越南選擇按摩店，首要目標是找到「正規經營」且「價格透明」的店家。詐騙或不愉快的經驗多半源於資訊不對等，特別是小費問題。
+                      <ul class="list-disc list-inside ml-4 mt-2">
+                        <li>
+                          <strong>觀察外觀與氛圍</strong><br />
+                          <span class="text-green-700">安全選擇：</span
+                          >店面明亮、乾淨，門口有清楚的服務項目與價目表(Menu)。員工穿著整齊制服，態度專業。例如
+                          Golden Lotus Spa, Miu Miu Spa
+                          這類知名連鎖店，通常是安全牌。<br />
+                          <span class="text-red-600">謹慎選擇：</span
+                          >店面燈光昏暗、閃爍霓虹燈，門口有穿著清涼的女性招攬生意，或招牌上出現
+                          "VIP Massage" 等字樣，通常暗示有非正規服務，建議避開。
+                        </li>
+                        <li>
+                          <strong>事先確認價格與小費 (最重要！)</strong><br />
+                          主動詢問：在決定消費前，務必指著價目表確認價格，並問一句：「Is
+                          tip included?」(小費包含在內了嗎？) 或是「Total
+                          price?」(總價是？)。<br />
+                          了解小費文化：<br />
+                          <ul class="list-disc ml-4">
+                            <li>
+                              強制小費：部分店家（尤其在觀光區）會規定最低小費金額，這不算詐騙，但若未事先告知，體驗會很差。他們會在服務後拿出一張單子讓您選小費金額。
+                            </li>
+                            <li>
+                              自由給予：大部分正規店家的小費是基於滿意度自由給予的。
+                            </li>
+                            <li>
+                              不收小費：少數店家如 Golden Lotus Spa
+                              實行不收小費政策，他們會設置一個統一的「捐款箱(Donation
+                              Box)」，您可以隨意投入。
+                            </li>
+                          </ul>
+                          Klook/Agoda預訂：在這些平台上預訂的最大好處是價格已定，且通常包含或已註明不含小費，能完全避免現場的價格糾紛，非常適合不想傷腦筋的旅客。
+                        </li>
+                        <li>
+                          <strong>閱讀近期評論</strong><br />
+                          利用 Google Maps
+                          查看台灣或韓國旅客的評論，他們通常會提到價格透明度與小費問題。看到「No
+                          hidden fees」、「Price is clear」等評論就是好的信號。
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <strong>什麼價格？什麼服務？</strong><br />
+                      以下是胡志明市正規店家大致的合理價格範圍（非高級奢華路線），供您參考：
+                      <div class="overflow-x-auto mt-2">
+                        <table
+                          class="min-w-full text-sm border border-stone-300"
+                        >
+                          <thead class="bg-stone-100">
+                            <tr>
+                              <th class="border px-2 py-1">服務項目</th>
+                              <th class="border px-2 py-1">建議時間</th>
+                              <th class="border px-2 py-1">
+                                合理價格 (VND/人)
+                              </th>
+                              <th class="border px-2 py-1">約台幣 (NT$)</th>
+                              <th class="border px-2 py-1">服務內容簡介</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="border px-2 py-1">
+                                越式洗頭 (Gội Đầu)
+                              </td>
+                              <td class="border px-2 py-1">60 - 90 分鐘</td>
+                              <td class="border px-2 py-1">
+                                250,000 - 500,000
+                              </td>
+                              <td class="border px-2 py-1">$285 - $570</td>
+                              <td class="border px-2 py-1">
+                                CP值極高。不只洗頭，還包含臉部清潔、敷臉、頭皮去角質、肩頸與手部按摩，是一套完整的放鬆流程。
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="border px-2 py-1">
+                                腳底按摩 (Foot Massage)
+                              </td>
+                              <td class="border px-2 py-1">60 - 75 分鐘</td>
+                              <td class="border px-2 py-1">
+                                250,000 - 400,000
+                              </td>
+                              <td class="border px-2 py-1">$285 - $455</td>
+                              <td class="border px-2 py-1">
+                                從藥草泡腳開始，針對足部穴道進行按摩，通常會附帶10-15分鐘的肩頸、背部放鬆。
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="border px-2 py-1">
+                                越式全身按摩 (Body)
+                              </td>
+                              <td class="border px-2 py-1">60 - 90 分鐘</td>
+                              <td class="border px-2 py-1">
+                                300,000 - 600,000
+                              </td>
+                              <td class="border px-2 py-1">$340 - $680</td>
+                              <td class="border px-2 py-1">
+                                強調經絡與穴位的按壓，可能會有一些拉伸動作，可選擇有油或無油。手法和泰式按摩的被動瑜珈不同。
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </li>
+                    <li>
+                      <strong>給你和旅伴的推薦方案</strong><br />
+                      考量到您旅伴是第一次按摩，而您經驗豐富，以下是為你們量身打造的建議：
+                      <ul class="list-disc list-inside ml-4 mt-2">
+                        <li>
+                          <strong>方案A：給初體驗旅伴的「無壓力首選」</strong
+                          ><br />
+                          推薦服務：腳底按摩 (Foot Massage)<br />
+                          為什麼？<br />
+                          <ul class="list-disc ml-4">
+                            <li>
+                              接受度高：不需更換衣物（只需換上寬鬆的褲子），沒有全身按摩的私密接觸，心理負擔最小。
+                            </li>
+                            <li>
+                              體驗完整：同樣能享受到按摩的舒緩感，且多數店家會包含肩頸放鬆，體驗很全面。
+                            </li>
+                            <li>價格實惠：是所有項目中價格最親民的。</li>
+                          </ul>
+                          推薦店家：可以考慮 健之家 (Kien Chi Gia)
+                          這類型的老牌腳底按摩店，他們專注於腳底按摩，價格非常實惠且通常不需額外小費，是體驗道地技術的好地方。
+                        </li>
+                        <li>
+                          <strong>方案B：給你的「在地特色體驗」</strong><br />
+                          推薦服務：越式洗頭 (Gội Đầu Dưỡng Sinh)<br />
+                          為什麼？<br />
+                          <ul class="list-disc ml-4">
+                            <li>
+                              體驗獨特：既然您按摩經驗豐富，越式洗頭絕對是您在台灣體驗不到的新鮮項目。它結合了多種服務，是一場感官盛宴。
+                            </li>
+                            <li>
+                              極致放鬆：對於頭部和肩頸的放鬆效果非常好，特別適合炎熱天氣後的身心降溫。
+                            </li>
+                          </ul>
+                        </li>
+                        <li>
+                          <strong>方案C：兩人同行的「完美解決方案」</strong
+                          ><br />
+                          做法：選擇一家服務多元的正規連鎖Spa<br />
+                          為什麼？<br />
+                          <ul class="list-disc ml-4">
+                            <li>
+                              你們可以一起前往同一家店，例如 Golden Lotus Spa 或
+                              Miu Miu Spa。
+                            </li>
+                            <li>旅伴可以選擇 60分鐘的腳底按摩。</li>
+                            <li>您可以選擇 75分鐘的越式洗頭或全身按摩。</li>
+                            <li>
+                              這樣既能滿足兩人不同的需求，又能確保服務品質和價格透明，是最高效且安心的選擇。你們可以在同一個舒適的環境中放鬆，結束後再一起分享心得。
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ol>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -729,14 +1012,17 @@
     <script>
       const navLinks = document.querySelectorAll(".nav-link");
       const sections = document.querySelectorAll(".section");
+      const colonialInfoBar = document.getElementById("colonialInfoBar");
 
       navLinks.forEach((link) => {
         link.addEventListener("click", () => {
+          // 關閉通知欄（如有顯示）
+          if (colonialInfoBar && colonialInfoBar.style.display !== "none") {
+            colonialInfoBar.style.display = "none";
+          }
           const target = link.dataset.target;
-
           navLinks.forEach((nav) => nav.classList.remove("active"));
           link.classList.add("active");
-
           sections.forEach((section) => {
             if (section.id === target) {
               section.classList.add("active");
@@ -888,77 +1174,140 @@
           icon: "✈️",
           items: [
             {
-              time: "06:10-11:00",
-              activity: "搭機與機場接送至飯店",
-              transport: "飛機, Grab",
+              time: "06:10-08:35",
+              activity: "搭機抵達胡志明市",
+              transport: "飛機",
+              budget: "-",
+              story: "預計08:35落地，開始胡志明市行程。",
+            },
+            {
+              time: "08:35-10:30",
+              activity: "機場到市區（Grab/交通）",
+              transport: "Grab/計程車/巴士",
               budget: "₫120,000 (刷卡)",
-              story: "",
+              story: "可選Grab或計程車，預計10-11點抵達住宿。",
+            },
+            {
+              time: "10:30-11:00",
+              activity: "抵達住宿寄放行李或直接帶行李去附近吃東西",
+              transport: "步行/行李隨身",
+              budget: "-",
+              story:
+                "若飯店可寄放行李則先寄放，否則可直接帶行李去附近餐廳用餐。",
             },
             {
               time: "11:00-14:00",
-              activity: "飯店寄放行李，周邊探索",
-              transport: "步行",
-              budget: "無",
-              story: "",
+              activity: "落地後行程選擇（可展開）",
+              transport: "步行/彈性安排",
+              budget: "-",
+              story: `<div class='day-card border border-stone-200 rounded-lg'>
+                    <button class='w-full flex justify-between items-center p-2 bg-stone-100 hover:bg-stone-200 rounded-lg' onclick='var d=this.nextElementSibling;if(d.style.maxHeight=="0px"||!d.style.maxHeight){d.style.maxHeight="2000px";d.style.opacity="1";}else{d.style.maxHeight="0px";d.style.opacity="0";}'><span class='font-bold text-base text-teal-600'>🛬 兩種方案</span><span class='transform transition-transform duration-300'>▼</span></button>
+                    <div class='day-details p-2 text-stone-600 space-y-4' style='max-height:0px;opacity:0;overflow:hidden;transition:max-height 0.4s,opacity 0.3s;'>
+                      <div>
+                        <h4 class='font-bold text-amber-700 mb-1'>方案A：落地後很累 (低耗能放鬆模式)</h4>
+                        <ul class='list-disc list-inside ml-4 mb-1'>
+                          <li><strong>地點：</strong>阮惠街步行廣場周邊餐廳</li>
+                          <li><strong>推薦餐廳類型：</strong>裝潢乾淨、有冷氣的越式家常菜餐廳 (如 Quán Bụi Garden 或類似店家)</li>
+                          <li><strong>午餐內容 (13:00 - 14:00)：</strong>
+                            <ul class='list-disc ml-6'>
+                              <li>Thịt Kho Tộ (陶鍋滷肉)：越南家庭經典，鹹甜下飯。</li>
+                              <li>Canh Chua (越式酸湯)：羅望子基底的酸甜湯品，非常開胃。</li>
+                              <li>Rau Muống Xào Tỏi (蒜炒空心菜)：最受歡迎的國民青菜。</li>
+                              <li>Cơm Trắng (白飯)：搭配以上菜色。</li>
+                            </ul>
+                          </li>
+                          <li><strong>預估價格 (兩人份)：</strong>約 250,000 - 350,000 VND (約 NT$285 - $400)，可付現。</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 class='font-bold text-green-700 mb-1'>方案B：落地後還有精神 (高效率探索模式)</h4>
+                        <ul class='list-disc list-inside ml-4 mb-1'>
+                          <li><strong>地點：</strong>濱城市場 (Bến Thành Market) 內或對面</li>
+                          <li><strong>午餐內容 (12:30 - 14:00)：</strong>
+                            <ul class='list-disc ml-6'>
+                              <li><strong>選擇1：市場內熟食區 (體驗道地)</strong>
+                                <ul class='list-disc ml-6'>
+                                  <li>Bún Thịt Nướng (烤肉米線)：烤肉、米線、生菜與酸甜魚露的乾拌麵，清爽美味。</li>
+                                  <li>Bột Chiên (越式炒粿)：米漿製成，煎得外酥內軟後打蛋，是當地人喜愛的小吃。</li>
+                                </ul>
+                                預估價格 (兩人份)：約 150,000 - 200,000 VND (約 NT$170 - $230)，僅限付現。
+                              </li>
+                              <li><strong>選擇2：市場對面的 Phở 2000 (舒適乾淨)</strong>
+                                <ul class='list-disc ml-6'>
+                                  <li>Phở Bò Tái (生牛肉河粉)：熱湯淋上生牛肉片，口感滑嫩。</li>
+                                  <li>Chả Giò (炸春捲)：香脆的越式炸春捲。</li>
+                                </ul>
+                                預估價格 (兩人份)：約 250,000 - 350,000 VND (約 NT$285 - $400)，可付現。
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>`,
             },
             {
-              time: "14:00-15:30",
-              activity: "午餐: Banh Mi 37 Nguyen Trai",
-              transport: "步行",
-              budget: "₫80,000 (現金)",
-              story:
-                "這個不起眼的小攤車以其現烤的豬肉丸聞名，是西貢美食精髓的完美體現——最棒的滋味往往藏在最樸實的角落。",
-            },
-            {
-              time: "15:30-18:00",
-              activity: "法式殖民建築漫遊 (郵局/紅教堂/歌劇院)",
+              time: "16:00-18:00",
+              activity: `<span style="cursor:pointer;color:#d97706;font-weight:bold;" onclick="document.getElementById('colonialInfoBar').style.display='flex'">法式殖民建築漫遊 (郵局/紅教堂/歌劇院)</span>`,
               transport: "步行",
               budget: "免費",
-              story:
-                "許多人誤以為中心郵政局是艾菲爾鐵塔的設計師所建，但其實不是！進入郵局，別忘了抬頭尋找牆上兩幅巨大的手繪古地圖。",
+              story: `<div class='day-card border border-stone-200 rounded-lg'>
+                    <button class='w-full flex justify-between items-center p-2 bg-stone-100 hover:bg-stone-200 rounded-lg' onclick='var d=this.nextElementSibling;if(d.style.maxHeight=="0px"||!d.style.maxHeight){d.style.maxHeight="2000px";d.style.opacity="1";}else{d.style.maxHeight="0px";d.style.opacity="0";}'>
+                      <span class='font-bold text-base text-teal-600'>步行路線與細節</span>
+                      <span class='transform transition-transform duration-300'>▼</span>
+                    </button>
+                    <div class='day-details p-2 text-stone-600 space-y-4' style='max-height:0px;opacity:0;overflow:hidden;transition:max-height 0.4s,opacity 0.3s;'>
+                      <ul class='list-disc ml-4'>
+                        <li>從飯店 (Nicey Ngan Ha Hotel) 出發，三大景點皆位於第一郡，步行即可形成順暢三角路線。</li>
+                        <li><strong>步行至起點：</strong> 從飯店步行至歌劇院約 10-15 分鐘。</li>
+                        <li><strong>建議順序與停留時間：</strong>
+                          <ol class='list-decimal ml-6'>
+                            <li><strong>胡志明市大劇院 (Saigon Opera House)</strong>：停留 15-20 分鐘，欣賞法式外觀，內部通常不開放。</li>
+                            <li><strong>西貢中心郵政局 (Central Post Office)</strong>：步行 5-7 分鐘，停留 30-40 分鐘，可入內參觀、購買明信片/郵票。</li>
+                            <li><strong>西貢聖母聖殿主教座堂 (紅教堂)</strong>：郵局正對面，停留 15-20 分鐘，欣賞外觀，夕陽下拍照特別美。</li>
+                          </ol>
+                        </li>
+                        <li><strong>總計時間：</strong> 步行+參觀約 1.5 - 2 小時。</li>
+                      </ul>
+                      <div class='mt-2'>
+                        <strong>公休日與注意事項：</strong>
+                        <ul class='list-disc ml-4'>
+                          <li>星期一郵局正常營業，紅教堂與歌劇院僅外部參觀，無公休問題。</li>
+                          <li>紅教堂長期整修，無法入內，但外觀拍照不受影響。</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>`,
+            },
+            {
+              time: "18:00-19:30",
+              activity: "晚餐：Secret Garden Restaurant 越南家庭料理",
+              transport: "步行",
+              budget: "₫300,000 - ₫450,000 (現金)",
+              story: `<div class='day-card border border-stone-200 rounded-lg'>
+                    <button class='w-full flex justify-between items-center p-2 bg-stone-100 hover:bg-stone-200 rounded-lg' onclick='var d=this.nextElementSibling;if(d.style.maxHeight=="0px"||!d.style.maxHeight){d.style.maxHeight="2000px";d.style.opacity="1";}else{d.style.maxHeight="0px";d.style.opacity="0";}'>
+                      <span class='font-bold text-base text-teal-600'>晚餐細節</span>
+                      <span class='transform transition-transform duration-300'>▼</span>
+                    </button>
+                    <div class='day-details p-2 text-stone-600 space-y-2' style='max-height:0px;opacity:0;overflow:hidden;transition:max-height 0.4s,opacity 0.3s;'>
+                      <ul class='list-disc ml-4'>
+                        <li>餐廳位於老公寓頂樓，距郵局步行約 10 分鐘，需爬樓梯但氛圍絕佳。</li>
+                        <li>精緻越南家庭式料理，環境有氣氛。</li>
+                        <li>建議品項：
+                          <ul class='list-disc ml-6'>
+                            <li>Chả Giò Secret Garden (秘密花園炸春捲)：招牌，外酥餡扎實。</li>
+                            <li>Gỏi Cuốn (越式生春捲)：清爽開胃。</li>
+                            <li>Cơm Chiên Tỏi (蒜香炒飯)：簡單美味主食。</li>
+                          </ul>
+                        </li>
+                        <li>預估價格 (兩人份)：約 300,000 - 450,000 VND (約 NT$340 - $510)，可付現。</li>
+                      </ul>
+                    </div>
+                  </div>`,
             },
           ],
         },
-        {
-          day: "第二天",
-          date: "8/19 (二)",
-          title: "戰爭迴響與藝術沉澱",
-          icon: "🏛️",
-          items: [
-            {
-              time: "09:00-12:00",
-              activity: "戰爭遺跡博物館",
-              transport: "步行",
-              budget: "₫80,000 (現金)",
-              story:
-                "這座博物館的前身是「美國與傀儡政權罪惡展覽館」。展覽內容是未經修飾、從越南視角出發的戰爭敘事，極具衝擊力。",
-            },
-            {
-              time: "12:30-14:00",
-              activity: "午餐: Phở Lệ (錦麗河粉)",
-              transport: "步行",
-              budget: "₫220,000 (現金)",
-              story:
-                "錦麗河粉以其湯頭濃郁、略帶甘甜的南越風味著稱，與偏清爽的北越風格形成對比，是本地人與老饕的最愛。",
-            },
-            {
-              time: "14:30-16:00",
-              activity: "統一宮 (獨立宮)",
-              transport: "步行",
-              budget: "₫80,000 (現金)",
-              story:
-                "1975年，北越坦克衝破統一宮大門的畫面成為越戰結束的象徵。但有趣的是：第一輛坦克其實被卡住了！真正撞開大門的是另一輛坦克。",
-            },
-            {
-              time: "16:00-17:30",
-              activity: "新增：胡志明市美術館",
-              transport: "步行",
-              budget: "₫60,000 (現金)",
-              story:
-                "美術館建築本身就是一件藝術品，是法式殖民風格與中式元素的完美結合。這裡曾是西貢華裔富商的宅邸。",
-            },
-          ],
-        },
+        // ...existing code...
         {
           day: "第三天",
           date: "8/20 (三)",
@@ -1151,42 +1500,42 @@
             : `<span class="text-orange-500">${item.budget}</span>`;
 
           itemsHtml += `
-            <div class="py-3 px-4 border-b border-stone-100 last:border-b-0">
-                <p class="font-semibold text-stone-800">${item.time}: ${
+              <div class="py-3 px-4 border-b border-stone-100 last:border-b-0">
+                  <p class="font-semibold text-stone-800">${item.time}: ${
             item.activity
           }</p>
-                <div class="text-sm text-stone-500 flex flex-wrap gap-x-4">
-                    <span><strong>交通:</strong> ${item.transport}</span>
-                    <span><strong>預算:</strong> ${
-                      item.budget === "無" || item.budget === "免費"
-                        ? item.budget
-                        : budgetText
-                    }</span>
-                </div>
-                ${
-                  item.story
-                    ? `<p class="text-sm text-teal-700 mt-1 bg-teal-50 p-2 rounded-md">💡 ${item.story}</p>`
-                    : ""
-                }
-            </div>
-        `;
+                  <div class="text-sm text-stone-500 flex flex-wrap gap-x-4">
+                      <span><strong>交通:</strong> ${item.transport}</span>
+                      <span><strong>預算:</strong> ${
+                        item.budget === "無" || item.budget === "免費"
+                          ? item.budget
+                          : budgetText
+                      }</span>
+                  </div>
+                  ${
+                    item.story
+                      ? `<p class="text-sm text-teal-700 mt-1 bg-teal-50 p-2 rounded-md">💡 ${item.story}</p>`
+                      : ""
+                  }
+              </div>
+          `;
         });
 
         card.innerHTML = `
-        <button class="w-full flex justify-between items-center p-4 text-left">
-            <div class="flex items-center gap-4">
-                <span class="text-2xl">${dayData.icon}</span>
-                <div>
-                    <p class="font-bold text-lg text-teal-700">${dayData.day} <span class="text-sm font-normal text-stone-500">${dayData.date}</span></p>
-                    <p class="text-stone-600">${dayData.title}</p>
-                </div>
-            </div>
-            <span class="transform transition-transform duration-300 text-2xl text-stone-400">▼</span>
-        </button>
-        <div class="day-details bg-stone-50">
-            ${itemsHtml}
-        </div>
-    `;
+          <button class="w-full flex justify-between items-center p-4 text-left">
+              <div class="flex items-center gap-4">
+                  <span class="text-2xl">${dayData.icon}</span>
+                  <div>
+                      <p class="font-bold text-lg text-teal-700">${dayData.day} <span class="text-sm font-normal text-stone-500">${dayData.date}</span></p>
+                      <p class="text-stone-600">${dayData.title}</p>
+                  </div>
+              </div>
+              <span class="transform transition-transform duration-300 text-2xl text-stone-400">▼</span>
+          </button>
+          <div class="day-details bg-stone-50">
+              ${itemsHtml}
+          </div>
+      `;
         itineraryContainer.appendChild(card);
       });
 
