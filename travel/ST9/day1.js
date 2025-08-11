@@ -35,7 +35,8 @@ window.day1Itinerary = {
     },
     {
       time: "16:00-18:00",
-      activity: "法式殖民建築漫遊 (郵局/紅教堂/歌劇院)",
+      activity:
+        "<span class='colonial-activity font-bold cursor-pointer text-amber-700 hover:underline'>法式殖民建築漫遊 (郵局/紅教堂/歌劇院)</span>",
       transport: "步行",
       budget: "免費",
       story: "步行路線與細節、建築亮點、趣聞等。",

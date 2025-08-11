@@ -1,35 +1,67 @@
 const navLinks = document.querySelectorAll(".nav-link");
 const sections = document.querySelectorAll(".section");
-navLinks.forEach((link) => {
-  link.addEventListener("click", () => {
-    const target = link.dataset.target;
-    navLinks.forEach((nav) => {
-      nav.classList.remove(
-        "active",
-        "text-teal-600",
-        "border-b-2",
-        "border-teal-500"
-      );
-      nav.classList.add("text-stone-600");
-      nav.style.borderBottomWidth = "0px";
-    });
-    link.classList.add(
+const navButtons = document.querySelector(".nav-buttons");
+const mobileNav = document.getElementById("mobile-nav");
+
+function showSection(target) {
+  navLinks.forEach((nav) => {
+    nav.classList.remove(
       "active",
       "text-teal-600",
       "border-b-2",
       "border-teal-500"
     );
-    link.classList.remove("text-stone-600");
-    link.style.borderBottomWidth = "2px";
-    link.style.borderColor = "#14b8a6";
-    sections.forEach((section) => {
-      section.id === target
-        ? (section.style.display = "block")
-        : (section.style.display = "none");
-    });
+    nav.classList.add("text-stone-600");
+    nav.style.borderBottomWidth = "0px";
+  });
+  const activeBtn = Array.from(navLinks).find(
+    (nav) => nav.dataset.target === target
+  );
+  if (activeBtn) {
+    activeBtn.classList.add(
+      "active",
+      "text-teal-600",
+      "border-b-2",
+      "border-teal-500"
+    );
+    activeBtn.classList.remove("text-stone-600");
+    activeBtn.style.borderBottomWidth = "2px";
+    activeBtn.style.borderColor = "#14b8a6";
+  }
+  sections.forEach((section) => {
+    section.id === target
+      ? (section.style.display = "block")
+      : (section.style.display = "none");
+  });
+}
+
+navLinks.forEach((link) => {
+  link.addEventListener("click", () => {
+    showSection(link.dataset.target);
+    if (mobileNav) mobileNav.value = link.dataset.target;
   });
 });
+
+if (mobileNav) {
+  mobileNav.addEventListener("change", (e) => {
+    showSection(e.target.value);
+  });
+}
+
 document.getElementById("dashboard").style.display = "block";
+if (mobileNav) mobileNav.value = "dashboard";
+
+function handleNavDisplay() {
+  if (window.innerWidth <= 430) {
+    if (navButtons) navButtons.style.display = "none";
+    if (mobileNav) mobileNav.style.display = "block";
+  } else {
+    if (navButtons) navButtons.style.display = "flex";
+    if (mobileNav) mobileNav.style.display = "none";
+  }
+}
+window.addEventListener("resize", handleNavDisplay);
+handleNavDisplay();
 
 // Chart.js: Salary Comparison Chart
 if (document.getElementById("salaryChart")) {
@@ -98,6 +130,30 @@ if (document.getElementById("budgetDonutChart")) {
     },
   });
 }
+
+// Modal logic for colonial tour
+function bindColonialPopup() {
+  const colonialSpan = document.querySelector(".colonial-activity");
+  const colonialModal = document.getElementById("colonial-modal");
+  const closeColonialModal = document.getElementById("close-colonial-modal");
+  if (colonialSpan && colonialModal && closeColonialModal) {
+    colonialSpan.addEventListener("click", function () {
+      colonialModal.classList.remove("hidden");
+    });
+    closeColonialModal.addEventListener("click", function () {
+      colonialModal.classList.add("hidden");
+    });
+    colonialModal.addEventListener("click", function (e) {
+      if (e.target === colonialModal) {
+        colonialModal.classList.add("hidden");
+      }
+    });
+  }
+}
+
+window.addEventListener("DOMContentLoaded", function () {
+  bindColonialPopup();
+});
 
 // 河粉指數計算
 const vndInput = document.getElementById("vndInput");

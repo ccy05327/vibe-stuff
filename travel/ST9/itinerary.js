@@ -61,16 +61,29 @@ function renderItinerary(dayData) {
 
 function loadAllDays() {
   itineraryContainer.innerHTML = "";
+  // 按照 dayFiles 順序依序載入
+  let loaded = 0;
+  const dayDataArr = new Array(dayFiles.length);
   dayFiles.forEach((day, idx) => {
-    // Load each day's data script
     const script = document.createElement("script");
     script.src = day.file;
     script.onload = function () {
       const data = window[day.key];
       if (data) {
-        renderItinerary(data);
+        dayDataArr[idx] = data;
+      }
+      loaded++;
+      if (loaded === dayFiles.length) {
+        // 全部載入後依序渲染
+        dayDataArr.forEach((d) => {
+          if (d) renderItinerary(d);
+        });
         initializeCards();
         addCardListeners();
+        // 重新綁定 popup
+        setTimeout(() => {
+          if (typeof bindColonialPopup === "function") bindColonialPopup();
+        }, 0);
       }
     };
     document.body.appendChild(script);
