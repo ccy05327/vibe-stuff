@@ -1,4 +1,4 @@
-// Dynamically load itinerary data from external JS files
+import { addCardListeners, initializeCards } from "./main-ui.js";
 
 const dayFiles = [
   { file: "day1.js", key: "day1Itinerary", label: "第一天" },

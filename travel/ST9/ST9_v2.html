@@ -4,9 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>胡志明市旅遊</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src="day1.js"></script>
+    <script src="day2.js"></script>
+    <script src="day3.js"></script>
+    <script src="day4.js"></script>
+    <script src="day5.js"></script>
+    <script src="day6.js"></script>
+
+    <script type="module" src="main-ui.js"></script>
+    <script type="module" src="itinerary.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,7 +25,7 @@
   </head>
 
   <!-- HEADER & SUBHEADER-->
-  <div class="container mx-auto px-2 py-3 max-w-full" style="max-width: 480px">
+  <div class="container mx-auto px-4 py-6 max-w-full" style="max-width: 480px">
     <header class="text-center mb-6">
       <h1 class="text-2xl font-bold text-teal-700 leading-tight">
         胡志明市深度自由行
@@ -68,8 +78,8 @@
     </button>
   </nav>
   <!-- MAIN CONTENT -->
-  <main class="text-base">
-    <section id="dashboard" class="section" style="display: none">
+  <main class="text-base" style="padding: 24px">
+    <section id="dashboard" class="section">
       <!-- 旅程核心資訊 -->
       <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
         <h2 class="text-2xl font-bold text-teal-700 mb-4">旅程核心資訊</h2>
@@ -219,7 +229,6 @@
 
     <section id="itinerary" class="section" style="display: none">
       <div class="space-y-4" id="itinerary-container"></div>
-      <script src="itinerary.js"></script>
     </section>
 
     <section id="hotspots" class="section" style="display: none">
@@ -786,235 +795,4 @@
       <p class="text-center text-sm text-gray-600">&copy; 2025 by Cynthia.</p>
     </div>
   </footer>
-
-  <script>
-    const navLinks = document.querySelectorAll(".nav-link");
-    const sections = document.querySelectorAll(".section");
-    navLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        const target = link.dataset.target;
-        navLinks.forEach((nav) => nav.classList.remove("active"));
-        link.classList.add("active");
-        sections.forEach((section) => {
-          if (section.id === target) {
-            section.style.display = "block";
-          } else {
-            section.style.display = "none";
-          }
-        });
-      });
-    });
-    // Show dashboard by default
-    document.getElementById("dashboard").style.display = "block";
-
-    const vndInput = document.getElementById("vndInput");
-    const feelPrice = document.getElementById("feelPrice");
-
-    vndInput.addEventListener("keyup", () => {
-      const vndValue = parseFloat(vndInput.value) || 0;
-      const twdValue = vndValue / 880;
-      const feelValue = twdValue * 5;
-      feelPrice.textContent = `NT$ ${Math.round(feelValue).toLocaleString()}`;
-    });
-
-    // Audio speed control
-    const audio = document.getElementById("st9Audio");
-    const speedSelect = document.getElementById("speedSelect");
-
-    speedSelect.addEventListener("change", () => {
-      const selectedSpeed = parseFloat(speedSelect.value);
-      audio.playbackRate = selectedSpeed;
-    });
-
-    const salaryData = {
-      labels: ["台灣", "胡志明市"],
-    };
-
-    // Load Day 1 itinerary from external JS file
-    const itineraryData = [window.day1Itinerary];
-    // Dynamically load itinerary data from external JS files
-    // Only declare itineraryContainer once for itinerary rendering
-
-    const itinerarySection = document.getElementById("itinerary");
-
-    selector.className = "p-2 rounded-md border border-teal-300 mb-4";
-    dayFiles.forEach((day, idx) => {
-      const option = document.createElement("option");
-      option.value = idx;
-      option.textContent = day.label;
-      selector.appendChild(option);
-    });
-    itinerarySection.insertBefore(selector, itineraryContainer);
-
-    // Load and render selected day
-    function loadDay(idx) {
-      const script = document.createElement("script");
-      script.src = dayFiles[idx].file;
-      script.onload = function () {
-        const data = window[dayFiles[idx].key];
-        renderItinerary(data);
-      };
-      document.body.appendChild(script);
-    }
-
-    function renderItinerary(dayData) {
-      itineraryContainer.innerHTML = "";
-      const card = document.createElement("div");
-      card.className =
-        "day-card bg-white border border-stone-200 rounded-xl shadow-sm overflow-hidden";
-      let itemsHtml = "";
-      dayData.items.forEach((item) => {
-        const budgetText =
-          item.budget && item.budget.includes("刷卡")
-            ? `<span class='text-blue-500'>${item.budget}</span>`
-            : `<span class='text-orange-500'>${item.budget}</span>`;
-        itemsHtml += `
-                            <div class='py-4 px-4 border-b border-stone-100 last:border-b-0' style='line-height:1.8;'>
-                              <p class='font-semibold text-stone-800 text-base mb-1' style='letter-spacing:0.5px;'>${
-                                item.time
-                              }: ${item.activity}</p>
-                              <div class='text-sm text-stone-500 flex flex-wrap gap-x-4 mb-1' style='gap:8px;'>
-                                <span><strong>交通:</strong> ${
-                                  item.transport
-                                }</span>
-                                <span><strong>預算:</strong> ${
-                                  item.budget === "無" || item.budget === "免費"
-                                    ? item.budget
-                                    : budgetText
-                                }</span>
-                              </div>
-                              ${
-                                item.story && item.story.trim()
-                                  ? `<div class='text-sm text-teal-700 mt-2 bg-teal-50 p-3 rounded-md' style='line-height:1.7;word-break:break-word;'>💡 ${item.story}</div>`
-                                  : ""
-                              }
-                            </div>
-                          `;
-      });
-      card.innerHTML = `
-                          <button class='w-full flex justify-between items-center p-4 text-left'>
-                              <div class='flex items-center gap-4'>
-                                  <span class='text-2xl'>${dayData.icon}</span>
-                                  <div>
-                                      <p class='font-bold text-lg text-teal-700'>${dayData.day} <span class='text-sm font-normal text-stone-500'>${dayData.date}</span></p>
-                                      <p class='text-stone-600'>${dayData.title}</p>
-                                  </div>
-                              </div>
-                              <span class='transform transition-transform duration-300 text-2xl text-stone-400'>▼</span>
-                          </button>
-                          <div class='day-details bg-stone-50'>
-                              ${itemsHtml}
-                          </div>
-                        `;
-      itineraryContainer.appendChild(card);
-      initializeCards();
-      addCardListeners();
-    }
-
-    selector.addEventListener("change", (e) => {
-      loadDay(e.target.value);
-    });
-    // Load first day by default
-    loadDay(0);
-
-    itineraryData.forEach((dayData) => {
-      const card = document.createElement("div");
-      card.className =
-        "day-card bg-white border border-stone-200 rounded-xl shadow-sm overflow-hidden";
-
-      let itemsHtml = "";
-      dayData.items.forEach((item) => {
-        const budgetText = item.budget.includes("刷卡")
-          ? `<span class="text-blue-500">${item.budget}</span>`
-          : `<span class="text-orange-500">${item.budget}</span>`;
-
-        itemsHtml += `
-        <div class="py-4 px-4 border-b border-stone-100 last:border-b-0" style="line-height:1.8;">
-          <p class="font-semibold text-stone-800 text-base mb-1" style="letter-spacing:0.5px;">${
-            item.time
-          }: ${item.activity}</p>
-          <div class="text-sm text-stone-500 flex flex-wrap gap-x-4 mb-1" style="gap:8px;">
-            <span><strong>交通:</strong> ${item.transport}</span>
-            <span><strong>預算:</strong> ${
-              item.budget === "無" || item.budget === "免費"
-                ? item.budget
-                : budgetText
-            }</span>
-          </div>
-          ${
-            item.story && item.story.trim()
-              ? `<div class="text-sm text-teal-700 mt-2 bg-teal-50 p-3 rounded-md" style="line-height:1.7;word-break:break-word;">💡 ${item.story}</div>`
-              : ""
-          }
-        </div>
-      `;
-      });
-
-      card.innerHTML = `
-          <button class="w-full flex justify-between items-center p-4 text-left">
-              <div class="flex items-center gap-4">
-                  <span class="text-2xl">${dayData.icon}</span>
-                  <div>
-                      <p class="font-bold text-lg text-teal-700">${dayData.day} <span class="text-sm font-normal text-stone-500">${dayData.date}</span></p>
-                      <p class="text-stone-600">${dayData.title}</p>
-                  </div>
-              </div>
-              <span class="transform transition-transform duration-300 text-2xl text-stone-400">▼</span>
-          </button>
-          <div class="day-details bg-stone-50">
-              ${itemsHtml}
-          </div>
-      `;
-      itineraryContainer.appendChild(card);
-    });
-
-    // 為新生成的行程卡片添加事件監聽器並初始化狀態
-    initializeCards();
-    addCardListeners();
-
-    // 為所有day-card按鈕添加事件監聽器（包括動態生成和靜態的）
-    function addCardListeners() {
-      document.querySelectorAll(".day-card button").forEach((button) => {
-        // 移除現有的監聽器以避免重複
-        button.removeEventListener("click", handleCardClick);
-        // 添加新的監聽器
-        button.addEventListener("click", handleCardClick);
-      });
-    }
-
-    function handleCardClick(event) {
-      event.preventDefault();
-      const button = event.currentTarget;
-      const card = button.parentElement;
-      const isOpen = card.classList.contains("open");
-
-      // 切換開合狀態
-      card.classList.toggle("open");
-
-      // 旋轉箭頭圖標
-      const icon = button.querySelector("span.transform");
-      if (icon) {
-        if (isOpen) {
-          icon.style.transform = "rotate(0deg)";
-        } else {
-          icon.style.transform = "rotate(180deg)";
-        }
-      }
-    }
-
-    // 確保所有卡片初始狀態為收合
-    function initializeCards() {
-      document.querySelectorAll(".day-card").forEach((card) => {
-        card.classList.remove("open");
-        const icon = card.querySelector("span.transform");
-        if (icon) {
-          icon.style.transform = "rotate(0deg)";
-        }
-      });
-    }
-
-    // 初始化所有現有的卡片
-    initializeCards();
-    addCardListeners();
-  </script>
 </html>
