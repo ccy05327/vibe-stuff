@@ -58,13 +58,28 @@
   </head>
   <body class="bg-stone-50 text-stone-800">
     <!-- 返回按鈕 -->
-    <a
-      href="index.html"
-      class="fixed top-4 left-4 z-50 bg-teal-100/70 text-teal-700 px-3 py-1.5 rounded-full shadow border border-teal-200 backdrop-blur-sm flex items-center hover:bg-teal-200/90 hover:text-teal-900 transition-all"
-      style="font-size: 1rem"
-    >
-      <span class="mr-2">&#8592;</span> 返回版本選擇
-    </a>
+    <!-- Mobile/desktop 返回按鈕 -->
+    <div class="absolute left-2 top-2 md:fixed md:top-4 md:left-4 z-50">
+      <a
+        href="index.html"
+        class="block md:flex bg-teal-100/70 text-teal-700 rounded-full shadow border border-teal-200 backdrop-blur-sm hover:bg-teal-200/90 hover:text-teal-900 transition-all"
+        style="
+          font-size: 1rem;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        "
+      >
+        <span
+          class="block md:hidden text-2xl flex items-center justify-center w-full h-full"
+          >&#8592;</span
+        >
+        <span class="hidden md:inline mr-2">&#8592;</span>
+        <span class="hidden md:inline">返回版本選擇</span>
+      </a>
+    </div>
 
     <!-- 大型通知欄：西貢法式殖民建築深度導覽 -->
     <div
@@ -172,56 +187,61 @@
         </div>
       </div>
     </div>
-    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
-      <header class="text-center mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold text-teal-700">
+    <div
+      class="container mx-auto px-2 py-3 max-w-full"
+      style="max-width: 480px"
+    >
+      <header class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-teal-700 leading-tight">
           胡志明市深度自由行
         </h1>
-        <p class="text-stone-500 mt-2">
+        <p class="text-stone-500 mt-2 text-base">
           為精明旅人打造的7日預算與文化探索全攻略
         </p>
       </header>
 
-      <nav class="flex justify-center border-b border-stone-200 mb-8 flex-wrap">
+      <nav
+        class="flex justify-between border-b border-stone-200 mb-6 flex-wrap gap-1 text-sm"
+      >
         <button
           data-target="dashboard"
-          class="nav-link active font-semibold py-4 px-2 md:px-4 text-stone-600 hover:text-teal-600"
+          class="nav-link active font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
         >
           總覽
         </button>
         <button
           data-target="local-eye"
-          class="nav-link font-semibold py-4 px-2 md:px-4 text-stone-600 hover:text-teal-600"
+          class="nav-link font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
         >
           在地之眼
         </button>
         <button
           data-target="itinerary"
-          class="nav-link font-semibold py-4 px-2 md:px-4 text-stone-600 hover:text-teal-600"
+          class="nav-link font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
         >
           互動行程
         </button>
         <button
           data-target="hotspots"
-          class="nav-link font-semibold py-4 px-2 md:px-4 text-stone-600 hover:text-teal-600"
+          class="nav-link font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
         >
           熱門活動
         </button>
         <button
           data-target="budget"
-          class="nav-link font-semibold py-4 px-2 md:px-4 text-stone-600 hover:text-teal-600"
+          class="nav-link font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
         >
           預算追蹤
         </button>
         <button
           data-target="toolkit"
-          class="nav-link font-semibold py-4 px-2 md:px-4 text-stone-600 hover:text-teal-600"
+          class="nav-link font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
         >
           旅人工具包
         </button>
       </nav>
 
-      <main>
+      <main class="text-base">
         <section id="dashboard" class="section active">
           <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
             <h2 class="text-2xl font-bold text-teal-700 mb-4">旅程核心資訊</h2>
@@ -274,6 +294,42 @@
         </section>
 
         <section id="local-eye" class="section">
+
+          <!-- 河粉指數移到最上方 -->
+          <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
+            <h3 class="text-xl font-bold text-teal-700 mb-3">
+              「河粉指數」：在地體感物價計算機
+            </h3>
+            <p class="mb-4">
+              好奇眼前這碗河粉對當地人來說算貴還是便宜嗎？在下方輸入越南盾價格，立即換算成您熟悉的「台幣體感價」！
+            </p>
+            <div
+              class="flex flex-col sm:flex-row items-center gap-4 p-4 bg-amber-50 rounded-lg"
+            >
+              <div class="flex items-center gap-2">
+                <label for="vndInput" class="font-semibold">₫</label>
+                <input
+                  type="number"
+                  id="vndInput"
+                  placeholder="輸入越南盾價格"
+                  class="p-2 rounded-md border border-stone-300 w-48 focus:ring-2 focus:ring-amber-400 focus:border-amber-400"
+                />
+              </div>
+              <div class="text-2xl font-bold text-stone-500">=</div>
+              <div class="text-center">
+                <p class="text-sm text-stone-500">在地體感價值約</p>
+                <p id="feelPrice" class="text-2xl font-bold text-teal-600">
+                  NT$ 0
+                </p>
+              </div>
+            </div>
+            <p class="text-xs text-stone-400 mt-2">
+              例如：輸入一碗餐廳級河粉的價格 90,000
+              VND，您會發現它的體感價值約為
+              NT$450，這解釋了為何它並非日常小吃。
+            </p>
+          </div>
+
           <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
             <h2 class="text-2xl font-bold text-teal-700 mb-4">
               在地之眼：解讀西貢的價值觀
@@ -295,40 +351,7 @@
                 <canvas id="salaryChart"></canvas>
               </div>
             </div>
-
-            <div>
-              <h3 class="text-xl font-bold text-teal-700 mb-3">
-                「河粉指數」：在地體感物價計算機
-              </h3>
-              <p class="mb-4">
-                好奇眼前這碗河粉對當地人來說算貴還是便宜嗎？在下方輸入越南盾價格，立即換算成您熟悉的「台幣體感價」！
-              </p>
-              <div
-                class="flex flex-col sm:flex-row items-center gap-4 p-4 bg-amber-50 rounded-lg"
-              >
-                <div class="flex items-center gap-2">
-                  <label for="vndInput" class="font-semibold">₫</label>
-                  <input
-                    type="number"
-                    id="vndInput"
-                    placeholder="輸入越南盾價格"
-                    class="p-2 rounded-md border border-stone-300 w-48 focus:ring-2 focus:ring-amber-400 focus:border-amber-400"
-                  />
-                </div>
-                <div class="text-2xl font-bold text-stone-500">=</div>
-                <div class="text-center">
-                  <p class="text-sm text-stone-500">在地體感價值約</p>
-                  <p id="feelPrice" class="text-2xl font-bold text-teal-600">
-                    NT$ 0
-                  </p>
-                </div>
-              </div>
-              <p class="text-xs text-stone-400 mt-2">
-                例如：輸入一碗餐廳級河粉的價格 90,000
-                VND，您會發現它的體感價值約為
-                NT$450，這解釋了為何它並非日常小吃。
-              </p>
-            </div>
+          </div>
 
             <div class="mt-8">
               <h3 class="text-xl font-bold text-teal-700 mb-3">
