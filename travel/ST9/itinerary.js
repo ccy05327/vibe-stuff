@@ -10,28 +10,7 @@ const dayFiles = [
 ];
 const itineraryContainer = document.getElementById("itinerary-container");
 
-const selector = document.createElement("select");
-selector.className = "p-2 rounded-md border border-teal-300 mb-4";
-dayFiles.forEach((day, idx) => {
-  const option = document.createElement("option");
-  option.value = idx;
-  option.textContent = day.label;
-  selector.appendChild(option);
-});
-itineraryContainer.parentNode.insertBefore(selector, itineraryContainer);
-
-function loadDay(idx) {
-  const script = document.createElement("script");
-  script.src = dayFiles[idx].file;
-  script.onload = function () {
-    const data = window[dayFiles[idx].key];
-    renderItinerary(data);
-  };
-  document.body.appendChild(script);
-}
-
 function renderItinerary(dayData) {
-  itineraryContainer.innerHTML = "";
   const card = document.createElement("div");
   card.className =
     "day-card bg-white border border-stone-200 rounded-xl shadow-sm overflow-hidden";
@@ -73,17 +52,29 @@ function renderItinerary(dayData) {
         </div>
         <span class='transform transition-transform duration-300 text-2xl text-stone-400'>▼</span>
     </button>
-    <div class='day-details bg-stone-50'>
+    <div class='day-details bg-stone-50' style='display:none;'>
         ${itemsHtml}
     </div>
   `;
   itineraryContainer.appendChild(card);
-  initializeCards();
-  addCardListeners();
 }
 
-selector.addEventListener("change", (e) => {
-  loadDay(e.target.value);
-});
-// Load first day by default
-loadDay(0);
+function loadAllDays() {
+  itineraryContainer.innerHTML = "";
+  dayFiles.forEach((day, idx) => {
+    // Load each day's data script
+    const script = document.createElement("script");
+    script.src = day.file;
+    script.onload = function () {
+      const data = window[day.key];
+      if (data) {
+        renderItinerary(data);
+        initializeCards();
+        addCardListeners();
+      }
+    };
+    document.body.appendChild(script);
+  });
+}
+
+loadAllDays();
