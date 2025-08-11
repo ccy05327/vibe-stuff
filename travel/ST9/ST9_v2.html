@@ -1527,26 +1527,16 @@
             ? `<span class="text-blue-500">${item.budget}</span>`
             : `<span class="text-orange-500">${item.budget}</span>`;
 
-          itemsHtml += `
-              <div class="py-3 px-4 border-b border-stone-100 last:border-b-0">
-                  <p class="font-semibold text-stone-800">${item.time}: ${
-            item.activity
-          }</p>
-                  <div class="text-sm text-stone-500 flex flex-wrap gap-x-4">
-                      <span><strong>交通:</strong> ${item.transport}</span>
-                      <span><strong>預算:</strong> ${
-                        item.budget === "無" || item.budget === "免費"
-                          ? item.budget
-                          : budgetText
-                      }</span>
-                  </div>
-                  ${
-                    item.story
-                      ? `<p class="text-sm text-teal-700 mt-1 bg-teal-50 p-2 rounded-md">💡 ${item.story}</p>`
-                      : ""
-                  }
-              </div>
-          `;
+      itemsHtml += `
+        <div class="py-4 px-4 border-b border-stone-100 last:border-b-0" style="line-height:1.8;">
+          <p class="font-semibold text-stone-800 text-base mb-1" style="letter-spacing:0.5px;">${item.time}: ${item.activity}</p>
+          <div class="text-sm text-stone-500 flex flex-wrap gap-x-4 mb-1" style="gap:8px;">
+            <span><strong>交通:</strong> ${item.transport}</span>
+            <span><strong>預算:</strong> ${item.budget === "無" || item.budget === "免費" ? item.budget : budgetText}</span>
+          </div>
+          ${item.story && item.story.trim() ? `<div class="text-sm text-teal-700 mt-2 bg-teal-50 p-3 rounded-md" style="line-height:1.7;word-break:break-word;">💡 ${item.story}</div>` : ""}
+        </div>
+      `;
         });
 
         card.innerHTML = `
