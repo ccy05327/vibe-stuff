@@ -3,8 +3,15 @@ const sections = document.querySelectorAll(".section");
 navLinks.forEach((link) => {
   link.addEventListener("click", () => {
     const target = link.dataset.target;
-    navLinks.forEach((nav) => nav.classList.remove("active"));
-    link.classList.add("active");
+    navLinks.forEach((nav) => {
+      nav.classList.remove("active", "text-teal-600", "border-b-2", "border-teal-500");
+      nav.classList.add("text-stone-600");
+      nav.style.borderBottomWidth = "0px";
+    });
+    link.classList.add("active", "text-teal-600", "border-b-2", "border-teal-500");
+    link.classList.remove("text-stone-600");
+    link.style.borderBottomWidth = "2px";
+    link.style.borderColor = "#14b8a6";
     sections.forEach((section) => {
       section.id === target
         ? (section.style.display = "block")
