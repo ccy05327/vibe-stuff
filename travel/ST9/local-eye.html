@@ -1,0 +1,89 @@
+<!-- 河粉指數 -->
+<div class="bg-white p-6 rounded-xl shadow-sm mb-6">
+  <h3 class="text-xl font-bold text-teal-700 mb-3">
+    「河粉指數」：在地體感物價計算機
+  </h3>
+  <p class="mb-4">
+    好奇眼前這碗河粉對當地人來說算貴還是便宜嗎？在下方輸入越南盾價格，立即換算成您熟悉的「台幣體感價」！
+  </p>
+  <div
+    class="flex flex-col sm:flex-row items-center gap-4 p-4 bg-amber-50 rounded-lg"
+  >
+    <div class="flex items-center gap-2">
+      <label for="vndInput" class="font-semibold">₫</label>
+      <input
+        type="number"
+        id="vndInput"
+        placeholder="輸入越南盾價格"
+        class="p-2 rounded-md border border-stone-300 w-48 focus:ring-2 focus:ring-amber-400 focus:border-amber-400"
+      />
+    </div>
+    <div class="text-2xl font-bold text-stone-500">=</div>
+    <div class="text-center">
+      <p class="text-sm text-stone-500">在地體感價值約</p>
+      <p id="feelPrice" class="text-2xl font-bold text-teal-600">NT$ 0</p>
+    </div>
+  </div>
+  <p class="text-xs text-stone-400 mt-2">
+    例如：輸入一碗餐廳級河粉的價格 90,000 VND，您會發現它的體感價值約為
+    NT$450，這解釋了為何它並非日常小吃。
+  </p>
+</div>
+<!-- 薪資快照 -->
+<div class="bg-white p-6 rounded-xl shadow-sm mb-6">
+  <div class="mb-8">
+    <h3 class="text-xl font-bold text-teal-700 mb-3">薪資快照：購買力大比拼</h3>
+    <p class="mb-4">
+      台灣的基本月薪約為胡志明市的
+      <strong class="text-orange-500 text-xl">5倍</strong
+      >。這意味著，您可以將越南盾價格乘以5，來約略感受該價格對當地人的「體感價值」。
+    </p>
+    <div class="chart-container max-w-md flex justify-center items-center">
+      <canvas id="salaryChart"></canvas>
+    </div>
+  </div>
+</div>
+<!-- 深度解析音頻 -->
+<div class="mt-8">
+  <h3 class="text-xl font-bold text-teal-700 mb-3">🎧 深度解析音頻</h3>
+  <p class="mb-4 text-stone-600">
+    聆聽更深入的在地觀察與文化洞見，了解胡志明市的真實面貌。
+  </p>
+  <div class="bg-teal-50 p-4 rounded-lg flex flex-col items-center">
+    <div class="mb-4 flex flex-row justify-center items-center w-full gap-6">
+      <audio id="st9Audio" controls style="width: 320px; height: 32px">
+        <source src="ST9.m4a" type="audio/mp4" />
+        您的瀏覽器不支援音頻播放。
+      </audio>
+      <div class="flex items-center gap-2">
+        <label for="speedSelect" class="font-semibold text-teal-700"
+          >播放速度：</label
+        >
+        <select
+          id="speedSelect"
+          class="p-2 rounded-md border border-teal-300 bg-white focus:ring-2 focus:ring-teal-400 focus:border-teal-400"
+        >
+          <option value="0.5">0.5x (慢速)</option>
+          <option value="0.75">0.75x (較慢)</option>
+          <option value="1" selected>1x (正常)</option>
+          <option value="1.25">1.25x (較快)</option>
+          <option value="1.5">1.5x (快速)</option>
+          <option value="2">2x (極快)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 城市黏著度 -->
+<div class="bg-white p-6 rounded-xl shadow-sm mt-8">
+  <h2 class="text-2xl font-bold text-teal-700 mb-4">
+    洞察：為何胡志明市充滿「黏著度」？
+  </h2>
+  <p class="text-stone-600 mb-4">
+    您提及的Gensler報告將胡志明市評為全球第二具「黏著度」的城市，這點非常值得探討。這份報告指出，一座城市的吸引力不僅在於觀光，更在於它能否讓人們願意停留、生活與工作。胡志明市的高排名，主要歸功於其充滿活力的街頭生活、豐富的餐飲選擇以及強烈的社群感。
+  </p>
+  <p class="text-stone-600">
+    這座城市的魅力在於它的「混亂中的秩序」：摩托車流、路邊攤販、巷弄裡的咖啡香、新舊交融的建築...
+    這些元素共同構成了一種強烈的、令人沉浸的體驗。這趟旅程，您將不只是觀光客，更是這幅生動畫面的一部分。
+  </p>
+</div>

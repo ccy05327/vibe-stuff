@@ -1,0 +1,65 @@
+<div class="bg-white p-6 rounded-xl shadow-sm">
+  <h2 class="text-2xl font-bold text-teal-700 mb-4">預算追蹤儀表板 (升級版)</h2>
+  <p class="text-stone-600 mb-6">
+    本區塊將您的預算視覺化。圓餅圖顯示了升級後各項消費的佔比，下方的詳細表格則清楚區分了現金與刷卡的支付方式，助您有效管理並花光500萬越南盾現金！
+  </p>
+
+  <div class="grid md:grid-cols-2 gap-8 items-center">
+    <div class="chart-container">
+      <canvas id="budgetDonutChart"></canvas>
+    </div>
+    <div>
+      <h3 class="text-xl font-bold text-teal-700 mb-3">
+        預估總支出細項 (兩人)
+      </h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left text-stone-600">
+          <thead class="text-xs text-stone-700 uppercase bg-stone-100">
+            <tr>
+              <th scope="col" class="px-4 py-3">費用類別</th>
+              <th scope="col" class="px-4 py-3">費用 (VND)</th>
+              <th scope="col" class="px-4 py-3">支付方式</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b">
+              <td class="px-4 py-2 font-medium">餐飲 (升級)</td>
+              <td class="px-4 py-2">2,016,000</td>
+              <td class="px-4 py-2 text-orange-500">現金</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2 font-medium">按摩</td>
+              <td class="px-4 py-2">980,000</td>
+              <td class="px-4 py-2 text-orange-500">現金</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2 font-medium">景點/活動</td>
+              <td class="px-4 py-2">1,180,000</td>
+              <td class="px-4 py-2 text-orange-500">現金</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2 font-medium">交通 (Grab)</td>
+              <td class="px-4 py-2">520,000</td>
+              <td class="px-4 py-2 text-blue-500">刷卡</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2 font-medium">預備金</td>
+              <td class="px-4 py-2">824,000</td>
+              <td class="px-4 py-2 text-orange-500">現金</td>
+            </tr>
+            <tr class="bg-stone-50 font-bold">
+              <td class="px-4 py-2">現金總計</td>
+              <td class="px-4 py-2">5,000,000</td>
+              <td class="px-4 py-2"></td>
+            </tr>
+            <tr class="bg-stone-50 font-bold">
+              <td class="px-4 py-2">總消費</td>
+              <td class="px-4 py-2">5,520,000</td>
+              <td class="px-4 py-2"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
