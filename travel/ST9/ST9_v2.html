@@ -13,6 +13,15 @@
       rel="stylesheet"
     />
     <style>
+      @media (max-width: 430px) {
+        body {
+          padding: 12px !important;
+        }
+        .container {
+          padding-left: 8px !important;
+          padding-right: 8px !important;
+        }
+      }
       @media (min-width: 430px) {
         .back-btn-full {
           display: flex !important;
@@ -230,7 +239,7 @@
           data-target="itinerary"
           class="nav-link font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
         >
-          互動行程
+          每日行程
         </button>
         <button
           data-target="hotspots"
@@ -418,14 +427,6 @@
         </section>
 
         <section id="itinerary" class="section">
-          <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
-            <h2 class="text-2xl font-bold text-teal-700 mb-4">
-              互動行程總覽 (升級版)
-            </h2>
-            <p class="text-stone-600 mb-6">
-              這裡是您的每日行程藍圖。點擊每一天的卡片，即可展開或收合詳細的活動、交通、預算與有趣的在地故事。這個設計讓您可以專注於當天的計畫，而不被其他資訊干擾。
-            </p>
-          </div>
           <div class="space-y-4" id="itinerary-container"></div>
         </section>
 
