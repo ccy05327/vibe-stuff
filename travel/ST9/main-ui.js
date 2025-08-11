@@ -364,29 +364,78 @@ function initializeBudgetChart() {
   }
 }
 
-// Modal logic for colonial tour
-function bindColonialPopup() {
-  const colonialButtons = document.querySelectorAll(".colonial-activity");
-  const colonialModal = document.getElementById("colonial-modal");
-  const closeColonialModal = document.getElementById("close-colonial-modal");
+// Modal logic for all itinerary modals
+function bindItineraryModals() {
+  // List of modal configurations
+  const modalConfigs = [
+    {
+      triggerClass: "colonial-activity",
+      modalId: "colonial-modal",
+      closeId: "close-colonial-modal",
+    },
+    {
+      triggerClass: "mekong-activity",
+      modalId: "mekong-modal",
+      closeId: "close-mekong-modal",
+    },
+    {
+      triggerClass: "food-activity",
+      modalId: "food-modal",
+      closeId: "close-food-modal",
+    },
+    {
+      triggerClass: "transport-activity",
+      modalId: "transport-modal",
+      closeId: "close-transport-modal",
+    },
+    {
+      triggerClass: "nightmarket-activity",
+      modalId: "nightmarket-modal",
+      closeId: "close-nightmarket-modal",
+    },
+    {
+      triggerClass: "comtam-activity",
+      modalId: "comtam-modal",
+      closeId: "close-comtam-modal",
+    },
+    {
+      triggerClass: "waterpuppet-activity",
+      modalId: "waterpuppet-modal",
+      closeId: "close-waterpuppet-modal",
+    },
+  ];
 
-  if (colonialButtons.length > 0 && colonialModal && closeColonialModal) {
-    colonialButtons.forEach((button) => {
-      button.addEventListener("click", function () {
-        colonialModal.classList.remove("hidden");
+  modalConfigs.forEach((config) => {
+    const triggerButtons = document.querySelectorAll(`.${config.triggerClass}`);
+    const modal = document.getElementById(config.modalId);
+    const closeButton = document.getElementById(config.closeId);
+
+    if (modal && closeButton) {
+      // Bind trigger buttons (if any exist)
+      triggerButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          modal.classList.remove("hidden");
+        });
       });
-    });
 
-    closeColonialModal.addEventListener("click", function () {
-      colonialModal.classList.add("hidden");
-    });
+      // Bind close button
+      closeButton.addEventListener("click", function () {
+        modal.classList.add("hidden");
+      });
 
-    colonialModal.addEventListener("click", function (e) {
-      if (e.target === colonialModal) {
-        colonialModal.classList.add("hidden");
-      }
-    });
-  }
+      // Bind backdrop click to close
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) {
+          modal.classList.add("hidden");
+        }
+      });
+    }
+  });
+}
+
+// Legacy function name for backward compatibility
+function bindColonialPopup() {
+  bindItineraryModals();
 }
 
 // 行程卡片展開/收合功能

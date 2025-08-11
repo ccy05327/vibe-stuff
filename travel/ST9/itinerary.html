@@ -2,7 +2,9 @@
   <!-- Days will be loaded here dynamically -->
 </div>
 
-<!-- Modal Popup -->
+<!-- ===== MODAL POPUPS SECTION ===== -->
+
+<!-- 1. 法式殖民建築漫遊 Modal -->
 <div
   id="colonial-modal"
   class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden"
@@ -17,7 +19,6 @@
     >
       ×
     </button>
-
     <div
       class="space-y-6 text-stone-800 text-base max-h-[60vh] overflow-y-auto pr-2"
     >
@@ -96,6 +97,369 @@
         <ul class="list-disc ml-5 mb-2 text-sm">
           <li>2005年聖母像流淚事件，吸引大量信徒。</li>
           <li>紅教堂長期整修，僅能外部參觀。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. 湄公河三角洲詳細攻略 Modal -->
+<div
+  id="mekong-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-lg w-full p-6 relative animate-fade-in"
+    style="max-height: 80vh; overflow-y: auto"
+  >
+    <button
+      id="close-mekong-modal"
+      class="absolute top-3 right-3 text-stone-400 hover:text-stone-700 text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 text-stone-800 text-base max-h-[60vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-xl text-blue-600 mb-3">
+        🚢 湄公河三角洲一日遊：完整攻略
+      </h3>
+      <!-- 這裡可以添加湄公河詳細內容 -->
+      <p class="text-stone-600">詳細的湄公河行程說明將在這裡...</p>
+    </div>
+  </div>
+</div>
+
+<!-- 3. 美食推薦 Modal -->
+<div
+  id="food-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-lg w-full p-6 relative animate-fade-in"
+    style="max-height: 80vh; overflow-y: auto"
+  >
+    <button
+      id="close-food-modal"
+      class="absolute top-3 right-3 text-stone-400 hover:text-stone-700 text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 text-stone-800 text-base max-h-[60vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-xl text-orange-600 mb-3">🍜 餐廳詳細攻略</h3>
+      <!-- 這裡可以添加餐廳詳細內容 -->
+      <p class="text-stone-600">餐廳推薦和攻略將在這裡...</p>
+    </div>
+  </div>
+</div>
+
+<!-- 4. 交通攻略 Modal -->
+<div
+  id="transport-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-lg w-full p-6 relative animate-fade-in"
+    style="max-height: 80vh; overflow-y: auto"
+  >
+    <button
+      id="close-transport-modal"
+      class="absolute top-3 right-3 text-stone-400 hover:text-stone-700 text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 text-stone-800 text-base max-h-[60vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-xl text-green-600 mb-3">
+        🚗 胡志明市區交通攻略
+      </h3>
+
+      <div class="bg-amber-50 p-4 rounded-lg">
+        <h4 class="font-bold text-amber-800 mb-2">🏍️ 機車計程車 (Xe Om)</h4>
+        <p class="text-amber-700 text-sm">
+          最快最靈活，價格便宜，適合短距離移動
+        </p>
+        <p class="text-amber-600 text-sm mt-1">💰 價格：2-5萬越南盾 (市區內)</p>
+      </div>
+
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <h4 class="font-bold text-blue-800 mb-2">🚕 Grab 叫車</h4>
+        <p class="text-blue-700 text-sm">安全可靠，價格透明，支援信用卡</p>
+        <p class="text-blue-600 text-sm mt-1">
+          💰 GrabBike: 15-30k VND | GrabCar: 30-80k VND
+        </p>
+      </div>
+
+      <div class="bg-green-50 p-4 rounded-lg">
+        <h4 class="font-bold text-green-800 mb-2">🚌 市區巴士</h4>
+        <p class="text-green-700 text-sm">
+          經濟實惠，路線覆蓋全市，需要一些越南語基礎
+        </p>
+        <p class="text-green-600 text-sm mt-1">💰 價格：7,000 VND 單程</p>
+      </div>
+
+      <div class="bg-purple-50 p-4 rounded-lg">
+        <h4 class="font-bold text-purple-800 mb-2">🚶‍♀️ 步行建議</h4>
+        <p class="text-purple-700 text-sm">第一郡景點密集，步行是很好的選擇</p>
+        <p class="text-purple-600 text-sm mt-1">
+          ⚠️ 注意：過馬路要小心，跟著當地人走
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. 夜市攻略 Modal -->
+<div
+  id="nightmarket-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-lg w-full p-6 relative animate-fade-in"
+    style="max-height: 80vh; overflow-y: auto"
+  >
+    <button
+      id="close-nightmarket-modal"
+      class="absolute top-3 right-3 text-stone-400 hover:text-stone-700 text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 text-stone-800 text-base max-h-[60vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-xl text-orange-600 mb-3">
+        🌃 濱城市場夜市攻略
+      </h3>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2">⏰ 營業時間</h4>
+        <p class="text-orange-700 text-sm">白天：6:00-18:00 (室內市場)</p>
+        <p class="text-orange-700 text-sm">夜晚：19:00-23:00 (戶外夜市)</p>
+      </div>
+
+      <div class="bg-red-50 p-4 rounded-lg">
+        <h4 class="font-bold text-red-800 mb-2">🍜 必吃美食</h4>
+        <ul class="text-red-700 text-sm space-y-1">
+          <li>• 越南河粉 (Pho) - 50,000-80,000 VND</li>
+          <li>• 春捲 (Nem rán) - 30,000-50,000 VND</li>
+          <li>• 越南咖啡 - 25,000-40,000 VND</li>
+          <li>• 新鮮果汁 - 20,000-35,000 VND</li>
+        </ul>
+      </div>
+
+      <div class="bg-yellow-50 p-4 rounded-lg">
+        <h4 class="font-bold text-yellow-800 mb-2">🛍️ 購物攻略</h4>
+        <p class="text-yellow-700 text-sm">記得議價！開價通常是實價的2-3倍</p>
+        <p class="text-yellow-600 text-sm mt-1">
+          💡 技巧：比較多家店家價格，最後再回去買
+        </p>
+      </div>
+
+      <div class="bg-indigo-50 p-4 rounded-lg">
+        <h4 class="font-bold text-indigo-800 mb-2">📱 實用APP</h4>
+        <p class="text-indigo-700 text-sm">Google Translate (相機翻譯功能)</p>
+        <p class="text-indigo-700 text-sm">Currency Converter (匯率換算)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. 碎米飯深度導覽 Modal -->
+<div
+  id="comtam-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-2xl w-full p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-comtam-modal"
+      class="absolute top-3 right-3 text-stone-400 hover:text-stone-700 text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-6 text-stone-800 text-base max-h-[75vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-2xl text-amber-600 mb-3">
+        🍖 Cơm Tấm Ba Ghiền：碎米傳奇
+      </h3>
+
+      <div class="bg-amber-50 p-5 rounded-lg">
+        <h4 class="font-bold text-amber-800 mb-3 text-lg">
+          🌾 什麼是「碎米飯 (Cơm Tấm)」？
+        </h4>
+
+        <div class="mb-4">
+          <h5 class="font-semibold text-amber-700 mb-2">📖 起源故事</h5>
+          <p class="text-amber-700 text-sm leading-relaxed">
+            在過去，越南農民在收成和運輸稻米的過程中，會產生一些碎裂不完整的米粒。這些賣相不佳的「碎米」無法作為商品出售，於是農民便將其留作自家的主食。因為米粒碎裂，烹煮後吸水性更強，口感也更加鬆軟、富有米香。
+          </p>
+        </div>
+
+        <div>
+          <h5 class="font-semibold text-amber-700 mb-2">🏆 從平民到國民美食</h5>
+          <p class="text-amber-700 text-sm leading-relaxed">
+            這種源於節儉的食物，最初是勞動階層的早餐。他們會在碎米飯上鋪上一塊烤豬排、一顆煎蛋和一些醃菜，以獲取足夠的體力。沒想到這種簡單的美味大受歡迎，逐漸從街邊小吃攤走進餐廳，成為如今代表西貢的國民美食之一。
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-orange-50 p-5 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-3 text-lg">
+          🏪 為什麼要去「巴海姐 (Ba Ghiền)」？
+        </h4>
+
+        <p class="text-orange-700 text-sm mb-4 leading-relaxed">
+          這家店在胡志明市的地位，約等於台灣的「鬍鬚張魯肉飯」，是提到碎米飯時一定會被提及的傳奇名店。
+        </p>
+
+        <div class="space-y-3">
+          <div>
+            <h5 class="font-semibold text-orange-700 mb-1">
+              🥩 招牌巨無霸豬排
+            </h5>
+            <p class="text-orange-600 text-sm leading-relaxed">
+              最大特色就是那塊用秘製醬料醃製後，以炭火慢烤的巨大帶骨豬排 (sườn
+              cốt
+              lết)。豬排尺寸驚人，幾乎能蓋住整個盤子，肉質鮮嫩多汁，帶有濃郁的炭烤香氣。
+            </p>
+          </div>
+
+          <div>
+            <h5 class="font-semibold text-orange-700 mb-1">🍳 豐富的配料</h5>
+            <ul class="text-orange-600 text-sm space-y-1">
+              <li>• <strong>Bì</strong>：切成絲的豬皮，口感爽脆</li>
+              <li>• <strong>Chả</strong>：類似烘蛋和肉餅的混合體，口感綿密</li>
+              <li>
+                •
+                <strong>Ốp La</strong
+                >：半熟荷包蛋，將蛋黃戳破與米飯混合是道地吃法
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h5 class="font-semibold text-orange-700 mb-1">🏘️ 在地氛圍</h5>
+            <p class="text-orange-600 text-sm leading-relaxed">
+              店內總是擠滿了本地食客，用餐環境非常接地氣，能讓您體驗到最真實的西貢日常。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-red-50 p-4 rounded-lg">
+        <h4 class="font-bold text-red-800 mb-2">💡 行前必知</h4>
+        <ul class="text-red-700 text-sm space-y-2">
+          <li>
+            📍 位於平盛郡 (Bình Thạnh)，離市中心稍有距離，但絕對值得專程前往
+          </li>
+          <li>
+            🍽️ 最經典組合：「Sườn, Bì, Chả, Ốp La」(豬排、豬皮絲、烘蛋、荷包蛋)
+            全餐
+          </li>
+          <li>👆 點餐時可以直接指著想要的配料</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. 水上木偶戲深度導覽 Modal -->
+<div
+  id="waterpuppet-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-2xl w-full p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-waterpuppet-modal"
+      class="absolute top-3 right-3 text-stone-400 hover:text-stone-700 text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-6 text-stone-800 text-base max-h-[75vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-2xl text-blue-600 mb-3">
+        🎭 金龍水上木偶劇院：千年國粹
+      </h3>
+
+      <div class="bg-blue-50 p-5 rounded-lg">
+        <h4 class="font-bold text-blue-800 mb-3 text-lg">
+          🌊 什麼是「水上木偶戲 (Múa rối nước)」？
+        </h4>
+
+        <p class="text-blue-700 text-sm mb-4 leading-relaxed">
+          這是越南最具代表性的國粹，也是世界上獨一無二的表演藝術，擁有一千多年的悠久歷史。
+        </p>
+
+        <div class="mb-4">
+          <h5 class="font-semibold text-blue-700 mb-2">🏞️ 起源故事</h5>
+          <p class="text-blue-700 text-sm leading-relaxed">
+            源於北越紅河三角洲的農村。據說在農閒或雨季稻田淹水時，農民們會站在水裡，利用水的浮力來操縱木偶，在水面上演繹各種故事，自娛娛人。這種娛樂形式逐漸演變成一門精緻的表演藝術。
+          </p>
+        </div>
+
+        <div>
+          <h5 class="font-semibold text-blue-700 mb-2">🎪 表演方式</h5>
+          <ul class="text-blue-600 text-sm space-y-2">
+            <li><strong>水上舞台：</strong> 舞台是一個水池，象徵著稻田</li>
+            <li>
+              <strong>隱藏的操偶師：</strong>
+              表演者藏在竹簾下，站在及腰深的水中，用竹竿與細線操縱木偶
+            </li>
+            <li>
+              <strong>現場配樂：</strong>
+              傳統樂隊以歌唱、說書和樂器演奏配樂，氛圍熱鬧
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-green-50 p-5 rounded-lg">
+        <h4 class="font-bold text-green-800 mb-3 text-lg">
+          🎬 您將會看到什麼？
+        </h4>
+
+        <p class="text-green-700 text-sm mb-3 leading-relaxed">
+          一場表演通常由十幾個長度約3-5分鐘的短劇組成，內容大多圍繞著越南的農村生活、民間傳說和歷史故事：
+        </p>
+
+        <ul class="text-green-600 text-sm space-y-2">
+          <li>🌾 在水田裡插秧、捕魚的農民</li>
+          <li>🧚‍♀️ 在水上嬉戲的仙女</li>
+          <li>🐢 還劍湖傳說中的神龜與黎利王</li>
+          <li>🦆 兩隻鳳凰在水上求偶的優美舞蹈</li>
+          <li>🐉 象徵越南精神的四靈：龍、麟(麒麟)、龜、鳳的精彩表演</li>
+        </ul>
+      </div>
+
+      <div class="bg-purple-50 p-4 rounded-lg">
+        <h4 class="font-bold text-purple-800 mb-2">💡 行前必知</h4>
+        <ul class="text-purple-700 text-sm space-y-2">
+          <li>
+            🌍
+            <strong>語言不是問題：</strong>
+            即使聽不懂越南語，也能透過木偶動作、音樂和視覺效果理解劇情
+          </li>
+          <li>
+            ⏰
+            <strong>時長剛好：</strong>
+            整場表演約50分鐘，節奏緊湊，適合做為晚餐後的文化娛樂
+          </li>
+          <li>
+            ✨
+            <strong>體驗獨特性：</strong>
+            這是您在世界上其他地方絕對看不到的表演形式
+          </li>
+          <li>🎯 <strong>強烈推薦：</strong> 親身體驗這項千年傳統的獨特魅力</li>
         </ul>
       </div>
     </div>

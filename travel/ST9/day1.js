@@ -49,6 +49,15 @@ window.day1Itinerary = {
       story:
         "精緻越南家庭式料理，環境有氣氛。建議品項：炸春捲、生春捲、蒜香炒飯。",
     },
+    {
+      time: "19:30-21:30",
+      activity:
+        "<span class='nightmarket-activity font-bold cursor-pointer text-orange-700 hover:underline'>濱城市場夜市體驗</span>",
+      transport: "步行",
+      budget: "₫150,000-300,000 (現金)",
+      story:
+        "從白天的濱城市場轉換為熱鬧的夜市，體驗當地夜生活文化，嘗試街頭小食與選購紀念品。",
+    },
   ],
   supplement: [
     {

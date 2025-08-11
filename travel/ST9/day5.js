@@ -21,7 +21,8 @@ window.day5Itinerary = {
     },
     {
       time: "14:00-15:30",
-      activity: "晚餐: Cơm Tấm Ba Ghiền",
+      activity:
+        "<span class='comtam-activity font-bold cursor-pointer text-amber-700 hover:underline'>Cơm Tấm Ba Ghiền 碎米傳奇</span>",
       transport: "Grab",
       budget: "交通₫70,000(刷卡), 美食₫200,000(現金)",
       story:
@@ -29,7 +30,8 @@ window.day5Itinerary = {
     },
     {
       time: "19:00-20:00",
-      activity: "新增：金龍水上木偶劇院",
+      activity:
+        "<span class='waterpuppet-activity font-bold cursor-pointer text-blue-700 hover:underline'>金龍水上木偶劇院 千年國粹</span>",
       transport: "Grab",
       budget: "交通₫40,000(刷卡), 門票₫460,000(現金)",
       story:

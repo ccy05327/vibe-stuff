@@ -31,7 +31,8 @@ window.day2Itinerary = {
     {
       time: "16:00-17:00",
       activity: "新定教堂 (粉紅教堂)",
-      transport: "Grab",
+      transport:
+        "<span class='transport-activity font-bold cursor-pointer text-green-700 hover:underline'>Grab 交通攻略</span>",
       budget: "交通₫50,000 (刷卡)",
       story:
         "這座夢幻的粉紅色教堂建於20世紀初，是胡志明市第二大教堂。其搶眼的巴洛克風格建築，讓它成為最受歡迎的拍照景點。",
