@@ -4,124 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>胡志明市旅遊</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="day1.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
       rel="stylesheet"
-    />
-    <style>
-      @media (max-width: 430px) {
-        body {
-          padding: 12px !important;
-        }
-        .container {
-          padding-left: 8px !important;
-          padding-right: 8px !important;
-        }
-      }
-      @media (min-width: 430px) {
-        .back-btn-full {
-          display: flex !important;
-        }
-        .back-btn-icon {
-          display: none !important;
-        }
-        .container, .bg-white, .section {
-          max-width: 100vw !important;
-          width: 100vw !important;
-        }
-        [style*="max-width"] {
-          max-width: 100vw !important;
-        }
-      }
-      @media (max-width: 429px) {
-        .back-btn-full {
-          display: none !important;
-        }
-        .back-btn-icon {
-          display: flex !important;
-        }
-      }
-      body {
-        font-family: "Noto Sans TC", sans-serif;
-      }
-      .chart-container {
-        position: relative;
         margin: auto;
         height: 320px;
-        width: 100%;
-      }
-      @media (min-width: 768px) {
-        .chart-container {
-          height: 400px;
-        }
-      }
-      .nav-link {
-        transition: all 0.3s ease;
-        border-bottom: 2px solid transparent;
-      }
-      .nav-link.active {
-        border-bottom-color: #14b8a6; /* teal-500 */
-        color: #0d9488; /* teal-600 */
-      }
-      .section {
-        display: none;
-      }
-      .section.active {
-        display: block;
-      }
-      .day-card {
-        transition: all 0.3s ease;
-      }
-      .day-details {
-        max-height: 0;
-        overflow: hidden;
-        opacity: 0;
-        transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out;
-      }
-      .day-card.open .day-details {
-        max-height: 2000px;
-        opacity: 1;
-      }
-    </style>
-  </head>
-  <body class="bg-stone-50 text-stone-800">
-    <!-- 返回按鈕 -->
-    <!-- Mobile/desktop 返回按鈕 -->
-    <div class="fixed top-4 left-4 z-50">
-      <a href="index.html" class="bg-teal-100/70 text-teal-700 rounded-full shadow border border-teal-200 backdrop-blur-sm hover:bg-teal-200/90 hover:text-teal-900 transition-all flex items-center justify-center" style="font-size: 1rem;">
-        <span class="back-btn-icon text-2xl w-10 h-10 items-center justify-center" style="display: flex">&#8592;</span>
-        <span class="back-btn-full items-center px-4 py-2 text-base" style="display: none">
-          <span class="mr-2">&#8592;</span>
-          返回版本選擇
-        </span>
-      </a>
-    </div>
-
-    <!-- 大型通知欄：西貢法式殖民建築深度導覽 -->
-    <div
-      id="colonialInfoBar"
-      class="fixed inset-0 z-50 flex items-start justify-center bg-black/30"
-      style="backdrop-filter: blur(2px); display: none"
-    >
-      <div
-        class="bg-white shadow-2xl rounded-xl max-w-2xl w-full mt-12 mx-4 p-6 relative border-2 border-amber-400"
-      >
-        <button
-          onclick="document.getElementById('colonialInfoBar').style.display='none'"
-          class="absolute -right-4 -top-4 bg-amber-400 text-white rounded-full w-10 h-10 flex items-center justify-center text-2xl shadow-lg border-2 border-white hover:bg-amber-500 transition"
-        >
-          &times;
-        </button>
-        <h2 class="text-2xl font-bold text-amber-700 mb-2">
-          西貢法式殖民建築深度導覽
-        </h2>
-        <p class="mb-4 text-stone-700">
-          在踏上這趟從歌劇院到紅教堂的旅程前，了解它們的故事，將讓您眼前的磚瓦與雕塑活起來。這不僅是一條觀光路線，更是一條閱讀胡志明市百年歷史的時光隧道。
-        </p>
         <div
           class="space-y-6 text-stone-800 text-base max-h-[60vh] overflow-y-auto pr-2"
         >
@@ -221,48 +113,50 @@
       </header>
 
       <nav
-        class="flex justify-between border-b border-stone-200 mb-6 flex-wrap gap-1 text-sm"
+  class="flex justify-center border-b border-stone-200 mb-6 text-sm"
       >
         <button
           data-target="dashboard"
-          class="nav-link active font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
+          class="nav-link active font-bold py-2 px-4 text-stone-600 hover:text-teal-600 border-b-2 border-teal-500"
+          style="border-bottom-width: 2px; border-color: #14b8a6;"
         >
           總覽
         </button>
         <button
           data-target="local-eye"
-          class="nav-link font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
+          class="nav-link font-bold py-2 px-4 text-stone-600 hover:text-teal-600"
         >
           在地之眼
         </button>
         <button
           data-target="itinerary"
-          class="nav-link font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
+          class="nav-link font-bold py-2 px-4 text-teal-600 border-b-2 border-teal-500"
+          style="border-bottom-width: 2px; border-color: #14b8a6;"
         >
-          每日行程
+          互動行程
         </button>
         <button
           data-target="hotspots"
-          class="nav-link font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
+          class="nav-link font-bold py-2 px-4 text-stone-600 hover:text-teal-600"
         >
           熱門活動
         </button>
         <button
           data-target="budget"
-          class="nav-link font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
+          class="nav-link font-bold py-2 px-4 text-stone-600 hover:text-teal-600"
         >
           預算追蹤
         </button>
         <button
           data-target="toolkit"
-          class="nav-link font-semibold py-2 px-2 text-stone-600 hover:text-teal-600"
+          class="nav-link font-bold py-2 px-4 text-stone-600 hover:text-teal-600"
         >
           旅人工具包
         </button>
       </nav>
 
       <main class="text-base">
-        <section id="dashboard" class="section active">
+  <section id="dashboard" class="section" style="display:none;">
           <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
             <h2 class="text-2xl font-bold text-teal-700 mb-4">旅程核心資訊</h2>
             <p class="text-stone-600 mb-6">
@@ -314,6 +208,7 @@
         </section>
 
         <section id="local-eye" class="section">
+  <section id="local-eye" class="section" style="display:none;">
 
           <!-- 河粉指數移到最上方 -->
           <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
@@ -404,13 +299,9 @@
                       <option value="2">2x (極快)</option>
                     </select>
                   </div>
-                  <div class="text-sm text-teal-600">
-                    💡 建議中文學習者使用 0.75x 速度
-                  </div>
                 </div>
               </div>
             </div>
-                        <!-- 黏著度洞察只顯示在在地之眼最下方 -->
             <div class="bg-white p-6 rounded-xl shadow-sm mt-8">
               <h2 class="text-2xl font-bold text-teal-700 mb-4">
                 洞察：為何胡志明市充滿「黏著度」？
@@ -428,9 +319,11 @@
 
         <section id="itinerary" class="section">
           <div class="space-y-4" id="itinerary-container"></div>
+          <script src="itinerary.js"></script>
         </section>
 
         <section id="hotspots" class="section">
+  <section id="hotspots" class="section" style="display:none;">
           <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
             <h2 class="text-2xl font-bold text-teal-700 mb-4">
               越南熱門旅遊活動清單
@@ -629,6 +522,7 @@
         </section>
 
         <section id="budget" class="section">
+  <section id="budget" class="section" style="display:none;">
           <div class="bg-white p-6 rounded-xl shadow-sm">
             <h2 class="text-2xl font-bold text-teal-700 mb-4">
               預算追蹤儀表板 (升級版)
@@ -701,6 +595,7 @@
         </section>
 
         <section id="toolkit" class="section">
+  <section id="toolkit" class="section" style="display:none;">
           <div class="bg-white p-6 rounded-xl shadow-sm">
             <h2 class="text-2xl font-bold text-teal-700 mb-4">旅人工具包</h2>
             <p class="text-stone-600 mb-6">
@@ -1040,26 +935,22 @@
     <script>
       const navLinks = document.querySelectorAll(".nav-link");
       const sections = document.querySelectorAll(".section");
-      const colonialInfoBar = document.getElementById("colonialInfoBar");
-
       navLinks.forEach((link) => {
         link.addEventListener("click", () => {
-          // 關閉通知欄（如有顯示）
-          if (colonialInfoBar && colonialInfoBar.style.display !== "none") {
-            colonialInfoBar.style.display = "none";
-          }
           const target = link.dataset.target;
           navLinks.forEach((nav) => nav.classList.remove("active"));
           link.classList.add("active");
           sections.forEach((section) => {
             if (section.id === target) {
-              section.classList.add("active");
+              section.style.display = "block";
             } else {
-              section.classList.remove("active");
+              section.style.display = "none";
             }
           });
         });
       });
+      // Show dashboard by default
+      document.getElementById("dashboard").style.display = "block";
 
       const vndInput = document.getElementById("vndInput");
       const feelPrice = document.getElementById("feelPrice");
@@ -1082,440 +973,81 @@
 
       const salaryData = {
         labels: ["台灣", "胡志明市"],
-        datasets: [
-          {
-            label: "最低月薪 (VND等值)",
-            data: [25159200, 4960000],
-            backgroundColor: [
-              "rgba(20, 184, 166, 0.6)", // teal-500
-              "rgba(249, 115, 22, 0.6)", // orange-500
-            ],
-            borderColor: [
-              "rgba(13, 148, 136, 1)", // teal-600
-              "rgba(249, 115, 22, 1)", // orange-500
-            ],
-            borderWidth: 1,
-          },
-        ],
-      };
+      }
 
-      const salaryChartCtx = document
-        .getElementById("salaryChart")
-        .getContext("2d");
-      new Chart(salaryChartCtx, {
-        type: "bar",
-        data: salaryData,
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          indexAxis: "y",
-          plugins: {
-            legend: {
-              display: false,
-            },
-            tooltip: {
-              callbacks: {
-                label: function (context) {
-                  let label = context.dataset.label || "";
-                  if (label) {
-                    label += ": ";
-                  }
-                  if (context.parsed.x !== null) {
-                    label += new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(context.parsed.x);
-                  }
-                  return label;
-                },
-              },
-            },
-          },
-          scales: {
-            x: {
-              ticks: {
-                callback: function (value, index, values) {
-                  return value / 1000000 + "M";
-                },
-              },
-            },
-          },
-        },
-      });
+      // Load Day 1 itinerary from external JS file
+      const itineraryData = [window.day1Itinerary];
+      // Dynamically load itinerary data from external JS files
+      // Only declare itineraryContainer once for itinerary rendering
 
-      const budgetData = {
-        labels: ["餐飲", "按摩", "景點/活動", "交通(Grab)", "預備金"],
-        datasets: [
-          {
-            data: [2016000, 980000, 1180000, 520000, 824000],
-            backgroundColor: [
-              "#f97316", // orange-500
-              "#3b82f6", // blue-500
-              "#f59e0b", // amber-500
-              "#14b8a6", // teal-500
-              "#6b7280", // gray-500
-            ],
-            hoverOffset: 4,
-          },
-        ],
-      };
+      const itinerarySection = document.getElementById("itinerary");
 
-      const budgetDonutChartCtx = document
-        .getElementById("budgetDonutChart")
-        .getContext("2d");
-      new Chart(budgetDonutChartCtx, {
-        type: "doughnut",
-        data: budgetData,
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: "top",
-            },
-            tooltip: {
-              callbacks: {
-                label: function (context) {
-                  let label = context.label || "";
-                  if (label) {
-                    label += ": ";
-                  }
-                  if (context.parsed !== null) {
-                    label += new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(context.parsed);
-                  }
-                  return label;
-                },
-              },
-            },
-          },
-        },
-      });
+                      selector.className = "p-2 rounded-md border border-teal-300 mb-4";
+                      dayFiles.forEach((day, idx) => {
+                        const option = document.createElement("option");
+                        option.value = idx;
+                        option.textContent = day.label;
+                        selector.appendChild(option);
+                      });
+                      itinerarySection.insertBefore(selector, itineraryContainer);
 
-      const itineraryData = [
-        {
-          day: "第一天",
-          date: "8/18 (一)",
-          title: "抵達與西貢的殖民心臟",
-          icon: "✈️",
-          items: [
-            {
-              time: "06:10-08:35",
-              activity: "搭機抵達胡志明市",
-              transport: "飛機",
-              budget: "-",
-              story: "預計08:35落地，開始胡志明市行程。",
-            },
-            {
-              time: "08:35-10:30",
-              activity: "機場到市區（Grab/交通）",
-              transport: "Grab/計程車/巴士",
-              budget: "₫120,000 (刷卡)",
-              story: "可選Grab或計程車，預計10-11點抵達住宿。",
-            },
-            {
-              time: "10:30-11:00",
-              activity: "抵達住宿寄放行李或直接帶行李去附近吃東西",
-              transport: "步行/行李隨身",
-              budget: "-",
-              story:
-                "若飯店可寄放行李則先寄放，否則可直接帶行李去附近餐廳用餐。",
-            },
-            {
-              time: "11:00-14:00",
-              activity: "落地後行程選擇（可展開）",
-              transport: "步行/彈性安排",
-              budget: "-",
-              story: `<div class='day-card border border-stone-200 rounded-lg'>
-                    <button class='w-full flex justify-between items-center p-2 bg-stone-100 hover:bg-stone-200 rounded-lg' onclick='var d=this.nextElementSibling;if(d.style.maxHeight=="0px"||!d.style.maxHeight){d.style.maxHeight="2000px";d.style.opacity="1";}else{d.style.maxHeight="0px";d.style.opacity="0";}'><span class='font-bold text-base text-teal-600'>🛬 兩種方案</span><span class='transform transition-transform duration-300'>▼</span></button>
-                    <div class='day-details p-2 text-stone-600 space-y-4' style='max-height:0px;opacity:0;overflow:hidden;transition:max-height 0.4s,opacity 0.3s;'>
-                      <div>
-                        <h4 class='font-bold text-amber-700 mb-1'>方案A：落地後很累 (低耗能放鬆模式)</h4>
-                        <ul class='list-disc list-inside ml-4 mb-1'>
-                          <li><strong>地點：</strong>阮惠街步行廣場周邊餐廳</li>
-                          <li><strong>推薦餐廳類型：</strong>裝潢乾淨、有冷氣的越式家常菜餐廳 (如 Quán Bụi Garden 或類似店家)</li>
-                          <li><strong>午餐內容 (13:00 - 14:00)：</strong>
-                            <ul class='list-disc ml-6'>
-                              <li>Thịt Kho Tộ (陶鍋滷肉)：越南家庭經典，鹹甜下飯。</li>
-                              <li>Canh Chua (越式酸湯)：羅望子基底的酸甜湯品，非常開胃。</li>
-                              <li>Rau Muống Xào Tỏi (蒜炒空心菜)：最受歡迎的國民青菜。</li>
-                              <li>Cơm Trắng (白飯)：搭配以上菜色。</li>
-                            </ul>
-                          </li>
-                          <li><strong>預估價格 (兩人份)：</strong>約 250,000 - 350,000 VND (約 NT$285 - $400)，可付現。</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 class='font-bold text-green-700 mb-1'>方案B：落地後還有精神 (高效率探索模式)</h4>
-                        <ul class='list-disc list-inside ml-4 mb-1'>
-                          <li><strong>地點：</strong>濱城市場 (Bến Thành Market) 內或對面</li>
-                          <li><strong>午餐內容 (12:30 - 14:00)：</strong>
-                            <ul class='list-disc ml-6'>
-                              <li><strong>選擇1：市場內熟食區 (體驗道地)</strong>
-                                <ul class='list-disc ml-6'>
-                                  <li>Bún Thịt Nướng (烤肉米線)：烤肉、米線、生菜與酸甜魚露的乾拌麵，清爽美味。</li>
-                                  <li>Bột Chiên (越式炒粿)：米漿製成，煎得外酥內軟後打蛋，是當地人喜愛的小吃。</li>
-                                </ul>
-                                預估價格 (兩人份)：約 150,000 - 200,000 VND (約 NT$170 - $230)，僅限付現。
-                              </li>
-                              <li><strong>選擇2：市場對面的 Phở 2000 (舒適乾淨)</strong>
-                                <ul class='list-disc ml-6'>
-                                  <li>Phở Bò Tái (生牛肉河粉)：熱湯淋上生牛肉片，口感滑嫩。</li>
-                                  <li>Chả Giò (炸春捲)：香脆的越式炸春捲。</li>
-                                </ul>
-                                預估價格 (兩人份)：約 250,000 - 350,000 VND (約 NT$285 - $400)，可付現。
-                              </li>
-                            </ul>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>`,
-            },
-            {
-              time: "16:00-18:00",
-              activity: `<span style="cursor:pointer;color:#d97706;font-weight:bold;" onclick="document.getElementById('colonialInfoBar').style.display='flex'">法式殖民建築漫遊 (郵局/紅教堂/歌劇院)</span>`,
-              transport: "步行",
-              budget: "免費",
-              story: `<div class='day-card border border-stone-200 rounded-lg'>
-                    <button class='w-full flex justify-between items-center p-2 bg-stone-100 hover:bg-stone-200 rounded-lg' onclick='var d=this.nextElementSibling;if(d.style.maxHeight=="0px"||!d.style.maxHeight){d.style.maxHeight="2000px";d.style.opacity="1";}else{d.style.maxHeight="0px";d.style.opacity="0";}'>
-                      <span class='font-bold text-base text-teal-600'>步行路線與細節</span>
-                      <span class='transform transition-transform duration-300'>▼</span>
-                    </button>
-                    <div class='day-details p-2 text-stone-600 space-y-4' style='max-height:0px;opacity:0;overflow:hidden;transition:max-height 0.4s,opacity 0.3s;'>
-                      <ul class='list-disc ml-4'>
-                        <li>從飯店 (Nicey Ngan Ha Hotel) 出發，三大景點皆位於第一郡，步行即可形成順暢三角路線。</li>
-                        <li><strong>步行至起點：</strong> 從飯店步行至歌劇院約 10-15 分鐘。</li>
-                        <li><strong>建議順序與停留時間：</strong>
-                          <ol class='list-decimal ml-6'>
-                            <li><strong>胡志明市大劇院 (Saigon Opera House)</strong>：停留 15-20 分鐘，欣賞法式外觀，內部通常不開放。</li>
-                            <li><strong>西貢中心郵政局 (Central Post Office)</strong>：步行 5-7 分鐘，停留 30-40 分鐘，可入內參觀、購買明信片/郵票。</li>
-                            <li><strong>西貢聖母聖殿主教座堂 (紅教堂)</strong>：郵局正對面，停留 15-20 分鐘，欣賞外觀，夕陽下拍照特別美。</li>
-                          </ol>
-                        </li>
-                        <li><strong>總計時間：</strong> 步行+參觀約 1.5 - 2 小時。</li>
-                      </ul>
-                      <div class='mt-2'>
-                        <strong>公休日與注意事項：</strong>
-                        <ul class='list-disc ml-4'>
-                          <li>星期一郵局正常營業，紅教堂與歌劇院僅外部參觀，無公休問題。</li>
-                          <li>紅教堂長期整修，無法入內，但外觀拍照不受影響。</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>`,
-            },
-            {
-              time: "18:00-19:30",
-              activity: "晚餐：Secret Garden Restaurant 越南家庭料理",
-              transport: "步行",
-              budget: "₫300,000 - ₫450,000 (現金)",
-              story: `<div class='day-card border border-stone-200 rounded-lg'>
-                    <button class='w-full flex justify-between items-center p-2 bg-stone-100 hover:bg-stone-200 rounded-lg' onclick='var d=this.nextElementSibling;if(d.style.maxHeight=="0px"||!d.style.maxHeight){d.style.maxHeight="2000px";d.style.opacity="1";}else{d.style.maxHeight="0px";d.style.opacity="0";}'>
-                      <span class='font-bold text-base text-teal-600'>晚餐細節</span>
-                      <span class='transform transition-transform duration-300'>▼</span>
-                    </button>
-                    <div class='day-details p-2 text-stone-600 space-y-2' style='max-height:0px;opacity:0;overflow:hidden;transition:max-height 0.4s,opacity 0.3s;'>
-                      <ul class='list-disc ml-4'>
-                        <li>餐廳位於老公寓頂樓，距郵局步行約 10 分鐘，需爬樓梯但氛圍絕佳。</li>
-                        <li>精緻越南家庭式料理，環境有氣氛。</li>
-                        <li>建議品項：
-                          <ul class='list-disc ml-6'>
-                            <li>Chả Giò Secret Garden (秘密花園炸春捲)：招牌，外酥餡扎實。</li>
-                            <li>Gỏi Cuốn (越式生春捲)：清爽開胃。</li>
-                            <li>Cơm Chiên Tỏi (蒜香炒飯)：簡單美味主食。</li>
-                          </ul>
-                        </li>
-                        <li>預估價格 (兩人份)：約 300,000 - 450,000 VND (約 NT$340 - $510)，可付現。</li>
-                      </ul>
-                    </div>
-                  </div>`,
-            },
-          ],
-        },
-        // ...existing code...
-        {
-          day: "第三天",
-          date: "8/20 (三)",
-          title: "市場迷宮與堤岸風華",
-          icon: "🏮",
-          items: [
-            {
-              time: "上午",
-              activity: "悠閒的早晨",
-              transport: "無",
-              budget: "無",
-              story: "",
-            },
-            {
-              time: "11:00-13:00",
-              activity: "濱城市場探索與午餐",
-              transport: "步行",
-              budget: "₫150,000 (現金)",
-              story:
-                "濱城市場是體驗氣氛的地方，而非購物首選。面對熱情的店家，保持禮貌但堅定的態度即可。",
-            },
-            {
-              time: "14:00-17:00",
-              activity: "新增：中國城(堤岸)探險",
-              transport: "Grab",
-              budget: "交通₫80,000(刷卡), 點心₫100,000(現金)",
-              story:
-                "前往第五郡的「堤岸」，這裡是越南最大的華人社群所在地。參拜香火鼎盛的天后宮，感受與第一郡截然不同的市井氣息。",
-            },
-            {
-              time: "17:00-20:00",
-              activity: "胡氏紀花市與美食街",
-              transport: "Grab",
-              budget: "交通₫100,000(刷卡), 美食₫250,000(現金)",
-              story:
-                "這裡是胡志明市最大的24小時鮮花批發市場，也是一個傳奇的美食天堂，尤其以受柬埔寨文化影響的美食聞名。",
-            },
-          ],
-        },
-        {
-          day: "第四天",
-          date: "8/21 (四)",
-          title: "充電日：舒壓按摩與現代西貢",
-          icon: "😌",
-          items: [
-            {
-              time: "上午",
-              activity: "自由時光，睡到自然醒",
-              transport: "無",
-              budget: "無",
-              story: "",
-            },
-            {
-              time: "11:30-13:00",
-              activity: "午餐: Banh Mi Huynh Hoa",
-              transport: "步行",
-              budget: "₫146,000 (現金)",
-              story:
-                "這家店在當地被暱稱為「女同志法國麵包」，以其塞滿肉餡的豪華份量聞名，門口總是大排長龍。",
-            },
-            {
-              time: "14:00-16:00",
-              activity: "正宗越式按摩: Golden Lotus Spa",
-              transport: "Grab",
-              budget: "₫980,000 (現金)",
-              story:
-                "這家Spa評價良好，價格比其他知名店家更具彈性，符合您的預算考量。",
-            },
-            {
-              time: "16:30-18:00",
-              activity: "吹冷氣與市場調查: Saigon Centre",
-              transport: "步行",
-              budget: "免費",
-              story:
-                "高島屋百貨的地下層設有美食街與精緻超市，是觀察當地中產階級消費品的好地方。",
-            },
-          ],
-        },
-        {
-          day: "第五天",
-          date: "8/22 (五)",
-          title: "粉紅教堂與傳統偶戲",
-          icon: "🎭",
-          items: [
-            {
-              time: "10:00-12:00",
-              activity: "新定教堂 (粉紅教堂)",
-              transport: "Grab",
-              budget: "交通₫60,000 (刷卡)",
-              story:
-                "想拍出經典的網美照，秘訣就是前往對街的 Cộng Cà Phê 咖啡店二樓陽台，他們的椰子咖啡本身就是一絕！",
-            },
-            {
-              time: "12:00-13:30",
-              activity: "午餐: Cộng Cà Phê",
-              transport: "步行",
-              budget: "₫200,000 (現金)",
-              story: "",
-            },
-            {
-              time: "14:00-15:30",
-              activity: "晚餐: Cơm Tấm Ba Ghiền",
-              transport: "Grab",
-              budget: "交通₫70,000(刷卡), 美食₫200,000(現金)",
-              story:
-                "這家店以比手掌還大、完美醃製的炭烤豬排聞名。所謂的『碎米』，過去是廉價米粒，如今卻因其獨特口感而備受珍視。",
-            },
-            {
-              time: "19:00-20:00",
-              activity: "新增：金龍水上木偶劇院",
-              transport: "Grab",
-              budget: "交通₫40,000(刷卡), 門票₫460,000(現金)",
-              story:
-                "水上木偶戲是越南國粹，起源於紅河三角洲。在水池上，操偶師傅巧妙地演繹著越南的民間傳說與農村生活。",
-            },
-          ],
-        },
-        {
-          day: "第六天",
-          date: "8/23 (六)",
-          title: "城市之巔與告別盛宴",
-          icon: "🏙️",
-          items: [
-            {
-              time: "上午",
-              activity: "打包與退房，寄放行李",
-              transport: "無",
-              budget: "無",
-              story: "",
-            },
-            {
-              time: "12:00-14:00",
-              activity: "告別午餐",
-              transport: "步行",
-              budget: "₫300,000 (現金)",
-              story:
-                "用更充裕的預算，去尋找一家心儀的餐廳，好好享用在西貢的最後一頓午餐。",
-            },
-            {
-              time: "14:30-16:00",
-              activity: "新增：Bitexco金融塔觀景台",
-              transport: "步行",
-              budget: "門票₫400,000 (現金)",
-              story:
-                "從49樓的Skydeck俯瞰360度的胡志明市全景，將這座城市的混亂與活力盡收眼底，作為旅程的完美收尾。",
-            },
-            {
-              time: "16:00-21:00",
-              activity: "自由時間、告別晚餐",
-              transport: "步行",
-              budget: "晚餐₫370,000 (現金)",
-              story: "",
-            },
-            {
-              time: "21:30-22:15",
-              activity: "前往機場",
-              transport: "Grab",
-              budget: "₫130,000 (刷卡)",
-              story: "",
-            },
-          ],
-        },
-        {
-          day: "第七天",
-          date: "8/24 (日)",
-          title: "歸途",
-          icon: "🏠",
-          items: [
-            {
-              time: "00:15-04:55",
-              activity: "搭乘越捷航空返回台北",
-              transport: "飛機",
-              budget: "無",
-              story: "",
-            },
-          ],
-        },
-      ];
+                      // Load and render selected day
+                      function loadDay(idx) {
+                        const script = document.createElement("script");
+                        script.src = dayFiles[idx].file;
+                        script.onload = function () {
+                          const data = window[dayFiles[idx].key];
+                          renderItinerary(data);
+                        };
+                        document.body.appendChild(script);
+                      }
 
-      const itineraryContainer = document.getElementById("itinerary-container");
+                      function renderItinerary(dayData) {
+                        itineraryContainer.innerHTML = "";
+                        const card = document.createElement("div");
+                        card.className = "day-card bg-white border border-stone-200 rounded-xl shadow-sm overflow-hidden";
+                        let itemsHtml = "";
+                        dayData.items.forEach((item) => {
+                          const budgetText = item.budget && item.budget.includes("刷卡")
+                            ? `<span class='text-blue-500'>${item.budget}</span>`
+                            : `<span class='text-orange-500'>${item.budget}</span>`;
+                          itemsHtml += `
+                            <div class='py-4 px-4 border-b border-stone-100 last:border-b-0' style='line-height:1.8;'>
+                              <p class='font-semibold text-stone-800 text-base mb-1' style='letter-spacing:0.5px;'>${item.time}: ${item.activity}</p>
+                              <div class='text-sm text-stone-500 flex flex-wrap gap-x-4 mb-1' style='gap:8px;'>
+                                <span><strong>交通:</strong> ${item.transport}</span>
+                                <span><strong>預算:</strong> ${item.budget === "無" || item.budget === "免費" ? item.budget : budgetText}</span>
+                              </div>
+                              ${item.story && item.story.trim() ? `<div class='text-sm text-teal-700 mt-2 bg-teal-50 p-3 rounded-md' style='line-height:1.7;word-break:break-word;'>💡 ${item.story}</div>` : ""}
+                            </div>
+                          `;
+                        });
+                        card.innerHTML = `
+                          <button class='w-full flex justify-between items-center p-4 text-left'>
+                              <div class='flex items-center gap-4'>
+                                  <span class='text-2xl'>${dayData.icon}</span>
+                                  <div>
+                                      <p class='font-bold text-lg text-teal-700'>${dayData.day} <span class='text-sm font-normal text-stone-500'>${dayData.date}</span></p>
+                                      <p class='text-stone-600'>${dayData.title}</p>
+                                  </div>
+                              </div>
+                              <span class='transform transition-transform duration-300 text-2xl text-stone-400'>▼</span>
+                          </button>
+                          <div class='day-details bg-stone-50'>
+                              ${itemsHtml}
+                          </div>
+                        `;
+                        itineraryContainer.appendChild(card);
+                        initializeCards();
+                        addCardListeners();
+                      }
+
+                      selector.addEventListener("change", (e) => {
+                        loadDay(e.target.value);
+                      });
+                      // Load first day by default
+                      loadDay(0);
+
       itineraryData.forEach((dayData) => {
         const card = document.createElement("div");
         card.className =
