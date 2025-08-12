@@ -403,6 +403,11 @@ function bindItineraryModals() {
       modalId: "waterpuppet-modal",
       closeId: "close-waterpuppet-modal",
     },
+    {
+      triggerClass: "day2-guide-activity",
+      modalId: "day2-guide-modal",
+      closeId: "close-day2-guide-modal",
+    },
   ];
 
   modalConfigs.forEach((config) => {
