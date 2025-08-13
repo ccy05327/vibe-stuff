@@ -1,0 +1,990 @@
+<div class="space-y-4" id="itinerary-container">
+  <!-- Days will be loaded here dynamically -->
+</div>
+
+<!-- 1. 法式殖民建築漫遊 Modal -->
+<div
+  id="colonial-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-md w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-colonial-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 sm:space-y-6 text-stone-800 text-sm sm:text-base max-h-[70vh] sm:max-h-[60vh] overflow-y-auto pr-2"
+    >
+      <div>
+        <h3 class="font-bold text-lg text-orange-600 mb-1">
+          第一站：胡志明市大劇院 (Saigon Opera House)
+        </h3>
+        <ul class="list-disc ml-5 mb-2">
+          <li>一座為殖民者享樂而生的華麗舞台</li>
+        </ul>
+        <strong class="block mb-1">歷史背景</strong>
+        <ul class="list-disc ml-5 mb-2 text-sm">
+          <li>
+            1898年動工，1900年啟用，法國殖民政府為法國僑民與官員欣賞歌劇而建。
+          </li>
+          <li>二戰損毀、1955年改為下議院議事廳，裝飾被拆除。</li>
+          <li>1975年後恢復劇院功能，1998年復原女神雕像等裝飾，重現原貌。</li>
+        </ul>
+        <strong class="block mb-1">建築亮點</strong>
+        <ul class="list-disc ml-5 mb-2 text-sm">
+          <li>華麗風格，靈感來自巴黎小皇宮。</li>
+          <li>正門女神雕像寓意藝術與音樂，花崗岩柱為在地材料。</li>
+          <li>內部可容納約1800人，音響效果一流。</li>
+        </ul>
+        <strong class="block mb-1">行前必知趣聞</strong>
+        <ul class="list-disc ml-5 mb-2 text-sm">
+          <li>1955-1998年外觀樸素，為政治建築。</li>
+          <li>劇院門口廣場曾是市中心最時髦的社交場所。</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-bold text-lg text-orange-600 mb-1">
+          第二站：西貢中心郵政局 (Central Post Office)
+        </h3>
+        <ul class="list-disc ml-5 mb-2">
+          <li>一座仍在呼吸的百年行政心臟</li>
+        </ul>
+        <strong class="block mb-1">歷史背景</strong>
+        <ul class="list-disc ml-5 mb-2 text-sm">
+          <li>1886-1891年建成，法國殖民時期最重要通訊樞紐。</li>
+          <li>
+            「艾菲爾」之謎：設計師實為Alfred Foulhoux與Auguste
+            Vildieu，鋼鐵結構帶有艾菲爾風格。
+          </li>
+        </ul>
+        <strong class="block mb-1">建築亮點</strong>
+        <ul class="list-disc ml-5 mb-2 text-sm">
+          <li>融合哥德式、文藝復興式與法式古典主義。</li>
+          <li>巨型拱頂展現工業革命美學，兩幅古地圖為靈魂。</li>
+          <li>百年電話亭、法國進口磁磚地板。</li>
+        </ul>
+        <strong class="block mb-1">行前必知趣聞</strong>
+        <ul class="list-disc ml-5 mb-2 text-sm">
+          <li>郵局仍正常運作，可買郵票、寄明信片。</li>
+          <li>大廳盡頭胡志明肖像為1975年後增設。</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-bold text-lg text-orange-600 mb-1">
+          第三站：西貢聖母聖殿主教座堂 (紅教堂)
+        </h3>
+        <ul class="list-disc ml-5 mb-2">
+          <li>一座從法國馬賽「搬」來的信仰堡壘</li>
+        </ul>
+        <strong class="block mb-1">歷史背景</strong>
+        <ul class="list-disc ml-5 mb-2 text-sm">
+          <li>1877年動工，1880年完工，彰顯法國國力與信仰。</li>
+          <li>所有建材均從法國進口，紅磚來自馬賽，彩繪玻璃來自沙特爾。</li>
+          <li>1962年升格為聖殿主教座堂。</li>
+        </ul>
+        <strong class="block mb-1">建築亮點</strong>
+        <ul class="list-disc ml-5 mb-2 text-sm">
+          <li>新羅馬式融合哥德式，雙子鐘樓高達58米。</li>
+        </ul>
+        <strong class="block mb-1">行前必知趣聞</strong>
+        <ul class="list-disc ml-5 mb-2 text-sm">
+          <li>2005年聖母像流淚事件，吸引大量信徒。</li>
+          <li>紅教堂長期整修，僅能外部參觀。</li>
+        </ul>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2">🚶‍♀️ 步行建議</h4>
+        <p class="text-orange-700 text-sm">第一郡景點密集，步行是很好的選擇</p>
+        <p class="text-orange-600 text-sm mt-1">
+          ⚠️ 注意：過馬路要小心，跟著當地人走
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. 湄公河三角洲詳細攻略 Modal -->
+<div
+  id="mekong-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-lg w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-mekong-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 text-stone-800 text-sm sm:text-base max-h-[70vh] sm:max-h-[60vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-xl text-blue-600 mb-3">
+        🚢 湄公河三角洲一日遊：完整攻略
+      </h3>
+      <!-- 這裡可以添加湄公河詳細內容 -->
+      <p class="text-stone-600">詳細的湄公河行程說明將在這裡...</p>
+    </div>
+  </div>
+</div>
+
+<!-- 3. 美食推薦 Modal -->
+<div
+  id="food-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-lg w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-food-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 text-stone-800 text-sm sm:text-base max-h-[70vh] sm:max-h-[60vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-xl text-orange-600 mb-3">🍜 餐廳詳細攻略</h3>
+      <!-- 這裡可以添加餐廳詳細內容 -->
+      <p class="text-stone-600">餐廳推薦和攻略將在這裡...</p>
+    </div>
+  </div>
+</div>
+
+<!-- 4. 交通攻略 Modal -->
+<div
+  id="transport-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-lg w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-transport-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 text-stone-800 text-sm sm:text-base max-h-[70vh] sm:max-h-[60vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-xl text-green-600 mb-3">
+        🚗 胡志明市區交通攻略
+      </h3>
+
+      <div class="bg-amber-50 p-4 rounded-lg">
+        <h4 class="font-bold text-amber-800 mb-2">🏍️ 機車計程車 (Xe Om)</h4>
+        <p class="text-amber-700 text-sm">
+          最快最靈活，價格便宜，適合短距離移動
+        </p>
+        <p class="text-amber-600 text-sm mt-1">💰 價格：2-5萬越南盾 (市區內)</p>
+      </div>
+
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <h4 class="font-bold text-blue-800 mb-2">🚕 Grab 叫車</h4>
+        <p class="text-blue-700 text-sm">安全可靠，價格透明，支援信用卡</p>
+        <p class="text-blue-600 text-sm mt-1">
+          💰 GrabBike: 15-30k VND | GrabCar: 30-80k VND
+        </p>
+      </div>
+
+      <div class="bg-green-50 p-4 rounded-lg">
+        <h4 class="font-bold text-green-800 mb-2">🚌 市區巴士</h4>
+        <p class="text-green-700 text-sm">
+          經濟實惠，路線覆蓋全市，需要一些越南語基礎
+        </p>
+        <p class="text-green-600 text-sm mt-1">💰 價格：7,000 VND 單程</p>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2">🚶‍♀️ 步行建議</h4>
+        <p class="text-orange-700 text-sm">第一郡景點密集，步行是很好的選擇</p>
+        <p class="text-orange-600 text-sm mt-1">
+          ⚠️ 注意：過馬路要小心，跟著當地人走
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. 夜市攻略 Modal -->
+<div
+  id="nightmarket-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-lg w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-nightmarket-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 text-stone-800 text-sm sm:text-base max-h-[70vh] sm:max-h-[60vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-xl text-orange-600 mb-3">
+        🌃 濱城市場夜市攻略
+      </h3>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2">⏰ 營業時間</h4>
+        <p class="text-orange-700 text-sm">白天：6:00-18:00 (室內市場)</p>
+        <p class="text-orange-700 text-sm">夜晚：19:00-23:00 (戶外夜市)</p>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2">🍜 必吃美食</h4>
+        <ul class="text-orange-700 text-sm space-y-1">
+          <li>• 越南河粉 (Pho) - 50,000-80,000 VND</li>
+          <li>• 春捲 (Nem rán) - 30,000-50,000 VND</li>
+          <li>• 越南咖啡 - 25,000-40,000 VND</li>
+          <li>• 新鮮果汁 - 20,000-35,000 VND</li>
+        </ul>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2">🛍️ 購物攻略</h4>
+        <p class="text-orange-700 text-sm">記得議價！開價通常是實價的2-3倍</p>
+        <p class="text-orange-600 text-sm mt-1">
+          💡 技巧：比較多家店家價格，最後再回去買
+        </p>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2">📱 實用APP</h4>
+        <p class="text-orange-700 text-sm">Google Translate (相機翻譯功能)</p>
+        <p class="text-orange-700 text-sm">Currency Converter (匯率換算)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. 碎米飯深度導覽 Modal -->
+<div
+  id="comtam-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-2xl w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-comtam-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 sm:space-y-6 text-stone-800 text-sm sm:text-base max-h-[70vh] sm:max-h-[75vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-2xl text-amber-600 mb-3">
+        🍖 Cơm Tấm Ba Ghiền：碎米傳奇
+      </h3>
+
+      <div class="bg-amber-50 p-5 rounded-lg">
+        <h4 class="font-bold text-amber-800 mb-3 text-lg">
+          🌾 什麼是「碎米飯 (Cơm Tấm)」？
+        </h4>
+
+        <div class="mb-4">
+          <h5 class="font-semibold text-amber-700 mb-2">📖 起源故事</h5>
+          <p class="text-amber-700 text-sm leading-relaxed">
+            在過去，越南農民在收成和運輸稻米的過程中，會產生一些碎裂不完整的米粒。這些賣相不佳的「碎米」無法作為商品出售，於是農民便將其留作自家的主食。因為米粒碎裂，烹煮後吸水性更強，口感也更加鬆軟、富有米香。
+          </p>
+        </div>
+
+        <div>
+          <h5 class="font-semibold text-amber-700 mb-2">🏆 從平民到國民美食</h5>
+          <p class="text-amber-700 text-sm leading-relaxed">
+            這種源於節儉的食物，最初是勞動階層的早餐。他們會在碎米飯上鋪上一塊烤豬排、一顆煎蛋和一些醃菜，以獲取足夠的體力。沒想到這種簡單的美味大受歡迎，逐漸從街邊小吃攤走進餐廳，成為如今代表西貢的國民美食之一。
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-orange-50 p-5 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-3 text-lg">
+          🏪 為什麼要去「巴海姐 (Ba Ghiền)」？
+        </h4>
+
+        <p class="text-orange-700 text-sm mb-4 leading-relaxed">
+          這家店在胡志明市的地位，約等於台灣的「鬍鬚張魯肉飯」，是提到碎米飯時一定會被提及的傳奇名店。
+        </p>
+
+        <div class="space-y-3">
+          <div>
+            <h5 class="font-semibold text-orange-700 mb-1">
+              🥩 招牌巨無霸豬排
+            </h5>
+            <p class="text-orange-600 text-sm leading-relaxed">
+              最大特色就是那塊用秘製醬料醃製後，以炭火慢烤的巨大帶骨豬排 (sườn
+              cốt
+              lết)。豬排尺寸驚人，幾乎能蓋住整個盤子，肉質鮮嫩多汁，帶有濃郁的炭烤香氣。
+            </p>
+          </div>
+
+          <div>
+            <h5 class="font-semibold text-orange-700 mb-1">🍳 豐富的配料</h5>
+            <ul class="text-orange-600 text-sm space-y-1">
+              <li>• <strong>Bì</strong>：切成絲的豬皮，口感爽脆</li>
+              <li>• <strong>Chả</strong>：類似烘蛋和肉餅的混合體，口感綿密</li>
+              <li>
+                •
+                <strong>Ốp La</strong
+                >：半熟荷包蛋，將蛋黃戳破與米飯混合是道地吃法
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h5 class="font-semibold text-orange-700 mb-1">🏘️ 在地氛圍</h5>
+            <p class="text-orange-600 text-sm leading-relaxed">
+              店內總是擠滿了本地食客，用餐環境非常接地氣，能讓您體驗到最真實的西貢日常。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-red-50 p-4 rounded-lg">
+        <h4 class="font-bold text-red-800 mb-2">💡 行前必知</h4>
+        <ul class="text-red-700 text-sm space-y-2">
+          <li>
+            📍 位於平盛郡 (Bình Thạnh)，離市中心稍有距離，但絕對值得專程前往
+          </li>
+          <li>
+            🍽️ 最經典組合：「Sườn, Bì, Chả, Ốp La」(豬排、豬皮絲、烘蛋、荷包蛋)
+            全餐
+          </li>
+          <li>👆 點餐時可以直接指著想要的配料</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. 水上木偶戲深度導覽 Modal -->
+<div
+  id="waterpuppet-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-2xl w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-waterpuppet-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-6 text-stone-800 text-base max-h-[75vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-2xl text-blue-600 mb-3">
+        🎭 金龍水上木偶劇院：千年國粹
+      </h3>
+
+      <div class="bg-blue-50 p-5 rounded-lg">
+        <h4 class="font-bold text-blue-800 mb-3 text-lg">
+          🌊 什麼是「水上木偶戲 (Múa rối nước)」？
+        </h4>
+
+        <p class="text-blue-700 text-sm mb-4 leading-relaxed">
+          這是越南最具代表性的國粹，也是世界上獨一無二的表演藝術，擁有一千多年的悠久歷史。
+        </p>
+
+        <div class="mb-4">
+          <h5 class="font-semibold text-orange-700 mb-2">🏞️ 起源故事</h5>
+          <p class="text-orange-700 text-sm leading-relaxed">
+            源於北越紅河三角洲的農村。據說在農閒或雨季稻田淹水時，農民們會站在水裡，利用水的浮力來操縱木偶，在水面上演繹各種故事，自娛娛人。這種娛樂形式逐漸演變成一門精緻的表演藝術。
+          </p>
+        </div>
+
+        <div>
+          <h5 class="font-semibold text-orange-700 mb-2">🎪 表演方式</h5>
+          <ul class="text-orange-600 text-sm space-y-2">
+            <li><strong>水上舞台：</strong> 舞台是一個水池，象徵著稻田</li>
+            <li>
+              <strong>隱藏的操偶師：</strong>
+              表演者藏在竹簾下，站在及腰深的水中，用竹竿與細線操縱木偶
+            </li>
+            <li>
+              <strong>現場配樂：</strong>
+              傳統樂隊以歌唱、說書和樂器演奏配樂，氛圍熱鬧
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-orange-50 p-5 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-3 text-lg">
+          🎬 您將會看到什麼？
+        </h4>
+
+        <p class="text-orange-700 text-sm mb-3 leading-relaxed">
+          一場表演通常由十幾個長度約3-5分鐘的短劇組成，內容大多圍繞著越南的農村生活、民間傳說和歷史故事：
+        </p>
+
+        <ul class="text-orange-600 text-sm space-y-2">
+          <li>🌾 在水田裡插秧、捕魚的農民</li>
+          <li>🧚‍♀️ 在水上嬉戲的仙女</li>
+          <li>🐢 還劍湖傳說中的神龜與黎利王</li>
+          <li>🦆 兩隻鳳凰在水上求偶的優美舞蹈</li>
+          <li>🐉 象徵越南精神的四靈：龍、麟(麒麟)、龜、鳳的精彩表演</li>
+        </ul>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2">💡 行前必知</h4>
+        <ul class="text-orange-700 text-sm space-y-2">
+          <li>
+            🌍
+            <strong>語言不是問題：</strong>
+            即使聽不懂越南語，也能透過木偶動作、音樂和視覺效果理解劇情
+          </li>
+          <li>
+            ⏰
+            <strong>時長剛好：</strong>
+            整場表演約50分鐘，節奏緊湊，適合做為晚餐後的文化娛樂
+          </li>
+          <li>
+            ✨
+            <strong>體驗獨特性：</strong>
+            這是您在世界上其他地方絕對看不到的表演形式
+          </li>
+          <li>🎯 <strong>強烈推薦：</strong> 親身體驗這項千年傳統的獨特魅力</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. 落地後行程選擇 Modal -->
+<div
+  id="landing-choice-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-2xl w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-landing-choice-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 sm:space-y-6 text-stone-800 text-sm sm:text-base max-h-[70vh] sm:max-h-[75vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-2xl text-teal-600 mb-3">
+        🛬 落地後行程選擇 (11:00-14:00)
+      </h3>
+
+      <div class="bg-blue-50 p-5 rounded-lg">
+        <h4 class="font-bold text-blue-800 mb-3 text-lg">
+          💤 方案A：落地後很累 (低耗能放鬆模式)
+        </h4>
+        <p class="text-blue-700 text-sm mb-4 italic">
+          此方案的午餐重點是舒適、方便、不傷腦筋。
+        </p>
+
+        <div class="mb-4">
+          <h5 class="font-semibold text-blue-700 mb-2">📍 地點</h5>
+          <p class="text-blue-600 text-sm leading-relaxed mb-3">
+            阮惠街步行廣場周邊的餐廳
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="font-semibold text-blue-700 mb-2">🏪 推薦餐廳類型</h5>
+          <p class="text-blue-600 text-sm leading-relaxed mb-3">
+            尋找裝潢乾淨、有冷氣的越式家常菜餐廳 (Vietnamese Home-style
+            Restaurant)，例如 Quán Bụi Garden 或類似店家。
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="font-semibold text-blue-700 mb-2">
+            🍽️ 午餐內容 (13:00 - 14:00)
+          </h5>
+          <div class="mb-3">
+            <h6 class="font-medium text-blue-600 mb-2">建議品項：</h6>
+            <ul class="text-blue-600 text-sm space-y-2 ml-4">
+              <li>
+                •
+                <strong>Thịt Kho Tộ (陶鍋滷肉):</strong>
+                越南家庭的經典菜色，鹹甜下飯。
+              </li>
+              <li>
+                •
+                <strong>Canh Chua (越式酸湯):</strong>
+                以羅望子為基底的酸甜湯品，非常開胃。
+              </li>
+              <li>
+                •
+                <strong>Rau Muống Xào Tỏi (蒜炒空心菜):</strong>
+                最受歡迎的國民青菜。
+              </li>
+              <li>• <strong>Cơm Trắng (白飯):</strong> 搭配以上菜色。</li>
+            </ul>
+          </div>
+          <div class="bg-blue-100 p-3 rounded">
+            <p class="text-blue-700 text-sm">
+              <strong>💰 預估價格 (兩人份):</strong> 約 250,000 - 350,000 VND
+              (約 NT$285 - $400)，可付現。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-orange-50 p-5 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-3 text-lg">
+          🚀 方案B：落地後還有精神 (高效率探索模式)
+        </h4>
+        <p class="text-orange-700 text-sm mb-4 italic">
+          此方案的午餐重點是道地、快速、有彈性。
+        </p>
+
+        <div class="mb-4">
+          <h5 class="font-semibold text-orange-700 mb-2">📍 地點</h5>
+          <p class="text-orange-600 text-sm leading-relaxed mb-3">
+            濱城市場 (Bến Thành Market) 內或對面
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="font-semibold text-orange-700 mb-2">
+            🍽️ 午餐內容 (12:30 - 14:00)
+          </h5>
+
+          <div class="mb-4">
+            <h6 class="font-medium text-orange-600 mb-2">
+              選擇1：市場內熟食區 (體驗道地)
+            </h6>
+            <div class="mb-3">
+              <p class="text-orange-600 text-sm mb-2">建議品項：</p>
+              <ul class="text-orange-600 text-sm space-y-2 ml-4">
+                <li>
+                  •
+                  <strong>Bún Thịt Nướng (烤肉米線):</strong>
+                  結合烤肉、米線、生菜與酸甜魚露的乾拌麵，清爽又美味。
+                </li>
+                <li>
+                  •
+                  <strong>Bột Chiên (越式炒粿):</strong>
+                  類似台式蘿蔔糕，但用米漿製成，煎得外酥內軟後打上蛋，是當地人喜愛的小吃。
+                </li>
+              </ul>
+            </div>
+            <div class="bg-orange-100 p-3 rounded mb-3">
+              <p class="text-orange-700 text-sm">
+                <strong>💰 預估價格 (兩人份):</strong> 約 150,000 - 200,000 VND
+                (約 NT$170 - $230)，僅限付現。
+              </p>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <h6 class="font-medium text-orange-600 mb-2">
+              選擇2：市場對面的 Phở 2000 (舒適乾淨)
+            </h6>
+            <div class="mb-3">
+              <p class="text-orange-600 text-sm mb-2">建議品項：</p>
+              <ul class="text-orange-600 text-sm space-y-2 ml-4">
+                <li>
+                  •
+                  <strong>Phở Bò Tái (生牛肉河粉):</strong>
+                  該店招牌，將熱湯淋上生牛肉片，口感滑嫩。
+                </li>
+                <li>• <strong>Chả Giò (炸春捲):</strong> 香脆的越式炸春捲。</li>
+              </ul>
+            </div>
+            <div class="bg-orange-100 p-3 rounded">
+              <p class="text-orange-700 text-sm">
+                <strong>💰 預估價格 (兩人份):</strong> 約 250,000 - 350,000 VND
+                (約 NT$285 - $400)，可付現。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Day 2 Modal 1: 戰爭遺跡博物館 -->
+<div
+  id="war-museum-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-2xl w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-war-museum-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 sm:space-y-6 text-stone-800 text-sm sm:text-base max-h-[75vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-2xl text-orange-700 mb-3">
+        🏛️ 戰爭遺跡博物館深度導覽
+      </h3>
+      <p class="text-sm text-gray-600 italic">
+        一本由越南視角書寫的、沉重的戰爭教科書。
+      </p>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">歷史與定位</h4>
+        <p class="text-orange-700 leading-relaxed">
+          這座博物館成立於1975年，最初名為「美國與傀儡政權的罪惡展覽館」。光從這個名字，您就能感受到它強烈的立場。請務必理解，這裡的每一件展品都是從越南官方的視角出發，旨在控訴戰爭的殘酷。它不是客觀中立的陳述，而是一場充滿情感與國族立場的敘事。
+        </p>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">
+          參觀重點與心理準備
+        </h4>
+        <ul class="space-y-3 text-orange-700">
+          <li>
+            <strong>戶外重型武器區：</strong
+            >院子裡陳列著美軍當年使用的真實武器，包括M48巴頓坦克、F-5戰鬥機等。您可以近距離感受這些鋼鐵巨獸的壓迫感。
+          </li>
+          <li>
+            <strong>「虎籠」複製品：</strong
+            >戶外區重現了南越政府用來關押政治犯的殘酷監獄，空間極其狹小，令人不寒而慄。
+          </li>
+          <li>
+            <strong>室內攝影展：</strong
+            >這是博物館的核心，也是最具衝擊力的部分。特別是關於「橙劑(Agent
+            Orange)」化學武器後遺症的專題展廳，展出的照片非常直白且令人心碎，請做好心理準備。
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg">
+        <h4 class="font-bold text-orange-800 mb-2">行前必知</h4>
+        <p class="text-orange-700">
+          這不是一個輕鬆的景點。它的目的是教育與警示，而非娛樂。參觀過程可能會感到壓抑或難過，但這也正是它存在的意義——讓世人銘記戰爭的恐怖。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Day 2 Modal 2: 統一宮 -->
+<div
+  id="reunification-palace-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-2xl w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-reunification-palace-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 sm:space-y-6 text-stone-800 text-sm sm:text-base max-h-[75vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-2xl text-orange-700 mb-3">統一宮深度導覽</h3>
+      <p class="text-sm text-gray-600 italic">
+        見證一個時代結束與另一個時代開始的政治心臟。
+      </p>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">歷史與雙重身分</h4>
+        <p class="text-orange-700 leading-relaxed">
+          這座建築有兩個名字：作為南越總統府時的「獨立宮」，以及1975年越戰結束、越南統一後的「統一宮」。當年北越坦克衝破這裡的鐵欄杆，象徵著一個時代的終結。
+        </p>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">參觀重點</h4>
+        <ul class="space-y-3 text-orange-700">
+          <li>
+            <strong>60年代的現代主義風格：</strong
+            >從總統辦公室到宴會廳，都保留了當年的樣貌，彷彿時間凝結在1975年。
+          </li>
+          <li>
+            <strong>地下指揮堡壘：</strong
+            ><strong>絕對不能錯過的亮點！</strong
+            >這裡有複雜的通訊系統、巨大的作戰地圖和密道，充滿了冷戰時期的神秘氛圍。
+          </li>
+          <li>
+            <strong>屋頂的停機坪：</strong
+            >上面標示出當年美軍在西貢淪陷前最後一班直升機撤離的位置，極具歷史畫面感。
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg">
+        <h4 class="font-bold text-orange-800 mb-2">行前必知</h4>
+        <p class="text-orange-700">
+          據說從空中俯瞰，整座建築的佈局呈現出漢字「吉」的形狀，這是建築師巧妙融合東方風水哲學的結果。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Day 2 Modal 3: 粉紅教堂 -->
+<div
+  id="pink-church-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-2xl w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-pink-church-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 sm:space-y-6 text-stone-800 text-sm sm:text-base max-h-[75vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-2xl text-orange-600 mb-3">
+        💒 新定教堂 (粉紅教堂) 深度導覽
+      </h3>
+      <p class="text-sm text-gray-600 italic">一座殖民時期遺留下的夢幻童話。</p>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">歷史與建築</h4>
+        <p class="text-orange-700 leading-relaxed">
+          這座教堂始建於1870年代，是胡志明市歷史第二悠久的教堂。它融合了羅馬式、哥德式與文藝復興式的建築元素，是一種非常獨特的混合體。我們現在看到的夢幻粉色，是在1957年才被重新粉刷上去的。
+        </p>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">參觀重點</h4>
+        <ul class="space-y-3 text-orange-700">
+          <li>
+            <strong>外觀的細節：</strong
+            >除了夢幻的粉色，請留意建築正面的白色巴洛克風格雕花裝飾，它們與粉色牆面形成了鮮明的對比，非常精緻。
+          </li>
+          <li>
+            <strong>最佳拍攝點：</strong
+            >由於教堂不一定開放內部參觀，<strong>最佳的拍攝地點是馬路對面</strong>。您可以站在對街的人行道上，或是在對面的咖啡店二樓，以獲得最完整的教堂全景。
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg">
+        <h4 class="font-bold text-orange-800 mb-2">行前必知</h4>
+        <p class="text-orange-700">
+          這裡不僅是觀光景點，也是一個仍在活躍使用的天主教堂。在拍照的同時，請保持尊重，不要影響到教友的活動與周邊居民的生活。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Day 3 Modal 1: 湄公河初印象 -->
+<div
+  id="mekong-river-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-2xl w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-mekong-river-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 sm:space-y-6 text-stone-800 text-sm sm:text-base max-h-[75vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-2xl text-orange-700 mb-3">
+        🛶 湄公河深度導覽：九龍傳說
+      </h3>
+      <p class="text-sm text-gray-600 italic">一條名為「九龍」的生命之河。</p>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">「九龍江」的由來</h4>
+        <p class="text-orange-700 leading-relaxed">
+          越南人稱湄公河為 **Sông Cửu
+          Long**，意為「九龍江」。因為湄公河在流入越南境內後，分岔為九條主要的支流，如同九條巨龍奔流入海，沖積出了這片富饒的三角洲平原。這裡出產的稻米佔了越南總產量的一半以上，是名副其實的**「越南飯碗」(Rice
+          Bowl of Vietnam)**。
+        </p>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">四靈島的象徵</h4>
+        <p class="text-orange-700">
+          您將途經的**龍、麟、龜、鳳 (Long, Lân, Quy, Phụng)**
+          四座小島，其命名源於越南文化中的四種神聖動物。這不僅是地理標示，更寄託了當地人對這片土地吉祥、富庶的美好期盼。您即將登陸的**麒麟島
+          (Con Lân)**，是其中最大也最受遊客歡迎的一個。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Day 3 Modal 2: 在地物產體驗 -->
+<div
+  id="delta-flavors-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-2xl w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-delta-flavors-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 sm:space-y-6 text-stone-800 text-sm sm:text-base max-h-[75vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-2xl text-orange-600 mb-3">
+        🍯 三角洲的甜蜜：在地物產體驗
+      </h3>
+      <p class="text-sm text-gray-600 italic">從土地到舌尖的純粹滋味。</p>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">
+          蜜蜂農場與龍眼蜜茶
+        </h4>
+        <p class="text-orange-700 leading-relaxed">
+          湄公河三角洲是熱帶水果的天堂，尤其盛產龍眼。蜜蜂採集龍眼花粉釀出的蜜，帶有獨特的清香。您品嚐到的蜂蜜茶，不僅是個飲品，更是這片果園生態循環的一個縮影。
+        </p>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">
+          椰子糖作坊 (檳椥省)
+        </h4>
+        <p class="text-orange-700">
+          當船隻帶您前往**檳椥省 (Ben
+          Tre)**，您就抵達了**「越南的椰子首都」**。您將看到的椰子糖製作過程，是傳承已久的傳統手藝：從刮取椰肉、榨汁、熬煮糖漿到手工切割、包裝，每一個步驟都充滿了人工的溫度。這顆小小的糖果，是整個省的經濟命脈之一。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Day 3 Modal 3: 文化沉浸體驗 -->
+<div
+  id="cultural-immersion-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-2xl w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-cultural-immersion-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 sm:space-y-6 text-stone-800 text-sm sm:text-base max-h-[75vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-2xl text-orange-600 mb-3">
+        深入三角洲的靈魂：舢舨船與傳統民謠
+      </h3>
+      <p class="text-sm text-gray-600 italic">一葉扁舟，一曲鄉情。</p>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">手搖舢舨船體驗</h4>
+        <p class="text-orange-700 leading-relaxed">
+          這是整趟旅程的精華！當您換乘這種小舟時，才是真正進入了湄公河的「血管」。留意兩旁茂密生長的**水椰子
+          (Nipa
+          Palm)**，它們的葉子是搭建傳統屋頂的材料。當四周安靜下來，只剩下船槳划水的潺潺聲，您將能體會到一種與自然融為一體的寧靜。
+        </p>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">
+          越南南方傳統民謠 (Đờn Ca Tài Tử)
+        </h4>
+        <p class="text-orange-700">
+          您在果園裡聆聽的音樂，是已被**聯合國教科文組織(UNESCO)列為「人類非物質文化遺產」**的藝術形式。這種音樂帶有很強的即興色彩，即使聽不懂歌詞，您也能從其婉轉的旋律中感受到一種屬於南國的、略帶憂鬱的浪漫情懷。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Day 3 Modal 4: 永長寺 -->
+<div
+  id="vinh-trang-pagoda-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-lg max-w-2xl w-full mx-4 p-4 sm:p-6 relative animate-fade-in"
+    style="max-height: 85vh; overflow-y: auto"
+  >
+    <button
+      id="close-vinh-trang-pagoda-modal"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 text-stone-400 hover:text-stone-700 text-xl sm:text-2xl font-bold"
+    >
+      ×
+    </button>
+    <div
+      class="space-y-4 sm:space-y-6 text-stone-800 text-sm sm:text-base max-h-[75vh] overflow-y-auto pr-2"
+    >
+      <h3 class="font-bold text-2xl text-orange-700 mb-3">
+        🛕 永長寺深度導覽：東西方美學的交會
+      </h3>
+      <p class="text-sm text-gray-600 italic">
+        一座見證歷史碰撞的「混血」佛寺。
+      </p>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">
+          建築的「混血」之美
+        </h4>
+        <p class="text-orange-700 leading-relaxed">
+          這座建於19世紀中葉的佛寺，最令人驚豔之處在於其建築風格的大融合。您可以在同一座建築上，同時看到：
+        </p>
+        <ul class="list-disc list-inside text-orange-700 mt-2 space-y-1">
+          <li>
+            <strong>東方元素：</strong
+            >中式的飛簷、龍鳳雕塑、日式的陶瓷馬賽克拼貼。
+          </li>
+          <li>
+            <strong>西方元素：</strong
+            >文藝復興風格的巴洛克圓柱、羅馬式的拱門、法式的花紋圖案。
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h4 class="font-bold text-orange-800 mb-2 text-lg">歷史背景</h4>
+        <p class="text-orange-700">
+          這種奇特的風格反映了19世紀末越南所處的歷史情境——在法國殖民文化的強烈衝擊下，本地信仰與西方美學產生了碰撞與交融。永長寺本身就是那段歷史的實體見證。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

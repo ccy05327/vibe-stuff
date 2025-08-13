@@ -408,6 +408,46 @@ function bindItineraryModals() {
       modalId: "day2-guide-modal",
       closeId: "close-day2-guide-modal",
     },
+    {
+      triggerClass: "landing-choice-activity",
+      modalId: "landing-choice-modal",
+      closeId: "close-landing-choice-modal",
+    },
+    {
+      triggerClass: "war-museum-activity",
+      modalId: "war-museum-modal",
+      closeId: "close-war-museum-modal",
+    },
+    {
+      triggerClass: "reunification-palace-activity",
+      modalId: "reunification-palace-modal",
+      closeId: "close-reunification-palace-modal",
+    },
+    {
+      triggerClass: "pink-church-activity",
+      modalId: "pink-church-modal",
+      closeId: "close-pink-church-modal",
+    },
+    {
+      triggerClass: "mekong-river-activity",
+      modalId: "mekong-river-modal",
+      closeId: "close-mekong-river-modal",
+    },
+    {
+      triggerClass: "delta-flavors-activity",
+      modalId: "delta-flavors-modal",
+      closeId: "close-delta-flavors-modal",
+    },
+    {
+      triggerClass: "cultural-immersion-activity",
+      modalId: "cultural-immersion-modal",
+      closeId: "close-cultural-immersion-modal",
+    },
+    {
+      triggerClass: "vinh-trang-pagoda-activity",
+      modalId: "vinh-trang-pagoda-modal",
+      closeId: "close-vinh-trang-pagoda-modal",
+    },
   ];
 
   modalConfigs.forEach((config) => {

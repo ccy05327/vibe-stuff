@@ -28,7 +28,7 @@ window.day1Itinerary = {
     {
       time: "11:00-14:00",
       activity:
-        "<span class='landing-choice-activity font-bold cursor-pointer text-teal-700 hover:underline'>落地後行程選擇（可展開）</span>",
+        "<span class='landing-choice-activity font-bold cursor-pointer text-orange-700 hover:underline'>落地後行程選擇（可展開）</span>",
       transport: "步行/彈性安排",
       budget: "-",
       story:
@@ -37,7 +37,7 @@ window.day1Itinerary = {
     {
       time: "16:00-18:00",
       activity:
-        "<span class='nightmarket-activity font-bold cursor-pointer text-orange-700 hover:underline'>法式殖民建築漫遊 (郵局/紅教堂/歌劇院)</span>",
+        "<span class='colonial-activity font-bold cursor-pointer text-orange-700 hover:underline'>法式殖民建築漫遊 (郵局/紅教堂/歌劇院)</span>",
       transport: "步行",
       budget: "免費",
       story: "步行路線與細節、建築亮點、趣聞等。",
