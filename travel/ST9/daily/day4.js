@@ -21,9 +21,10 @@ window.day4Itinerary = {
     },
     {
       time: "14:00-16:00",
-      activity: "正宗越式按摩: Golden Lotus Spa",
+      activity:
+        "正宗越式按摩: <span class='golden-lotus-spa-activity font-bold cursor-pointer text-orange-700 hover:underline'>Golden Lotus Spa</span>",
       transport: "Grab",
-      budget: "₫980,000 (現金)",
+      budget: "₫490,000+ (現金)",
       story: "這家Spa評價良好，價格比其他知名店家更具彈性，符合您的預算考量。",
     },
     {
