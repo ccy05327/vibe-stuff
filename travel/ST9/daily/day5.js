@@ -1,41 +1,85 @@
 window.day5Itinerary = {
   day: "第五天",
   date: "8/22 (五)",
-  title: "粉紅教堂與傳統偶戲",
+  title: "古廟、偶戲與巷弄美食",
   icon: "🎭",
   items: [
     {
-      time: "10:00-12:00",
-      activity: "新定教堂 (粉紅教堂)",
+      time: "10:00-10:20",
+      activity: "從飯店出發前往玉皇殿",
       transport: "Grab",
-      budget: "交通₫60,000 (刷卡)",
-      story:
-        "想拍出經典的網美照，秘訣就是前往對街的 Cộng Cà Phê 咖啡店二樓陽台，他們的椰子咖啡本身就是一絕！",
-    },
-    {
-      time: "12:00-13:30",
-      activity: "午餐: Cộng Cà Phê",
-      transport: "步行",
-      budget: "₫200,000 (現金)",
+      budget: "交通₫50,000 (刷卡)",
       story: "",
     },
     {
-      time: "14:00-15:30",
+      time: "10:20-12:00",
       activity:
-        "<span class='comtam-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>Cơm Tấm Ba Ghiền 碎米傳奇</span>",
-      transport: "Grab",
-      budget: "交通₫70,000(刷卡), 美食₫200,000(現金)",
+        "參觀：<span class='jade-emperor-pagoda-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>玉皇殿 (Jade Emperor Pagoda)</span>",
+      transport: "步行",
+      budget: "免費 (可隨喜添香油錢)",
       story:
-        "這家店以比手掌還大、完美醃製的炭烤豬排聞名。所謂的『碎米』，過去是廉價米粒，如今卻因其獨特口感而備受珍視。",
+        "這座建於20世紀初的華人寺廟是胡志明市最重要也最靈驗的古廟之一，融合了佛教與道教神祇。2016年歐巴馬總統訪越時也曾到此參拜。寺內煙霧繚繞，木製神像雕刻精美，充滿神秘氛圍。",
     },
     {
-      time: "19:00-20:00",
-      activity:
-        "<span class='waterpuppet-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>金龍水上木偶劇院 千年國粹</span>",
-      transport: "Grab",
-      budget: "交通₫40,000(刷卡), 門票₫460,000(現金)",
+      time: "12:00-14:00",
+      activity: "午餐: Bún Chả Quán Thúy (烤肉米線)",
+      transport: "步行",
+      budget: "₫150,000-200,000 (現金)",
       story:
-        "水上木偶戲是越南國粹，起源於紅河三角洲。在水池上，操偶師傅巧妙地演繹著越南的民間傳說與農村生活。",
+        "體驗不同於河粉的北越美食——烤肉米線 (Bún Chả)。這家在地人喜愛的小店，能品嚐到道地的炭烤肉丸與酸甜魚露湯汁的完美結合。",
+    },
+    {
+      time: "14:00-17:30",
+      activity: "返回飯店休息",
+      transport: "Grab",
+      budget: "交通₫50,000 (刷卡)",
+      story: "充分休息，為精彩的夜晚儲備體力。",
+    },
+    {
+      time: "17:30-18:00",
+      activity: "從飯店出發前往水上木偶戲集合點",
+      transport: "Grab",
+      budget: "交通₫40,000 (刷卡)",
+      story: "從容地從飯店出發，前往水上木偶戲的集合地點。",
+    },
+    {
+      time: "18:00-18:15",
+      activity: "抵達集合點並報到",
+      transport: "步行",
+      budget: "無",
+      story:
+        "集合地點：55B Nguyễn Thị Minh Khai Street, District 1。提前15分鐘抵達，找到工作人員出示預訂憑證並完成報到。",
+    },
+    {
+      time: "18:30-19:15",
+      activity:
+        "欣賞：<span class='waterpuppet-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>水上木偶戲</span>",
+      transport: "步行",
+      budget: "門票₫460,000 (現金)",
+      story:
+        "沉浸在越南獨一無二的千年國粹表演中。演出時長45分鐘，水上木偶戲起源於紅河三角洲，操偶師傅巧妙地演繹著越南的民間傳說與農村生活。",
+    },
+    {
+      time: "19:15-19:30",
+      activity: "步行前往晚餐地點",
+      transport: "步行",
+      budget: "無",
+      story: "從劇場散步到晚餐地點，正好可以討論一下剛才的精彩表演。",
+    },
+    {
+      time: "19:30-21:00",
+      activity: "晚餐：Secret Garden Restaurant",
+      transport: "步行",
+      budget: "₫300,000-450,000 (現金)",
+      story:
+        "位於老公寓頂樓的秘密花園餐廳，擁有絕佳的用餐氛圍。推薦：Chả Giò Secret Garden (招牌炸春捲)、Gỏi Cuốn (越式生春捲)、Cơm Chiên Tỏi (蒜香炒飯)。",
+    },
+    {
+      time: "21:00之後",
+      activity: "返回飯店",
+      transport: "Grab",
+      budget: "交通₫40,000 (刷卡)",
+      story: "享用完晚餐後，輕鬆搭車返回飯店休息。",
     },
   ],
 };
