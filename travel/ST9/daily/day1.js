@@ -35,6 +35,15 @@ window.day1Itinerary = {
         "方案A：落地後很累 (低耗能放鬆模式) 或 方案B：落地後還有精神 (高效率探索模式)",
     },
     {
+      time: "14:00-16:00",
+      activity:
+        "飯店休息",
+      transport: "-",
+      budget: "-",
+      story:
+        "辦理入住與補眠(如有需要)。",
+    },
+    {
       time: "16:00-18:00",
       activity:
         "<span class='colonial-activity font-bold cursor-pointer text-orange-700 hover:underline'>法式殖民建築漫遊 (郵局/紅教堂/歌劇院)</span>",
