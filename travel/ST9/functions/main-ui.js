@@ -8,6 +8,213 @@ const contentContainer = document.getElementById("content-container");
 // Cache for loaded content
 const contentCache = {};
 
+// 當前播放狀態
+let currentPlayingButton = null;
+
+// Web Speech API 功能 - 全局函數
+window.playVietnamese = function (text, buttonElement) {
+  // 停止之前的播放並重置按鈕
+  if (currentPlayingButton) {
+    resetButton(currentPlayingButton);
+  }
+
+  // 設定當前按鈕為播放狀態
+  currentPlayingButton = buttonElement || event.target;
+  setButtonPlaying(currentPlayingButton);
+
+  // 使用本地音檔播放
+  playLocalAudioFile(text);
+};
+
+// 播放本地音檔
+function playLocalAudioFile(text) {
+  // 根據越南語文字找到對應的音檔
+  const audioFileName = getAudioFileName(text);
+
+  if (audioFileName) {
+    const audio = new Audio(`./audio/${audioFileName}`);
+
+    audio.onloadstart = function () {
+      console.log("開始載入音檔:", audioFileName);
+    };
+
+    audio.oncanplay = function () {
+      console.log("開始播放:", text, "使用音檔:", audioFileName);
+    };
+
+    audio.onended = function () {
+      console.log("播放完成:", text);
+      // 重置按鈕狀態
+      if (currentPlayingButton) {
+        resetButton(currentPlayingButton);
+        currentPlayingButton = null;
+      }
+    };
+
+    audio.onerror = function (e) {
+      console.error("音檔播放失敗:", e);
+      // 重置按鈕狀態
+      if (currentPlayingButton) {
+        resetButton(currentPlayingButton);
+        currentPlayingButton = null;
+      }
+      // 回退到音素近似發音
+      console.log("音檔播放失敗，使用音素近似發音...");
+      playVietnamesePhoneticsApproximation(text);
+    };
+
+    audio.play().catch((error) => {
+      console.error("播放失敗:", error);
+      // 重置按鈕狀態
+      if (currentPlayingButton) {
+        resetButton(currentPlayingButton);
+        currentPlayingButton = null;
+      }
+      // 回退到音素近似發音
+      console.log("播放失敗，使用音素近似發音...");
+      playVietnamesePhoneticsApproximation(text);
+    });
+  } else {
+    console.log("找不到對應音檔，使用音素近似發音...");
+    playVietnamesePhoneticsApproximation(text);
+  }
+}
+
+// 根據越南語文字取得對應的音檔檔名
+function getAudioFileName(text) {
+  // 越南語文字到音檔檔名的對應表
+  const audioMapping = {
+    "Xin chào": "Xin chào.mp3",
+    "Cảm ơn": "Cảm ơn.mp3",
+    "Xin lỗi": "Xin lỗi.mp3",
+    Không: "Không.mp3",
+    "Không sao": "Không sao.mp3",
+    "Bao nhiêu tiền": "Bao nhiêu tiền.mp3",
+    "Tính tiền": "Tính tiền.mp3",
+    "Cái này": "Cái này.mp3",
+    "Không cay": "Không cay.mp3",
+    "Ngon quá": "Ngon quá.mp3",
+    "Mắc quá": "Mắc quá.mp3",
+    "Đắt quá": "Đắt quá.mp3",
+    "Bớt đi": "Bớt đi.mp3",
+    "Dừng ở đây": "Dừng ở đây.mp3",
+    "Đi thẳng": "Đi thẳng.mp3",
+    "Rẽ trái": "Rẽ trái.mp3",
+    "Rẽ phải": "Rẽ phải.mp3",
+    "Một Hai Ba": "Một Hai Ba.mp3",
+    Mười: "Mười.mp3",
+    Nghìn: "Nghìn.mp3",
+    "Mười nghìn": "Mười nghìn.mp3",
+  };
+
+  return audioMapping[text] || null;
+}
+
+// 設定按鈕為播放狀態
+function setButtonPlaying(button) {
+  if (button) {
+    button.innerHTML = "🎵";
+    button.style.backgroundColor = "#dbeafe";
+    button.title = "正在播放...";
+  }
+}
+
+// 重置按鈕狀態
+function resetButton(button) {
+  if (button) {
+    button.innerHTML = "🔊";
+    button.style.backgroundColor = "";
+    button.title = "點擊播放發音";
+  }
+}
+
+// 音素近似發音方案
+function playVietnamesePhoneticsApproximation(text) {
+  if ("speechSynthesis" in window) {
+    speechSynthesis.cancel();
+
+    // 越南語到類似音素的轉換表
+    const vietnameseToPhonetics = {
+      "Xin chào": "seen chow",
+      "Cảm ơn": "gahm uhn",
+      "Xin lỗi": "seen loy",
+      Không: "khome",
+      "Không sao": "khome shaw",
+      "Bao nhiêu tiền": "bow nyew tyen",
+      "Tính tiền": "teen tyen",
+      "Cái này": "guy nigh",
+      "Không cay": "khome guy",
+      "Ngon quá": "ngon gwah",
+      "Mắc quá": "mahk gwah",
+      "Bớt đi": "buht dee",
+      "Dừng ở đây": "yoong uh day",
+      "Đi thẳng": "dee thahng",
+      "Rẽ trái": "ray guy",
+      "Một Hai Ba": "moht high bah",
+      Mười: "moy",
+      Nghìn: "nyen",
+      "Mười nghìn": "moy nyen",
+    };
+
+    const phoneticText = vietnameseToPhonetics[text] || text;
+    console.log(`音素轉換: "${text}" → "${phoneticText}"`);
+
+    const utterance = new SpeechSynthesisUtterance(phoneticText);
+    const voices = speechSynthesis.getVoices();
+
+    // 選擇英語語音，因為音素近似是基於英語發音
+    const englishVoice =
+      voices.find(
+        (voice) =>
+          voice.lang.includes("en-US") &&
+          (voice.name.includes("David") || voice.name.includes("Mark"))
+      ) || voices.find((voice) => voice.lang.includes("en-US"));
+
+    if (englishVoice) {
+      utterance.voice = englishVoice;
+      console.log("使用英語語音進行音素近似:", englishVoice.name);
+    }
+
+    utterance.lang = "en-US"; // 使用英語來念音素近似
+    utterance.rate = 0.5; // 非常慢的語速
+    utterance.pitch = 1.0;
+    utterance.volume = 1;
+
+    utterance.onstart = function () {
+      console.log("開始播放音素近似:", phoneticText);
+    };
+
+    utterance.onend = function () {
+      console.log("音素近似播放完成");
+      // 重置按鈕狀態
+      if (currentPlayingButton) {
+        resetButton(currentPlayingButton);
+        currentPlayingButton = null;
+      }
+    };
+
+    utterance.onerror = function (event) {
+      console.error("音素近似播放失敗:", event.error);
+      // 重置按鈕狀態
+      if (currentPlayingButton) {
+        resetButton(currentPlayingButton);
+        currentPlayingButton = null;
+      }
+      // 最後的備用方案
+      alert(
+        `無法播放 "${text}" 的發音\n\n建議：\n1. 參考中文諧音\n2. 搜尋 "Vietnamese pronunciation ${text}"\n3. 使用 Google 翻譯網頁版聽發音`
+      );
+    };
+
+    speechSynthesis.speak(utterance);
+  }
+}
+
+// 提供備用的本地語音選項
+window.playLocalVietnamese = function (text) {
+  playVietnamesePhoneticsApproximation(text);
+};
+
 async function loadSectionContent(sectionName) {
   // Return cached content if available
   if (contentCache[sectionName]) {

@@ -1,4 +1,3 @@
-<div class="bg-white p-6 rounded-xl shadow-sm">
   <h2 class="text-2xl font-bold text-teal-700 mb-4">旅人工具包</h2>
   <p class="text-stone-600 mb-6">
     這裡是您的隨身錦囊。包含了應對常見騙局的策略、實用的越南語詞彙，以及一份最終行前檢查清單，確保您萬事俱備，安心出發。
@@ -19,6 +18,12 @@
         <p class="text-xs text-gray-500 italic">
           越南語有6個聲調，用中文諧音模擬發音僅供參考，大膽開口，配合肢體語言，當地人通常都能理解！
         </p>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+          <p class="text-sm text-blue-800">
+            <span class="font-semibold">🔊 發音功能：</span>
+            點擊藍色喇叭圖示可播放越南語發音，建議配戴耳機以獲得最佳聽覺效果。
+          </p>
+        </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-sm text-left">
@@ -36,27 +41,72 @@
               </tr>
               <tr>
                 <td class="p-2">你好 / 早安</td>
-                <td class="p-2">Xin chào</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Xin chào</span>
+                  <button
+                    onclick="playVietnamese('Xin chào')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">新早</td>
               </tr>
               <tr>
                 <td class="p-2">謝謝</td>
-                <td class="p-2">Cảm ơn</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Cảm ơn</span>
+                  <button
+                    onclick="playVietnamese('Cảm ơn')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">感恩</td>
               </tr>
               <tr>
                 <td class="p-2">對不起 / 不好意思</td>
-                <td class="p-2">Xin lỗi</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Xin lỗi</span>
+                  <button
+                    onclick="playVietnamese('Xin lỗi')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">新 lỗi (ㄌㄛˇㄧ)</td>
               </tr>
               <tr>
                 <td class="p-2">不 / 不用</td>
-                <td class="p-2">Không</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Không</span>
+                  <button
+                    onclick="playVietnamese('Không')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">空</td>
               </tr>
               <tr>
                 <td class="p-2">沒關係</td>
-                <td class="p-2">Không sao</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Không sao</span>
+                  <button
+                    onclick="playVietnamese('Không sao')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">空嫂</td>
               </tr>
 
@@ -66,37 +116,114 @@
               </tr>
               <tr>
                 <td class="p-2">多少錢？</td>
-                <td class="p-2">Bao nhiêu tiền?</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Bao nhiêu tiền?</span>
+                  <button
+                    onclick="playVietnamese('Bao nhiêu tiền')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">包妞典？</td>
               </tr>
               <tr>
                 <td class="p-2">結帳 / 買單</td>
-                <td class="p-2">Tính tiền</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Tính tiền</span>
+                  <button
+                    onclick="playVietnamese('Tính tiền')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">丁典</td>
               </tr>
               <tr>
                 <td class="p-2">這個</td>
-                <td class="p-2">Cái này</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Cái này</span>
+                  <button
+                    onclick="playVietnamese('Cái này')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">改奶</td>
               </tr>
               <tr>
                 <td class="p-2">不要辣</td>
-                <td class="p-2">Không cay</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Không cay</span>
+                  <button
+                    onclick="playVietnamese('Không cay')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">空該</td>
               </tr>
               <tr>
                 <td class="p-2">好吃！</td>
-                <td class="p-2">Ngon quá!</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Ngon quá!</span>
+                  <button
+                    onclick="playVietnamese('Ngon quá')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">嗯on 寡！</td>
               </tr>
               <tr>
                 <td class="p-2">太貴了</td>
-                <td class="p-2">Mắc quá / Đắt quá</td>
+                <td class="p-2">
+                  <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                      <span>Mắc quá</span>
+                      <button
+                        onclick="playVietnamese('Mắc quá')"
+                        class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                        title="點擊播放發音"
+                      >
+                        🔊
+                      </button>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span>Đắt quá</span>
+                      <button
+                        onclick="playVietnamese('Đắt quá')"
+                        class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                        title="點擊播放發音"
+                      >
+                        🔊
+                      </button>
+                    </div>
+                  </div>
+                </td>
                 <td class="p-2">罵寡 / ㄉㄚˋ寡</td>
               </tr>
               <tr>
                 <td class="p-2">算便宜一點</td>
-                <td class="p-2">Bớt đi</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Bớt đi</span>
+                  <button
+                    onclick="playVietnamese('Bớt đi')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">ㄅㄜˋ 低</td>
               </tr>
 
@@ -106,17 +233,58 @@
               </tr>
               <tr>
                 <td class="p-2">在這裡停車</td>
-                <td class="p-2">Dừng ở đây</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Dừng ở đây</span>
+                  <button
+                    onclick="playVietnamese('Dừng ở đây')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">仍額堆</td>
               </tr>
               <tr>
                 <td class="p-2">直走</td>
-                <td class="p-2">Đi thẳng</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Đi thẳng</span>
+                  <button
+                    onclick="playVietnamese('Đi thẳng')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">低躺ˇ</td>
               </tr>
               <tr>
                 <td class="p-2">左轉 / 右轉</td>
-                <td class="p-2">Rẽ trái / Rẽ phải</td>
+                <td class="p-2">
+                  <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                      <span>Rẽ trái</span>
+                      <button
+                        onclick="playVietnamese('Rẽ trái')"
+                        class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                        title="點擊播放左轉發音"
+                      >
+                        🔊
+                      </button>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span>Rẽ phải</span>
+                      <button
+                        onclick="playVietnamese('Rẽ phải')"
+                        class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                        title="點擊播放右轉發音"
+                      >
+                        🔊
+                      </button>
+                    </div>
+                  </div>
+                </td>
                 <td class="p-2">惹ˇ債ˊ / 惹ˇㄈㄞˊ</td>
               </tr>
 
@@ -126,22 +294,58 @@
               </tr>
               <tr>
                 <td class="p-2">1 / 2 / 3</td>
-                <td class="p-2">Một / Hai / Ba</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Một / Hai / Ba</span>
+                  <button
+                    onclick="playVietnamese('Một Hai Ba')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">某 / 嗨 / 巴</td>
               </tr>
               <tr>
                 <td class="p-2">10 (十)</td>
-                <td class="p-2">Mười</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Mười</span>
+                  <button
+                    onclick="playVietnamese('Mười')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">母伊</td>
               </tr>
               <tr>
                 <td class="p-2">1,000 (千)</td>
-                <td class="p-2">Nghìn</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Nghìn</span>
+                  <button
+                    onclick="playVietnamese('Nghìn')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">年ˇ</td>
               </tr>
               <tr>
                 <td class="p-2">10,000 (萬)</td>
-                <td class="p-2">Mười nghìn</td>
+                <td class="p-2 flex items-center justify-between">
+                  <span>Mười nghìn</span>
+                  <button
+                    onclick="playVietnamese('Mười nghìn')"
+                    class="ml-2 text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
+                    title="點擊播放發音"
+                  >
+                    🔊
+                  </button>
+                </td>
                 <td class="p-2">母伊 年ˇ</td>
               </tr>
             </tbody>
@@ -664,28 +868,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".day-card button").forEach((button) => {
-      button.addEventListener("click", () => {
-        const card = button.closest(".day-card");
-        card.classList.toggle("open");
-        const icon = button.querySelector("span.transform");
-        if (icon) {
-          icon.classList.toggle("rotate-180");
-        }
-        // Close other open cards
-        document.querySelectorAll(".day-card.open").forEach((openCard) => {
-          if (openCard !== card) {
-            openCard.classList.remove("open");
-            const openIcon = openCard.querySelector("span.transform");
-            if (openIcon) {
-              openIcon.classList.remove("rotate-180");
-            }
-          }
-        });
-      });
-    });
-  });
-</script>
