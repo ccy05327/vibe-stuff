@@ -1,12 +1,12 @@
 import { addCardListeners, initializeCards } from "./main-ui.js";
 
 const dayFiles = [
-  { file: "day1.js", key: "day1Itinerary", label: "第一天" },
-  { file: "day2.js", key: "day2Itinerary", label: "第二天" },
-  { file: "day3.js", key: "day3Itinerary", label: "第三天" },
-  { file: "day4.js", key: "day4Itinerary", label: "第四天" },
-  { file: "day5.js", key: "day5Itinerary", label: "第五天" },
-  { file: "day6.js", key: "day6Itinerary", label: "第六天" },
+  { file: "daily/day1.js", key: "day1Itinerary", label: "第一天" },
+  { file: "daily/day2.js", key: "day2Itinerary", label: "第二天" },
+  { file: "daily/day3.js", key: "day3Itinerary", label: "第三天" },
+  { file: "daily/day4.js", key: "day4Itinerary", label: "第四天" },
+  { file: "daily/day5.js", key: "day5Itinerary", label: "第五天" },
+  { file: "daily/day6.js", key: "day6Itinerary", label: "第六天" },
 ];
 const itineraryContainer = document.getElementById("itinerary-container");
 
@@ -90,4 +90,5 @@ function loadAllDays() {
   });
 }
 
-loadAllDays();
+// Remove automatic execution - let main-ui.js handle the loading
+// loadAllDays();
