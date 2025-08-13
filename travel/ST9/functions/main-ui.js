@@ -499,6 +499,11 @@ function bindItineraryModals() {
       modalId: "sgn-lounge-modal",
       closeId: "close-sgn-lounge-modal",
     },
+    {
+      triggerClass: "golden-lotus-spa-activity",
+      modalId: "golden-lotus-spa-modal",
+      closeId: "close-golden-lotus-spa-modal",
+    },
   ];
 
   modalConfigs.forEach((config) => {
