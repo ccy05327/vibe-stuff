@@ -28,7 +28,7 @@ window.day1Itinerary = {
     {
       time: "11:00-14:00",
       activity:
-        "<span class='landing-choice-activity font-bold cursor-pointer text-orange-700 hover:underline'>落地後行程選擇（可展開）</span>",
+        "<span class='landing-choice-activity font-bold cursor-pointer text-orange-700 hover:underline'>落地後行程選擇</span>",
       transport: "步行/彈性安排",
       budget: "-",
       story:

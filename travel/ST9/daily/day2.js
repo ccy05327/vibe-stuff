@@ -56,7 +56,7 @@ window.day2Itinerary = {
     {
       time: "16:00-17:00",
       activity:
-        "<span class='pink-church-activity font-bold cursor-pointer text-orange-600 hover:underline'>新定教堂 (粉紅教堂)</span>",
+        "<span class='pink-church-activity font-bold cursor-pointer text-orange-700 hover:underline'>新定教堂 (粉紅教堂)</span>",
       transport: "免費參觀",
       budget: "免費",
       story:
