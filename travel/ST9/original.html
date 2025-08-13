@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>胡志明市旅遊助理 (最終版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Calm Harmony (Stone, Amber, Teal) -->
+    <!-- Application Structure Plan: A tabbed/section-based SPA. Sections: Dashboard, Local's Eye (Price Guide), Interactive Itinerary, Hotspots, Budget Tracker, and Travel Toolkit. This non-linear structure is chosen over a simple document scroll because it allows users to quickly access specific information (like budget or a single day's plan) without navigating through irrelevant content, enhancing usability and task-oriented exploration based on the diverse information in the report. -->
+    <!-- Visualization & Content Choices: Salary Comparison (Goal: Compare) -> Bar Chart (Chart.js) for visual impact. Budget Breakdown (Goal: Inform) -> Donut Chart (Chart.js) for proportional view. Itinerary (Goal: Organize) -> Interactive cards (JS toggle) for focused, uncluttered daily planning. Phở Index (Goal: Inform/Tool) -> JS calculator for a practical, interactive tool. All choices prioritize interactivity and data clarity over static text, using Chart.js for all charts to avoid SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+      }
+      .chart-container {
+        position: relative;
+        margin: auto;
+        height: 320px;
+        width: 100%;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 400px;
+        }
+      }
+      .nav-link {
+        transition: all 0.3s ease;
+        border-bottom: 2px solid transparent;
+      }
+      .nav-link.active {
+        border-bottom-color: #14b8a6; /* teal-500 */
+        color: #0d9488; /* teal-600 */
+      }
+      .section {
+        display: none;
+      }
+      .section.active {
+        display: block;
+      }
+      .day-card {
+        transition: all 0.3s ease;
+      }
+      .day-details {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out;
+      }
+      .day-card.open .day-details {
+        max-height: 2000px;
+      }
+    </style>
+  </head>
+  <body class="bg-stone-50 text-stone-800">
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+      <header class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-teal-700">
+          胡志明市深度自由行 (最終版)
+        </h1>
+        <p class="text-stone-500 mt-2">
+          為精明旅人打造的7日預算與文化探索全攻略
+        </p>
+      </header>
+
+      <nav class="flex justify-center border-b border-stone-200 mb-8 flex-wrap">
+        <button
+          data-target="dashboard"
+          class="nav-link active font-semibold py-4 px-2 md:px-4 text-stone-600 hover:text-teal-600"
+        >
+          總覽
+        </button>
+        <button
+          data-target="local-eye"
+          class="nav-link font-semibold py-4 px-2 md:px-4 text-stone-600 hover:text-teal-600"
+        >
+          在地之眼
+        </button>
+        <button
+          data-target="itinerary"
+          class="nav-link font-semibold py-4 px-2 md:px-4 text-stone-600 hover:text-teal-600"
+        >
+          互動行程
+        </button>
+        <button
+          data-target="hotspots"
+          class="nav-link font-semibold py-4 px-2 md:px-4 text-stone-600 hover:text-teal-600"
+        >
+          熱門活動
+        </button>
+        <button
+          data-target="budget"
+          class="nav-link font-semibold py-4 px-2 md:px-4 text-stone-600 hover:text-teal-600"
+        >
+          預算追蹤
+        </button>
+        <button
+          data-target="toolkit"
+          class="nav-link font-semibold py-4 px-2 md:px-4 text-stone-600 hover:text-teal-600"
+        >
+          旅人工具包
+        </button>
+      </nav>
+
+      <main>
+        <section id="dashboard" class="section active">
+          <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
+            <h2 class="text-2xl font-bold text-teal-700 mb-4">旅程核心資訊</h2>
+            <p class="text-stone-600 mb-6">
+              這裡是您旅程最重要的資訊匯總。包含了航班、住宿，以及最重要的預算概覽，讓您對本次旅行的核心安排一目了然。
+            </p>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="bg-amber-50 p-4 rounded-lg">
+                <h3 class="font-bold text-amber-800 text-lg mb-2">
+                  ✈️ 航班資訊 (越捷航空)
+                </h3>
+                <p>
+                  <strong>去程:</strong> 2025.08.18 (一) TPE 06:10 → SGN 08:35
+                </p>
+                <p>
+                  <strong>回程:</strong> 2025.08.24 (日) SGN 00:15 → TPE 04:55
+                </p>
+              </div>
+              <div class="bg-teal-50 p-4 rounded-lg">
+                <h3 class="font-bold text-teal-800 text-lg mb-2">
+                  🏨 住宿資訊
+                </h3>
+                <p><strong>飯店:</strong> Nicey Ngan Ha Hotel (第一郡)</p>
+                <p><strong>期間:</strong> 2025.08.18 - 2025.08.23 (5晚)</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h3 class="text-xl font-bold text-teal-700 mb-4">
+              預算快照 (兩人總計)
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+              <div class="bg-stone-100 p-4 rounded-lg">
+                <p class="text-sm text-stone-500">預估總消費</p>
+                <p class="text-2xl font-bold text-teal-600">₫5,520,000</p>
+                <p class="text-stone-600">(約 NT$6,272)</p>
+              </div>
+              <div class="bg-stone-100 p-4 rounded-lg">
+                <p class="text-sm text-stone-500">現金支付</p>
+                <p class="text-2xl font-bold text-orange-500">₫5,000,000</p>
+                <p class="text-stone-600">(攜帶 ₫5,000,000，充分利用)</p>
+              </div>
+              <div class="bg-stone-100 p-4 rounded-lg">
+                <p class="text-sm text-stone-500">刷卡支付</p>
+                <p class="text-2xl font-bold text-blue-500">₫520,000</p>
+                <p class="text-stone-600">(僅 Grab 交通)</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="local-eye" class="section">
+          <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
+            <h2 class="text-2xl font-bold text-teal-700 mb-4">
+              在地之眼：解讀西貢的價值觀
+            </h2>
+            <p class="text-stone-600 mb-6">
+              要成為精明的旅人，就不能只看匯率。本區塊將幫助您建立「在地視角」的物價觀，透過比較薪資水平，讓您真正理解每一筆花費在當地生活中的份量，從而做出最聰明的消費決策。
+            </p>
+
+            <div class="mb-8">
+              <h3 class="text-xl font-bold text-teal-700 mb-3">
+                薪資快照：購買力大比拼
+              </h3>
+              <p class="mb-4">
+                台灣的基本月薪約為胡志明市的
+                <strong class="text-orange-500 text-xl">5倍</strong
+                >。這意味著，您可以將越南盾價格乘以5，來約略感受該價格對當地人的「體感價值」。
+              </p>
+              <div class="chart-container max-w-md">
+                <canvas id="salaryChart"></canvas>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-bold text-teal-700 mb-3">
+                「河粉指數」：在地體感物價計算機
+              </h3>
+              <p class="mb-4">
+                好奇眼前這碗河粉對當地人來說算貴還是便宜嗎？在下方輸入越南盾價格，立即換算成您熟悉的「台幣體感價」！
+              </p>
+              <div
+                class="flex flex-col sm:flex-row items-center gap-4 p-4 bg-amber-50 rounded-lg"
+              >
+                <div class="flex items-center gap-2">
+                  <label for="vndInput" class="font-semibold">₫</label>
+                  <input
+                    type="number"
+                    id="vndInput"
+                    placeholder="輸入越南盾價格"
+                    class="p-2 rounded-md border border-stone-300 w-48 focus:ring-2 focus:ring-amber-400 focus:border-amber-400"
+                  />
+                </div>
+                <div class="text-2xl font-bold text-stone-500">=</div>
+                <div class="text-center">
+                  <p class="text-sm text-stone-500">在地體感價值約</p>
+                  <p id="feelPrice" class="text-2xl font-bold text-teal-600">
+                    NT$ 0
+                  </p>
+                </div>
+              </div>
+              <p class="text-xs text-stone-400 mt-2">
+                例如：輸入一碗餐廳級河粉的價格 90,000
+                VND，您會發現它的體感價值約為
+                NT$450，這解釋了為何它並非日常小吃。
+              </p>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h2 class="text-2xl font-bold text-teal-700 mb-4">
+              洞察：為何胡志明市充滿「黏著度」？
+            </h2>
+            <p class="text-stone-600 mb-4">
+              您提及的Gensler報告將胡志明市評為全球第二具「黏著度」的城市，這點非常值得探討。這份報告指出，一座城市的吸引力不僅在於觀光，更在於它能否讓人們願意停留、生活與工作。胡志明市的高排名，主要歸功於其充滿活力的街頭生活、豐富的餐飲選擇以及強烈的社群感。
+            </p>
+            <p class="text-stone-600">
+              這座城市的魅力在於它的「混亂中的秩序」：摩托車流、路邊攤販、巷弄裡的咖啡香、新舊交融的建築...
+              這些元素共同構成了一種強烈的、令人沉浸的體驗。這趟旅程，您將不只是觀光客，更是這幅生動畫面的一部分。
+            </p>
+          </div>
+        </section>
+
+        <section id="itinerary" class="section">
+          <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
+            <h2 class="text-2xl font-bold text-teal-700 mb-4">
+              互動行程總覽 (升級版)
+            </h2>
+            <p class="text-stone-600 mb-6">
+              這裡是您的每日行程藍圖。點擊每一天的卡片，即可展開或收合詳細的活動、交通、預算與有趣的在地故事。這個設計讓您可以專注於當天的計畫，而不被其他資訊干擾。
+            </p>
+          </div>
+          <div class="space-y-4" id="itinerary-container"></div>
+        </section>
+
+        <section id="hotspots" class="section">
+          <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
+            <h2 class="text-2xl font-bold text-teal-700 mb-4">
+              越南熱門旅遊活動清單
+            </h2>
+            <p class="text-stone-600 mb-6">
+              這裡是越南最受一般遊客歡迎的活動總覽，無論是想進行一日遊、體驗文化或尋找獨特景點，都可以在此找到靈感，作為您未來旅程或空閒時間的參考。
+            </p>
+          </div>
+          <div class="space-y-6">
+            <div>
+              <h3
+                class="text-xl font-bold text-amber-700 mb-3 pb-2 border-b border-amber-200"
+              >
+                胡志明市及周邊
+              </h3>
+              <div class="space-y-4">
+                <div class="day-card border border-stone-200 rounded-lg">
+                  <button
+                    class="w-full flex justify-between items-center p-4 bg-stone-100 hover:bg-stone-200 rounded-lg"
+                  >
+                    <span class="font-bold text-lg text-stone-700"
+                      >1. 古芝地道 (Củ Chi Tunnels)</span
+                    >
+                    <span class="transform transition-transform duration-300"
+                      >▼</span
+                    >
+                  </button>
+                  <div class="day-details p-4 text-stone-600 space-y-2">
+                    <p><strong>地點：</strong>胡志明市西北方約40公里處。</p>
+                    <p>
+                      <strong>建議停留時間：</strong>半日遊 (約 5-6
+                      小時，含交通時間)。
+                    </p>
+                    <p>
+                      <strong>參考價格：</strong>跟團約 40-60萬
+                      VND/人；自行前往門票 12.5萬 VND。
+                    </p>
+                    <p>
+                      <strong>內容簡介：</strong
+                      >探索越戰時期的龐大地下隧道網絡，可實際鑽進隧道，了解游擊隊生活，是了解近代史最震撼的實地體驗之一。
+                    </p>
+                  </div>
+                </div>
+                <div class="day-card border border-stone-200 rounded-lg">
+                  <button
+                    class="w-full flex justify-between items-center p-4 bg-stone-100 hover:bg-stone-200 rounded-lg"
+                  >
+                    <span class="font-bold text-lg text-stone-700"
+                      >2. 湄公河三角洲一日遊</span
+                    >
+                    <span class="transform transition-transform duration-300"
+                      >▼</span
+                    >
+                  </button>
+                  <div class="day-details p-4 text-stone-600 space-y-2">
+                    <p>
+                      <strong>地點：</strong>胡志明市南方，通常前往美托 (Mỹ
+                      Tho)。
+                    </p>
+                    <p><strong>建議停留時間：</strong>一日遊 (約 8-9 小時)。</p>
+                    <p>
+                      <strong>參考價格：</strong>跟團約 50-90萬
+                      VND/人，通常全包。
+                    </p>
+                    <p>
+                      <strong>內容簡介：</strong
+                      >體驗「魚米之鄉」的水上生活，乘坐手搖舢舨船穿梭水椰子林，參觀椰子糖工廠，是充滿熱帶風情的悠閒旅程。
+                    </p>
+                  </div>
+                </div>
+                <div class="day-card border border-stone-200 rounded-lg">
+                  <button
+                    class="w-full flex justify-between items-center p-4 bg-stone-100 hover:bg-stone-200 rounded-lg"
+                  >
+                    <span class="font-bold text-lg text-stone-700"
+                      >3. 咖啡公寓 (The Cafe Apartment)</span
+                    >
+                    <span class="transform transition-transform duration-300"
+                      >▼</span
+                    >
+                  </button>
+                  <div class="day-details p-4 text-stone-600 space-y-2">
+                    <p><strong>地點：</strong>第一郡阮惠街42號。</p>
+                    <p><strong>建議停留時間：</strong>1.5 - 2.5 小時。</p>
+                    <p>
+                      <strong>參考價格：</strong>電梯費 3千 VND，店家消費約
+                      5-8萬 VND/杯。
+                    </p>
+                    <p>
+                      <strong>內容簡介：</strong
+                      >一棟舊公寓裡藏著數十家風格各異的咖啡店與文創小舖，從陽台可俯瞰步行廣場，極具特色。
+                    </p>
+                  </div>
+                </div>
+                <div class="day-card border border-stone-200 rounded-lg">
+                  <button
+                    class="w-full flex justify-between items-center p-4 bg-stone-100 hover:bg-stone-200 rounded-lg"
+                  >
+                    <span class="font-bold text-lg text-stone-700"
+                      >4. 范五老街 (Phạm Ngũ Lão)</span
+                    >
+                    <span class="transform transition-transform duration-300"
+                      >▼</span
+                    >
+                  </button>
+                  <div class="day-details p-4 text-stone-600 space-y-2">
+                    <p><strong>地點：</strong>第一郡，背包客區的核心。</p>
+                    <p><strong>建議停留時間：</strong>晚上 1 - 3 小時。</p>
+                    <p><strong>參考價格：</strong>一杯啤酒約 2-4萬 VND。</p>
+                    <p>
+                      <strong>內容簡介：</strong
+                      >胡志明市最著名的背包客集散地，以熱鬧的夜生活聞名。入夜後，旅客坐在路邊的塑膠矮凳上喝著便宜啤酒，形成獨特景象。
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3
+                class="text-xl font-bold text-amber-700 mb-3 pb-2 border-b border-amber-200"
+              >
+                越南其他地區
+              </h3>
+              <div class="space-y-4">
+                <div class="day-card border border-stone-200 rounded-lg">
+                  <button
+                    class="w-full flex justify-between items-center p-4 bg-stone-100 hover:bg-stone-200 rounded-lg"
+                  >
+                    <span class="font-bold text-lg text-stone-700"
+                      >1. 下龍灣過夜郵輪</span
+                    >
+                    <span class="transform transition-transform duration-300"
+                      >▼</span
+                    >
+                  </button>
+                  <div class="day-details p-4 text-stone-600 space-y-2">
+                    <p><strong>地點：</strong>北越廣寧省下龍灣。</p>
+                    <p><strong>建議停留時間：</strong>兩天一夜 或 三天兩夜。</p>
+                    <p>
+                      <strong>參考價格：</strong>範圍極大，從經濟型每人 250萬
+                      VND 到豪華型不等。
+                    </p>
+                    <p>
+                      <strong>內容簡介：</strong
+                      >乘坐郵輪穿梭在數千個石灰岩島嶼之間，體驗世界遺產「海上桂林」的壯麗景色，是許多人心中的夢幻體驗。
+                    </p>
+                  </div>
+                </div>
+                <div class="day-card border border-stone-200 rounded-lg">
+                  <button
+                    class="w-full flex justify-between items-center p-4 bg-stone-100 hover:bg-stone-200 rounded-lg"
+                  >
+                    <span class="font-bold text-lg text-stone-700"
+                      >2. 會安古鎮放水燈</span
+                    >
+                    <span class="transform transition-transform duration-300"
+                      >▼</span
+                    >
+                  </button>
+                  <div class="day-details p-4 text-stone-600 space-y-2">
+                    <p><strong>地點：</strong>中越廣南省會安市。</p>
+                    <p>
+                      <strong>建議停留時間：</strong>至少一個完整的下午至晚上。
+                    </p>
+                    <p>
+                      <strong>參考價格：</strong>古鎮通票 12萬
+                      VND；乘船與放水燈約 15-20萬 VND/船。
+                    </p>
+                    <p>
+                      <strong>內容簡介：</strong
+                      >入夜後，世界文化遺產會安古鎮掛起數百盞繽紛燈籠，景色如詩如畫。沿河乘船並親手放水燈是此地最具代表性的浪漫活動。
+                    </p>
+                  </div>
+                </div>
+                <div class="day-card border border-stone-200 rounded-lg">
+                  <button
+                    class="w-full flex justify-between items-center p-4 bg-stone-100 hover:bg-stone-200 rounded-lg"
+                  >
+                    <span class="font-bold text-lg text-stone-700"
+                      >3. 巴拿山黃金佛手橋</span
+                    >
+                    <span class="transform transition-transform duration-300"
+                      >▼</span
+                    >
+                  </button>
+                  <div class="day-details p-4 text-stone-600 space-y-2">
+                    <p><strong>地點：</strong>中越峴港市郊。</p>
+                    <p><strong>建議停留時間：</strong>一日遊 (約 6-8 小時)。</p>
+                    <p><strong>參考價格：</strong>門票(含纜車) 約 90萬 VND。</p>
+                    <p>
+                      <strong>內容簡介：</strong
+                      >被兩隻巨大石手托起的金色橋樑，是近年越南最火紅的打卡地標。位於主題樂園內，需搭乘纜車上山。
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="budget" class="section">
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h2 class="text-2xl font-bold text-teal-700 mb-4">
+              預算追蹤儀表板 (升級版)
+            </h2>
+            <p class="text-stone-600 mb-6">
+              本區塊將您的預算視覺化。圓餅圖顯示了升級後各項消費的佔比，下方的詳細表格則清楚區分了現金與刷卡的支付方式，助您有效管理並花光500萬越南盾現金！
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+              <div class="chart-container">
+                <canvas id="budgetDonutChart"></canvas>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-teal-700 mb-3">
+                  預估總支出細項 (兩人)
+                </h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm text-left text-stone-600">
+                    <thead
+                      class="text-xs text-stone-700 uppercase bg-stone-100"
+                    >
+                      <tr>
+                        <th scope="col" class="px-4 py-3">費用類別</th>
+                        <th scope="col" class="px-4 py-3">費用 (VND)</th>
+                        <th scope="col" class="px-4 py-3">支付方式</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-b">
+                        <td class="px-4 py-2 font-medium">餐飲 (升級)</td>
+                        <td class="px-4 py-2">2,016,000</td>
+                        <td class="px-4 py-2 text-orange-500">現金</td>
+                      </tr>
+                      <tr class="border-b">
+                        <td class="px-4 py-2 font-medium">按摩</td>
+                        <td class="px-4 py-2">980,000</td>
+                        <td class="px-4 py-2 text-orange-500">現金</td>
+                      </tr>
+                      <tr class="border-b">
+                        <td class="px-4 py-2 font-medium">景點/活動</td>
+                        <td class="px-4 py-2">1,180,000</td>
+                        <td class="px-4 py-2 text-orange-500">現金</td>
+                      </tr>
+                      <tr class="border-b">
+                        <td class="px-4 py-2 font-medium">交通 (Grab)</td>
+                        <td class="px-4 py-2">520,000</td>
+                        <td class="px-4 py-2 text-blue-500">刷卡</td>
+                      </tr>
+                      <tr class="border-b">
+                        <td class="px-4 py-2 font-medium">預備金</td>
+                        <td class="px-4 py-2">824,000</td>
+                        <td class="px-4 py-2 text-orange-500">現金</td>
+                      </tr>
+                      <tr class="bg-stone-50 font-bold">
+                        <td class="px-4 py-2">現金總計</td>
+                        <td class="px-4 py-2">5,000,000</td>
+                        <td class="px-4 py-2"></td>
+                      </tr>
+                      <tr class="bg-stone-50 font-bold">
+                        <td class="px-4 py-2">總消費</td>
+                        <td class="px-4 py-2">5,520,000</td>
+                        <td class="px-4 py-2"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="toolkit" class="section">
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h2 class="text-2xl font-bold text-teal-700 mb-4">旅人工具包</h2>
+            <p class="text-stone-600 mb-6">
+              這裡是您的隨身錦囊。包含了應對常見騙局的策略、實用的越南語詞彙，以及一份最終行前檢查清單，確保您萬事俱備，安心出發。
+            </p>
+
+            <div class="space-y-4">
+              <div class="day-card border border-stone-200 rounded-lg">
+                <button
+                  class="w-full flex justify-between items-center p-4 bg-stone-100 hover:bg-stone-200 rounded-lg"
+                >
+                  <span class="font-bold text-lg text-blue-600"
+                    >🚽 胡志明市廁所攻略</span
+                  >
+                  <span class="transform transition-transform duration-300"
+                    >▼</span
+                  >
+                </button>
+                <div class="day-details p-4 text-stone-600 space-y-4">
+                  <div>
+                    <h4 class="font-bold text-teal-700">首選 (最乾淨可靠)</h4>
+                    <ul class="list-disc list-inside space-y-1 mt-1">
+                      <li>
+                        <strong>大型購物中心/百貨公司：</strong>如 Saigon Centre
+                        (Takashimaya)、Vincom Center，設施現代且免費。
+                      </li>
+                      <li>
+                        <strong>連鎖咖啡店：</strong>Highlands Coffee、Trung
+                        Nguyen 等分店遍布，廁所乾淨。基於禮貌建議消費。
+                      </li>
+                      <li>
+                        <strong>高級飯店：</strong
+                        >可直接走進大廳使用，通常非常乾淨。
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-teal-700">次選 (方便普遍)</h4>
+                    <ul class="list-disc list-inside space-y-1 mt-1">
+                      <li>
+                        <strong>速食餐廳：</strong>麥當勞、KFC
+                        等國際連鎖店，衛生標準可靠。
+                      </li>
+                      <li>
+                        <strong>「五星級」公共廁所：</strong
+                        >位於大型公園內（如9月23日公園），免費、有空調且乾淨。
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-teal-700">旅人必備技巧</h4>
+                    <ul class="list-disc list-inside space-y-1 mt-1">
+                      <li>
+                        <strong>自備衛生紙/濕紙巾：</strong
+                        >非常重要！許多地方不提供衛生紙。
+                      </li>
+                      <li>
+                        <strong>衛生紙丟垃圾桶：</strong
+                        >越南排水系統老舊，請將用過的衛生紙丟入馬桶旁的垃圾桶。
+                      </li>
+                      <li>
+                        <strong>認識廁所標誌：</strong
+                        >男廁為「Nam」，女廁為「Nữ」。
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="day-card border border-stone-200 rounded-lg">
+                <button
+                  class="w-full flex justify-between items-center p-4 bg-stone-100 hover:bg-stone-200 rounded-lg"
+                >
+                  <span class="font-bold text-lg text-red-600"
+                    >🚨 常見騙局與應對</span
+                  >
+                  <span class="transform transition-transform duration-300"
+                    >▼</span
+                  >
+                </button>
+                <div class="day-details p-4 text-stone-600">
+                  <ul class="list-disc list-inside space-y-2">
+                    <li>
+                      <strong>濱城市場的價格遊戲:</strong>
+                      以體驗氣氛為主，非購物首選。堅定說「Không, cảm
+                      ơn」（不用，謝謝）並走開。
+                    </li>
+                    <li>
+                      <strong>街頭搭訕三部曲 (椰子/擦鞋/三輪車):</strong>
+                      對所有主動搭訕的街頭服務一概拒絕。堅定搖頭說「Không」並直接走開。
+                    </li>
+                    <li>
+                      <strong>貨幣混淆:</strong>
+                      付款時放慢速度，看清面額（特別是2萬與50萬），收到找零時仔細點算。
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="day-card border border-stone-200 rounded-lg">
+                <button
+                  class="w-full flex justify-between items-center p-4 bg-stone-100 hover:bg-stone-200 rounded-lg"
+                >
+                  <span class="font-bold text-lg text-teal-600"
+                    >🗣️ 實用越南語</span
+                  >
+                  <span class="transform transition-transform duration-300"
+                    >▼</span
+                  >
+                </button>
+                <div class="day-details p-4 text-stone-600">
+                  <ul class="list-disc list-inside space-y-2">
+                    <li>
+                      <strong>多少錢？:</strong> Bao nhiêu tiền? (包妞典?)
+                    </li>
+                    <li><strong>謝謝:</strong> Cảm ơn (感恩)</li>
+                    <li><strong>不 / 不用:</strong> Không (空)</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="day-card border border-stone-200 rounded-lg">
+                <button
+                  class="w-full flex justify-between items-center p-4 bg-stone-100 hover:bg-stone-200 rounded-lg"
+                >
+                  <span class="font-bold text-lg text-amber-600"
+                    >📋 最終行前檢查清單</span
+                  >
+                  <span class="transform transition-transform duration-300"
+                    >▼</span
+                  >
+                </button>
+                <div class="day-details p-4 text-stone-600">
+                  <ul class="list-disc list-inside space-y-2">
+                    <li>
+                      <strong>金錢:</strong>
+                      信用卡開啟海外交易，越南盾大、小鈔分開放。
+                    </li>
+                    <li>
+                      <strong>App:</strong> 下載胡志明市離線Google地圖，確認Grab
+                      App已綁定信用卡。
+                    </li>
+                    <li>
+                      <strong>安全:</strong>
+                      護照/簽證拍照存檔，人多處背包前背，街邊用手機注意周遭。
+                    </li>
+                    <li>
+                      <strong>穿著:</strong> 輕便透氣衣物、舒適好走的鞋、雨具
+                      (8月是雨季)。
+                    </li>
+                    <li>
+                      <strong>裝備:</strong> 行動電源、防曬用品、個人常備藥品。
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const navLinks = document.querySelectorAll(".nav-link");
+      const sections = document.querySelectorAll(".section");
+
+      navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          const target = link.dataset.target;
+
+          navLinks.forEach((nav) => nav.classList.remove("active"));
+          link.classList.add("active");
+
+          sections.forEach((section) => {
+            if (section.id === target) {
+              section.classList.add("active");
+            } else {
+              section.classList.remove("active");
+            }
+          });
+        });
+      });
+
+      const vndInput = document.getElementById("vndInput");
+      const feelPrice = document.getElementById("feelPrice");
+
+      vndInput.addEventListener("keyup", () => {
+        const vndValue = parseFloat(vndInput.value) || 0;
+        const twdValue = vndValue / 880;
+        const feelValue = twdValue * 5;
+        feelPrice.textContent = `NT$ ${Math.round(feelValue).toLocaleString()}`;
+      });
+
+      const salaryData = {
+        labels: ["台灣", "胡志明市"],
+        datasets: [
+          {
+            label: "最低月薪 (VND等值)",
+            data: [25159200, 4960000],
+            backgroundColor: [
+              "rgba(20, 184, 166, 0.6)", // teal-500
+              "rgba(249, 115, 22, 0.6)", // orange-500
+            ],
+            borderColor: [
+              "rgba(13, 148, 136, 1)", // teal-600
+              "rgba(249, 115, 22, 1)", // orange-500
+            ],
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      const salaryChartCtx = document
+        .getElementById("salaryChart")
+        .getContext("2d");
+      new Chart(salaryChartCtx, {
+        type: "bar",
+        data: salaryData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: "y",
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  let label = context.dataset.label || "";
+                  if (label) {
+                    label += ": ";
+                  }
+                  if (context.parsed.x !== null) {
+                    label += new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(context.parsed.x);
+                  }
+                  return label;
+                },
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: {
+                callback: function (value, index, values) {
+                  return value / 1000000 + "M";
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const budgetData = {
+        labels: ["餐飲", "按摩", "景點/活動", "交通(Grab)", "預備金"],
+        datasets: [
+          {
+            data: [2016000, 980000, 1180000, 520000, 824000],
+            backgroundColor: [
+              "#f97316", // orange-500
+              "#3b82f6", // blue-500
+              "#f59e0b", // amber-500
+              "#14b8a6", // teal-500
+              "#6b7280", // gray-500
+            ],
+            hoverOffset: 4,
+          },
+        ],
+      };
+
+      const budgetDonutChartCtx = document
+        .getElementById("budgetDonutChart")
+        .getContext("2d");
+      new Chart(budgetDonutChartCtx, {
+        type: "doughnut",
+        data: budgetData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "top",
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  let label = context.label || "";
+                  if (label) {
+                    label += ": ";
+                  }
+                  if (context.parsed !== null) {
+                    label += new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(context.parsed);
+                  }
+                  return label;
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const itineraryData = [
+        {
+          day: "第一天",
+          date: "8/18 (一)",
+          title: "抵達與西貢的殖民心臟",
+          icon: "✈️",
+          items: [
+            {
+              time: "06:10-11:00",
+              activity: "搭機與機場接送至飯店",
+              transport: "飛機, Grab",
+              budget: "₫120,000 (刷卡)",
+              story: "",
+            },
+            {
+              time: "11:00-14:00",
+              activity: "飯店寄放行李，周邊探索",
+              transport: "步行",
+              budget: "無",
+              story: "",
+            },
+            {
+              time: "14:00-15:30",
+              activity: "午餐: Banh Mi 37 Nguyen Trai",
+              transport: "步行",
+              budget: "₫80,000 (現金)",
+              story:
+                "這個不起眼的小攤車以其現烤的豬肉丸聞名，是西貢美食精髓的完美體現——最棒的滋味往往藏在最樸實的角落。",
+            },
+            {
+              time: "15:30-18:00",
+              activity: "法式殖民建築漫遊 (郵局/紅教堂/歌劇院)",
+              transport: "步行",
+              budget: "免費",
+              story:
+                "許多人誤以為中心郵政局是艾菲爾鐵塔的設計師所建，但其實不是！進入郵局，別忘了抬頭尋找牆上兩幅巨大的手繪古地圖。",
+            },
+          ],
+        },
+        {
+          day: "第二天",
+          date: "8/19 (二)",
+          title: "戰爭迴響與藝術沉澱",
+          icon: "🏛️",
+          items: [
+            {
+              time: "09:00-12:00",
+              activity: "戰爭遺跡博物館",
+              transport: "步行",
+              budget: "₫80,000 (現金)",
+              story:
+                "這座博物館的前身是「美國與傀儡政權罪惡展覽館」。展覽內容是未經修飾、從越南視角出發的戰爭敘事，極具衝擊力。",
+            },
+            {
+              time: "12:30-14:00",
+              activity: "午餐: Phở Lệ (錦麗河粉)",
+              transport: "步行",
+              budget: "₫220,000 (現金)",
+              story:
+                "錦麗河粉以其湯頭濃郁、略帶甘甜的南越風味著稱，與偏清爽的北越風格形成對比，是本地人與老饕的最愛。",
+            },
+            {
+              time: "14:30-16:00",
+              activity: "統一宮 (獨立宮)",
+              transport: "步行",
+              budget: "₫80,000 (現金)",
+              story:
+                "1975年，北越坦克衝破統一宮大門的畫面成為越戰結束的象徵。但有趣的是：第一輛坦克其實被卡住了！真正撞開大門的是另一輛坦克。",
+            },
+            {
+              time: "16:00-17:30",
+              activity: "新增：胡志明市美術館",
+              transport: "步行",
+              budget: "₫60,000 (現金)",
+              story:
+                "美術館建築本身就是一件藝術品，是法式殖民風格與中式元素的完美結合。這裡曾是西貢華裔富商的宅邸。",
+            },
+          ],
+        },
+        {
+          day: "第三天",
+          date: "8/20 (三)",
+          title: "市場迷宮與堤岸風華",
+          icon: "🏮",
+          items: [
+            {
+              time: "上午",
+              activity: "悠閒的早晨",
+              transport: "無",
+              budget: "無",
+              story: "",
+            },
+            {
+              time: "11:00-13:00",
+              activity: "濱城市場探索與午餐",
+              transport: "步行",
+              budget: "₫150,000 (現金)",
+              story:
+                "濱城市場是體驗氣氛的地方，而非購物首選。面對熱情的店家，保持禮貌但堅定的態度即可。",
+            },
+            {
+              time: "14:00-17:00",
+              activity: "新增：中國城(堤岸)探險",
+              transport: "Grab",
+              budget: "交通₫80,000(刷卡), 點心₫100,000(現金)",
+              story:
+                "前往第五郡的「堤岸」，這裡是越南最大的華人社群所在地。參拜香火鼎盛的天后宮，感受與第一郡截然不同的市井氣息。",
+            },
+            {
+              time: "17:00-20:00",
+              activity: "胡氏紀花市與美食街",
+              transport: "Grab",
+              budget: "交通₫100,000(刷卡), 美食₫250,000(現金)",
+              story:
+                "這裡是胡志明市最大的24小時鮮花批發市場，也是一個傳奇的美食天堂，尤其以受柬埔寨文化影響的美食聞名。",
+            },
+          ],
+        },
+        {
+          day: "第四天",
+          date: "8/21 (四)",
+          title: "充電日：舒壓按摩與現代西貢",
+          icon: "😌",
+          items: [
+            {
+              time: "上午",
+              activity: "自由時光，睡到自然醒",
+              transport: "無",
+              budget: "無",
+              story: "",
+            },
+            {
+              time: "11:30-13:00",
+              activity: "午餐: Banh Mi Huynh Hoa",
+              transport: "步行",
+              budget: "₫146,000 (現金)",
+              story:
+                "這家店在當地被暱稱為「女同志法國麵包」，以其塞滿肉餡的豪華份量聞名，門口總是大排長龍。",
+            },
+            {
+              time: "14:00-16:00",
+              activity: "正宗越式按摩: Golden Lotus Spa",
+              transport: "Grab",
+              budget: "₫980,000 (現金)",
+              story:
+                "這家Spa評價良好，價格比其他知名店家更具彈性，符合您的預算考量。",
+            },
+            {
+              time: "16:30-18:00",
+              activity: "吹冷氣與市場調查: Saigon Centre",
+              transport: "步行",
+              budget: "免費",
+              story:
+                "高島屋百貨的地下層設有美食街與精緻超市，是觀察當地中產階級消費品的好地方。",
+            },
+          ],
+        },
+        {
+          day: "第五天",
+          date: "8/22 (五)",
+          title: "粉紅教堂與傳統偶戲",
+          icon: "🎭",
+          items: [
+            {
+              time: "10:00-12:00",
+              activity: "新定教堂 (粉紅教堂)",
+              transport: "Grab",
+              budget: "交通₫60,000 (刷卡)",
+              story:
+                "想拍出經典的網美照，秘訣就是前往對街的 Cộng Cà Phê 咖啡店二樓陽台，他們的椰子咖啡本身就是一絕！",
+            },
+            {
+              time: "12:00-13:30",
+              activity: "午餐: Cộng Cà Phê",
+              transport: "步行",
+              budget: "₫200,000 (現金)",
+              story: "",
+            },
+            {
+              time: "14:00-15:30",
+              activity: "晚餐: Cơm Tấm Ba Ghiền",
+              transport: "Grab",
+              budget: "交通₫70,000(刷卡), 美食₫200,000(現金)",
+              story:
+                "這家店以比手掌還大、完美醃製的炭烤豬排聞名。所謂的『碎米』，過去是廉價米粒，如今卻因其獨特口感而備受珍視。",
+            },
+            {
+              time: "19:00-20:00",
+              activity: "新增：金龍水上木偶劇院",
+              transport: "Grab",
+              budget: "交通₫40,000(刷卡), 門票₫460,000(現金)",
+              story:
+                "水上木偶戲是越南國粹，起源於紅河三角洲。在水池上，操偶師傅巧妙地演繹著越南的民間傳說與農村生活。",
+            },
+          ],
+        },
+        {
+          day: "第六天",
+          date: "8/23 (六)",
+          title: "城市之巔與告別盛宴",
+          icon: "🏙️",
+          items: [
+            {
+              time: "上午",
+              activity: "打包與退房，寄放行李",
+              transport: "無",
+              budget: "無",
+              story: "",
+            },
+            {
+              time: "12:00-14:00",
+              activity: "告別午餐",
+              transport: "步行",
+              budget: "₫300,000 (現金)",
+              story:
+                "用更充裕的預算，去尋找一家心儀的餐廳，好好享用在西貢的最後一頓午餐。",
+            },
+            {
+              time: "14:30-16:00",
+              activity: "新增：Bitexco金融塔觀景台",
+              transport: "步行",
+              budget: "門票₫400,000 (現金)",
+              story:
+                "從49樓的Skydeck俯瞰360度的胡志明市全景，將這座城市的混亂與活力盡收眼底，作為旅程的完美收尾。",
+            },
+            {
+              time: "16:00-21:00",
+              activity: "自由時間、告別晚餐",
+              transport: "步行",
+              budget: "晚餐₫370,000 (現金)",
+              story: "",
+            },
+            {
+              time: "21:30-22:15",
+              activity: "前往機場",
+              transport: "Grab",
+              budget: "₫130,000 (刷卡)",
+              story: "",
+            },
+          ],
+        },
+        {
+          day: "第七天",
+          date: "8/24 (日)",
+          title: "歸途",
+          icon: "🏠",
+          items: [
+            {
+              time: "00:15-04:55",
+              activity: "搭乘越捷航空返回台北",
+              transport: "飛機",
+              budget: "無",
+              story: "",
+            },
+          ],
+        },
+      ];
+
+      const itineraryContainer = document.getElementById("itinerary-container");
+      itineraryData.forEach((dayData) => {
+        const card = document.createElement("div");
+        card.className =
+          "day-card bg-white border border-stone-200 rounded-xl shadow-sm overflow-hidden";
+
+        let itemsHtml = "";
+        dayData.items.forEach((item) => {
+          const budgetText = item.budget.includes("刷卡")
+            ? `<span class="text-blue-500">${item.budget}</span>`
+            : `<span class="text-orange-500">${item.budget}</span>`;
+
+          itemsHtml += `
+            <div class="py-3 px-4 border-b border-stone-100 last:border-b-0">
+                <p class="font-semibold text-stone-800">${item.time}: ${
+            item.activity
+          }</p>
+                <div class="text-sm text-stone-500 flex flex-wrap gap-x-4">
+                    <span><strong>交通:</strong> ${item.transport}</span>
+                    <span><strong>預算:</strong> ${
+                      item.budget === "無" || item.budget === "免費"
+                        ? item.budget
+                        : budgetText
+                    }</span>
+                </div>
+                ${
+                  item.story
+                    ? `<p class="text-sm text-teal-700 mt-1 bg-teal-50 p-2 rounded-md">💡 ${item.story}</p>`
+                    : ""
+                }
+            </div>
+        `;
+        });
+
+        card.innerHTML = `
+        <button class="w-full flex justify-between items-center p-4 text-left">
+            <div class="flex items-center gap-4">
+                <span class="text-2xl">${dayData.icon}</span>
+                <div>
+                    <p class="font-bold text-lg text-teal-700">${dayData.day} <span class="text-sm font-normal text-stone-500">${dayData.date}</span></p>
+                    <p class="text-stone-600">${dayData.title}</p>
+                </div>
+            </div>
+            <span class="transform transition-transform duration-300 text-2xl text-stone-400">▼</span>
+        </button>
+        <div class="day-details bg-stone-50">
+            ${itemsHtml}
+        </div>
+    `;
+        itineraryContainer.appendChild(card);
+      });
+
+      document.querySelectorAll(".day-card button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const card = button.parentElement;
+          card.classList.toggle("open");
+          const icon = button.querySelector("span.transform");
+          icon.classList.toggle("rotate-180");
+        });
+      });
+    </script>
+  </body>
+</html>
