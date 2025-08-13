@@ -448,6 +448,21 @@ function bindItineraryModals() {
       modalId: "vinh-trang-pagoda-modal",
       closeId: "close-vinh-trang-pagoda-modal",
     },
+    {
+      triggerClass: "bitexco-tower-activity",
+      modalId: "bitexco-tower-modal",
+      closeId: "close-bitexco-tower-modal",
+    },
+    {
+      triggerClass: "final-day-strategy-activity",
+      modalId: "last-day-plans-modal",
+      closeId: "close-last-day-plans-modal",
+    },
+    {
+      triggerClass: "airport-strategy-activity",
+      modalId: "sgn-lounge-modal",
+      closeId: "close-sgn-lounge-modal",
+    },
   ];
 
   modalConfigs.forEach((config) => {
