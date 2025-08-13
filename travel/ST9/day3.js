@@ -14,7 +14,8 @@ window.day3Itinerary = {
     },
     {
       time: "09:30-12:00",
-      activity: "抵達美拖市 & 前江水上探索",
+      activity:
+        '<span class="mekong-river-activity cursor-pointer text-orange-600 hover:text-orange-800 hover:underline">抵達美拖市 & 前江水上探索</span>',
       transport: "馬達快艇",
       budget: "包含在團費內",
       story:
@@ -22,7 +23,8 @@ window.day3Itinerary = {
     },
     {
       time: "12:00-13:30",
-      activity: "麒麟島探秘：蜜蜂農場 & 熱帶果園",
+      activity:
+        '<span class="delta-flavors-activity cursor-pointer text-orange-600 hover:text-orange-800 hover:underline">麒麟島探秘：蜜蜂農場 & 熱帶果園</span>',
       transport: "電動車 + 步行",
       budget: "包含在團費內",
       story:
@@ -30,7 +32,8 @@ window.day3Itinerary = {
     },
     {
       time: "13:30-14:00",
-      activity: "手搖舢舨船體驗 (行程精華)",
+      activity:
+        '<span class="cultural-immersion-activity cursor-pointer text-orange-600 hover:text-orange-800 hover:underline">手搖舢舨船體驗 (行程精華)</span>',
       transport: "手搖舢舨船",
       budget: "包含在團費內",
       story:
@@ -46,7 +49,8 @@ window.day3Itinerary = {
     },
     {
       time: "15:00-15:30",
-      activity: "永長寺文化參訪",
+      activity:
+        '<span class="vinh-trang-pagoda-activity cursor-pointer text-orange-600 hover:text-orange-800 hover:underline">永長寺文化參訪</span>',
       transport: "步行",
       budget: "包含在團費內",
       story:
