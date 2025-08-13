@@ -274,31 +274,62 @@ function initializeLocalEye() {
   // Salary Chart
   if (document.getElementById("salaryChart")) {
     const ctx = document.getElementById("salaryChart").getContext("2d");
+
+    const salaryData = {
+      labels: ["台灣", "胡志明市"],
+      datasets: [
+        {
+          label: "最低月薪 (VND等值)",
+          data: [25159200, 4960000],
+          backgroundColor: [
+            "rgba(20, 184, 166, 0.6)", // teal-500
+            "rgba(249, 115, 22, 0.6)", // orange-500
+          ],
+          borderColor: [
+            "rgba(13, 148, 136, 1)", // teal-600
+            "rgba(249, 115, 22, 1)", // orange-500
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+
     new Chart(ctx, {
       type: "bar",
-      data: {
-        labels: ["台灣", "胡志明市"],
-        datasets: [
-          {
-            label: "基本月薪 (NT$)",
-            data: [26400, 5280],
-            backgroundColor: ["#14b8a6", "#f59e42"],
-          },
-        ],
-      },
+      data: salaryData,
       options: {
         responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: "y",
         plugins: {
-          legend: { display: false },
-          title: {
-            display: true,
-            text: "台灣 vs 胡志明市 基本月薪比較",
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                let label = context.dataset.label || "";
+                if (label) {
+                  label += ": ";
+                }
+                if (context.parsed.x !== null) {
+                  label += new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(context.parsed.x);
+                }
+                return label;
+              },
+            },
           },
         },
         scales: {
-          y: {
-            beginAtZero: true,
-            ticks: { stepSize: 5000 },
+          x: {
+            ticks: {
+              callback: function (value, index, values) {
+                return value / 1000000 + "M";
+              },
+            },
           },
         },
       },
