@@ -435,6 +435,11 @@ function bindItineraryModals() {
       closeId: "close-waterpuppet-modal",
     },
     {
+      triggerClass: "jade-emperor-pagoda-activity",
+      modalId: "jade-emperor-pagoda-modal",
+      closeId: "close-jade-emperor-pagoda-modal",
+    },
+    {
       triggerClass: "day2-guide-activity",
       modalId: "day2-guide-modal",
       closeId: "close-day2-guide-modal",
