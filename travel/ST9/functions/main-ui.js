@@ -228,7 +228,10 @@ function initializeDynamicContent(sectionName) {
       loadItineraryContent();
       break;
     case "budget":
-      initializeBudgetChart();
+      setTimeout(() => {
+        initializeBudgetChart();
+        initializePaymentMethodChart();
+      }, 100);
       break;
     case "hotspots":
     case "toolkit":
@@ -388,6 +391,39 @@ function initializeBudgetChart() {
           title: {
             display: true,
             text: "預算分配圓餅圖 (兩人)",
+          },
+        },
+      },
+    });
+  }
+}
+
+// Chart.js: Payment Method Chart
+function initializePaymentMethodChart() {
+  if (document.getElementById("paymentMethodChart")) {
+    const ctx3 = document.getElementById("paymentMethodChart").getContext("2d");
+    new Chart(ctx3, {
+      type: "doughnut",
+      data: {
+        labels: ["現金支付", "刷卡支付"],
+        datasets: [
+          {
+            label: "支付方式 (VND)",
+            data: [4500000, 11150000],
+            backgroundColor: [
+              "#f59e0b", // Orange for cash
+              "#3b82f6", // Blue for card
+            ],
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "bottom" },
+          title: {
+            display: true,
+            text: "現金 vs 刷卡支付分布 (兩人)",
           },
         },
       },
