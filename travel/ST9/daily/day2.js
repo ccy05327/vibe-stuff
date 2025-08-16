@@ -81,9 +81,10 @@ window.day2Itinerary = {
       time: "18:30之後",
       activity: "返回飯店",
       transport:
-        "<span class='transport-activity font-bold cursor-pointer text-orange-700 hover:underline'>Grab 15-20分鐘</span>",
-      budget: "₫50,000-60,000 (刷卡)",
-      story: "晚餐後搭乘 Grab 直接返回飯店休息，結束充實的一天。",
+        "<span class='transport-activity font-bold cursor-pointer text-orange-700 hover:underline'>巴士20分鐘 / Grab15分鐘 / 步行35分鐘</span>",
+      budget: "巴士₫8,000 / Grab₫50,000-60,000 / 步行免費",
+      story:
+        "晚餐後可選擇搭巴士(20分鐘)、Grab(15分鐘)或步行(35分鐘)返回飯店，依個人喜好與預算選擇。",
     },
   ],
 };

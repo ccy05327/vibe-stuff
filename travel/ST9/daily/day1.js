@@ -36,12 +36,10 @@ window.day1Itinerary = {
     },
     {
       time: "14:00-16:00",
-      activity:
-        "飯店休息",
+      activity: "飯店休息",
       transport: "-",
       budget: "-",
-      story:
-        "辦理入住與補眠(如有需要)。",
+      story: "辦理入住與補眠(如有需要)。",
     },
     {
       time: "16:00-18:00",
@@ -54,10 +52,10 @@ window.day1Itinerary = {
     {
       time: "18:00-19:30",
       activity: "晚餐：Secret Garden Restaurant 越南家庭料理",
-      transport: "步行",
+      transport: "步行15分鐘",
       budget: "₫300,000 - ₫450,000 (現金)",
       story:
-        "精緻越南家庭式料理，環境有氣氛。建議品項：炸春捲、生春捲、蒜香炒飯。",
+        "精緻越南家庭式料理，環境有氣氛。建議品項：炸春捲、生春捲、蒜香炒飯。餐後步行15分鐘回飯店。",
     },
     {
       time: "19:30-21:30",
