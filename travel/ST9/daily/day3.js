@@ -5,6 +5,14 @@ window.day3Itinerary = {
   icon: "🚢",
   items: [
     {
+      time: "07:00-07:30",
+      activity: "早餐",
+      transport: "飯店內或附近",
+      budget: "₫80,000-120,000 (現金)",
+      story:
+        "早起享用早餐，為湄公河一日遊補充充足體力。建議選擇豐盛的早餐，因為今天行程較為密集。",
+    },
+    {
       time: "07:30",
       activity: "第一郡出發前往美拖市",
       transport: "旅遊專車",

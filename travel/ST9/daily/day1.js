@@ -5,68 +5,46 @@ window.day1Itinerary = {
   icon: "✈️",
   items: [
     {
-      time: "06:10-08:35",
+      time: "07:00-10:25",
       activity: "搭機抵達胡志明市",
       transport: "飛機",
       budget: "-",
-      story: "預計08:35落地，開始胡志明市行程。",
+      story: "預計10:25落地，開始胡志明市行程。",
     },
     {
-      time: "08:35-10:30",
-      activity: "機場到市區（Grab/交通）",
+      time: "11:00-11:30",
+      activity: "機場到飯店",
       transport: "Grab/計程車/巴士",
       budget: "₫120,000 (刷卡)",
-      story: "可選Grab或計程車，預計10-11點抵達住宿。",
+      story: "從機場前往住宿飯店。",
     },
     {
-      time: "10:30-11:00",
-      activity: "抵達住宿寄放行李或直接帶行李去附近吃東西",
-      transport: "步行/行李隨身",
-      budget: "-",
-      story: "若飯店可寄放行李則先寄放，否則可直接帶行李去附近餐廳用餐。",
+      time: "11:30-13:00",
+      activity: "行李寄放與午餐",
+      transport: "步行",
+      budget: "₫150,000-250,000 (現金)",
+      story: "飯店寄放行李後在附近餐廳用餐。",
     },
     {
-      time: "11:00-14:00",
-      activity:
-        "<span class='landing-choice-activity font-bold cursor-pointer text-orange-700 hover:underline'>落地後行程選擇</span>",
-      transport: "步行/彈性安排",
-      budget: "-",
-      story:
-        "方案A：落地後很累 (低耗能放鬆模式) 或 方案B：落地後還有精神 (高效率探索模式)",
-    },
-    {
-      time: "14:00-16:00",
-      activity:
-        "飯店休息",
+      time: "13:00-16:00",
+      activity: "飯店看電視休息",
       transport: "-",
       budget: "-",
-      story:
-        "辦理入住與補眠(如有需要)。",
+      story: "在飯店房間內看電視節目，調整時差與放鬆。",
     },
     {
-      time: "16:00-18:00",
-      activity:
-        "<span class='colonial-activity font-bold cursor-pointer text-orange-700 hover:underline'>法式殖民建築漫遊 (郵局/紅教堂/歌劇院)</span>",
-      transport: "步行",
-      budget: "免費",
-      story: "步行路線與細節、建築亮點、趣聞等。",
+      time: "16:00-20:00",
+      activity: "睡覺休息",
+      transport: "-",
+      budget: "-",
+      story: "補眠休息，恢復體力為明天行程做準備。",
     },
     {
-      time: "18:00-19:30",
-      activity: "晚餐：Secret Garden Restaurant 越南家庭料理",
+      time: "20:00-22:00",
+      activity: "晚餐與散步",
       transport: "步行",
-      budget: "₫300,000 - ₫450,000 (現金)",
-      story:
-        "精緻越南家庭式料理，環境有氣氛。建議品項：炸春捲、生春捲、蒜香炒飯。",
-    },
-    {
-      time: "19:30-21:30",
-      activity:
-        "<span class='nightmarket-activity font-bold cursor-pointer text-orange-700 hover:underline'>濱城市場夜市體驗</span>",
-      transport: "步行",
-      budget: "₫150,000-300,000 (現金)",
-      story:
-        "從白天的濱城市場轉換為熱鬧的夜市，體驗當地夜生活文化，嘗試街頭小食與選購紀念品。",
+      budget: "₫200,000-350,000 (現金)",
+      story: "在飯店附近用晚餐，飯後散步熟悉周邊環境。",
     },
   ],
   supplement: [
