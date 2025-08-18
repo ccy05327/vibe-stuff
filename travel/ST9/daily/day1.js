@@ -41,10 +41,11 @@ window.day1Itinerary = {
     },
     {
       time: "20:00-22:00",
-      activity: "晚餐與散步",
-      transport: "步行",
-      budget: "₫200,000-350,000 (現金)",
-      story: "在飯店附近用晚餐，飯後散步熟悉周邊環境。",
+      activity: "晚餐：Secret Garden Restaurant 越南家庭料理 & 散步",
+      transport: "步行15分鐘",
+      budget: "₫300,000 - ₫450,000 (現金)",
+      story:
+        "精緻越南家庭式料理，環境有氣氛。建議品項：炸春捲、生春捲、蒜香炒飯。餐後步行15分鐘回飯店。",
     },
   ],
   supplement: [

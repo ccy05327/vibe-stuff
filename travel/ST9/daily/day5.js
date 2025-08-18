@@ -38,9 +38,9 @@ window.day5Itinerary = {
     {
       time: "17:30-18:00",
       activity: "從飯店出發前往水上木偶戲集合點",
-      transport: "Grab",
-      budget: "交通₫40,000 (刷卡)",
-      story: "從容地從飯店出發，前往水上木偶戲的集合地點。",
+      transport: "步行13分鐘",
+      budget: "免費",
+      story: "從飯店步行13分鐘前往水上木偶戲的集合地點，沿途欣賞西貢街景。",
     },
     {
       time: "18:00-18:15",
@@ -55,7 +55,7 @@ window.day5Itinerary = {
       activity:
         "欣賞：<span class='waterpuppet-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>水上木偶戲</span>",
       transport: "步行",
-      budget: "門票₫460,000 (現金)",
+      budget: "門票₫660,000 (現金)",
       story:
         "沉浸在越南獨一無二的千年國粹表演中。演出時長45分鐘，水上木偶戲起源於紅河三角洲，操偶師傅巧妙地演繹著越南的民間傳說與農村生活。",
     },
@@ -77,9 +77,9 @@ window.day5Itinerary = {
     {
       time: "21:00之後",
       activity: "返回飯店",
-      transport: "Grab",
-      budget: "交通₫40,000 (刷卡)",
-      story: "享用完晚餐後，輕鬆搭車返回飯店休息。",
+      transport: "步行10分鐘",
+      budget: "免費",
+      story: "享用完晚餐後，步行10分鐘輕鬆返回飯店休息。",
     },
   ],
 };
