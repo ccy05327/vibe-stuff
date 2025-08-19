@@ -747,6 +747,27 @@ function bindItineraryModals() {
       modalId: "golden-lotus-spa-modal",
       closeId: "close-golden-lotus-spa-modal",
     },
+    // Day 5 new modals
+    {
+      triggerClass: "chinatown-activity",
+      modalId: "chinatown-modal",
+      closeId: "close-chinatown-modal",
+    },
+    {
+      triggerClass: "landmark81-activity",
+      modalId: "landmark81-modal",
+      closeId: "close-landmark81-modal",
+    },
+    {
+      triggerClass: "binh-quoi-activity",
+      modalId: "binh-quoi-modal",
+      closeId: "close-binh-quoi-modal",
+    },
+    {
+      triggerClass: "water-bus-activity",
+      modalId: "water-bus-modal",
+      closeId: "close-water-bus-modal",
+    },
   ];
 
   modalConfigs.forEach((config) => {

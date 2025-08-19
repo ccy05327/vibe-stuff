@@ -1,85 +1,76 @@
 window.day5Itinerary = {
   day: "第五天",
   date: "8/22 (五)",
-  title: "古廟、偶戲與巷弄美食",
-  icon: "🎭",
+  title: "華埠速覽與水上巴士之旅",
+  icon: "🚌",
   items: [
     {
-      time: "10:00-10:20",
-      activity: "從飯店出發前往玉皇殿",
-      transport: "Grab",
-      budget: "交通₫50,000 (刷卡)",
-      story: "",
+      time: "09:00-09:30",
+      activity: "從濱城市場出發前往唐人街",
+      transport: "01號公車",
+      budget: "₫14,000 (現金)",
+      story: "從濱城市場搭乘01號公車前往唐人街，在平西市場附近下車。",
     },
     {
-      time: "10:20-12:00",
+      time: "09:30-11:00",
       activity:
-        "參觀：<span class='jade-emperor-pagoda-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>玉皇殿 (Jade Emperor Pagoda)</span>",
+        "探索唐人街：<span class='chinatown-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>平西市場 & 天后宮</span>",
       transport: "步行",
+      budget: "免費參觀 (可隨喜添香油錢)",
+      story:
+        "快速瀏覽平西市場的建築外觀和周邊街區(約20分鐘)，然後步行至天后宮(約15分鐘)入內參觀，感受其獨特的華人廟宇氛圍(約20-30分鐘)。",
+    },
+    {
+      time: "11:00-11:15",
+      activity:
+        "<span class='pink-church-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>新定教堂 (粉紅教堂) 快拍</span>",
+      transport: "02號公車",
+      budget: "₫14,000 (現金)",
+      story: "從天后宮附近搭乘公車前往新定教堂，抵達後快速與粉紅教堂拍照留念。",
+    },
+    {
+      time: "12:00-12:30",
+      activity:
+        "<span class='jade-emperor-pagoda-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>玉皇殿快速參觀</span>",
+      transport: "步行約15-20分鐘 (1.2公里)",
       budget: "免費 (可隨喜添香油錢)",
       story:
-        "這座建於20世紀初的華人寺廟是胡志明市最重要也最靈驗的古廟之一，融合了佛教與道教神祇。2016年歐巴馬總統訪越時也曾到此參拜。寺內煙霧繚繞，木製神像雕刻精美，充滿神秘氛圍。",
+        "從新定教堂步行前往玉皇殿，快速參觀這座充滿神秘色彩的寺廟，感受其濃厚的宗教氛圍。",
     },
     {
-      time: "12:00-14:00",
-      activity: "午餐: Bún Chả Quán Thúy (烤肉米線)",
-      transport: "步行",
-      budget: "₫150,000-200,000 (現金)",
-      story:
-        "體驗不同於河粉的北越美食——烤肉米線 (Bún Chả)。這家在地人喜愛的小店，能品嚐到道地的炭烤肉丸與酸甜魚露湯汁的完美結合。",
-    },
-    {
-      time: "14:00-17:30",
-      activity: "返回飯店休息",
-      transport: "Grab",
-      budget: "交通₫50,000 (刷卡)",
-      story: "充分休息，為精彩的夜晚儲備體力。",
-    },
-    {
-      time: "17:30-18:00",
-      activity: "從飯店出發前往水上木偶戲集合點",
-      transport: "步行13分鐘",
-      budget: "免費",
-      story: "從飯店步行13分鐘前往水上木偶戲的集合地點，沿途欣賞西貢街景。",
-    },
-    {
-      time: "18:00-18:15",
-      activity: "抵達集合點並報到",
-      transport: "步行",
-      budget: "無",
-      story:
-        "集合地點：55B Nguyễn Thị Minh Khai Street, District 1。提前15分鐘抵達，找到工作人員出示預訂憑證並完成報到。",
-    },
-    {
-      time: "18:30-19:15",
+      time: "13:00-13:20",
       activity:
-        "欣賞：<span class='waterpuppet-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>水上木偶戲</span>",
-      transport: "步行",
-      budget: "門票₫660,000 (現金)",
+        "<span class='landmark81-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>地標塔81 & Vinhomes中央公園</span>",
+      transport: "公車/短程Grab",
+      budget: "₫60,000-100,000",
       story:
-        "沉浸在越南獨一無二的千年國粹表演中。演出時長45分鐘，水上木偶戲起源於紅河三角洲，操偶師傅巧妙地演繹著越南的民間傳說與農村生活。",
+        "前往Vinhomes中央公園，直接走到河濱步道，找到欣賞Landmark 81的最佳角度拍照。公園快覽，不需久留。",
     },
     {
-      time: "19:15-19:30",
-      activity: "步行前往晚餐地點",
-      transport: "步行",
-      budget: "無",
-      story: "從劇場散步到晚餐地點，正好可以討論一下剛才的精彩表演。",
-    },
-    {
-      time: "19:30-21:00",
-      activity: "晚餐：Secret Garden Restaurant",
-      transport: "步行",
-      budget: "₫300,000-450,000 (現金)",
+      time: "14:00-14:45",
+      activity:
+        "<span class='binh-quoi-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>平貴旅遊村田園小憩</span>",
+      transport: "44號公車",
+      budget: "₫14,000 (現金)",
       story:
-        "位於老公寓頂樓的秘密花園餐廳，擁有絕佳的用餐氛圍。推薦：Chả Giò Secret Garden (招牌炸春捲)、Gỏi Cuốn (越式生春捲)、Cơm Chiên Tỏi (蒜香炒飯)。",
+        "從公園搭乘44號公車前往平貴旅遊村。把它當成風景特殊的「休息站」，走到河邊看風景、吹風，讓雙腳休息。",
     },
     {
-      time: "21:00之後",
-      activity: "返回飯店",
-      transport: "步行10分鐘",
+      time: "15:30-16:00",
+      activity: "前往水上巴士碼頭",
+      transport: "步行約15-20分鐘",
       budget: "免費",
-      story: "享用完晚餐後，步行10分鐘輕鬆返回飯店休息。",
+      story:
+        "從平貴旅遊村步行前往Thanh Da水上巴士站，務必提前查詢水上巴士時刻表以便準確銜接。",
+    },
+    {
+      time: "16:00-17:00",
+      activity:
+        "<span class='water-bus-activity font-bold cursor-pointer text-orange-600 hover:text-orange-800 hover:underline'>水上巴士返回市區</span>",
+      transport: "水上巴士",
+      budget: "₫30,000 (現金)",
+      story:
+        "搭乘水上巴士返回第一郡的白藤碼頭。這趟航程將是緊湊行程後最棒的放鬆時刻，從容地欣賞西貢河的美麗景色。",
     },
   ],
 };
