@@ -66,6 +66,86 @@
         <p class="text-xl text-slate-400 mt-2">Interactive Quest Log</p>
       </header>
 
+      <!-- Video Section -->
+      <section class="mb-10">
+        <div class="max-w-4xl mx-auto">
+          <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700">
+            <div class="text-center mb-4">
+              <h2 class="text-2xl font-bold text-indigo-400 mb-2">
+                🎥 Project Overview
+              </h2>
+              <p class="text-slate-400 text-sm">
+                Watch the Emotion-Aware Productivity system demonstration
+              </p>
+            </div>
+
+            <div class="bg-black rounded-xl overflow-hidden">
+              <video
+                id="projectVideo"
+                class="w-full"
+                controls
+                preload="metadata"
+                poster=""
+              >
+                <source src="Emotion-Aware_Productivity.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+
+            <!-- Custom Video Controls -->
+            <div class="flex flex-wrap items-center justify-center gap-4 mt-4">
+              <div class="flex items-center gap-2">
+                <label
+                  for="videoSpeedControl"
+                  class="text-sm font-medium text-slate-300"
+                >
+                  Playback Speed:
+                </label>
+                <select
+                  id="videoSpeedControl"
+                  class="bg-slate-700 text-slate-200 rounded-lg px-3 py-1 text-sm border border-slate-600 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  <option value="0.5">0.5x (Slow)</option>
+                  <option value="0.75">0.75x (Slower)</option>
+                  <option value="1" selected>1.0x (Normal)</option>
+                  <option value="1.25">1.25x (Faster)</option>
+                  <option value="1.5">1.5x (Fast)</option>
+                  <option value="2">2.0x (Very Fast)</option>
+                </select>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button
+                  id="videoRewind10"
+                  class="bg-slate-600 hover:bg-slate-500 text-slate-200 px-3 py-1 rounded-lg text-sm transition-all duration-200 border border-slate-500"
+                >
+                  ⏪ -10s
+                </button>
+                <button
+                  id="videoForward10"
+                  class="bg-slate-600 hover:bg-slate-500 text-slate-200 px-3 py-1 rounded-lg text-sm transition-all duration-200 border border-slate-500"
+                >
+                  +10s ⏩
+                </button>
+              </div>
+
+              <div class="flex items-center gap-2 text-sm text-slate-400">
+                <span id="videoCurrentTime">00:00</span>
+                <span>/</span>
+                <span id="videoDuration">00:00</span>
+              </div>
+            </div>
+
+            <div class="mt-4 text-center">
+              <p class="text-xs text-slate-400">
+                💡 This video showcases the adaptive prioritization system that
+                responds to your emotional state
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Weekly Sprints -->
       <section class="mb-10">
         <h2
@@ -643,10 +723,65 @@
         }
       });
 
+      // --- Video Controls ---
+      function initVideoControls() {
+        const video = document.getElementById("projectVideo");
+        const speedControl = document.getElementById("videoSpeedControl");
+        const rewindBtn = document.getElementById("videoRewind10");
+        const forwardBtn = document.getElementById("videoForward10");
+        const currentTimeEl = document.getElementById("videoCurrentTime");
+        const durationEl = document.getElementById("videoDuration");
+
+        // Format time helper function
+        const formatTime = (seconds) => {
+          const mins = Math.floor(seconds / 60);
+          const secs = Math.floor(seconds % 60);
+          return `${mins.toString().padStart(2, "0")}:${secs
+            .toString()
+            .padStart(2, "0")}`;
+        };
+
+        // Update time display
+        const updateTime = () => {
+          if (video.duration) {
+            currentTimeEl.textContent = formatTime(video.currentTime);
+            durationEl.textContent = formatTime(video.duration);
+          }
+        };
+
+        // Speed control
+        speedControl.addEventListener("change", (e) => {
+          video.playbackRate = parseFloat(e.target.value);
+        });
+
+        // Rewind 10 seconds
+        rewindBtn.addEventListener("click", () => {
+          video.currentTime = Math.max(0, video.currentTime - 10);
+        });
+
+        // Forward 10 seconds
+        forwardBtn.addEventListener("click", () => {
+          video.currentTime = Math.min(video.duration, video.currentTime + 10);
+        });
+
+        // Video event listeners
+        video.addEventListener("loadedmetadata", () => {
+          durationEl.textContent = formatTime(video.duration);
+        });
+
+        video.addEventListener("timeupdate", updateTime);
+
+        // Initialize current time display
+        video.addEventListener("loadeddata", () => {
+          currentTimeEl.textContent = formatTime(0);
+        });
+      }
+
       // --- Initial Load ---
       document.addEventListener("DOMContentLoaded", () => {
         renderFilters();
         updateUI();
+        initVideoControls();
       });
     </script>
   </body>
