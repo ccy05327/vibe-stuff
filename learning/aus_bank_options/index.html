@@ -20,8 +20,13 @@
         max-width: 800px;
         margin-left: auto;
         margin-right: auto;
-        height: 300px;
+        height: 250px;
         max-height: 400px;
+      }
+      @media (min-width: 640px) {
+        .chart-container {
+          height: 300px;
+        }
       }
       @media (min-width: 768px) {
         .chart-container {
@@ -30,6 +35,13 @@
       }
       .filter-btn {
         transition: all 0.3s ease;
+        font-size: 0.875rem;
+      }
+      @media (max-width: 639px) {
+        .filter-btn {
+          font-size: 0.75rem;
+          padding: 0.375rem 0.75rem;
+        }
       }
       .filter-btn.active {
         background-color: #c8a47e;
@@ -45,6 +57,11 @@
         box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
           0 4px 6px -4px rgb(0 0 0 / 0.1);
       }
+      @media (max-width: 639px) {
+        .bank-card:hover {
+          transform: translateY(-2px);
+        }
+      }
       .modal-bg {
         background-color: rgba(0, 0, 0, 0.5);
         transition: opacity 0.3s ease;
@@ -52,6 +69,14 @@
       .modal-content {
         transition: transform 0.3s ease, opacity 0.3s ease;
         transform: translateY(20px);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      @media (max-width: 639px) {
+        .modal-content {
+          margin: 1rem;
+          max-height: 85vh;
+        }
       }
       .pro-item::before {
         content: "✔";
@@ -87,21 +112,63 @@
       audio,
       video {
         outline: none;
+        width: 100%;
       }
 
       video {
-        max-height: 400px;
+        max-height: 300px;
+      }
+
+      @media (min-width: 640px) {
+        video {
+          max-height: 400px;
+        }
+      }
+
+      /* Mobile-specific media controls */
+      @media (max-width: 639px) {
+        .media-controls {
+          flex-direction: column;
+          gap: 0.75rem;
+          align-items: stretch;
+        }
+
+        .media-controls > div {
+          justify-content: center;
+        }
+
+        .speed-control {
+          width: 100%;
+          max-width: 150px;
+          margin: 0 auto;
+        }
+      }
+
+      /* Utility classes for mobile optimization */
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      @media (max-width: 639px) {
+        .break-words {
+          word-break: break-word;
+          overflow-wrap: break-word;
+        }
       }
     </style>
   </head>
   <body class="text-gray-800">
-    <div class="main-container mx-auto p-4 md:p-8">
-      <header class="text-center mb-10">
+    <div class="main-container mx-auto p-3 md:p-8">
+      <header class="text-center mb-8 md:mb-10">
         <div class="flex justify-between items-center mb-4">
           <a
             id="backHomeBtn"
             href="#"
-            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+            class="inline-flex items-center px-3 py-2 text-sm font-medium text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
             style="background-color: #c8a47e; border: 1px solid #b08e6a"
           >
             <svg
@@ -119,6 +186,7 @@
             </svg>
             <span data-translate="backHome">Back to Home</span>
           </a>
+
           <div class="flex items-center space-x-2">
             <span class="text-sm text-gray-600" data-translate="language"
               >Language:</span
@@ -149,16 +217,22 @@
             </button>
           </div>
         </div>
-        <h1
-          class="text-4xl md:text-5xl font-bold text-gray-800"
-          style="color: #6d5d4b"
-          data-translate="title"
-        >
-          Australian Bank Guide
-        </h1>
-        <p class="text-lg text-gray-600 mt-2" data-translate="subtitle">
-          for 417 Visa Holders
-        </p>
+
+        <div class="flex flex-col items-center">
+          <h1
+            class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800"
+            style="color: #6d5d4b"
+            data-translate="title"
+          >
+            Australian Bank Guide
+          </h1>
+          <p
+            class="text-base md:text-lg text-gray-600 mt-2"
+            data-translate="subtitle"
+          >
+            for 417 Visa Holders
+          </p>
+        </div>
       </header>
 
       <section
@@ -376,7 +450,7 @@
         </section>
       </section>
 
-      <section id="chart-section" class="mb-12">
+      <section id="chart-section" class="mb-8 md:mb-12">
         <div class="chart-container">
           <canvas id="savingsRateChart"></canvas>
         </div>
@@ -384,31 +458,31 @@
 
       <section
         id="filters"
-        class="mb-8 flex flex-wrap justify-center gap-2 md:gap-4"
+        class="mb-6 md:mb-8 flex flex-wrap justify-center gap-1 sm:gap-2 md:gap-4 px-2"
       >
         <button
-          class="filter-btn active py-2 px-4 bg-white rounded-full shadow-sm border border-gray-200"
+          class="filter-btn active py-2 px-3 md:px-4 bg-white rounded-full shadow-sm border border-gray-200"
           data-filter="all"
           data-translate="filterAll"
         >
           All Banks
         </button>
         <button
-          class="filter-btn py-2 px-4 bg-white rounded-full shadow-sm border border-gray-200"
+          class="filter-btn py-2 px-3 md:px-4 bg-white rounded-full shadow-sm border border-gray-200"
           data-filter="pre-arrival"
           data-translate="filterPreArrival"
         >
           Pre-Arrival Setup
         </button>
         <button
-          class="filter-btn py-2 px-4 bg-white rounded-full shadow-sm border border-gray-200"
+          class="filter-btn py-2 px-3 md:px-4 bg-white rounded-full shadow-sm border border-gray-200"
           data-filter="high-savings"
           data-translate="filterHighSavings"
         >
           Top Savings Rates
         </button>
         <button
-          class="filter-btn py-2 px-4 bg-white rounded-full shadow-sm border border-gray-200"
+          class="filter-btn py-2 px-3 md:px-4 bg-white rounded-full shadow-sm border border-gray-200"
           data-filter="best-app"
           data-translate="filterBestApp"
         >
@@ -418,13 +492,13 @@
 
       <main
         id="bank-grid"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
       ></main>
     </div>
 
     <div
       id="modal"
-      class="modal-bg fixed inset-0 z-50 flex items-center justify-center p-4 hidden opacity-0"
+      class="modal-bg fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 hidden opacity-0"
     >
       <div
         id="modal-content"
@@ -432,13 +506,13 @@
       >
         <button
           id="modal-close"
-          class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl"
+          class="absolute top-3 right-3 md:top-4 md:right-4 text-gray-500 hover:text-gray-800 text-xl md:text-2xl z-10 bg-white rounded-full w-8 h-8 md:w-auto md:h-auto flex items-center justify-center md:bg-transparent"
         >
           &times;
         </button>
         <div
           id="modal-body"
-          class="modal-body p-8 overflow-y-auto max-h-[85vh]"
+          class="modal-body p-4 md:p-8 overflow-y-auto max-h-[85vh]"
         ></div>
       </div>
     </div>
@@ -1489,7 +1563,7 @@
         filteredBanks.forEach((bank) => {
           const card = document.createElement("div");
           card.className =
-            "bank-card bg-white rounded-lg shadow-md p-6 flex flex-col cursor-pointer border border-gray-100";
+            "bank-card bg-white rounded-lg shadow-md p-4 md:p-6 flex flex-col cursor-pointer border border-gray-100";
           card.dataset.id = bank.id;
 
           const bestFor = getTranslatedContent(bank.bestFor);
@@ -1499,25 +1573,25 @@
           const learnMoreLabel = getTranslatedContent(null, "learnMore");
 
           card.innerHTML = `
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-2xl mr-4" style="background-color: ${
+                    <div class="flex items-center mb-3 md:mb-4">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white font-bold text-lg md:text-2xl mr-3 md:mr-4 flex-shrink-0" style="background-color: ${
                           bank.logoColor
                         };">
                             ${bankName.charAt(0)}
                         </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-800">${bankName}</h3>
-                            <p class="text-sm text-gray-500">${bestFor}</p>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-800 truncate">${bankName}</h3>
+                            <p class="text-xs md:text-sm text-gray-500 line-clamp-2">${bestFor}</p>
                         </div>
                     </div>
-                    <div class="my-4 flex-grow">
+                    <div class="my-3 md:my-4 flex-grow">
                         <div class="flex justify-between items-baseline mb-2">
-                            <span class="text-gray-600">${introLabel}</span>
-                            <span class="text-2xl font-bold" style="color: #6D5D4B;">${bank.savingsRate.introductory.toFixed(
+                            <span class="text-sm md:text-base text-gray-600">${introLabel}</span>
+                            <span class="text-xl md:text-2xl font-bold" style="color: #6D5D4B;">${bank.savingsRate.introductory.toFixed(
                               2
                             )}%</span>
                         </div>
-                         <div class="flex justify-between items-baseline text-sm">
+                         <div class="flex justify-between items-baseline text-xs md:text-sm">
                             <span class="text-gray-500">${ongoingLabel}</span>
                             <span class="font-semibold text-gray-600">${
                               bank.id === "ing"
@@ -1528,7 +1602,7 @@
                             }*</span>
                         </div>
                     </div>
-                    <button class="w-full mt-4 bg-transparent text-center font-semibold py-2 px-4 rounded-lg" style="color: #C8A47E; border: 1px solid #C8A47E;">${learnMoreLabel}</button>
+                    <button class="w-full mt-3 md:mt-4 bg-transparent text-center font-semibold py-2 px-3 md:px-4 rounded-lg text-sm md:text-base" style="color: #C8A47E; border: 1px solid #C8A47E;">${learnMoreLabel}</button>
                 `;
           bankGrid.appendChild(card);
         });
@@ -1557,62 +1631,62 @@
         const cons = getTranslatedContent(bank.cons) || [];
 
         modalBody.innerHTML = `
-                <div class="flex items-center mb-6">
-                    <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-3xl mr-5" style="background-color: ${
+                <div class="flex items-center mb-4 md:mb-6">
+                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center text-white font-bold text-xl md:text-3xl mr-3 md:mr-5 flex-shrink-0" style="background-color: ${
                       bank.logoColor
                     };">
                         ${bankName.charAt(0)}
                     </div>
-                    <div>
-                        <h2 class="text-3xl font-bold">${bankName}</h2>
-                        <p class="text-md text-gray-500">${bestFor}</p>
+                    <div class="min-w-0">
+                        <h2 class="text-xl md:text-3xl font-bold leading-tight">${bankName}</h2>
+                        <p class="text-sm md:text-base text-gray-500">${bestFor}</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <h4 class="font-bold text-lg mb-2">${getTranslatedContent(
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+                    <div class="bg-gray-50 p-3 md:p-4 rounded-lg">
+                        <h4 class="font-bold text-base md:text-lg mb-2">${getTranslatedContent(
                           null,
                           "pros"
                         )}</h4>
-                        <ul class="space-y-1 text-gray-700">${pros
+                        <ul class="space-y-1 text-gray-700 text-sm md:text-base">${pros
                           .map((p) => `<li class="pro-item">${p}</li>`)
                           .join("")}</ul>
                     </div>
-                    <div class="bg-red-50 p-4 rounded-lg">
-                        <h4 class="font-bold text-lg mb-2">${getTranslatedContent(
+                    <div class="bg-red-50 p-3 md:p-4 rounded-lg">
+                        <h4 class="font-bold text-base md:text-lg mb-2">${getTranslatedContent(
                           null,
                           "cons"
                         )}</h4>
-                        <ul class="space-y-1 text-gray-700">${cons
+                        <ul class="space-y-1 text-gray-700 text-sm md:text-base">${cons
                           .map((c) => `<li class="con-item">${c}</li>`)
                           .join("")}</ul>
                     </div>
                 </div>
 
-                <div class="space-y-5">
+                <div class="space-y-4 md:space-y-5">
                     <div>
-                        <h4 class="font-bold text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
                           null,
                           "savingsRate"
                         )}</h4>
-                        <p><strong>${getTranslatedContent(
+                        <p class="text-sm md:text-base"><strong>${getTranslatedContent(
                           null,
                           "introductory"
-                        )}</strong> <span class="text-xl font-bold" style="color:#6D5D4B;">${bank.savingsRate.introductory.toFixed(
+                        )}</strong> <span class="text-lg md:text-xl font-bold" style="color:#6D5D4B;">${bank.savingsRate.introductory.toFixed(
           2
         )}%</span></p>
-                        <p><strong>${getTranslatedContent(
+                        <p class="text-sm md:text-base"><strong>${getTranslatedContent(
                           null,
                           "conditions"
                         )}</strong> ${conditions}</p>
                     </div>
                      <div>
-                        <h4 class="font-bold text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
                           null,
                           "applicationProcess"
                         )}</h4>
-                         <p><strong>${getTranslatedContent(
+                         <p class="text-sm md:text-base"><strong>${getTranslatedContent(
                            null,
                            "preArrivalApplication"
                          )}</strong> ${
@@ -1626,48 +1700,48 @@
                 "no"
               )}</span>`
         }</p>
-                        <p>${applicationDetails}</p>
+                        <p class="text-sm md:text-base">${applicationDetails}</p>
                     </div>
                     <div>
-                        <h4 class="font-bold text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
                           null,
                           "cardIssuance"
                         )}</h4>
-                        <p><strong>${getTranslatedContent(
+                        <p class="text-sm md:text-base"><strong>${getTranslatedContent(
                           null,
                           "virtualCard"
                         )}</strong> ${virtualCard}</p>
-                        <p><strong>${getTranslatedContent(
+                        <p class="text-sm md:text-base"><strong>${getTranslatedContent(
                           null,
                           "physicalCard"
                         )}</strong> ${physicalCard}</p>
                     </div>
                     <div>
-                        <h4 class="font-bold text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
                           null,
                           "onlineBanking"
                         )}</h4>
-                        <p>${onlineBankingSummary}</p>
+                        <p class="text-sm md:text-base">${onlineBankingSummary}</p>
                     </div>
                      <div>
-                        <h4 class="font-bold text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
                           null,
                           "promotionsAndFees"
                         )}</h4>
-                        <p>${promotions}</p>
+                        <p class="text-sm md:text-base">${promotions}</p>
                     </div>
                     <div>
-                        <h4 class="font-bold text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
                           null,
                           "internationalTransfers"
                         )}</h4>
-                        <p>${internationalTransfers}</p>
+                        <p class="text-sm md:text-base">${internationalTransfers}</p>
                     </div>
                     ${
                       bank.links
                         ? `
                     <div>
-                        <h4 class="font-bold text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
                           null,
                           "officialBankLinks"
                         )}</h4>
@@ -1679,11 +1753,11 @@
                                     <a href="${
                                       link.url
                                     }" target="_blank" rel="noopener noreferrer" 
-                                       class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200">
-                                        <span>${getTranslatedContent(
+                                       class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200 text-sm md:text-base">
+                                        <span class="break-words">${getTranslatedContent(
                                           link.title
                                         )}</span>
-                                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-3 h-3 md:w-4 md:h-4 ml-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                         </svg>
                                     </a>
