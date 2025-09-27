@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Online RSA Certificate Guide Australia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Calm Harmony (Stone, White, Indigo) -->
+    <!-- Application Structure Plan: The SPA is designed as an interactive dashboard. The primary navigation consists of four state-selection buttons (QLD, NSW, VIC, WA). This user-flow is chosen for its directness; users can immediately select their state of interest. The central area dynamically updates to show a detailed breakdown for the selected state using info cards, including a new interactive accordion for provider reviews. A comparative bar chart remains for high-level comparison. This dashboard approach allows for quick state-specific lookups, detailed provider evaluation, and easy cross-state comparison, which covers the primary user tasks. -->
+    <!-- Visualization & Content Choices: 
+        1. State Data (Price, Duration, Providers): Goal=Inform/Compare/Evaluate -> Viz=Dynamic Info Cards, Interactive Accordion/Dropdown & Bar Chart -> Interaction=User selects a state to update content. Users can click on each provider to expand/collapse detailed reviews. Chart data toggles between 'Price' and 'Duration'. -> Justification=This multi-layered approach serves different levels of user inquiry. The bar chart is for quick comparison, info cards for state-specific details, and the new accordion for deep-diving into provider-specific strengths and weaknesses, a key part of the user's decision-making process. -> Library=Chart.js for the canvas-based chart.
+        2. Course Process: Goal=Organize -> Viz=A step-by-step list within a card using HTML/CSS. -> Interaction=Content updates based on state selection. -> Justification=A simple, numbered list is the clearest way to present a sequential process. -> Library=N/A (HTML/Tailwind).
+        3. Key Icons (Price, Time, etc.): Goal=Inform -> Viz=Unicode characters. -> Interaction=N/A. -> Justification=Lightweight, universally supported, and avoids image/SVG dependencies. -> Library=N/A.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f5f5f4;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 300px;
+        max-height: 40vh;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 400px;
+        }
+      }
+      .state-btn {
+        transition: all 0.3s ease;
+      }
+      .state-btn.active {
+        background-color: #4338ca;
+        color: white;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      .state-btn:not(.active):hover {
+        background-color: #e0e7ff;
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .review-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out;
+      }
+      .review-content.open {
+        max-height: 500px; /* Adjust as needed */
+      }
+      .toggle-icon {
+        transition: transform 0.3s ease;
+      }
+      .open .toggle-icon {
+        transform: rotate(180deg);
+      }
+    </style>
+  </head>
+  <body class="antialiased text-stone-800">
+    <div class="min-h-screen p-4 sm:p-6 md:p-8">
+      <!-- Back to Home Button -->
+      <div class="w-full flex justify-start mb-4">
+        <a
+          href="/index.html"
+          class="inline-flex items-center px-4 py-2 rounded-xl font-semibold text-base md:text-lg bg-indigo-800 text-white shadow hover:bg-indigo-600 transition-colors border border-indigo-200"
+          style="background-color: #1d4ed8; color: #fff; border-color: #e0e7ef"
+        >
+          <span class="mr-2" aria-hidden="true">&#8592;</span>
+          Back to Home
+        </a>
+      </div>
+      <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-8 md:mb-12">
+          <h1
+            class="text-3xl sm:text-4xl md:text-5xl font-bold text-indigo-800"
+          >
+            Online RSA Certificate Guide
+          </h1>
+          <p class="mt-2 text-base sm:text-lg text-stone-600">
+            Your interactive comparison for QLD, NSW, VIC & WA
+          </p>
+        </header>
+        <!-- Embedded Media Section -->
+        <div class="max-w-3xl mx-auto mb-8 flex flex-col gap-6">
+          <!-- Audio Player -->
+          <div
+            class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 shadow"
+          >
+            <h2 class="text-lg font-semibold text-indigo-800 mb-2">
+              Australian RSA Strategy (Audio)
+            </h2>
+            <audio id="rsa-audio" controls class="w-full">
+              <source src="Australian RSA Strategy.mp3" type="audio/mp3" />
+              Your browser does not support the audio element.
+            </audio>
+            <div class="flex items-center gap-2 mt-2">
+              <label for="audioSpeed" class="text-sm text-indigo-700"
+                >Speed:</label
+              >
+              <select
+                id="audioSpeed"
+                class="rounded border border-indigo-200 px-2 py-1 text-sm bg-white text-indigo-800"
+              >
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+              </select>
+            </div>
+          </div>
+          <!-- Video Player -->
+          <div
+            class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 shadow"
+          >
+            <h2 class="text-lg font-semibold text-indigo-800 mb-2">
+              The Strategic RSA Guide (Video)
+            </h2>
+            <video
+              id="rsa-video"
+              controls
+              class="w-full rounded-lg"
+              style="background: #1d4ed8; max-height: 360px"
+            >
+              <source src="The Strategic RSA Guide.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <div class="flex items-center gap-2 mt-2">
+              <label for="videoSpeed" class="text-sm text-indigo-700"
+                >Speed:</label
+              >
+              <select
+                id="videoSpeed"
+                class="rounded border border-indigo-200 px-2 py-1 text-sm bg-white text-indigo-800"
+              >
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <main>
+          <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+            <section id="state-selector" class="mb-8">
+              <h2 class="text-xl font-semibold text-center mb-4">
+                Choose a state to see the details
+              </h2>
+              <div
+                class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto"
+              >
+                <button
+                  id="btn-QLD"
+                  class="state-btn w-full font-semibold py-3 px-4 rounded-lg bg-white border border-stone-300"
+                >
+                  Queensland
+                </button>
+                <button
+                  id="btn-NSW"
+                  class="state-btn w-full font-semibold py-3 px-4 rounded-lg bg-white border border-stone-300"
+                >
+                  New South Wales
+                </button>
+                <button
+                  id="btn-VIC"
+                  class="state-btn w-full font-semibold py-3 px-4 rounded-lg bg-white border border-stone-300"
+                >
+                  Victoria
+                </button>
+                <button
+                  id="btn-WA"
+                  class="state-btn w-full font-semibold py-3 px-4 rounded-lg bg-white border border-stone-300"
+                >
+                  Western Australia
+                </button>
+              </div>
+            </section>
+
+            <div id="state-details-container" class="space-y-8">
+              <section id="state-details-content" class="fade-in">
+                <div class="text-center mb-8">
+                  <h3
+                    id="state-title"
+                    class="text-2xl md:text-3xl font-bold text-stone-800"
+                  ></h3>
+                  <p
+                    id="state-intro"
+                    class="mt-2 text-stone-600 max-w-3xl mx-auto"
+                  ></p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div class="lg:col-span-1 space-y-6">
+                    <div
+                      class="bg-stone-50 p-6 rounded-xl border border-stone-200"
+                    >
+                      <h4 class="font-bold text-lg mb-3">Key Facts</h4>
+                      <ul class="space-y-3 text-stone-700">
+                        <li class="flex items-start">
+                          <span class="mr-3 text-indigo-600 text-xl">💰</span>
+                          <span id="details-price"></span>
+                        </li>
+                        <li class="flex items-start">
+                          <span class="mr-3 text-indigo-600 text-xl">⏱️</span>
+                          <span id="details-duration"></span>
+                        </li>
+                        <li class="flex items-start">
+                          <span class="mr-3 text-indigo-600 text-xl">🖥️</span>
+                          <span id="details-ease"></span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div
+                      class="bg-stone-50 p-6 rounded-xl border border-stone-200"
+                    >
+                      <h4 class="font-bold text-lg mb-3">Certification</h4>
+                      <p id="details-certification" class="text-stone-700"></p>
+                    </div>
+                  </div>
+                  <div
+                    class="lg:col-span-2 bg-stone-50 p-6 rounded-xl border border-stone-200"
+                  >
+                    <h4 class="font-bold text-lg mb-4">
+                      Typical Course Process
+                    </h4>
+                    <div id="details-process" class="space-y-4"></div>
+                  </div>
+                </div>
+                <div
+                  class="mt-6 bg-stone-50 p-6 rounded-xl border border-stone-200"
+                >
+                  <h4 class="font-bold text-lg mb-3">
+                    Recommended Providers & Reviews
+                  </h4>
+                  <p class="text-sm text-stone-500 mb-4">
+                    These are established Registered Training Organisations
+                    (RTOs). Reviews are summarized from public feedback. Always
+                    confirm they are approved for your state.
+                  </p>
+                  <div id="details-providers" class="space-y-3"></div>
+                </div>
+              </section>
+
+              <hr class="border-stone-200" />
+
+              <section id="comparison-chart-section">
+                <div class="text-center mb-6">
+                  <h3 class="text-2xl md:text-3xl font-bold text-stone-800">
+                    At a Glance Comparison
+                  </h3>
+                  <p class="mt-2 text-stone-600">
+                    Use the buttons to compare key metrics across all four
+                    states.
+                  </p>
+                  <div class="mt-4 flex justify-center gap-3">
+                    <button
+                      id="view-price-chart"
+                      class="chart-toggle-btn font-semibold py-2 px-5 rounded-full bg-indigo-600 text-white"
+                    >
+                      Compare Prices
+                    </button>
+                    <button
+                      id="view-duration-chart"
+                      class="chart-toggle-btn font-semibold py-2 px-5 rounded-full bg-white border border-stone-300"
+                    >
+                      Compare Durations
+                    </button>
+                  </div>
+                </div>
+                <div class="chart-container">
+                  <canvas id="comparisonChart"></canvas>
+                </div>
+              </section>
+            </div>
+          </div>
+        </main>
+
+        <footer class="text-center mt-8 md:mt-12">
+          <p class="text-sm text-stone-500">
+            Disclaimer: Information and reviews are based on research conducted
+            in late 2025 and are subject to change. Always verify details with
+            an accredited RTO.
+          </p>
+        </footer>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Audio speed control
+        const audio = document.getElementById("rsa-audio");
+        const audioSpeed = document.getElementById("audioSpeed");
+        if (audio && audioSpeed) {
+          audioSpeed.addEventListener("change", function () {
+            audio.playbackRate = parseFloat(this.value);
+          });
+        }
+
+        // Video speed control
+        const video = document.getElementById("rsa-video");
+        const videoSpeed = document.getElementById("videoSpeed");
+        if (video && videoSpeed) {
+          videoSpeed.addEventListener("change", function () {
+            video.playbackRate = parseFloat(this.value);
+          });
+        }
+        const stateData = {
+          QLD: {
+            name: "Queensland",
+            intro:
+              "Queensland offers a straightforward and affordable online RSA process. The nationally recognised SITHFAB021 Statement of Attainment is all you need to work in licensed venues across the state.",
+            price: "Avg. Price: $25 - $35",
+            duration: "Avg. Duration: 3-6 hours (self-paced)",
+            ease: "Ease of Use: Generally very easy, with fully self-paced online modules.",
+            certification:
+              "You will receive a nationally recognised SITHFAB021 Statement of Attainment upon completion, which is your RSA certificate for QLD.",
+            process: [
+              {
+                step: 1,
+                title: "Enrol Online",
+                description:
+                  "Choose an accredited RTO and sign up on their website.",
+              },
+              {
+                step: 2,
+                title: "Complete Modules",
+                description:
+                  "Work through online content including videos, text, and interactive scenarios.",
+              },
+              {
+                step: 3,
+                title: "Pass Assessments",
+                description:
+                  "Complete multiple-choice quizzes and a final knowledge assessment.",
+              },
+              {
+                step: 4,
+                title: "Receive Certificate",
+                description:
+                  "Your Statement of Attainment is typically issued digitally within 1-2 business days.",
+              },
+            ],
+            avgPrice: 30,
+            avgDuration: 4.5,
+            providers: [
+              {
+                name: "Express Online Training (EOT)",
+                url: "https://www.eot.edu.au/online-courses/RSA/QLD/",
+                reviews: {
+                  overall:
+                    "Highly rated for speed and efficiency. A top choice for those needing a certificate urgently.",
+                  strengths: [
+                    "Extremely fast, often same-day, certificate delivery.",
+                    "Modern, mobile-friendly learning platform.",
+                    "Clear instructions and easy navigation.",
+                  ],
+                  weaknesses: [
+                    "Customer support is primarily online/email based.",
+                    "Video assessment submission can be clunky for some users.",
+                  ],
+                },
+              },
+              {
+                name: "Clear to Work",
+                url: "https://cleartowork.com.au/rsa-qld-online/",
+                reviews: {
+                  overall:
+                    "Solid and reliable provider known for competitive pricing and a no-fuss process.",
+                  strengths: [
+                    "Frequently one of the most affordable options.",
+                    "Straightforward, easy-to-follow course structure.",
+                    "Good reputation and long-standing presence.",
+                  ],
+                  weaknesses: [
+                    "Platform interface is slightly dated compared to newer competitors.",
+                    "Standard marking can take 1-2 business days unless express option is paid for.",
+                  ],
+                },
+              },
+              {
+                name: "CTA Training Specialists",
+                url: "https://clubtraining.com.au/courses/rsa-online-qld/",
+                reviews: {
+                  overall:
+                    "Well-regarded in the hospitality industry, particularly with clubs. Known for thorough content.",
+                  strengths: [
+                    "Industry-respected and comprehensive course material.",
+                    "Good phone and email support available.",
+                    "Often offers bundles with other hospitality courses like RSG.",
+                  ],
+                  weaknesses: [
+                    "Website can be slightly less intuitive to navigate.",
+                    "Pricing is competitive but not always the absolute cheapest.",
+                  ],
+                },
+              },
+              {
+                name: "Galaxy Training Australia",
+                url: "https://galaxytraining.com.au/rsa-online-qld.aspx",
+                reviews: {
+                  overall:
+                    "A popular budget-friendly option that delivers the required certification effectively.",
+                  strengths: [
+                    "Consistently low prices, very budget-friendly.",
+                    "Simple, text-and-quiz based learning.",
+                    "Self-paced format is very flexible.",
+                  ],
+                  weaknesses: [
+                    "Course content can be less engaging (more text-heavy).",
+                    "Support response times can vary during peak periods.",
+                  ],
+                },
+              },
+            ],
+          },
+          NSW: {
+            name: "New South Wales",
+            intro:
+              "Getting an RSA in NSW is a more regulated and involved process. You must use a provider specifically approved by Liquor & Gaming NSW and obtain a physical Competency Card after your course.",
+            price: "Avg. Price: $120 - $180",
+            duration: "Avg. Duration: 6-7 hours",
+            ease: "Ease of Use: Moderate. Requires video submissions or live virtual classroom components, adding extra steps.",
+            certification:
+              "After the course, you get an Interim Certificate. You must take this to a Service NSW centre to have your photo taken and be issued a physical Competency Card.",
+            process: [
+              {
+                step: 1,
+                title: "Choose an L&GNSW Provider",
+                description:
+                  "You must enrol with a provider specifically approved by Liquor & Gaming NSW.",
+              },
+              {
+                step: 2,
+                title: "Complete Course & Assessments",
+                description:
+                  "Includes standard online modules plus mandatory video or live assessments to verify identity and skills.",
+              },
+              {
+                step: 3,
+                title: "Receive Interim Certificate",
+                description:
+                  "Once you pass, the provider issues an Interim Certificate valid for 90 days.",
+              },
+              {
+                step: 4,
+                title: "Apply for Competency Card",
+                description:
+                  "Visit a Service NSW centre with your interim certificate and proof of identity to get your 5-year Competency Card.",
+              },
+            ],
+            avgPrice: 150,
+            avgDuration: 6.5,
+            providers: [
+              {
+                name: "RSA NSW (by TAFE NSW)",
+                url: "https://www.tafensw.edu.au/course-areas/hospitality-and-travel/courses/statement-of-attainment-in-responsible-service-of-alcohol--SITSS00071",
+                reviews: {
+                  overall:
+                    "The official and most recognized provider. Considered the gold standard, but at a premium price.",
+                  strengths: [
+                    "Highest level of recognition by employers.",
+                    "High-quality, government-backed course materials.",
+                    "Offered in various formats including virtual classroom.",
+                  ],
+                  weaknesses: [
+                    "Significantly more expensive than private RTOs.",
+                    "Less flexibility with scheduling for virtual classroom sessions.",
+                  ],
+                },
+              },
+              {
+                name: "Express Online Training (EOT)",
+                url: "https://www.eot.edu.au/online-courses/RSA/NSW/",
+                reviews: {
+                  overall:
+                    "A popular private alternative to TAFE, offering a faster and more flexible online experience.",
+                  strengths: [
+                    "Fully approved by Liquor & Gaming NSW.",
+                    "Generally faster turnaround for interim certificates than TAFE.",
+                    "Competitive pricing for a private NSW provider.",
+                  ],
+                  weaknesses: [
+                    "The mandatory virtual classroom/video assessment component is still required.",
+                    "Can be perceived as less prestigious than TAFE by some employers.",
+                  ],
+                },
+              },
+              {
+                name: "Barmax",
+                url: "https://barmax.com.au/rsa-course-nsw/",
+                reviews: {
+                  overall:
+                    "Specializes in bar and hospitality training, offering a well-regarded and practical RSA course.",
+                  strengths: [
+                    "Strong focus on practical, real-world scenarios.",
+                    "Experienced trainers with industry backgrounds.",
+                    "Often runs face-to-face and virtual classes in major cities.",
+                  ],
+                  weaknesses: [
+                    "May have fewer scheduled session times than larger providers.",
+                    "Course costs are typically in the mid-to-high range.",
+                  ],
+                },
+              },
+              {
+                name: "CBD College",
+                url: "https://www.cbdcollege.edu.au/rsa-rcg-courses-sydney",
+                reviews: {
+                  overall:
+                    "A well-known Sydney-based provider offering reliable face-to-face and virtual RSA training.",
+                  strengths: [
+                    "Convenient locations for in-person training in Sydney.",
+                    "Experienced trainers and a long history of delivery.",
+                    "Good for those who prefer a traditional classroom setting.",
+                  ],
+                  weaknesses: [
+                    "Less suitable for students outside of Sydney.",
+                    "Online/virtual offering might be less slick than online-only providers.",
+                  ],
+                },
+              },
+            ],
+          },
+          VIC: {
+            name: "Victoria",
+            intro:
+              "Victoria requires RSA training to be delivered in real-time, meaning online courses must include a live webinar or video conference with a trainer. A standard self-paced online course is not sufficient.",
+            price: "Avg. Price: $40 - $70",
+            duration: "Avg. Duration: 4-6 hours (including live session)",
+            ease: "Ease of Use: Moderate. You need to schedule and attend a live virtual session, which is less flexible than fully self-paced options.",
+            certification:
+              "You will receive a VCGLR-specific RSA certificate from your training provider. A national SITHFAB021 Statement of Attainment is also issued but the VCGLR certificate is the required one for working in Victoria.",
+            process: [
+              {
+                step: 1,
+                title: "Book a Live Webinar Course",
+                description:
+                  "Find a VCGLR-approved provider and book a spot in an upcoming online webinar session.",
+              },
+              {
+                step: 2,
+                title: "Attend the Live Session",
+                description:
+                  "Participate in the real-time training session conducted by a certified trainer via video conference.",
+              },
+              {
+                step: 3,
+                title: "Complete Final Assessment",
+                description:
+                  "After the webinar, complete the final online assessment to test your knowledge.",
+              },
+              {
+                step: 4,
+                title: "Receive VCGLR Certificate",
+                description:
+                  "The RTO will issue your official Victorian RSA certificate upon successful completion.",
+              },
+            ],
+            avgPrice: 55,
+            avgDuration: 5,
+            providers: [
+              {
+                name: "RSA Melbourne (CFT International)",
+                url: "https://www.rsamelbourne.com.au/rsa-course-melbourne-online",
+                reviews: {
+                  overall:
+                    "A leading provider in Victoria, highly reviewed for their engaging live webinar sessions.",
+                  strengths: [
+                    "Trainers are frequently praised for being knowledgeable and engaging.",
+                    "Easy booking system with multiple session times.",
+                    "Quick certificate issuance after the course.",
+                  ],
+                  weaknesses: [
+                    "Can be slightly more expensive than some smaller competitors.",
+                    "Webinar spots can fill up quickly, requiring booking in advance.",
+                  ],
+                },
+              },
+              {
+                name: "Complete Hospitality Training (CHT)",
+                url: "https://www.cht.edu.au/rsa-course-melbourne-online/",
+                reviews: {
+                  overall:
+                    "Very well-established and respected training provider in Melbourne's hospitality scene.",
+                  strengths: [
+                    "Excellent reputation among employers.",
+                    "High-quality training materials and experienced instructors.",
+                    "Also offers a wide range of other hospitality courses.",
+                  ],
+                  weaknesses: [
+                    "Online webinar course may be priced at a slight premium.",
+                    "Focus is heavily on Melbourne, may be less known regionally.",
+                  ],
+                },
+              },
+              {
+                name: "RSA Course Online",
+                url: "https://www.rsacourseonline.com.au/rsa-course-victoria",
+                reviews: {
+                  overall:
+                    "A popular online-focused provider that has adapted well to the live webinar requirement.",
+                  strengths: [
+                    "Often very competitive on price.",
+                    "Streamlined online booking and assessment process.",
+                    "Good availability of webinar schedules.",
+                  ],
+                  weaknesses: [
+                    "The live training experience can be more variable depending on the instructor.",
+                    "Less brand recognition than CHT or CFT.",
+                  ],
+                },
+              },
+              {
+                name: "Job Trainer Australia",
+                url: "https://www.jobtraineraustralia.edu.au/courses/vic/provide-responsible-service-of-alcohol/",
+                reviews: {
+                  overall:
+                    "A national provider offering a compliant Victorian RSA with good support systems.",
+                  strengths: [
+                    "Strong student support via phone and live chat.",
+                    "Clear platform for pre- and post-webinar activities.",
+                    "Nationally recognized RTO with a solid track record.",
+                  ],
+                  weaknesses: [
+                    "Not a hospitality-specific specialist, which some may prefer.",
+                    "The user interface for booking can sometimes be confusing.",
+                  ],
+                },
+              },
+            ],
+          },
+          WA: {
+            name: "Western Australia",
+            intro:
+              "Western Australia, like Queensland, has a streamlined online RSA process. You must complete the nationally recognised course with an RTO that is approved to deliver training in WA.",
+            price: "Avg. Price: $35 - $60",
+            duration: "Avg. Duration: 3-5 hours (self-paced)",
+            ease: "Ease of Use: Easy. The process is typically fully online and self-paced, allowing for flexibility.",
+            certification:
+              "You will receive a nationally recognised SITHFAB021 Statement of Attainment. This certificate is mandatory for all staff serving alcohol at licensed premises in WA.",
+            process: [
+              {
+                step: 1,
+                title: "Find an Approved RTO",
+                description:
+                  "Enrol in the SITHFAB021 course with a provider approved by the WA Department of Racing, Gaming and Liquor.",
+              },
+              {
+                step: 2,
+                title: "Complete Online Learning",
+                description:
+                  "Go through the self-paced learning materials and section quizzes at your own speed.",
+              },
+              {
+                step: 3,
+                title: "Pass Final Assessment",
+                description:
+                  "Successfully complete the final online test to demonstrate your competency.",
+              },
+              {
+                step: 4,
+                title: "Get Your Statement",
+                description:
+                  "Your nationally recognised Statement of Attainment will be issued by the RTO.",
+              },
+            ],
+            avgPrice: 47,
+            avgDuration: 4,
+            providers: [
+              {
+                name: "Express Online Training (EOT)",
+                url: "https://www.eot.edu.au/online-courses/RSA/WA/",
+                reviews: {
+                  overall:
+                    "A strong and popular choice for WA, known for its speed and reliability.",
+                  strengths: [
+                    "Fast certificate turnaround, crucial for starting work quickly.",
+                    "Easy-to-use, modern online platform.",
+                    "Fully approved for WA and nationally recognized.",
+                  ],
+                  weaknesses: [
+                    "Some users report the course content is very fast-paced.",
+                    "Support is mainly handled via online systems.",
+                  ],
+                },
+              },
+              {
+                name: "AHA WA (Australian Hotels Association)",
+                url: "https://www.ahawa.asn.au/training/online_rsa.phtml",
+                reviews: {
+                  overall:
+                    "The peak industry body for hotels in WA. Their training is considered highly credible by employers.",
+                  strengths: [
+                    "The most industry-recognized and respected provider in WA.",
+                    "Course content is directly aligned with employer expectations.",
+                    "Excellent reputation and credibility.",
+                  ],
+                  weaknesses: [
+                    "Often more expensive than other online-only RTOs.",
+                    "The online platform can feel less modern than competitors.",
+                  ],
+                },
+              },
+              {
+                name: "Galaxy Training Australia",
+                url: "https://galaxytraining.com.au/rsa-online-wa.aspx",
+                reviews: {
+                  overall:
+                    "A leading budget-friendly option that provides a fully compliant and legitimate WA RSA.",
+                  strengths: [
+                    "Very competitive pricing, great for those on a budget.",
+                    "Simple and straightforward course structure.",
+                    "Flexible self-paced learning.",
+                  ],
+                  weaknesses: [
+                    "The learning platform is functional but basic in design.",
+                    "Less brand recognition compared to the AHA.",
+                  ],
+                },
+              },
+              {
+                name: "Mustard Training",
+                url: "https://mustard.com.au/rsa-online-wa/",
+                reviews: {
+                  overall:
+                    "A WA-based provider with a good reputation for local support and relevant course content.",
+                  strengths: [
+                    "Local WA knowledge and support.",
+                    "User-friendly course praised for being easy to understand.",
+                    "Positive reviews regarding customer service.",
+                  ],
+                  weaknesses: [
+                    "May not be as cheap as the larger national budget providers.",
+                    "Smaller operation, so may have fewer support staff available.",
+                  ],
+                },
+              },
+            ],
+          },
+        };
+
+        let currentChart = null;
+        let currentChartType = "price";
+        const stateButtons = document.querySelectorAll(".state-btn");
+        const chartToggleButtons =
+          document.querySelectorAll(".chart-toggle-btn");
+
+        const titleEl = document.getElementById("state-title");
+        const introEl = document.getElementById("state-intro");
+        const priceEl = document.getElementById("details-price");
+        const durationEl = document.getElementById("details-duration");
+        const easeEl = document.getElementById("details-ease");
+        const certEl = document.getElementById("details-certification");
+        const processEl = document.getElementById("details-process");
+        const providersEl = document.getElementById("details-providers");
+
+        function updateStateDetails(stateKey) {
+          const data = stateData[stateKey];
+
+          titleEl.textContent = data.name;
+          introEl.textContent = data.intro;
+          priceEl.textContent = data.price;
+          durationEl.textContent = data.duration;
+          easeEl.textContent = data.ease;
+          certEl.textContent = data.certification;
+
+          processEl.innerHTML = data.process
+            .map(
+              (item) => `
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100 text-indigo-800 font-bold mr-4">${item.step}</div>
+                        <div>
+                            <p class="font-semibold">${item.title}</p>
+                            <p class="text-stone-600">${item.description}</p>
+                        </div>
+                    </div>
+                `
+            )
+            .join("");
+
+          providersEl.innerHTML = data.providers
+            .map(
+              (provider, index) => `
+                    <div class="border border-stone-200 rounded-lg">
+                        <button class="w-full flex justify-between items-center p-4 text-left font-semibold provider-toggle">
+                            <span>${provider.name}</span>
+                            <span class="toggle-icon text-indigo-600 text-xl transition-transform duration-300 transform">▾</span>
+                        </button>
+                        <div class="review-content overflow-hidden">
+                            <div class="px-4 pb-4">
+                                <p class="text-sm text-stone-600 mb-3"><strong>Overall:</strong> ${
+                                  provider.reviews.overall
+                                }</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <h5 class="font-bold text-green-700 mb-1">Strengths</h5>
+                                        <ul class="list-disc list-inside text-stone-600 space-y-1">
+                                            ${provider.reviews.strengths
+                                              .map((s) => `<li>${s}</li>`)
+                                              .join("")}
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-red-700 mb-1">Weaknesses</h5>
+                                        <ul class="list-disc list-inside text-stone-600 space-y-1">
+                                            ${provider.reviews.weaknesses
+                                              .map((w) => `<li>${w}</li>`)
+                                              .join("")}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <a href="${
+                                  provider.url
+                                }" target="_blank" rel="noopener noreferrer" class="inline-block mt-3 text-indigo-600 hover:text-indigo-800 font-semibold hover:underline transition-colors duration-200">Visit Website &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                `
+            )
+            .join("");
+
+          document
+            .getElementById("state-details-content")
+            .classList.remove("fade-in");
+          void document.getElementById("state-details-content").offsetWidth;
+          document
+            .getElementById("state-details-content")
+            .classList.add("fade-in");
+
+          stateButtons.forEach((btn) => {
+            btn.classList.toggle("active", btn.id === `btn-${stateKey}`);
+          });
+        }
+
+        providersEl.addEventListener("click", function (e) {
+          const toggleButton = e.target.closest(".provider-toggle");
+          if (toggleButton) {
+            const content = toggleButton.nextElementSibling;
+            toggleButton.parentElement.classList.toggle("open");
+            content.classList.toggle("open");
+          }
+        });
+
+        function createOrUpdateChart(type) {
+          const ctx = document
+            .getElementById("comparisonChart")
+            .getContext("2d");
+          const labels = Object.values(stateData).map((s) => s.name);
+
+          let chartData, chartLabel, backgroundColor, borderColor;
+
+          if (type === "price") {
+            chartData = Object.values(stateData).map((s) => s.avgPrice);
+            chartLabel = "Average Price (AUD)";
+            backgroundColor = "rgba(79, 70, 229, 0.2)";
+            borderColor = "rgba(79, 70, 229, 1)";
+          } else {
+            chartData = Object.values(stateData).map((s) => s.avgDuration);
+            chartLabel = "Average Duration (Hours)";
+            backgroundColor = "rgba(219, 39, 119, 0.2)";
+            borderColor = "rgba(219, 39, 119, 1)";
+          }
+
+          if (currentChart) {
+            currentChart.destroy();
+          }
+
+          currentChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: chartLabel,
+                  data: chartData,
+                  backgroundColor: backgroundColor,
+                  borderColor: borderColor,
+                  borderWidth: 1,
+                  borderRadius: 5,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    color: "#E7E5E4",
+                  },
+                  ticks: {
+                    color: "#57534E",
+                  },
+                },
+                x: {
+                  grid: {
+                    display: false,
+                  },
+                  ticks: {
+                    color: "#57534E",
+                    font: {
+                      size: 14,
+                    },
+                  },
+                },
+              },
+              plugins: {
+                legend: {
+                  display: false,
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      let label = context.dataset.label || "";
+                      if (label) {
+                        label += ": ";
+                      }
+                      if (context.parsed.y !== null) {
+                        if (type === "price") {
+                          label += new Intl.NumberFormat("en-AU", {
+                            style: "currency",
+                            currency: "AUD",
+                          }).format(context.parsed.y);
+                        } else {
+                          label += context.parsed.y + " hours";
+                        }
+                      }
+                      return label;
+                    },
+                  },
+                },
+              },
+            },
+          });
+        }
+
+        stateButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const stateKey = button.id.split("-")[1];
+            updateStateDetails(stateKey);
+          });
+        });
+
+        chartToggleButtons.forEach((button) => {
+          button.addEventListener("click", (e) => {
+            chartToggleButtons.forEach((btn) => {
+              btn.classList.remove("bg-indigo-600", "text-white");
+              btn.classList.add("bg-white", "border", "border-stone-300");
+            });
+            e.target.classList.add("bg-indigo-600", "text-white");
+            e.target.classList.remove("bg-white", "border", "border-stone-300");
+
+            currentChartType =
+              e.target.id === "view-price-chart" ? "price" : "duration";
+            createOrUpdateChart(currentChartType);
+          });
+        });
+
+        updateStateDetails("QLD");
+        createOrUpdateChart("price");
+      });
+    </script>
+  </body>
+</html>

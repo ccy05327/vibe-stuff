@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Australian Banking Guide for 417 Visa Holders</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <style>
+      body {
+        background-color: #fdfbf8;
+        font-family: "Inter", sans-serif;
+      }
+      .main-container {
+        max-width: 1200px;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 250px;
+        max-height: 400px;
+      }
+      @media (min-width: 640px) {
+        .chart-container {
+          height: 300px;
+        }
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 350px;
+        }
+      }
+      .filter-btn {
+        transition: all 0.3s ease;
+        font-size: 0.875rem;
+      }
+      @media (max-width: 639px) {
+        .filter-btn {
+          font-size: 0.75rem;
+          padding: 0.375rem 0.75rem;
+        }
+      }
+      .filter-btn.active {
+        background-color: #c8a47e;
+        color: #ffffff;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      .bank-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .bank-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+      }
+      @media (max-width: 639px) {
+        .bank-card:hover {
+          transform: translateY(-2px);
+        }
+      }
+      .modal-bg {
+        background-color: rgba(0, 0, 0, 0.5);
+        transition: opacity 0.3s ease;
+      }
+      .modal-content {
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        transform: translateY(20px);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      @media (max-width: 639px) {
+        .modal-content {
+          margin: 1rem;
+          max-height: 85vh;
+        }
+      }
+      .pro-item::before {
+        content: "✔";
+        margin-right: 0.5rem;
+        color: #34d399;
+      }
+      .con-item::before {
+        content: "✖";
+        margin-right: 0.5rem;
+        color: #f87171;
+      }
+      /* Custom scrollbar for modal */
+      .modal-body::-webkit-scrollbar {
+        width: 8px;
+      }
+      .modal-body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+      .modal-body::-webkit-scrollbar-thumb {
+        background: #c8a47e;
+        border-radius: 10px;
+      }
+      .modal-body::-webkit-scrollbar-thumb:hover {
+        background: #b08e6a;
+      }
+
+      /* Media controls styling */
+      .media-container {
+        position: relative;
+      }
+
+      audio,
+      video {
+        outline: none;
+        width: 100%;
+      }
+
+      video {
+        max-height: 300px;
+      }
+
+      @media (min-width: 640px) {
+        video {
+          max-height: 400px;
+        }
+      }
+
+      /* Mobile-specific media controls */
+      @media (max-width: 639px) {
+        .media-controls {
+          flex-direction: column;
+          gap: 0.75rem;
+          align-items: stretch;
+        }
+
+        .media-controls > div {
+          justify-content: center;
+        }
+
+        .speed-control {
+          width: 100%;
+          max-width: 150px;
+          margin: 0 auto;
+        }
+      }
+
+      /* Utility classes for mobile optimization */
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      @media (max-width: 639px) {
+        .break-words {
+          word-break: break-word;
+          overflow-wrap: break-word;
+        }
+      }
+    </style>
+  </head>
+  <body class="text-gray-800">
+    <div class="main-container mx-auto p-3 md:p-8">
+      <header class="text-center mb-8 md:mb-10">
+        <div class="flex justify-between items-center mb-4">
+          <a
+            id="backHomeBtn"
+            href="#"
+            class="inline-flex items-center px-3 py-2 text-sm font-medium text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+            style="background-color: #c8a47e; border: 1px solid #b08e6a"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              ></path>
+            </svg>
+            <span data-translate="backHome">Back to Home</span>
+          </a>
+
+          <div class="flex items-center space-x-2">
+            <span class="text-sm text-gray-600" data-translate="language"
+              >Language:</span
+            >
+            <button
+              id="langToggle"
+              class="flex items-center px-3 py-1 text-sm font-medium rounded-lg border transition-all duration-300"
+              style="
+                background-color: #f8f6f3;
+                border-color: #c8a47e;
+                color: #6d5d4b;
+              "
+            >
+              <span id="currentLang">EN</span>
+              <svg
+                class="w-4 h-4 ml-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center">
+          <h1
+            class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800"
+            style="color: #6d5d4b"
+            data-translate="title"
+          >
+            Australian Bank Guide
+          </h1>
+          <p
+            class="text-base md:text-lg text-gray-600 mt-2"
+            data-translate="subtitle"
+          >
+            for 417 Visa Holders
+          </p>
+        </div>
+      </header>
+
+      <section
+        id="introduction"
+        class="mb-12 bg-white/50 rounded-lg p-6 text-center max-w-4xl mx-auto shadow-sm"
+        style="border: 1px solid #e5e0da"
+      >
+        <h2
+          class="text-2xl font-semibold text-gray-700 mb-3"
+          data-translate="introTitle"
+        >
+          Find Your Perfect Bank
+        </h2>
+        <p
+          class="text-gray-600 leading-relaxed"
+          data-translate="introDescription"
+        >
+          Welcome! This interactive guide helps you compare Australian banks
+          based on what matters most to you: high savings rates, easy online
+          setup, and great digital banking. Use the chart for a quick rate
+          comparison and the filters to narrow down your options. Click on any
+          bank card to see a full breakdown of its pros, cons, and special
+          offers.
+        </p>
+
+        <!-- Audio Player Section -->
+        <section class="mb-8 p-6 bg-white rounded-2xl shadow-sm">
+          <div class="text-center mb-4">
+            <h2 class="text-xl font-semibold mb-2" style="color: #6d5d4b">
+              📱 <span data-translate="audioGuide">Audio Guide</span>
+            </h2>
+            <p class="text-gray-600 text-sm" data-translate="audioDescription">
+              Listen to the complete Australian banking guide for 417 visa
+              holders
+            </p>
+          </div>
+
+          <div class="max-w-4xl mx-auto">
+            <div
+              class="bg-gradient-to-r rounded-2xl p-6 text-white"
+              style="background: linear-gradient(to right, #6d5d4b, #c8a47e)"
+            >
+              <audio
+                id="audioPlayer"
+                class="w-full mb-4"
+                controls
+                preload="metadata"
+              >
+                <source src="" type="audio/mpeg" />
+                <span data-translate="audioNotSupported"
+                  >Your browser does not support the audio element.</span
+                >
+              </audio>
+
+              <!-- Custom Audio Controls -->
+              <div
+                class="flex flex-wrap items-center justify-center gap-4 mt-4"
+              >
+                <div class="flex items-center gap-2">
+                  <label
+                    for="audioSpeedControl"
+                    class="text-sm font-medium"
+                    data-translate="playbackSpeed"
+                    >Speed:</label
+                  >
+                  <select
+                    id="audioSpeedControl"
+                    class="bg-white text-gray-800 rounded-lg px-3 py-1 text-sm border-0 focus:ring-2 focus:ring-orange-300"
+                  >
+                    <option value="0.5">0.5x (Slow)</option>
+                    <option value="0.75">0.75x (Slower)</option>
+                    <option value="1" selected>1.0x (Normal)</option>
+                    <option value="1.25">1.25x (Faster)</option>
+                    <option value="1.5">1.5x (Fast)</option>
+                    <option value="2">2.0x (Very Fast)</option>
+                  </select>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button
+                    id="audioRewind10"
+                    class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-3 py-1 rounded-lg text-sm transition-all duration-200"
+                  >
+                    ⏪ <span data-translate="skipBackward">Back 10s</span>
+                  </button>
+                  <button
+                    id="audioForward10"
+                    class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-3 py-1 rounded-lg text-sm transition-all duration-200"
+                  >
+                    <span data-translate="skipForward">Forward 10s</span> ⏩
+                  </button>
+                </div>
+
+                <div class="flex items-center gap-2 text-sm">
+                  <span id="audioCurrentTime">00:00</span>
+                  <span>/</span>
+                  <span id="audioDuration">00:00</span>
+                </div>
+              </div>
+
+              <!-- Progress Info -->
+              <div class="mt-3 text-center">
+                <div class="bg-white bg-opacity-20 rounded-full h-1 mb-2">
+                  <div
+                    id="audioProgressBar"
+                    class="bg-white h-1 rounded-full transition-all duration-300"
+                    style="width: 0%"
+                  ></div>
+                </div>
+                <p class="text-xs opacity-90" data-translate="audioTip">
+                  💡 Listen to the guide first, then use the interactive tools
+                  below for detailed comparison
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Video Player Section -->
+        <section class="mb-8 p-6 bg-white rounded-2xl shadow-sm">
+          <div class="text-center mb-4">
+            <h2 class="text-xl font-semibold mb-2" style="color: #6d5d4b">
+              🎥 <span data-translate="videoGuide">Video Guide</span>
+            </h2>
+            <p class="text-gray-600 text-sm" data-translate="videoDescription">
+              Watch the complete Australian banking guide for 417 visa holders
+            </p>
+          </div>
+
+          <div class="max-w-4xl mx-auto">
+            <div
+              class="bg-gradient-to-r rounded-2xl p-6"
+              style="background: linear-gradient(to right, #6d5d4b, #c8a47e)"
+            >
+              <div class="bg-black rounded-xl overflow-hidden">
+                <video
+                  id="videoPlayer"
+                  class="w-full"
+                  controls
+                  preload="metadata"
+                  poster=""
+                >
+                  <source src="" type="video/mp4" />
+                  <span data-translate="videoNotSupported"
+                    >Your browser does not support the video element.</span
+                  >
+                </video>
+              </div>
+
+              <!-- Custom Video Controls -->
+              <div
+                class="flex flex-wrap items-center justify-center gap-4 mt-4"
+              >
+                <div class="flex items-center gap-2">
+                  <label
+                    for="videoSpeedControl"
+                    class="text-sm font-medium text-white"
+                    data-translate="playbackSpeed"
+                    >Speed:</label
+                  >
+                  <select
+                    id="videoSpeedControl"
+                    class="bg-white text-gray-800 rounded-lg px-3 py-1 text-sm border-0 focus:ring-2 focus:ring-orange-300"
+                  >
+                    <option value="0.5">0.5x (Slow)</option>
+                    <option value="0.75">0.75x (Slower)</option>
+                    <option value="1" selected>1.0x (Normal)</option>
+                    <option value="1.25">1.25x (Faster)</option>
+                    <option value="1.5">1.5x (Fast)</option>
+                    <option value="2">2.0x (Very Fast)</option>
+                  </select>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button
+                    id="videoRewind10"
+                    class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-3 py-1 rounded-lg text-sm transition-all duration-200"
+                  >
+                    ⏪ <span data-translate="skipBackward">Back 10s</span>
+                  </button>
+                  <button
+                    id="videoForward10"
+                    class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-3 py-1 rounded-lg text-sm transition-all duration-200"
+                  >
+                    <span data-translate="skipForward">Forward 10s</span> ⏩
+                  </button>
+                </div>
+
+                <div class="flex items-center gap-2 text-sm text-white">
+                  <span id="videoCurrentTime">00:00</span>
+                  <span>/</span>
+                  <span id="videoDuration">00:00</span>
+                </div>
+              </div>
+
+              <!-- Progress Info -->
+              <div class="mt-3 text-center">
+                <div class="bg-white bg-opacity-20 rounded-full h-1 mb-2">
+                  <div
+                    id="videoProgressBar"
+                    class="bg-white h-1 rounded-full transition-all duration-300"
+                    style="width: 0%"
+                  ></div>
+                </div>
+                <p
+                  class="text-xs opacity-90 text-white"
+                  data-translate="videoTip"
+                >
+                  💡 Watch the guide for visual explanations, then explore the
+                  detailed comparisons below
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="chart-section" class="mb-8 md:mb-12">
+        <div class="chart-container">
+          <canvas id="savingsRateChart"></canvas>
+        </div>
+      </section>
+
+      <section
+        id="filters"
+        class="mb-6 md:mb-8 flex flex-wrap justify-center gap-1 sm:gap-2 md:gap-4 px-2"
+      >
+        <button
+          class="filter-btn active py-2 px-3 md:px-4 bg-white rounded-full shadow-sm border border-gray-200"
+          data-filter="all"
+          data-translate="filterAll"
+        >
+          All Banks
+        </button>
+        <button
+          class="filter-btn py-2 px-3 md:px-4 bg-white rounded-full shadow-sm border border-gray-200"
+          data-filter="pre-arrival"
+          data-translate="filterPreArrival"
+        >
+          Pre-Arrival Setup
+        </button>
+        <button
+          class="filter-btn py-2 px-3 md:px-4 bg-white rounded-full shadow-sm border border-gray-200"
+          data-filter="high-savings"
+          data-translate="filterHighSavings"
+        >
+          Top Savings Rates
+        </button>
+        <button
+          class="filter-btn py-2 px-3 md:px-4 bg-white rounded-full shadow-sm border border-gray-200"
+          data-filter="best-app"
+          data-translate="filterBestApp"
+        >
+          Best App Experience
+        </button>
+      </section>
+
+      <main
+        id="bank-grid"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
+      ></main>
+    </div>
+
+    <div
+      id="modal"
+      class="modal-bg fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 hidden opacity-0"
+    >
+      <div
+        id="modal-content"
+        class="modal-content bg-white w-full max-w-2xl rounded-lg shadow-2xl relative opacity-0"
+      >
+        <button
+          id="modal-close"
+          class="absolute top-3 right-3 md:top-4 md:right-4 text-gray-500 hover:text-gray-800 text-xl md:text-2xl z-10 bg-white rounded-full w-8 h-8 md:w-auto md:h-auto flex items-center justify-center md:bg-transparent"
+        >
+          &times;
+        </button>
+        <div
+          id="modal-body"
+          class="modal-body p-4 md:p-8 overflow-y-auto max-h-[85vh]"
+        ></div>
+      </div>
+    </div>
+
+    <script>
+      // Translation system
+      let currentLanguage = "en";
+
+      // Media files configuration
+      const mediaFiles = {
+        en: {
+          audio: "Australian_Bank_options.mp3", // Update this when you add the English audio file
+          video: "Australian_Bank_Guide.mp4",
+        },
+        zh: {
+          audio: "澳洲銀行選擇.mp3",
+          video: "澳洲銀行指南.mp4", // Update this when you add the Chinese video file
+        },
+      };
+
+      // Function to update media sources based on current language
+      function updateMediaSources() {
+        const audioPlayer = document.getElementById("audioPlayer");
+        const videoPlayer = document.getElementById("videoPlayer");
+
+        if (audioPlayer) {
+          const audioSource = audioPlayer.querySelector("source");
+          if (audioSource) {
+            audioSource.src = mediaFiles[currentLanguage].audio;
+            audioPlayer.load(); // Reload the audio element
+          }
+        }
+
+        if (videoPlayer) {
+          const videoSource = videoPlayer.querySelector("source");
+          if (videoSource) {
+            videoSource.src = mediaFiles[currentLanguage].video;
+            videoPlayer.load(); // Reload the video element
+          }
+        }
+      }
+
+      const translations = {
+        en: {
+          // Navigation
+          backHome: "Back to Home",
+          language: "Language:",
+
+          // Main content
+          title: "Australian Bank Guide",
+          subtitle: "for 417 Visa Holders",
+          introTitle: "Audio & Video Guides",
+          introDescription:
+            "Get started with our comprehensive audio and video guides that walk you through the Australian banking landscape. Listen to key insights on-the-go or watch detailed explanations of bank features, application processes, and money-saving tips specifically designed for 417 visa holders.",
+
+          // Media content
+          audioGuide: "Audio Guide",
+          videoGuide: "Video Guide",
+          audioDescription:
+            "Listen to the complete Australian banking guide for 417 visa holders",
+          videoDescription:
+            "Watch the complete Australian banking guide for 417 visa holders",
+          audioNotSupported: "Your browser does not support the audio element.",
+          videoNotSupported: "Your browser does not support the video element.",
+          playbackSpeed: "Speed:",
+          skipBackward: "Back 10s",
+          skipForward: "Forward 10s",
+          audioTip:
+            "💡 Listen to the guide first, then use the interactive tools below for detailed comparison",
+          videoTip:
+            "💡 Watch the guide for visual explanations, then explore the detailed comparisons below",
+
+          // Filters
+          filterAll: "All Banks",
+          filterPreArrival: "Pre-Arrival Setup",
+          filterHighSavings: "Top Savings Rates",
+          filterBestApp: "Best App Experience",
+
+          // Bank card labels
+          introSavingsRate: "Intro Savings Rate",
+          ongoingRate: "Ongoing Rate",
+          learnMore: "Learn More",
+
+          // Modal labels
+          pros: "Pros",
+          cons: "Cons",
+          savingsRate: "Savings Rate",
+          introductory: "Introductory:",
+          conditions: "Conditions:",
+          applicationProcess: "Application Process",
+          preArrivalApplication: "Pre-Arrival Application:",
+          yes: "Yes",
+          no: "No",
+          cardIssuance: "Card Issuance",
+          virtualCard: "Virtual Card:",
+          physicalCard: "Physical Card:",
+          onlineBanking: "Online Banking",
+          promotionsAndFees: "Promotions & Fees",
+          internationalTransfers: "International Transfers",
+          officialBankLinks: "Official Bank Links",
+
+          // Link titles (English versions)
+          links: {
+            commbank: {
+              title1: "Moving to Australia Services",
+              title2: "Working Holiday Quick Guide",
+              title3: "Digital Banking Services",
+            },
+            westpac: {
+              title1: "New to Australia Banking",
+              title2: "Moving to Australia Info",
+              title3: "Mobile App Information",
+            },
+            nab: {
+              title1: "Banking in Australia",
+              title2: "International Student Banking",
+              title3: "Overseas Money Transfer",
+            },
+            ing: {
+              title1: "Orange Everyday Account",
+              title2: "Savings Maximiser Account",
+              title3: "Using Your Card Overseas",
+            },
+            anz: {
+              title1: "Migrant Banking Services",
+              title2: "Savings Account Information",
+              title3: "ANZ Plus Platform",
+            },
+            hsbc: {
+              title1: "Open Australian Account (International)",
+              title2: "Moving to Australia Services",
+              title3: "International Transfer Services",
+            },
+          },
+        },
+        zh: {
+          // Navigation
+          backHome: "回到首頁",
+          language: "語言：",
+
+          // Main content
+          title: "澳洲銀行指南",
+          subtitle: "適用於417打工度假簽證持有者",
+          introTitle: "語音與影片指南",
+          introDescription:
+            "透過我們全面的語音與影片指南開始您的澳洲銀行之旅。隨時隨地聆聽重要洞察，或觀看詳細的銀行功能、申請流程和省錢技巧說明，專為417簽證持有者量身打造。",
+
+          // Media content
+          audioGuide: "語音指南",
+          videoGuide: "影片指南",
+          audioDescription: "收聽澳洲417簽證持有者完整銀行指南",
+          videoDescription: "觀看澳洲417簽證持有者完整銀行指南",
+          audioNotSupported: "您的瀏覽器不支援音訊播放功能。",
+          videoNotSupported: "您的瀏覽器不支援影片播放功能。",
+          playbackSpeed: "播放速度：",
+          skipBackward: "倒退10秒",
+          skipForward: "快進10秒",
+          audioTip: "💡 建議先收聽指南，再使用下方的互動工具進行詳細比較",
+          videoTip: "💡 觀看指南以獲得視覺說明，然後探索下方的詳細比較",
+
+          // Filters
+          filterAll: "所有銀行",
+          filterPreArrival: "抵達前開戶",
+          filterHighSavings: "高儲蓄利率",
+          filterBestApp: "最佳App體驗",
+
+          // Bank card labels
+          introSavingsRate: "開戶儲蓄利率",
+          ongoingRate: "續約利率",
+          learnMore: "瞭解更多",
+
+          // Modal labels
+          pros: "優點",
+          cons: "缺點",
+          savingsRate: "儲蓄利率",
+          introductory: "開戶利率：",
+          conditions: "條件：",
+          applicationProcess: "申請流程",
+          preArrivalApplication: "抵達前申請：",
+          yes: "是",
+          no: "否",
+          cardIssuance: "金融卡核發",
+          virtualCard: "虛擬卡：",
+          physicalCard: "實體卡：",
+          onlineBanking: "網路銀行",
+          promotionsAndFees: "優惠與手續費",
+          internationalTransfers: "國際匯款",
+          officialBankLinks: "銀行官方連結",
+
+          // Link titles (Chinese versions - using Taiwanese tone)
+          links: {
+            commbank: {
+              title1: "移居澳洲服務",
+              title2: "澳洲打工度假快速指南",
+              title3: "數位銀行服務",
+            },
+            westpac: {
+              title1: "新來澳洲人士銀行服務",
+              title2: "移居澳洲資訊",
+              title3: "手機App資訊",
+            },
+            nab: {
+              title1: "澳洲境內銀行服務",
+              title2: "國際學生銀行服務",
+              title3: "海外匯款資訊",
+            },
+            ing: {
+              title1: "Orange Everyday 帳戶",
+              title2: "Savings Maximiser 儲蓄帳戶",
+              title3: "海外使用金融卡",
+            },
+            anz: {
+              title1: "新移民銀行服務",
+              title2: "儲蓄帳戶資訊",
+              title3: "ANZ Plus 平台",
+            },
+            hsbc: {
+              title1: "開立澳洲銀行帳戶（國際）",
+              title2: "移居澳洲服務",
+              title3: "國際匯款服務",
+            },
+          },
+        },
+      };
+
+      const bankData = [
+        {
+          id: "commbank",
+          name: {
+            en: "Commonwealth Bank (CommBank)",
+            zh: "Commonwealth Bank (CommBank)",
+          },
+          bestFor: {
+            en: "Pre-arrival Setup & Large Network",
+            zh: "入境前開戶與大型分行網路",
+          },
+          tags: ["pre-arrival", "best-app"],
+          logoColor: "#FFCC00",
+          savingsRate: {
+            introductory: 5.1,
+            ongoing: 2.35,
+            conditions: {
+              en: "Intro rate for the first 5 months on NetBank Saver. Ongoing rate is standard variable rate after intro period. For GoalSaver, bonus rate applies if you grow your balance each month.",
+              zh: "NetBank Saver 前5個月享優惠利率。優惠期後適用標準浮動利率。GoalSaver帳戶每月餘額成長可享加碼利率。",
+            },
+          },
+          onlineBanking: {
+            rating: 4.5,
+            summary: {
+              en: "Consistently rated one of the best banking apps in Australia. Very feature-rich, intuitive, and includes budgeting tools. Excellent for day-to-day management.",
+              zh: "持續被評為澳洲最佳銀行App之一。功能豐富、操作直覺，內建預算管理工具。非常適合日常理財管理。",
+            },
+          },
+          internationalTransfers: {
+            summary: {
+              en: "Available in-app, but generally more expensive than specialists like Wise or Revolut. Exchange rates include a margin. $0 transfer fee promotion for certain transfers.",
+              zh: "App內可操作，但費用通常比Wise或Revolut等專業服務高。匯率包含手續費。特定匯款享零手續費優惠。",
+            },
+          },
+          cardIssuance: {
+            physical: {
+              en: "Receive 5-7 business days after identity verification in-branch.",
+              zh: "分行身分驗證後5-7個工作天收到實體卡片。",
+            },
+            virtual: {
+              en: "Yes, instant virtual card (Digital Debit Card) available in the CommBank app upon account opening for use with Apple Pay/Google Pay.",
+              zh: "有，開戶後立即可在CommBank App取得虛擬金融卡，可搭配Apple Pay/Google Pay使用。",
+            },
+          },
+          application: {
+            preArrival: true,
+            online: true,
+            details: {
+              en: "Can apply up to 14 days before arriving in Australia. You must visit a branch upon arrival (within 20 days) with your passport and visa to verify your identity and activate the account fully.",
+              zh: "可於抵達澳洲前14天申請。抵達後需於20天內攜帶護照和簽證至分行驗證身分並完成帳戶啟用。",
+            },
+          },
+          promotions: {
+            en: "Monthly account fee ($4) waived for the first 12 months for new migrants. Also waived if under 30 or depositing $2,000+ per month.",
+            zh: "新移民前12個月免月費($4)。30歲以下或每月存款$2,000以上亦可免月費。",
+          },
+          pros: {
+            en: [
+              "Pre-arrival online application simplifies moving.",
+              "Largest ATM and branch network in Australia.",
+              "Excellent, award-winning mobile app.",
+              "Instant virtual card access.",
+              "Fee waiver promotion for newcomers.",
+            ],
+            zh: [
+              "入境前線上申請簡化移居流程。",
+              "澳洲最大ATM與分行網路。",
+              "優秀的獲獎手機App。",
+              "立即取得虛擬卡片。",
+              "新戶享免費優惠。",
+            ],
+          },
+          cons: {
+            en: [
+              "Standard savings rates are not the most competitive.",
+              "International transfer rates are mediocre.",
+              "Requires an in-person branch visit to fully activate.",
+            ],
+            zh: [
+              "標準儲蓄利率競爭力不足。",
+              "國際匯款費率一般。",
+              "需親自至分行完成帳戶啟用。",
+            ],
+          },
+          links: [
+            {
+              title: {
+                en: "Moving to Australia Services",
+                zh: "移居澳洲服務",
+              },
+              url: "https://www.commbank.com.au/moving-to-australia.html",
+            },
+            {
+              title: {
+                en: "Working Holiday Quick Guide",
+                zh: "澳洲打工度假快速指南",
+              },
+              url: "https://www.commbank.com.au/articles/travel/quick-guide-to-taking-a-working-holiday-in-australia.html",
+            },
+            {
+              title: {
+                en: "Digital Banking Services",
+                zh: "數位銀行服務",
+              },
+              url: "https://www.commbank.com.au/digital-banking.html",
+            },
+          ],
+        },
+        {
+          id: "westpac",
+          name: {
+            en: "Westpac",
+            zh: "Westpac",
+          },
+          bestFor: {
+            en: "Award-Winning App & Strong Features",
+            zh: "獲獎App與強大功能",
+          },
+          tags: ["best-app", "high-savings"],
+          logoColor: "#E60000",
+          savingsRate: {
+            introductory: 5.2,
+            ongoing: 2.0,
+            conditions: {
+              en: "Intro rate on Westpac Life account for the first 5 months. Must be 18-29. For eSaver, linked to a transaction account.",
+              zh: "Westpac Life帳戶前5個月享優惠利率，須年滿18-29歲。eSaver帳戶需連結交易帳戶。",
+            },
+          },
+          onlineBanking: {
+            rating: 4.7,
+            summary: {
+              en: 'Often wins "Best Banking App" awards. Praised for its clean design, powerful money management tools, budgeting features, and security.',
+              zh: "經常榮獲「最佳銀行App」獎項。以簡潔設計、強大理財工具、預算功能和安全性獲得好評。",
+            },
+          },
+          internationalTransfers: {
+            summary: {
+              en: "Standard bank international transfers. Fees can be up to $20 for online transfers, plus an exchange rate margin. Not as competitive as fintech services.",
+              zh: "標準銀行國際匯款服務。線上匯款費用最高$20，另加匯率手續費。競爭力不如金融科技服務。",
+            },
+          },
+          cardIssuance: {
+            physical: {
+              en: "Around 5-7 business days after application is fully approved.",
+              zh: "申請完全核准後約5-7個工作天。",
+            },
+            virtual: {
+              en: "Yes, a digital version of your card is available in the Westpac app for digital wallets as soon as the account is opened.",
+              zh: "有，開戶後立即可在Westpac App取得數位卡片，可加入數位錢包使用。",
+            },
+          },
+          application: {
+            preArrival: false,
+            online: true,
+            details: {
+              en: "You must be in Australia with a local residential address and phone number to apply online. Identity verification is done digitally or in-branch.",
+              zh: "必須在澳洲有當地居住地址和電話號碼才能線上申請。身分驗證可透過數位方式或至分行辦理。",
+            },
+          },
+          promotions: {
+            en: "Often has promotions for new transaction accounts, such as cashback offers. Check their website for current deals. Monthly fee ($5) on Choice account waived by depositing $2,000+ per month.",
+            zh: "經常推出新交易帳戶優惠，如現金回饋。請至官網查看最新優惠。Choice帳戶每月存款$2,000以上可免月費($5)。",
+          },
+          pros: {
+            en: [
+              "Top-tier mobile banking application.",
+              "Competitive introductory savings rate for young adults.",
+              "Instant digital card available.",
+              "Large network of branches and ATMs.",
+            ],
+            zh: [
+              "頂級手機銀行App。",
+              "年輕族群享競爭優惠儲蓄利率。",
+              "即時數位卡片服務。",
+              "廣大分行與ATM網路。",
+            ],
+          },
+          cons: {
+            en: [
+              "No pre-arrival account opening option.",
+              "Highest savings rates are often age-restricted.",
+              "Standard ongoing rates are lower.",
+            ],
+            zh: [
+              "無入境前開戶選項。",
+              "最高儲蓄利率通常有年齡限制。",
+              "標準持續利率較低。",
+            ],
+          },
+          links: [
+            {
+              title: {
+                en: "New to Australia Banking",
+                zh: "新來澳洲人士銀行服務",
+              },
+              url: "https://www.westpac.com.au/personal-banking/bank-accounts/new-to-australia/",
+            },
+            {
+              title: {
+                en: "Moving to Australia Info",
+                zh: "移居澳洲資訊",
+              },
+              url: "https://www.westpac.com.au/international-travel/moving-to-australia/",
+            },
+            {
+              title: {
+                en: "Mobile App Information",
+                zh: "手機App資訊",
+              },
+              url: "https://www.westpac.com.au/personal-banking/online-banking/mobile-app/",
+            },
+          ],
+        },
+        {
+          id: "ing",
+          name: {
+            en: "ING",
+            zh: "ING",
+          },
+          bestFor: {
+            en: "High Ongoing Savings Rate",
+            zh: "高持續儲蓄利率",
+          },
+          tags: ["high-savings", "best-app"],
+          logoColor: "#FF6600",
+          savingsRate: {
+            introductory: 5.5,
+            ongoing: 5.5,
+            conditions: {
+              en: "Rate applies to Savings Maximiser. To get the bonus rate, you must deposit $1,000+ and make 5+ card purchases with a linked Orange Everyday account each month. Otherwise, the base rate is very low.",
+              zh: "適用於Savings Maximiser帳戶。每月需存款$1,000以上並用連結的Orange Everyday帳戶刷卡5次以上才享加碼利率，否則基本利率很低。",
+            },
+          },
+          onlineBanking: {
+            rating: 4.2,
+            summary: {
+              en: "Well-regarded digital bank with a clean and simple app. It focuses on core functionality and performs it well. Less feature-heavy than the big four.",
+              zh: "備受好評的數位銀行，App介面簡潔。專注核心功能且表現優異。功能較四大銀行精簡。",
+            },
+          },
+          internationalTransfers: {
+            summary: {
+              en: "$0 international transfer fees, however, the exchange rate includes a margin which can be less competitive than Wise/Revolut.",
+              zh: "國際匯款零手續費，但匯率包含手續費，競爭力可能不如Wise/Revolut。",
+            },
+          },
+          cardIssuance: {
+            physical: {
+              en: "5-10 business days after account opening.",
+              zh: "開戶後5-10個工作天。",
+            },
+            virtual: {
+              en: "No, ING does not typically offer an instant virtual card before the physical card arrives. You add the physical card to digital wallets once received.",
+              zh: "否，ING通常不提供實體卡片寄達前的即時虛擬卡片。收到實體卡片後可加入數位錢包。",
+            },
+          },
+          application: {
+            preArrival: false,
+            online: true,
+            details: {
+              en: "Requires an Australian residential address and phone number. The application is entirely online. They are known to be friendly to temporary residents but require you to be in the country.",
+              zh: "需要澳洲居住地址和電話號碼。完全線上申請。對臨時居民較友善，但須在澳洲境內。",
+            },
+          },
+          promotions: {
+            en: "No monthly fees on the Orange Everyday account. Often runs cashback offers on utility bills for new customers.",
+            zh: "Orange Everyday帳戶免月費。經常為新客戶提供水電費現金回饋優惠。",
+          },
+          pros: {
+            en: [
+              "One of the highest ongoing savings rates available.",
+              "No monthly account fees.",
+              "Good, straightforward digital banking experience.",
+              "Rebates on ATM fees nationwide.",
+            ],
+            zh: [
+              "提供最高持續儲蓄利率之一。",
+              "無月費。",
+              "優質直觀的數位銀行體驗。",
+              "全國ATM手續費回饋。",
+            ],
+          },
+          cons: {
+            en: [
+              "Strict monthly conditions to unlock high interest.",
+              "No pre-arrival application.",
+              "No instant virtual card.",
+              "No physical branches.",
+            ],
+            zh: [
+              "需符合嚴格月度條件才享高利率。",
+              "無入境前申請選項。",
+              "無即時虛擬卡片。",
+              "無實體分行。",
+            ],
+          },
+          links: [
+            {
+              title: {
+                en: "Orange Everyday Account",
+                zh: "Orange Everyday 帳戶",
+              },
+              url: "https://www.ing.com.au/everyday-banking.html",
+            },
+            {
+              title: {
+                en: "Savings Maximiser Account",
+                zh: "Savings Maximiser 儲蓄帳戶",
+              },
+              url: "https://www.ing.com.au/savings/savings-maximiser.html",
+            },
+            {
+              title: {
+                en: "Using Your Card Overseas",
+                zh: "海外使用金融卡",
+              },
+              url: "https://helphub.ing.com.au/how-to/cardoverseas/",
+            },
+          ],
+        },
+        {
+          id: "up",
+          name: {
+            en: "Up Bank",
+            zh: "Up Bank",
+          },
+          bestFor: {
+            en: "Modern Digital Banking & Savings Tools",
+            zh: "現代數位銀行與儲蓄工具",
+          },
+          tags: ["best-app", "high-savings"],
+          logoColor: "#FF7A64",
+          savingsRate: {
+            introductory: 4.35,
+            ongoing: 4.35,
+            conditions: {
+              en: "Base variable rate on balances up to $1M. A higher bonus rate (currently up to 5.10% total) is available on up to $1k per saver account if you make 5+ card purchases in a month.",
+              zh: "餘額最高$1M享基本浮動利率。每月刷卡5次以上，每個儲蓄帳戶最高$1k可享更高加碼利率(目前總計最高5.10%)。",
+            },
+          },
+          onlineBanking: {
+            rating: 4.8,
+            summary: {
+              en: 'Considered a leader in user experience. App is visually engaging, with innovative tools for automatic savings ("round-ups"), bill splitting, and spending categorization. Gamified and fun to use.',
+              zh: "被視為使用者體驗領導者。App視覺吸引，具創新自動儲蓄工具(「零錢儲蓄」)、帳單分攤和消費分類功能。遊戲化設計，使用有趣。",
+            },
+          },
+          internationalTransfers: {
+            summary: {
+              en: "International transfers are handled through a partnership with Wise, directly integrated into the app. This means you get Wise's excellent rates and low fees seamlessly.",
+              zh: "國際匯款透過與Wise合作，直接整合至App內。無縫享受Wise優秀匯率和低手續費。",
+            },
+          },
+          cardIssuance: {
+            physical: {
+              en: "Typically arrives within 5-7 business days.",
+              zh: "通常5-7個工作天內寄達。",
+            },
+            virtual: {
+              en: "Yes, you can add your card to Apple Pay or Google Pay instantly after signing up, before the physical card arrives.",
+              zh: "有，註冊後可立即將卡片加入Apple Pay或Google Pay，無需等待實體卡片寄達。",
+            },
+          },
+          application: {
+            preArrival: false,
+            online: true,
+            details: {
+              en: "Requires an Australian address and phone number. The sign-up process is extremely fast and done entirely within the app, usually taking minutes.",
+              zh: "需要澳洲地址和電話號碼。註冊程序極快，完全在App內完成，通常只需幾分鐘。",
+            },
+          },
+          promotions: {
+            en: 'No monthly fees. Their main "promotion" is the feature set itself, plus the seamless Wise integration.',
+            zh: "無月費。主要「優惠」是功能本身，加上無縫Wise整合服務。",
+          },
+          pros: {
+            en: [
+              "Best-in-class mobile app experience and features.",
+              "Integrated with Wise for cheap international transfers.",
+              "Instant virtual card.",
+              "Competitive base savings rate with no conditions.",
+              "No monthly fees or account keeping fees.",
+            ],
+            zh: [
+              "頂級手機App體驗和功能。",
+              "整合Wise提供便宜國際匯款。",
+              "即時虛擬卡片。",
+              "無條件競爭基本儲蓄利率。",
+              "無月費或帳戶管理費。",
+            ],
+          },
+          cons: {
+            en: [
+              "No pre-arrival application.",
+              "No physical branches.",
+              "Highest bonus interest is on a relatively small balance.",
+            ],
+            zh: [
+              "無入境前申請選項。",
+              "無實體分行。",
+              "最高加碼利息僅適用於相對較小餘額。",
+            ],
+          },
+          links: [
+            {
+              title: {
+                en: "Up Bank Homepage",
+                zh: "Up Bank 主頁",
+              },
+              url: "https://up.com.au/",
+            },
+            {
+              title: {
+                en: "Up Bank Features",
+                zh: "Up Bank 功能",
+              },
+              url: "https://up.com.au/features/",
+            },
+            {
+              title: {
+                en: "Up Bank Support",
+                zh: "Up Bank 支援",
+              },
+              url: "https://up.com.au/support/",
+            },
+          ],
+        },
+        {
+          id: "nab",
+          name: {
+            en: "NAB (National Australia Bank)",
+            zh: "NAB (National Australia Bank)",
+          },
+          bestFor: {
+            en: "Simple Accounts & No Monthly Fees",
+            zh: "簡單帳戶與免月費",
+          },
+          tags: [],
+          logoColor: "#D90000",
+          savingsRate: {
+            introductory: 5.0,
+            ongoing: 1.35,
+            conditions: {
+              en: "Intro rate for 4 months on a new NAB iSaver account. For Reward Saver, a higher bonus rate applies if you make at least one deposit and no withdrawals in a month.",
+              zh: "新NAB iSaver帳戶前4個月享優惠利率。Reward Saver帳戶每月至少存款一次且無提款可享較高加碼利率。",
+            },
+          },
+          onlineBanking: {
+            rating: 4.0,
+            summary: {
+              en: "Solid and reliable online banking and app. It covers all necessary features but is generally considered less innovative or intuitive than competitors like CommBank or Westpac.",
+              zh: "穩定可靠的網路銀行和App。涵蓋所有必要功能，但創新性和直覺性一般認為不如CommBank或Westpac等競爭對手。",
+            },
+          },
+          internationalTransfers: {
+            summary: {
+              en: "No fee for online international money transfers, but a significant margin is applied to the exchange rate, making it more expensive than dedicated services.",
+              zh: "線上國際匯款免手續費，但匯率有相當幅度的手續費，比專門服務更昂貴。",
+            },
+          },
+          cardIssuance: {
+            physical: {
+              en: "5-7 business days upon approval.",
+              zh: "核准後5-7個工作天。",
+            },
+            virtual: {
+              en: "Yes, you can set up NAB Pay (for tap and pay) before your physical card arrives. It can be added to digital wallets.",
+              zh: "有，實體卡片寄達前可設定NAB Pay(感應付款)。可加入數位錢包。",
+            },
+          },
+          application: {
+            preArrival: false,
+            online: true,
+            details: {
+              en: "Must have an Australian residential address to apply. ID can be verified online or at a branch. Not specifically geared towards pre-arrival.",
+              zh: "必須有澳洲居住地址才能申請。身分可線上驗證或至分行辦理。非專為入境前申請設計。",
+            },
+          },
+          promotions: {
+            en: "NAB Classic Banking account has no monthly account fees, which is a key selling point.",
+            zh: "NAB Classic Banking帳戶無月費，是主要賣點。",
+          },
+          pros: {
+            en: [
+              "No monthly fees on the main transaction account.",
+              "Competitive introductory savings rate.",
+              "Large ATM and branch network.",
+              "Instant digital card access.",
+            ],
+            zh: [
+              "主要交易帳戶無月費。",
+              "競爭優惠儲蓄利率。",
+              "廣大ATM與分行網路。",
+              "即時數位卡片服務。",
+            ],
+          },
+          cons: {
+            en: [
+              "No pre-arrival application.",
+              "Ongoing savings rates are very low.",
+              "Mobile app is functional but not as highly rated as others.",
+            ],
+            zh: [
+              "無入境前申請選項。",
+              "持續儲蓄利率很低。",
+              "手機App功能齊全但評價不如其他銀行。",
+            ],
+          },
+          links: [
+            {
+              title: {
+                en: "Banking in Australia",
+                zh: "澳洲境內銀行服務",
+              },
+              url: "https://www.nab.com.au/personal/banking-in-australia",
+            },
+            {
+              title: {
+                en: "International Student Banking",
+                zh: "國際學生銀行服務",
+              },
+              url: "https://www.nab.com.au/personal/banking-in-australia/international-students",
+            },
+            {
+              title: {
+                en: "Overseas Money Transfer",
+                zh: "海外匯款資訊",
+              },
+              url: "https://www.nab.com.au/personal/international-banking/transfer-money-overseas",
+            },
+          ],
+        },
+        {
+          id: "anz",
+          name: {
+            en: "ANZ (Australia and New Zealand Banking Group)",
+            zh: "ANZ (Australia and New Zealand Banking Group)",
+          },
+          bestFor: {
+            en: "Migrant Banking & Strong Digital Platform",
+            zh: "移民銀行與強大數位平台",
+          },
+          tags: ["pre-arrival"],
+          logoColor: "#005A9C",
+          savingsRate: {
+            introductory: 4.5,
+            ongoing: 2.0,
+            conditions: {
+              en: "Intro rate on ANZ Progress Saver for first 6 months. Ongoing bonus rate applies with monthly deposits and no withdrawals.",
+              zh: "ANZ Progress Saver前6個月享優惠利率。每月存款且無提款享持續加碼利率。",
+            },
+          },
+          onlineBanking: {
+            rating: 4.3,
+            summary: {
+              en: "Well-designed ANZ Plus app with modern features and good user experience. Comprehensive online banking platform with strong security features.",
+              zh: "設計優良的ANZ Plus App，具現代功能和良好使用體驗。全面的網路銀行平台，安全功能強大。",
+            },
+          },
+          internationalTransfers: {
+            summary: {
+              en: "Competitive international transfer fees with ANZ's global network. Exchange rates include margin but reasonable for traditional banking.",
+              zh: "憑藉ANZ全球網路提供競爭國際匯款費用。匯率包含手續費但對傳統銀行而言合理。",
+            },
+          },
+          cardIssuance: {
+            physical: {
+              en: "5-7 business days after account approval.",
+              zh: "帳戶核准後5-7個工作天。",
+            },
+            virtual: {
+              en: "Yes, digital card available in ANZ Plus app for immediate use with Apple Pay/Google Pay.",
+              zh: "有，ANZ Plus App提供數位卡片，可立即搭配Apple Pay/Google Pay使用。",
+            },
+          },
+          application: {
+            preArrival: true,
+            online: true,
+            details: {
+              en: "Migrant Banking package available for new arrivals. Can apply online before arrival and complete verification upon landing in Australia.",
+              zh: "提供新移民銀行套餐。可於抵達前線上申請，抵達澳洲後完成身分驗證。",
+            },
+          },
+          promotions: {
+            en: "Migrant Banking package often includes fee waivers for first 12 months and special rates for new arrivals. ANZ Plus accounts have no monthly fees.",
+            zh: "移民銀行套餐通常包含前12個月免費和新移民特別優惠。ANZ Plus帳戶無月費。",
+          },
+          pros: {
+            en: [
+              "Strong migrant banking support and services.",
+              "Modern ANZ Plus digital platform.",
+              "Pre-arrival application available.",
+              "Instant virtual card access.",
+              "Competitive rates for new migrants.",
+            ],
+            zh: [
+              "強大移民銀行支援與服務。",
+              "現代ANZ Plus數位平台。",
+              "提供入境前申請。",
+              "即時虛擬卡片服務。",
+              "新移民競爭優惠利率。",
+            ],
+          },
+          cons: {
+            en: [
+              "Savings rates are moderate compared to online-only banks.",
+              "Some premium services require higher account balances.",
+              "Branch network smaller than CommBank.",
+            ],
+            zh: [
+              "儲蓄利率相比純網銀一般。",
+              "部分進階服務需較高帳戶餘額。",
+              "分行網路比CommBank小。",
+            ],
+          },
+          links: [
+            {
+              title: {
+                en: "Migrant Banking Services",
+                zh: "移民銀行服務",
+              },
+              url: "https://www.anz.com.au/personal/bank-accounts/everyday-accounts/migrant-banking/",
+            },
+            {
+              title: {
+                en: "Savings Account Information",
+                zh: "儲蓄帳戶資訊",
+              },
+              url: "https://www.anz.com.au/personal/bank-accounts/savings-accounts/",
+            },
+            {
+              title: {
+                en: "ANZ Plus Platform",
+                zh: "ANZ Plus 平台",
+              },
+              url: "https://www.anz.com.au/plus/",
+            },
+          ],
+        },
+        {
+          id: "hsbc",
+          name: {
+            en: "HSBC Australia",
+            zh: "HSBC Australia",
+          },
+          bestFor: {
+            en: "International Banking & Global Network",
+            zh: "國際銀行與全球網路",
+          },
+          tags: ["pre-arrival"],
+          logoColor: "#DB0011",
+          savingsRate: {
+            introductory: 4.0,
+            ongoing: 1.8,
+            conditions: {
+              en: "Intro rate on HSBC Online Bonus Saver for first 6 months. Ongoing bonus rate with monthly deposits and limited withdrawals.",
+              zh: "HSBC線上加碼儲蓄帳戶前6個月享優惠利率。每月存款且限制提款享持續加碼利率。",
+            },
+          },
+          onlineBanking: {
+            rating: 4.0,
+            summary: {
+              en: "Global HSBC platform with consistent experience across countries. Good for existing HSBC customers but interface can feel dated compared to local competitors.",
+              zh: "全球HSBC平台提供跨國一致體驗。適合既有HSBC客戶，但介面相比當地競爭對手較為過時。",
+            },
+          },
+          internationalTransfers: {
+            summary: {
+              en: "Excellent for international transfers with HSBC's global network. Preferential rates for transfers between HSBC accounts worldwide.",
+              zh: "憑藉HSBC全球網路提供優秀國際匯款服務。全球HSBC帳戶間匯款享優惠費率。",
+            },
+          },
+          cardIssuance: {
+            physical: {
+              en: "7-10 business days after account opening.",
+              zh: "開戶後7-10個工作天。",
+            },
+            virtual: {
+              en: "Limited virtual card options. Physical card required for most services.",
+              zh: "虛擬卡片選項有限。大部分服務需要實體卡片。",
+            },
+          },
+          application: {
+            preArrival: true,
+            online: true,
+            details: {
+              en: "Strong pre-arrival application process, especially for existing HSBC customers. Can open Australian account from overseas with proper documentation. Note: Taiwan residents cannot apply online for an Australian HSBC account and must apply through other channels.",
+              zh: "強大入境前申請流程，特別適合既有HSBC客戶。可在海外憑適當文件開立澳洲帳戶。注意：台灣居民無法線上申請澳洲HSBC帳戶，必須透過其他管道申請。",
+            },
+          },
+          promotions: {
+            en: "International customer packages with fee waivers and preferential rates. Premier customers get enhanced benefits and lower fees.",
+            zh: "國際客戶套餐享免費和優惠費率。卓越理財客戶享加強福利和更低費用。",
+          },
+          pros: {
+            en: [
+              "Excellent for existing HSBC customers globally.",
+              "Strong international banking capabilities.",
+              "Pre-arrival account opening available.",
+              "Global network and recognition.",
+              "Good for frequent international transfers.",
+            ],
+            zh: [
+              "非常適合全球既有HSBC客戶。",
+              "強大國際銀行能力。",
+              "提供入境前開戶。",
+              "全球網路與知名度。",
+              "適合頻繁國際匯款。",
+            ],
+          },
+          cons: {
+            en: [
+              "Savings rates are generally lower than local competitors.",
+              "Limited virtual banking options.",
+              "Smaller local branch network.",
+              "App experience not as modern as local banks.",
+            ],
+            zh: [
+              "儲蓄利率普遍低於當地競爭對手。",
+              "虛擬銀行選項有限。",
+              "當地分行網路較小。",
+              "App體驗不如當地銀行現代。",
+            ],
+          },
+          links: [
+            {
+              title: {
+                en: "Open Australian Account (International)",
+                zh: "開立澳洲銀行帳戶（國際）",
+              },
+              url: "https://www.hsbc.com.au/international/open-an-australian-bank-account/",
+            },
+            {
+              title: {
+                en: "Moving to Australia Services",
+                zh: "移居澳洲服務",
+              },
+              url: "https://www.hsbc.com.au/international/moving-to-australia/",
+            },
+            {
+              title: {
+                en: "International Transfer Services",
+                zh: "國際匯款服務",
+              },
+              url: "https://www.hsbc.com.au/foreign-exchange/international-transfers/",
+            },
+          ],
+        },
+      ];
+
+      const bankGrid = document.getElementById("bank-grid");
+      const modal = document.getElementById("modal");
+      const modalContent = document.getElementById("modal-content");
+      const modalBody = document.getElementById("modal-body");
+      const modalClose = document.getElementById("modal-close");
+      const filterBtns = document.querySelectorAll(".filter-btn");
+      const langToggle = document.getElementById("langToggle");
+      const currentLangSpan = document.getElementById("currentLang");
+
+      // Translation function
+      function translatePage() {
+        const elements = document.querySelectorAll("[data-translate]");
+        elements.forEach((element) => {
+          const key = element.getAttribute("data-translate");
+          if (
+            translations[currentLanguage] &&
+            translations[currentLanguage][key]
+          ) {
+            element.textContent = translations[currentLanguage][key];
+          }
+        });
+
+        // Update language toggle display
+        currentLangSpan.textContent = currentLanguage.toUpperCase();
+
+        // Re-render bank cards and chart with translated content
+        renderBankCards(
+          document.querySelector(".filter-btn.active").dataset.filter
+        );
+        createChart();
+      }
+
+      // Language toggle event listener
+      langToggle.addEventListener("click", () => {
+        currentLanguage = currentLanguage === "en" ? "zh" : "en";
+        translatePage();
+        updateMediaSources(); // Update media files when language changes
+      });
+
+      // Helper function to get translated content
+      function getTranslatedContent(content, key = null) {
+        if (typeof content === "object" && content !== null) {
+          if (content[currentLanguage]) {
+            return content[currentLanguage];
+          }
+          return content.en || content; // fallback to English or original
+        }
+
+        // For simple translations using the key
+        if (
+          key &&
+          translations[currentLanguage] &&
+          translations[currentLanguage][key]
+        ) {
+          return translations[currentLanguage][key];
+        }
+
+        return content;
+      }
+
+      function renderBankCards(filter = "all") {
+        bankGrid.innerHTML = "";
+        const filteredBanks = bankData.filter((bank) => {
+          if (filter === "all") return true;
+          if (filter === "high-savings")
+            return (
+              bank.savingsRate.introductory >= 5.0 ||
+              (bank.id === "ing" && bank.savingsRate.ongoing >= 5.0)
+            );
+          return bank.tags.includes(filter);
+        });
+
+        filteredBanks.forEach((bank) => {
+          const card = document.createElement("div");
+          card.className =
+            "bank-card bg-white rounded-lg shadow-md p-4 md:p-6 flex flex-col cursor-pointer border border-gray-100";
+          card.dataset.id = bank.id;
+
+          const bestFor = getTranslatedContent(bank.bestFor);
+          const bankName = getTranslatedContent(bank.name);
+          const introLabel = getTranslatedContent(null, "introSavingsRate");
+          const ongoingLabel = getTranslatedContent(null, "ongoingRate");
+          const learnMoreLabel = getTranslatedContent(null, "learnMore");
+
+          card.innerHTML = `
+                    <div class="flex items-center mb-3 md:mb-4">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white font-bold text-lg md:text-2xl mr-3 md:mr-4 flex-shrink-0" style="background-color: ${
+                          bank.logoColor
+                        };">
+                            ${bankName.charAt(0)}
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-800 truncate">${bankName}</h3>
+                            <p class="text-xs md:text-sm text-gray-500 line-clamp-2">${bestFor}</p>
+                        </div>
+                    </div>
+                    <div class="my-3 md:my-4 flex-grow">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <span class="text-sm md:text-base text-gray-600">${introLabel}</span>
+                            <span class="text-xl md:text-2xl font-bold" style="color: #6D5D4B;">${bank.savingsRate.introductory.toFixed(
+                              2
+                            )}%</span>
+                        </div>
+                         <div class="flex justify-between items-baseline text-xs md:text-sm">
+                            <span class="text-gray-500">${ongoingLabel}</span>
+                            <span class="font-semibold text-gray-600">${
+                              bank.id === "ing"
+                                ? currentLanguage === "zh"
+                                  ? "最高 5.50%"
+                                  : "Up to 5.50%"
+                                : bank.savingsRate.ongoing.toFixed(2) + "%"
+                            }*</span>
+                        </div>
+                    </div>
+                    <button class="w-full mt-3 md:mt-4 bg-transparent text-center font-semibold py-2 px-3 md:px-4 rounded-lg text-sm md:text-base" style="color: #C8A47E; border: 1px solid #C8A47E;">${learnMoreLabel}</button>
+                `;
+          bankGrid.appendChild(card);
+        });
+      }
+
+      function openModal(bankId) {
+        const bank = bankData.find((b) => b.id === bankId);
+        if (!bank) return;
+
+        const bestFor = getTranslatedContent(bank.bestFor);
+        const bankName = getTranslatedContent(bank.name);
+        const conditions = getTranslatedContent(bank.savingsRate.conditions);
+        const applicationDetails = getTranslatedContent(
+          bank.application.details
+        );
+        const virtualCard = getTranslatedContent(bank.cardIssuance.virtual);
+        const physicalCard = getTranslatedContent(bank.cardIssuance.physical);
+        const onlineBankingSummary = getTranslatedContent(
+          bank.onlineBanking.summary
+        );
+        const promotions = getTranslatedContent(bank.promotions);
+        const internationalTransfers = getTranslatedContent(
+          bank.internationalTransfers.summary
+        );
+        const pros = getTranslatedContent(bank.pros) || [];
+        const cons = getTranslatedContent(bank.cons) || [];
+
+        modalBody.innerHTML = `
+                <div class="flex items-center mb-4 md:mb-6">
+                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center text-white font-bold text-xl md:text-3xl mr-3 md:mr-5 flex-shrink-0" style="background-color: ${
+                      bank.logoColor
+                    };">
+                        ${bankName.charAt(0)}
+                    </div>
+                    <div class="min-w-0">
+                        <h2 class="text-xl md:text-3xl font-bold leading-tight">${bankName}</h2>
+                        <p class="text-sm md:text-base text-gray-500">${bestFor}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+                    <div class="bg-gray-50 p-3 md:p-4 rounded-lg">
+                        <h4 class="font-bold text-base md:text-lg mb-2">${getTranslatedContent(
+                          null,
+                          "pros"
+                        )}</h4>
+                        <ul class="space-y-1 text-gray-700 text-sm md:text-base">${pros
+                          .map((p) => `<li class="pro-item">${p}</li>`)
+                          .join("")}</ul>
+                    </div>
+                    <div class="bg-red-50 p-3 md:p-4 rounded-lg">
+                        <h4 class="font-bold text-base md:text-lg mb-2">${getTranslatedContent(
+                          null,
+                          "cons"
+                        )}</h4>
+                        <ul class="space-y-1 text-gray-700 text-sm md:text-base">${cons
+                          .map((c) => `<li class="con-item">${c}</li>`)
+                          .join("")}</ul>
+                    </div>
+                </div>
+
+                <div class="space-y-4 md:space-y-5">
+                    <div>
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                          null,
+                          "savingsRate"
+                        )}</h4>
+                        <p class="text-sm md:text-base"><strong>${getTranslatedContent(
+                          null,
+                          "introductory"
+                        )}</strong> <span class="text-lg md:text-xl font-bold" style="color:#6D5D4B;">${bank.savingsRate.introductory.toFixed(
+          2
+        )}%</span></p>
+                        <p class="text-sm md:text-base"><strong>${getTranslatedContent(
+                          null,
+                          "conditions"
+                        )}</strong> ${conditions}</p>
+                    </div>
+                     <div>
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                          null,
+                          "applicationProcess"
+                        )}</h4>
+                         <p class="text-sm md:text-base"><strong>${getTranslatedContent(
+                           null,
+                           "preArrivalApplication"
+                         )}</strong> ${
+          bank.application.preArrival
+            ? `<span class="font-semibold text-green-600">${getTranslatedContent(
+                null,
+                "yes"
+              )}</span>`
+            : `<span class="font-semibold text-red-600">${getTranslatedContent(
+                null,
+                "no"
+              )}</span>`
+        }</p>
+                        <p class="text-sm md:text-base">${applicationDetails}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                          null,
+                          "cardIssuance"
+                        )}</h4>
+                        <p class="text-sm md:text-base"><strong>${getTranslatedContent(
+                          null,
+                          "virtualCard"
+                        )}</strong> ${virtualCard}</p>
+                        <p class="text-sm md:text-base"><strong>${getTranslatedContent(
+                          null,
+                          "physicalCard"
+                        )}</strong> ${physicalCard}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                          null,
+                          "onlineBanking"
+                        )}</h4>
+                        <p class="text-sm md:text-base">${onlineBankingSummary}</p>
+                    </div>
+                     <div>
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                          null,
+                          "promotionsAndFees"
+                        )}</h4>
+                        <p class="text-sm md:text-base">${promotions}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                          null,
+                          "internationalTransfers"
+                        )}</h4>
+                        <p class="text-sm md:text-base">${internationalTransfers}</p>
+                    </div>
+                    ${
+                      bank.links
+                        ? `
+                    <div>
+                        <h4 class="font-bold text-base md:text-lg border-b pb-1 mb-2">${getTranslatedContent(
+                          null,
+                          "officialBankLinks"
+                        )}</h4>
+                        <div class="space-y-2">
+                            ${bank.links
+                              .map(
+                                (link) => `
+                                <div>
+                                    <a href="${
+                                      link.url
+                                    }" target="_blank" rel="noopener noreferrer" 
+                                       class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200 text-sm md:text-base">
+                                        <span class="break-words">${getTranslatedContent(
+                                          link.title
+                                        )}</span>
+                                        <svg class="w-3 h-3 md:w-4 md:h-4 ml-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            `
+                              )
+                              .join("")}
+                        </div>
+                    </div>
+                    `
+                        : ""
+                    }
+                </div>
+            `;
+
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          modal.classList.remove("opacity-0");
+          modalContent.classList.remove("opacity-0", "translate-y-8");
+        }, 10);
+      }
+
+      function closeModal() {
+        modal.classList.add("opacity-0");
+        modalContent.classList.add("opacity-0", "translate-y-8");
+        setTimeout(() => modal.classList.add("hidden"), 300);
+      }
+
+      bankGrid.addEventListener("click", (e) => {
+        const card = e.target.closest(".bank-card");
+        if (card) {
+          openModal(card.dataset.id);
+        }
+      });
+
+      modalClose.addEventListener("click", closeModal);
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      filterBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          filterBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          renderBankCards(btn.dataset.filter);
+        });
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+          closeModal();
+        }
+      });
+
+      // Chart creation function
+      let chartInstance = null;
+
+      function createChart() {
+        const ctx = document
+          .getElementById("savingsRateChart")
+          .getContext("2d");
+
+        // Destroy existing chart if it exists
+        if (chartInstance) {
+          chartInstance.destroy();
+        }
+
+        const chartTitle =
+          currentLanguage === "zh"
+            ? "一目了然：開戶儲蓄利率"
+            : "At-a-Glance: Introductory Savings Rates";
+        const datasetLabel =
+          currentLanguage === "zh"
+            ? "開戶儲蓄利率 (%)"
+            : "Introductory Savings Rate (%)";
+
+        chartInstance = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: bankData.map((b) => getTranslatedContent(b.name)),
+            datasets: [
+              {
+                label: datasetLabel,
+                data: bankData.map((b) => b.savingsRate.introductory),
+                backgroundColor: [
+                  "rgba(255, 204, 0, 0.6)",
+                  "rgba(230, 0, 0, 0.6)",
+                  "rgba(255, 102, 0, 0.6)",
+                  "rgba(255, 122, 100, 0.6)",
+                  "rgba(217, 0, 0, 0.6)",
+                  "rgba(0, 90, 156, 0.6)",
+                  "rgba(219, 0, 17, 0.6)",
+                ],
+                borderColor: [
+                  "rgba(255, 204, 0, 1)",
+                  "rgba(230, 0, 0, 1)",
+                  "rgba(255, 102, 0, 1)",
+                  "rgba(255, 122, 100, 1)",
+                  "rgba(217, 0, 0, 1)",
+                  "rgba(0, 90, 156, 1)",
+                  "rgba(219, 0, 17, 1)",
+                ],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false,
+              },
+              title: {
+                display: true,
+                text: chartTitle,
+                font: {
+                  size: 18,
+                },
+                color: "#333",
+              },
+            },
+            scales: {
+              x: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function (value) {
+                    return value + "%";
+                  },
+                },
+              },
+              y: {
+                ticks: {
+                  autoSkip: false,
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", () => {
+        renderBankCards();
+        createChart();
+        translatePage(); // Apply initial translations
+        updateMediaSources(); // Set initial media sources
+        initializeMediaControls(); // Initialize media speed controls
+      });
+
+      // Media controls functionality (dropdown-based)
+      function initializeMediaControls() {
+        const audioPlayer = document.getElementById("audioPlayer");
+        const videoPlayer = document.getElementById("videoPlayer");
+        const audioSpeedControl = document.getElementById("audioSpeedControl");
+        const videoSpeedControl = document.getElementById("videoSpeedControl");
+        const audioRewind10 = document.getElementById("audioRewind10");
+        const audioForward10 = document.getElementById("audioForward10");
+        const videoRewind10 = document.getElementById("videoRewind10");
+        const videoForward10 = document.getElementById("videoForward10");
+        const audioCurrentTime = document.getElementById("audioCurrentTime");
+        const audioDuration = document.getElementById("audioDuration");
+        const videoCurrentTime = document.getElementById("videoCurrentTime");
+        const videoDuration = document.getElementById("videoDuration");
+        const audioProgressBar = document.getElementById("audioProgressBar");
+        const videoProgressBar = document.getElementById("videoProgressBar");
+
+        // Format time helper function
+        function formatTime(seconds) {
+          const mins = Math.floor(seconds / 60);
+          const secs = Math.floor(seconds % 60);
+          return `${mins.toString().padStart(2, "0")}:${secs
+            .toString()
+            .padStart(2, "0")}`;
+        }
+
+        // Audio controls
+        if (audioPlayer) {
+          // Speed control
+          audioSpeedControl.addEventListener("change", (e) => {
+            audioPlayer.playbackRate = parseFloat(e.target.value);
+          });
+
+          // Skip controls
+          audioRewind10.addEventListener("click", () => {
+            audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 10);
+          });
+
+          audioForward10.addEventListener("click", () => {
+            audioPlayer.currentTime = Math.min(
+              audioPlayer.duration || 0,
+              audioPlayer.currentTime + 10
+            );
+          });
+
+          // Time display updates
+          audioPlayer.addEventListener("loadedmetadata", () => {
+            audioDuration.textContent = formatTime(audioPlayer.duration || 0);
+          });
+
+          audioPlayer.addEventListener("timeupdate", () => {
+            audioCurrentTime.textContent = formatTime(audioPlayer.currentTime);
+            // Update progress bar
+            if (audioProgressBar && audioPlayer.duration) {
+              const progress =
+                (audioPlayer.currentTime / audioPlayer.duration) * 100;
+              audioProgressBar.style.width = progress + "%";
+            }
+          });
+        }
+
+        // Video controls
+        if (videoPlayer) {
+          // Speed control
+          videoSpeedControl.addEventListener("change", (e) => {
+            videoPlayer.playbackRate = parseFloat(e.target.value);
+          });
+
+          // Skip controls
+          videoRewind10.addEventListener("click", () => {
+            videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
+          });
+
+          videoForward10.addEventListener("click", () => {
+            videoPlayer.currentTime = Math.min(
+              videoPlayer.duration || 0,
+              videoPlayer.currentTime + 10
+            );
+          });
+
+          // Time display updates
+          videoPlayer.addEventListener("loadedmetadata", () => {
+            videoDuration.textContent = formatTime(videoPlayer.duration || 0);
+          });
+
+          videoPlayer.addEventListener("timeupdate", () => {
+            videoCurrentTime.textContent = formatTime(videoPlayer.currentTime);
+            // Update progress bar
+            if (videoProgressBar && videoPlayer.duration) {
+              const progress =
+                (videoPlayer.currentTime / videoPlayer.duration) * 100;
+              videoProgressBar.style.width = progress + "%";
+            }
+          });
+        }
+      }
+    </script>
+
+    <script>
+      // Dynamically set the homepage link for local and GitHub Pages
+      const btn = document.getElementById("backHomeBtn");
+      if (
+        location.hostname === "localhost" ||
+        location.hostname === "127.0.0.1"
+      ) {
+        btn.href = "/";
+      } else {
+        btn.href = "/vibe-stuff/";
+      }
+    </script>
+  </body>
+</html>
