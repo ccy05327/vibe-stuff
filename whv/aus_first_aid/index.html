@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>First Aid Certificate Guide Australia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Warm Neutrals & Sage -->
+    <!-- Application Structure Plan: The application uses a state-centric dashboard structure. The primary interaction is a set of state-selector buttons (QLD, NSW, VIC, WA) at the top. Selecting a state dynamically updates the entire view below, including a grid of provider comparison cards and a summary bar chart. This structure was chosen because users typically search for courses based on their location first. It provides an immediate, filtered answer to "What are my options in my state?". The flow is: 1. Select State -> 2. See detailed provider options in cards -> 3. Get a quick visual comparison from the chart. This is more intuitive than a single, long, unfiltered list. -->
+    <!-- Visualization & Content Choices: 
+    - Report Info: Course providers, price, duration, format per state. Goal: Compare options within a state. Viz: Interactive Cards (HTML/Tailwind) & Bar Chart (Chart.js). Interaction: State selection buttons filter both cards and chart. Justification: Cards provide detailed, scannable information. The bar chart offers a high-level visual summary of cost and time commitment, appealing to users who want a quick glance. This dual presentation caters to different user preferences for data consumption.
+    - Report Info: General facts about First Aid certs (code, validity). Goal: Inform and provide context. Viz: Styled text blocks in a dedicated section. Interaction: Static content. Justification: Essential information that frames the comparison data, helping users understand the qualification they are seeking.
+    - Library/Method: Vanilla JS for state management and DOM manipulation. Chart.js for canvas-based charting. Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #fdfbf8;
+        color: #3d405b;
+      }
+      .active-state-btn {
+        background-color: #81b29a !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      }
+      .state-btn {
+        transition: all 0.3s ease;
+      }
+      .card {
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+          0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 400px;
+        max-height: 50vh;
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+      <!-- Back Button -->
+      <div class="mb-6 flex items-center">
+        <a
+          href="/index.html"
+          class="inline-flex items-center px-5 py-2 rounded-full font-medium text-[#3D405B] bg-gray-100 hover:bg-[#81B29A] hover:text-white transition-colors state-btn shadow-sm border border-gray-200"
+        >
+          <span class="mr-2 text-xl">←</span> Back to Portal
+        </a>
+      </div>
+      <header class="text-center mb-8">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#3D405B]">
+          First Aid Certificate Guide
+        </h1>
+        <p class="mt-2 text-lg text-gray-600">
+          Compare blended course options in Australia (HLTAID011)
+        </p>
+      </header>
+
+      <!-- Media Section -->
+      <!-- Audio Section -->
+      <section class="mb-8">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 w-full max-w-2xl mx-auto text-center flex flex-col items-center">
+          <h3 class="text-lg font-semibold text-[#3D405B] mb-2">🎧 Listen: The Great Australian First Aid Paradox</h3>
+          <audio controls class="w-full max-w-lg rounded-lg border border-gray-200 bg-gray-50">
+            <source src="The Great Australian First Aid Paradox.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+          <!-- Custom Audio Controls -->
+          <div class="flex flex-col items-center mt-4">
+            <div class="flex gap-4 justify-center mb-2 items-center">
+              <button id="audio-back" class="px-3 py-2 rounded-full bg-gray-100 hover:bg-[#81B29A] hover:text-white text-[#3D405B] font-semibold shadow border border-gray-200" title="Back 10s">⏪ 10s</button>
+              <button id="audio-speed" class="px-3 py-1 rounded-full bg-gray-100 hover:bg-[#81B29A] hover:text-white text-[#3D405B] font-semibold shadow border border-gray-200">1x</button>
+              <button id="audio-forward" class="px-3 py-2 rounded-full bg-gray-100 hover:bg-[#81B29A] hover:text-white text-[#3D405B] font-semibold shadow border border-gray-200" title="Forward 10s">10s ⏩</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Video Section -->
+      <section class="mb-10">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 w-full max-w-2xl mx-auto text-center flex flex-col items-center">
+          <h3 class="text-lg font-semibold text-[#3D405B] mb-2">🎬 Watch: Demystifying First Aid</h3>
+          <video controls class="w-full max-w-2xl rounded-lg border border-gray-200 bg-gray-50" style="max-height:420px">
+            <source src="Demystifying First Aid.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <!-- Custom Video Controls -->
+          <div class="flex flex-col items-center mt-4">
+            <div class="flex gap-4 justify-center mb-2 items-center">
+              <button id="video-back" class="px-3 py-2 rounded-full bg-gray-100 hover:bg-[#81B29A] hover:text-white text-[#3D405B] font-semibold shadow border border-gray-200" title="Back 10s">⏪ 10s</button>
+              <button id="video-speed" class="px-3 py-1 rounded-full bg-gray-100 hover:bg-[#81B29A] hover:text-white text-[#3D405B] font-semibold shadow border border-gray-200">1x</button>
+              <button id="video-forward" class="px-3 py-2 rounded-full bg-gray-100 hover:bg-[#81B29A] hover:text-white text-[#3D405B] font-semibold shadow border border-gray-200" title="Forward 10s">10s ⏩</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      </header>
+
+      <main>
+  <section id="state-selector" class="mb-8">
+          <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+            <h2 class="text-xl font-semibold text-center mb-4 text-[#3D405B]">
+              Select Your State
+            </h2>
+            <div id="state-buttons" class="flex flex-wrap justify-center gap-3">
+              <button
+                data-state="QLD"
+                class="state-btn px-6 py-3 font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200"
+              >
+                Queensland
+              </button>
+              <button
+                data-state="NSW"
+                class="state-btn px-6 py-3 font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200"
+              >
+                New South Wales
+              </button>
+              <button
+                data-state="VIC"
+                class="state-btn px-6 py-3 font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200"
+              >
+                Victoria
+              </button>
+              <button
+                data-state="WA"
+                class="state-btn px-6 py-3 font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200"
+              >
+                Western Australia
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="course-introduction"
+          class="mb-10 text-center max-w-3xl mx-auto"
+        >
+          <p class="text-gray-700">
+            This guide focuses on the standard Australian First Aid certificate,
+            "HLTAID011 - Provide First Aid". Most providers offer a 'blended'
+            model, which is the most common and convenient option. This involves
+            completing the theory component online at your own pace before
+            attending a shorter, face-to-face session for the mandatory
+            practical assessments. The information below reflects this popular
+            blended format.
+          </p>
+        </section>
+
+        <section id="comparison-view" class="mb-12">
+          <h3 id="provider-heading" class="text-2xl font-bold text-center mb-8">
+            Course Providers in Queensland
+          </h3>
+          <div
+            id="provider-cards"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          ></div>
+        </section>
+
+        <section id="visual-comparison" class="mb-12">
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 class="text-2xl font-bold text-center mb-6">
+              Provider Comparison Chart
+            </h3>
+            <p class="text-center text-gray-600 mb-6">
+              This chart provides a visual overview of the estimated cost and
+              total time commitment for each provider in the selected state. Use
+              this for a quick comparison of your options.
+            </p>
+            <div class="chart-container">
+              <canvas id="comparisonChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section id="faq">
+          <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+            <h3 class="text-2xl font-bold text-center mb-8">Key Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+              <div>
+                <div class="text-4xl mb-2 text-[#81B29A]">📜</div>
+                <h4 class="font-semibold text-lg mb-2">Certificate Code</h4>
+                <p class="text-gray-600">
+                  The national standard for this qualification is
+                  <span class="font-bold">HLTAID011 - Provide First Aid</span>.
+                  Ensure any course you book covers this unit.
+                </p>
+              </div>
+              <div>
+                <div class="text-4xl mb-2 text-[#81B29A]">🗓️</div>
+                <h4 class="font-semibold text-lg mb-2">Certificate Validity</h4>
+                <p class="text-gray-600">
+                  Your First Aid certificate is valid for
+                  <span class="font-bold">three years</span>. The CPR component
+                  (HLTAID009) should be renewed annually.
+                </p>
+              </div>
+              <div>
+                <div class="text-4xl mb-2 text-[#81B29A]">📚</div>
+                <h4 class="font-semibold text-lg mb-2">Typical Content</h4>
+                <p class="text-gray-600">
+                  Courses cover CPR, bandaging, managing bleeding, burns,
+                  fractures, allergic reactions, and responding to common
+                  emergencies.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="text-center mt-12 py-6 border-t border-gray-200">
+        <p class="text-gray-500">
+          &copy; 2025 First Aid Guide. Information is indicative and should be
+          confirmed with providers.
+        </p>
+      </footer>
+    </div>
+
+    <script>
+    // Custom Audio Controls
+    document.addEventListener('DOMContentLoaded', function () {
+      const audio = document.querySelector('audio');
+      const audioBackBtn = document.getElementById('audio-back');
+      const audioForwardBtn = document.getElementById('audio-forward');
+      const audioSpeedBtn = document.getElementById('audio-speed');
+      let audioSpeeds = [1, 1.25, 1.5, 2];
+      let audioSpeedIndex = 0;
+
+      audioBackBtn.addEventListener('click', function () {
+        audio.currentTime = Math.max(0, audio.currentTime - 10);
+      });
+      audioForwardBtn.addEventListener('click', function () {
+        audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
+      });
+      audioSpeedBtn.addEventListener('click', function () {
+        audioSpeedIndex = (audioSpeedIndex + 1) % audioSpeeds.length;
+        audio.playbackRate = audioSpeeds[audioSpeedIndex];
+        audioSpeedBtn.textContent = audioSpeeds[audioSpeedIndex] + 'x';
+      });
+    });
+
+    // Custom Video Controls
+    document.addEventListener('DOMContentLoaded', function () {
+      const video = document.querySelector('video');
+      const videoBackBtn = document.getElementById('video-back');
+      const videoForwardBtn = document.getElementById('video-forward');
+      const videoSpeedBtn = document.getElementById('video-speed');
+      let videoSpeeds = [1, 1.25, 1.5, 2];
+      let videoSpeedIndex = 0;
+
+      videoBackBtn.addEventListener('click', function () {
+        video.currentTime = Math.max(0, video.currentTime - 10);
+      });
+      videoForwardBtn.addEventListener('click', function () {
+        video.currentTime = Math.min(video.duration, video.currentTime + 10);
+      });
+      videoSpeedBtn.addEventListener('click', function () {
+        videoSpeedIndex = (videoSpeedIndex + 1) % videoSpeeds.length;
+        video.playbackRate = videoSpeeds[videoSpeedIndex];
+        videoSpeedBtn.textContent = videoSpeeds[videoSpeedIndex] + 'x';
+      });
+    });
+      const courseData = {
+        QLD: [
+          {
+            provider: "St John Ambulance",
+            price: 129,
+            onlineDuration: 5,
+            practicalDuration: 7,
+            format: "Full Day Practical",
+            ease: "Structured",
+            notes: "Highly regarded, comprehensive in-person session.",
+          },
+          {
+            provider: "Australian Red Cross",
+            price: 140,
+            onlineDuration: 4,
+            practicalDuration: 6.5,
+            format: "Blended Learning",
+            ease: "Supportive",
+            notes: "Focus on real-world scenarios and humanitarian values.",
+          },
+          {
+            provider: "First Aid Pro",
+            price: 97,
+            onlineDuration: 4,
+            practicalDuration: 2,
+            format: "Express Practical",
+            ease: "Efficient",
+            notes: "Fast-track practical assessment for confident learners.",
+          },
+          {
+            provider: "Australia Wide First Aid",
+            price: 105,
+            onlineDuration: 5,
+            practicalDuration: 2.5,
+            format: "Express Blended",
+            ease: "Flexible",
+            notes: "Popular choice with frequent course dates.",
+          },
+        ],
+        NSW: [
+          {
+            provider: "St John Ambulance",
+            price: 155,
+            onlineDuration: 6,
+            practicalDuration: 7,
+            format: "Full Day Practical",
+            ease: "Structured",
+            notes: "Extensive network of training locations across the state.",
+          },
+          {
+            provider: "Australian Red Cross",
+            price: 160,
+            onlineDuration: 5,
+            practicalDuration: 6.5,
+            format: "Blended Learning",
+            ease: "Supportive",
+            notes: "Courses available in multiple languages in some locations.",
+          },
+          {
+            provider: "Vital First Aid",
+            price: 110,
+            onlineDuration: 4,
+            practicalDuration: 3,
+            format: "Express Blended",
+            ease: "Efficient",
+            notes: "Strong focus on workplace first aid requirements.",
+          },
+          {
+            provider: "CBD College",
+            price: 99,
+            onlineDuration: 4,
+            practicalDuration: 2,
+            format: "Express Practical",
+            ease: "Flexible",
+            notes:
+              "Very fast practical sessions, aimed at renewals or quick certification.",
+          },
+        ],
+        VIC: [
+          {
+            provider: "St John Ambulance",
+            price: 165,
+            onlineDuration: 6,
+            practicalDuration: 7,
+            format: "Full Day Practical",
+            ease: "Structured",
+            notes: "Victoria's leading provider with a long history.",
+          },
+          {
+            provider: "Australian Red Cross",
+            price: 150,
+            onlineDuration: 5,
+            practicalDuration: 6.5,
+            format: "Blended Learning",
+            ease: "Supportive",
+            notes: "Community-focused training programs.",
+          },
+          {
+            provider: "First Aid Pro",
+            price: 97,
+            onlineDuration: 4,
+            practicalDuration: 2,
+            format: "Express Practical",
+            ease: "Efficient",
+            notes: "Lowest price point with a very short practical component.",
+          },
+          {
+            provider: "Skillbase",
+            price: 120,
+            onlineDuration: 5,
+            practicalDuration: 4,
+            format: "Blended Learning",
+            ease: "Flexible",
+            notes: "Balanced approach between online and practical time.",
+          },
+        ],
+        WA: [
+          {
+            provider: "St John WA",
+            price: 179,
+            onlineDuration: 4,
+            practicalDuration: 6,
+            format: "Blended Learning",
+            ease: "Structured",
+            notes: "The primary provider in WA, operates ambulance services.",
+          },
+          {
+            provider: "Australian Red Cross",
+            price: 165,
+            onlineDuration: 5,
+            practicalDuration: 6.5,
+            format: "Blended Learning",
+            ease: "Supportive",
+            notes: "Well-regarded training with a community focus.",
+          },
+          {
+            provider: "First Aid Training Group",
+            price: 119,
+            onlineDuration: 4,
+            practicalDuration: 3,
+            format: "Express Blended",
+            ease: "Efficient",
+            notes: "Competitive pricing and flexible booking options.",
+          },
+          {
+            provider: "RTO 90909",
+            price: 135,
+            onlineDuration: 5,
+            practicalDuration: 4,
+            format: "Blended Learning",
+            ease: "Flexible",
+            notes: "Focuses on both public and corporate training solutions.",
+          },
+        ],
+      };
+
+      let selectedState = "QLD";
+      let comparisonChart = null;
+
+      const stateButtonsContainer = document.getElementById("state-buttons");
+      const providerHeading = document.getElementById("provider-heading");
+      const providerCardsContainer = document.getElementById("provider-cards");
+      const chartCanvas = document
+        .getElementById("comparisonChart")
+        .getContext("2d");
+
+      const stateNames = {
+        QLD: "Queensland",
+        NSW: "New South Wales",
+        VIC: "Victoria",
+        WA: "Western Australia",
+      };
+
+      function createProviderCard(provider) {
+        const totalDuration =
+          provider.onlineDuration + provider.practicalDuration;
+        // Website links by provider and state
+        const providerLinks = {
+          QLD: {
+            "St John Ambulance": "https://stjohnqld.com.au",
+            "Australian Red Cross": "https://redcross.org.au/firstaid",
+            "Australia Wide First Aid": "https://australiawidefirstaid.com.au",
+            "First Aid Pro": "https://firstaidpro.com.au"
+          },
+          NSW: {
+            "St John Ambulance": "https://stjohnnsw.com.au",
+            "Australian Red Cross": "https://redcross.org.au/firstaid",
+            "Royal Life Saving NSW": "https://drowningprevention.org.au",
+            "Vital First Aid": "https://vitalfirstaid.com.au",
+            "CBD College": null // not in legit list
+          },
+          VIC: {
+            "St John Ambulance": "https://stjohnvic.com.au",
+            "Australian Red Cross": "https://redcross.org.au/firstaid",
+            "Life Saving Victoria": "https://lsv.com.au",
+            "First Aid Pro": "https://firstaidpro.com.au",
+            "Skillbase": null // not in legit list
+          },
+          WA: {
+            "St John WA": "https://stjohnwa.com.au",
+            "Royal Life Saving WA": "https://royallifesavingwa.com.au",
+            "Australian Red Cross": "https://redcross.org.au/firstaid",
+            "Australia Wide First Aid": "https://australiawidefirstaid.com.au",
+            "First Aid Training Group": null,
+            "RTO 90909": null
+          }
+        };
+
+        // Find the current state
+        let state = selectedState;
+        let link = providerLinks[state] && providerLinks[state][provider.provider] ? providerLinks[state][provider.provider] : null;
+
+        return `
+          <div class="card p-6 flex flex-col">
+            <h4 class="text-xl font-bold text-[#3D405B] mb-2">${provider.provider}</h4>
+            <p class="text-4xl font-bold text-[#81B29A] mb-4">$${provider.price}</p>
+            <div class="space-y-3 text-gray-700 flex-grow">
+              <p><span class="font-semibold">Format:</span> ${provider.format}</p>
+              <p><span class="font-semibold">Ease of Use:</span> ${provider.ease}</p>
+              <p><span class="font-semibold">Time Estimate:</span></p>
+              <ul class="list-disc list-inside pl-2 text-sm">
+                <li>Online Theory: ~${provider.onlineDuration} hours</li>
+                <li>Practical Class: ~${provider.practicalDuration} hours</li>
+                <li class="font-bold">Total: ~${totalDuration} hours</li>
+              </ul>
+            </div>
+            <p class="text-xs text-gray-500 mt-4 pt-4 border-t border-gray-200">${provider.notes}</p>
+            ${link ? `<div class='mt-4 flex justify-center'><a href='${link}' target='_blank' rel='noopener' class='inline-block px-4 py-2 rounded-full bg-[#81B29A] text-white font-semibold shadow hover:bg-[#3D405B] transition-colors border border-gray-200'>Official Website</a></div>` : ""}
+          </div>
+        `;
+      }
+
+      function updateChart() {
+        const data = courseData[selectedState];
+        const labels = data.map((p) => p.provider);
+        const prices = data.map((p) => p.price);
+        const totalDurations = data.map(
+          (p) => p.onlineDuration + p.practicalDuration
+        );
+
+        if (comparisonChart) {
+          comparisonChart.destroy();
+        }
+
+        comparisonChart = new Chart(chartCanvas, {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Price (AUD)",
+                data: prices,
+                backgroundColor: "#81B29A",
+                borderColor: "#6a9e82",
+                borderWidth: 1,
+                yAxisID: "y",
+              },
+              {
+                label: "Total Duration (Hours)",
+                data: totalDurations,
+                backgroundColor: "#E07A5F",
+                borderColor: "#c96a50",
+                borderWidth: 1,
+                yAxisID: "y1",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                type: "linear",
+                display: true,
+                position: "left",
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: "Price (AUD)",
+                },
+              },
+              y1: {
+                type: "linear",
+                display: true,
+                position: "right",
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: "Duration (Hours)",
+                },
+                grid: {
+                  drawOnChartArea: false,
+                },
+              },
+            },
+            plugins: {
+              tooltip: {
+                mode: "index",
+                intersect: false,
+              },
+            },
+          },
+        });
+      }
+
+      function updateView() {
+        providerHeading.textContent = `Course Providers in ${stateNames[selectedState]}`;
+        providerCardsContainer.innerHTML = courseData[selectedState]
+          .map(createProviderCard)
+          .join("");
+
+        document.querySelectorAll(".state-btn").forEach((btn) => {
+          btn.classList.remove("active-state-btn");
+          if (btn.dataset.state === selectedState) {
+            btn.classList.add("active-state-btn");
+          }
+        });
+
+        updateChart();
+      }
+
+      function handleStateSelection(e) {
+        if (e.target.tagName === "BUTTON") {
+          selectedState = e.target.dataset.state;
+          updateView();
+        }
+      }
+
+      function init() {
+        stateButtonsContainer.addEventListener("click", handleStateSelection);
+        updateView();
+      }
+
+      window.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>

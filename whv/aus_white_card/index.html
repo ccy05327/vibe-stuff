@@ -1,0 +1,611 @@
+<div class="min-h-screen p-4 sm:p-6 md:p-8">
+  <!-- Back to Home Button -->
+  <div class="w-full flex justify-start mb-4">
+    <a
+      href="/index.html"
+      class="inline-flex items-center px-4 py-2 rounded-xl font-semibold text-base md:text-lg shadow hover:shadow-lg transition-colors border border-[#fb923c]"
+      style="background-color: #fb923c; color: #fff; border-color: #fb923c"
+    >
+      <span class="mr-2" aria-hidden="true">&#8592;</span>
+      Back to Home
+    </a>
+  </div>
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>White Card Australia Guide</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+      <!-- Chosen Palette: Warm Neutrals with Subtle Accents -->
+      <!-- Application Structure Plan: The application is designed as a single-page interactive guide. The structure begins with a clear title and introduction. The primary interaction is a set of large, clickable cards, one for each state (QLD, NSW, VIC, WA). This card-based navigation is intuitive and mobile-friendly. Clicking a state card reveals a detailed information panel below, using a smooth transition. This panel contains specific data on online availability, price, duration, etc. for the selected state. Above the state cards, a comparative chart provides an at-a-glance summary of key metrics (price and duration). This top-down structure—summary chart, interactive selection, detailed content—guides the user from a broad overview to specific details. This was chosen over a simple table to create a more engaging, less cluttered, and more focused user experience, allowing users to concentrate on one state at a time while still having easy access to comparative data. -->
+      <!-- Visualization & Content Choices: 
+        1.  Report Info: Average Price & Duration for each state. 
+            Goal: Compare key metrics quickly. 
+            Viz Method: Grouped Bar Chart (Chart.js/Canvas). 
+            Interaction: Hovering over bars shows tooltips with precise values. 
+            Justification: A bar chart is the most effective way to compare quantitative data across a few categories (states). It makes price and time differences immediately obvious.
+        2.  Report Info: Detailed state-specific rules (Online availability, format, flexibility). 
+            Goal: Inform users about the specific process and requirements for a single state. 
+            Presentation Method: Dynamically revealed content panels (HTML/CSS/JS). 
+            Interaction: Clicking a state's card selects it and displays its unique information. 
+            Justification: This "reveal" interaction prevents information overload. Users can focus on the state relevant to them without being distracted by information for other states. The use of icons (check/cross) provides quick visual cues for online availability.
+    -->
+      <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+      <style>
+        body {
+          font-family: "Inter", sans-serif;
+          background-color: #fdfbf8;
+          color: #3f3f46;
+        }
+        .chart-container {
+          position: relative;
+          width: 100%;
+          max-width: 800px;
+          margin-left: auto;
+          margin-right: auto;
+          height: 300px;
+          max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+          .chart-container {
+            height: 400px;
+          }
+        }
+        .state-card {
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .state-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05),
+            0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .state-card.selected {
+          transform: translateY(-5px);
+          box-shadow: 0 0 0 3px #fb923c;
+          border-color: #fb923c;
+        }
+        #details-panel {
+          transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .details-hidden {
+          opacity: 0;
+          transform: translateY(20px);
+          height: 0;
+          overflow: hidden;
+          padding-top: 0;
+          padding-bottom: 0;
+          margin-top: 0;
+        }
+      </style>
+    </head>
+    <body class="antialiased">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <header class="text-center mb-12">
+          <h1
+            class="text-4xl md:text-5xl font-bold text-zinc-800 tracking-tight"
+          >
+            Australian White Card Guide
+          </h1>
+          <p class="mt-4 text-lg text-zinc-600 max-w-3xl mx-auto">
+            An interactive comparison of online White Card (CPCCWHS1001) courses
+            across key Australian states. Select a state to see specific
+            requirements.
+          </p>
+        </header>
+        <!-- Embedded Media Section (moved directly under header/subheader) -->
+        <div class="max-w-3xl mx-auto mt-8 mb-8 flex flex-col gap-6">
+          <!-- Audio Player -->
+          <div
+            class="bg-[#FDFBF8] border border-[#fb923c] rounded-xl p-4 shadow"
+          >
+            <h2 class="text-lg font-semibold text-zinc-800 mb-2">
+              The White Card Paradox (Audio)
+            </h2>
+            <audio id="whitecard-audio" controls class="w-full">
+              <source src="The White Card_Paradox.mp3" type="audio/mp3" />
+              Your browser does not support the audio element.
+            </audio>
+            <div class="flex flex-col items-center mt-3">
+              <div class="flex items-center gap-2 justify-center">
+                <button
+                  id="audioBack"
+                  type="button"
+                  class="px-2 py-1 rounded bg-[#fb923c] text-white text-sm font-bold hover:bg-[#ea7a1a] transition"
+                >
+                  &#8592; 10s
+                </button>
+                <label for="audioSpeed" class="text-sm text-[#ea7a1a] ml-2"
+                  >Speed:</label
+                >
+                <select
+                  id="audioSpeed"
+                  class="rounded border border-[#fb923c] px-2 py-1 text-sm bg-white text-zinc-800 mx-1"
+                >
+                  <option value="0.75">0.75x</option>
+                  <option value="1" selected>1x</option>
+                  <option value="1.25">1.25x</option>
+                  <option value="1.5">1.5x</option>
+                  <option value="2">2x</option>
+                </select>
+                <button
+                  id="audioForward"
+                  type="button"
+                  class="px-2 py-1 rounded bg-[#fb923c] text-white text-sm font-bold hover:bg-[#ea7a1a] transition"
+                >
+                  10s &#8594;
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Video Player -->
+          <div
+            class="bg-[#FDFBF8] border border-[#fb923c] rounded-xl p-4 shadow"
+          >
+            <h2 class="text-lg font-semibold text-zinc-800 mb-2">
+              The Australian White Card (Video)
+            </h2>
+            <video
+              id="whitecard-video"
+              controls
+              class="w-full rounded-lg"
+              style="background: #fb923c; max-height: 360px"
+            >
+              <source src="The Australian White Card.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <div class="flex flex-col items-center mt-3">
+              <div class="flex items-center gap-2 justify-center">
+                <button
+                  id="videoBack"
+                  type="button"
+                  class="px-2 py-1 rounded bg-[#fb923c] text-white text-sm font-bold hover:bg-[#ea7a1a] transition"
+                >
+                  &#8592; 10s
+                </button>
+                <label for="videoSpeed" class="text-sm text-[#ea7a1a] ml-2"
+                  >Speed:</label
+                >
+                <select
+                  id="videoSpeed"
+                  class="rounded border border-[#fb923c] px-2 py-1 text-sm bg-white text-zinc-800 mx-1"
+                >
+                  <option value="0.75">0.75x</option>
+                  <option value="1" selected>1x</option>
+                  <option value="1.25">1.25x</option>
+                  <option value="1.5">1.5x</option>
+                  <option value="2">2x</option>
+                </select>
+                <button
+                  id="videoForward"
+                  type="button"
+                  class="px-2 py-1 rounded bg-[#fb923c] text-white text-sm font-bold hover:bg-[#ea7a1a] transition"
+                >
+                  10s &#8594;
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <main>
+          <section id="comparison-chart" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-700 text-center mb-2">
+              At-a-Glance Comparison
+            </h2>
+            <p class="text-center text-zinc-500 mb-6">
+              This chart compares the average cost and time commitment for
+              obtaining a White Card in each state.
+            </p>
+            <div
+              class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-zinc-200/80"
+            >
+              <div class="chart-container">
+                <canvas id="whiteCardChart"></canvas>
+              </div>
+            </div>
+          </section>
+
+          <section id="state-selector">
+            <h2 class="text-2xl font-bold text-zinc-700 text-center mb-2">
+              Explore by State
+            </h2>
+            <p class="text-center text-zinc-500 mb-8">
+              Click on a state below to view detailed information about its
+              White Card course delivery, format, and flexibility.
+            </p>
+            <div
+              class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
+              id="state-cards-container"
+            ></div>
+          </section>
+
+          <section
+            id="details-panel"
+            class="details-hidden mt-12 bg-white rounded-xl shadow-sm p-6 md:p-8 border border-zinc-200/80"
+          ></section>
+        </main>
+
+        <footer class="text-center mt-16 text-sm text-zinc-500">
+          <p>
+            &copy; 2025 White Card Australia Guide. Information is for guidance
+            only and was last updated Sep 2025. Always verify with official
+            state bodies.
+          </p>
+        </footer>
+      </div>
+
+      <script>
+        // Audio speed and playback control
+        const audio = document.getElementById("whitecard-audio");
+        const audioSpeed = document.getElementById("audioSpeed");
+        const audioBack = document.getElementById("audioBack");
+        const audioForward = document.getElementById("audioForward");
+        if (audio && audioSpeed) {
+          audioSpeed.addEventListener("change", function () {
+            audio.playbackRate = parseFloat(this.value);
+          });
+        }
+        if (audio && audioBack) {
+          audioBack.addEventListener("click", function () {
+            audio.currentTime = Math.max(0, audio.currentTime - 10);
+          });
+        }
+        if (audio && audioForward) {
+          audioForward.addEventListener("click", function () {
+            audio.currentTime = Math.min(
+              audio.duration,
+              audio.currentTime + 10
+            );
+          });
+        }
+
+        // Video speed and playback control
+        const video = document.getElementById("whitecard-video");
+        const videoSpeed = document.getElementById("videoSpeed");
+        const videoBack = document.getElementById("videoBack");
+        const videoForward = document.getElementById("videoForward");
+        if (video && videoSpeed) {
+          videoSpeed.addEventListener("change", function () {
+            video.playbackRate = parseFloat(this.value);
+          });
+        }
+        if (video && videoBack) {
+          videoBack.addEventListener("click", function () {
+            video.currentTime = Math.max(0, video.currentTime - 10);
+          });
+        }
+        if (video && videoForward) {
+          videoForward.addEventListener("click", function () {
+            video.currentTime = Math.min(
+              video.duration,
+              video.currentTime + 10
+            );
+          });
+        }
+        const whiteCardData = {
+          QLD: {
+            name: "Queensland",
+            onlineMethod: "✅ Self-Paced Online",
+            avgPrice: 50,
+            avgDuration: 5,
+            format:
+              "Fully self-paced online learning modules (text, video, quizzes) followed by a live video assessment to demonstrate fitting Personal Protective Equipment (PPE).",
+            flexibility: "High",
+            easeOfUse:
+              "Very user-friendly. Complete the course at your own pace from anywhere. Requires a device with a webcam and internet. PPE for the assessment is often mailed by the provider.",
+            icon: "🌴",
+          },
+          NSW: {
+            name: "New South Wales",
+            onlineMethod: "❌ Not Available (Live Virtual Only)",
+            avgPrice: 125,
+            avgDuration: 6.5,
+            format:
+              "Must be delivered through real-time, instructor-led training. This can be face-to-face in a classroom or via a 'connected real-time' virtual classroom (e.g., Zoom).",
+            flexibility: "Low",
+            easeOfUse:
+              "Requires booking and attending a scheduled session, either in person or online. Less flexible than self-paced courses. Mandated by SafeWork NSW.",
+            icon: "🌉",
+          },
+          VIC: {
+            name: "Victoria",
+            onlineMethod: "❌ Not Available (Live Virtual Only)",
+            avgPrice: 115,
+            avgDuration: 6,
+            format:
+              "Similar to NSW, WorkSafe Victoria requires real-time, synchronous online learning led by an instructor. Self-paced online modules are not permitted.",
+            flexibility: "Low",
+            easeOfUse:
+              "You must join a scheduled virtual classroom at a specific time. This structure provides direct interaction with a trainer but offers limited flexibility.",
+            icon: "🚋",
+          },
+          WA: {
+            name: "Western Australia",
+            onlineMethod: "✅ Self-Paced Online",
+            avgPrice: 65,
+            avgDuration: 5,
+            format:
+              "Fully self-paced online course is permitted by WorkSafe WA. The course structure is similar to QLD, with online modules and a video-based practical assessment for PPE.",
+            flexibility: "High",
+            easeOfUse:
+              "Offers complete flexibility to start, stop, and resume the course as needed. Technical requirements are a standard computer or tablet with a webcam.",
+            icon: "☀️",
+          },
+        };
+
+        let selectedState = null;
+        let whiteCardChart = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+          const states = Object.keys(whiteCardData);
+          const stateCardsContainer = document.getElementById(
+            "state-cards-container"
+          );
+
+          states.forEach((stateKey) => {
+            const state = whiteCardData[stateKey];
+            const card = document.createElement("div");
+            card.className =
+              "state-card cursor-pointer bg-white p-4 rounded-lg border-2 border-zinc-200 text-center flex flex-col items-center justify-center";
+            card.dataset.state = stateKey;
+            card.innerHTML = `
+                    <div class="text-4xl mb-2">${state.icon}</div>
+                    <h3 class="text-lg font-bold text-zinc-800">${state.name}</h3>
+                `;
+            card.addEventListener("click", () =>
+              handleStateSelection(stateKey)
+            );
+            stateCardsContainer.appendChild(card);
+          });
+
+          renderChart();
+        });
+
+        function handleStateSelection(stateKey) {
+          const detailsPanel = document.getElementById("details-panel");
+          const previouslySelected = selectedState
+            ? document.querySelector(
+                `.state-card[data-state="${selectedState}"]`
+              )
+            : null;
+          if (previouslySelected) {
+            previouslySelected.classList.remove("selected");
+          }
+
+          if (selectedState === stateKey) {
+            detailsPanel.classList.add("details-hidden");
+            selectedState = null;
+          } else {
+            selectedState = stateKey;
+            const newlySelected = document.querySelector(
+              `.state-card[data-state="${stateKey}"]`
+            );
+            newlySelected.classList.add("selected");
+            updateDetailsPanel(stateKey);
+            detailsPanel.classList.remove("details-hidden");
+            detailsPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
+
+        function updateDetailsPanel(stateKey) {
+          const state = whiteCardData[stateKey];
+          const detailsPanel = document.getElementById("details-panel");
+          // RTO links for each state
+          const rtoLinks = {
+            QLD: [
+              {
+                name: "Express Online Training (EOT)",
+                url: "https://www.eot.edu.au",
+              },
+              {
+                name: "Blue Dog Training",
+                url: "https://bluedogtraining.com.au",
+              },
+              { name: "Inscope Training", url: "https://inscope.edu.au" },
+            ],
+            WA: [
+              {
+                name: "Express Online Training (EOT)",
+                url: "https://www.eot.edu.au",
+              },
+              { name: "Inscope Training", url: "https://inscope.edu.au" },
+              { name: "Apeiro Institute", url: "https://www.apeiro.edu.au" },
+            ],
+            NSW: [
+              {
+                name: "Express Online Training (EOT)",
+                url: "https://www.eot.edu.au",
+              },
+              {
+                name: "Allies Training Centre",
+                url: "https://alliestraining.edu.au",
+              },
+              {
+                name: "Upskill Institute",
+                url: "https://upskillinstitute.com.au",
+              },
+            ],
+            VIC: [
+              {
+                name: "Construction Training Group (CTG)",
+                url: "https://www.ctg.com.au",
+              },
+              {
+                name: "Allies Training Centre",
+                url: "https://alliestraining.edu.au",
+              },
+              {
+                name: "Master Builders Victoria",
+                url: "https://www.mbav.com.au",
+              },
+            ],
+          };
+
+          let rtoHtml = "";
+          if (rtoLinks[stateKey]) {
+            rtoHtml =
+              `<div class='mt-8'><h4 class='font-bold text-orange-700 mb-2 text-lg'>Recommended RTOs</h4><ul class='flex flex-col gap-2'>` +
+              rtoLinks[stateKey]
+                .map(
+                  (rto) => `
+                <li>
+                  <a href='${rto.url}' target='_blank' rel='noopener' class='inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-orange-300 bg-orange-50 text-orange-800 font-semibold hover:bg-orange-100 transition'>
+                    ${rto.name}
+                    <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4 ml-1 text-orange-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M14 3h7m0 0v7m0-7L10 21'/></svg>
+                  </a>
+                </li>
+              `
+                )
+                .join("") +
+              "</ul></div>";
+          }
+
+          detailsPanel.innerHTML = `
+                <div class="flex items-center mb-6">
+                    <div class="text-5xl mr-4">${state.icon}</div>
+                    <div>
+                        <h2 class="text-3xl font-bold text-zinc-800">${state.name} White Card Details</h2>
+                        <p class="text-orange-500 font-semibold text-lg">${state.onlineMethod}</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                    <div class="bg-orange-50/70 p-4 rounded-lg border border-orange-200">
+                        <h4 class="font-bold text-zinc-700 mb-1">Course Format</h4>
+                        <p class="text-zinc-600">${state.format}</p>
+                    </div>
+                    <div class="bg-orange-50/70 p-4 rounded-lg border border-orange-200">
+                        <h4 class="font-bold text-zinc-700 mb-1">Ease of Use</h4>
+                        <p class="text-zinc-600">${state.easeOfUse}</p>
+                    </div>
+                    <div class="bg-zinc-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-zinc-600">Average Price</h4>
+                        <p class="text-2xl font-bold text-zinc-800">$${state.avgPrice}</p>
+                    </div>
+                    <div class="bg-zinc-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-zinc-600">Average Duration</h4>
+                        <p class="text-2xl font-bold text-zinc-800">${state.avgDuration} Hours</p>
+                    </div>
+                     <div class="bg-zinc-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-zinc-600">Flexibility</h4>
+                        <p class="text-2xl font-bold text-zinc-800">${state.flexibility}</p>
+                    </div>
+                </div>
+                ${rtoHtml}
+            `;
+        }
+
+        function renderChart() {
+          const ctx = document
+            .getElementById("whiteCardChart")
+            .getContext("2d");
+          const labels = Object.values(whiteCardData).map((s) => s.name);
+          const priceData = Object.values(whiteCardData).map((s) => s.avgPrice);
+          const durationData = Object.values(whiteCardData).map(
+            (s) => s.avgDuration
+          );
+
+          if (whiteCardChart) {
+            whiteCardChart.destroy();
+          }
+
+          whiteCardChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: "Average Price (AUD)",
+                  data: priceData,
+                  backgroundColor: "#fb923c",
+                  borderColor: "#f97316",
+                  borderWidth: 1,
+                  yAxisID: "yPrice",
+                },
+                {
+                  label: "Average Duration (Hours)",
+                  data: durationData,
+                  backgroundColor: "#a1a1aa",
+                  borderColor: "#71717a",
+                  borderWidth: 1,
+                  yAxisID: "yDuration",
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                yPrice: {
+                  type: "linear",
+                  position: "left",
+                  beginAtZero: true,
+                  title: {
+                    display: true,
+                    text: "Price (AUD)",
+                    color: "#f97316",
+                  },
+                  ticks: {
+                    callback: function (value) {
+                      return "$" + value;
+                    },
+                  },
+                },
+                yDuration: {
+                  type: "linear",
+                  position: "right",
+                  beginAtZero: true,
+                  grid: {
+                    drawOnChartArea: false,
+                  },
+                  title: {
+                    display: true,
+                    text: "Duration (Hours)",
+                    color: "#71717a",
+                  },
+                },
+                x: {
+                  grid: {
+                    display: false,
+                  },
+                },
+              },
+              plugins: {
+                legend: {
+                  position: "top",
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      let label = context.dataset.label || "";
+                      if (label) {
+                        label += ": ";
+                      }
+                      if (context.parsed.y !== null) {
+                        if (context.dataset.yAxisID === "yPrice") {
+                          label += new Intl.NumberFormat("en-AU", {
+                            style: "currency",
+                            currency: "AUD",
+                          }).format(context.parsed.y);
+                        } else {
+                          label += context.parsed.y + " hours";
+                        }
+                      }
+                      return label;
+                    },
+                  },
+                },
+              },
+            },
+          });
+        }
+      </script>
+    </body>
+  </html>
+</div>
