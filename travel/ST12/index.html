@@ -1,398 +1,386 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>雪梨-布里斯本：好友團聚公路旅行地圖</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>澳東公路旅行詳盡指南 | BNE ⇄ SYD</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Chosen Palette: Coastal Adventure (Navy, Sand, Teal) -->
+    <!-- Chosen Palette: Coastal Professional (Navy, Emerald, Sand) -->
     <!-- Application Structure Plan: 
-         - 側邊欄：顯示從 3/11 晚上開始的每日行程重點與景點序號。
-         - 地圖區域：使用 Leaflet 展示從雪梨到布里斯本的移動軌跡。
-         - 數據處理：移除 BNE 下雪梨的段落，地圖中心點移至雪梨開始。
-         - 互動：點擊景點列表，地圖會縮放至該座標並顯示景點介紹。
+         - 左側：動態資訊欄。預設顯示景點列表，點擊後切換為該景點的詳細介紹（包含 Google Maps 連結與建議時間）。
+         - 右側：地圖主體。標記帶有數字 1-13 的順序。
+         - 技術：Leaflet.js 處理地圖，Vanilla JS 管理 UI 狀態切換。
     -->
     <!-- Visualization & Content Choices:
-         - 標記點：帶有數字的圓形標籤，表示遊玩順序。
-         - 路徑：虛線連接，代表公路旅行移動方向。
-         - 住宿提示：整合至列表下方的資訊卡中。
+         - 地圖標記使用自定義 DivIcon 以顯示數字。
+         - 資訊卡片包含：中文說明、建議時間、導航連結。
          - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
     -->
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap");
-      body {
-        font-family: "Noto Sans TC", sans-serif;
-        background-color: #f0f2f5;
-      }
-      #map {
-        height: 100%;
-        width: 100%;
-        border-radius: 0.75rem;
-        z-index: 10;
-      }
-      .marker-icon {
-        background-color: #1e40af;
-        color: white;
-        border-radius: 50%;
-        width: 28px;
-        height: 28px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        border: 2px solid white;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-      }
-      .active-card {
-        border-left: 6px solid #1e40af;
-        background-color: #f8fafc;
-      }
-      .custom-popup .leaflet-popup-content-wrapper {
-        border-radius: 12px;
-        padding: 4px;
-      }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        #map { height: 100%; width: 100%; z-index: 10; border-radius: 0 1rem 1rem 0; }
+        .marker-icon {
+            background-color: #0f172a;
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            border: 3px solid #f1f5f9;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            transition: all 0.3s;
+        }
+        .marker-active { background-color: #10b981; transform: scale(1.2); }
+        .spot-card-active { border-left: 6px solid #10b981; background-color: #f1f5f9; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
-  </head>
-  <body class="h-screen flex flex-col overflow-hidden">
+</head>
+<body class="h-screen flex flex-col">
+
     <!-- Header -->
-    <header
-      class="bg-white border-b shadow-sm px-6 py-4 flex flex-wrap justify-between items-center shrink-0 z-20"
-    >
-      <div>
-        <h1 class="text-2xl font-black text-slate-800 tracking-tight">
-          好友公路之旅：雪梨 ➔ 布里斯本
-        </h1>
-        <p class="text-sm text-slate-500 font-medium">
-          3月11日 晚上會合 — 3月20日 旅程結束
-        </p>
-      </div>
-      <div class="flex gap-3 mt-2 md:mt-0">
-        <a
-          href="/index.html"
-          class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-md"
-        >
-          返回首頁
-        </a>
-      </div>
+    <header class="bg-white border-b px-6 py-4 flex justify-between items-center shrink-0 z-30 shadow-sm">
+        <div>
+            <h1 class="text-xl font-black text-slate-800 tracking-tight">澳洲東海岸：好友重聚公路旅行</h1>
+            <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">3月11日 - 3月20日 | 雪梨 ➔ 布里斯本</p>
+        </div>
+        <div class="hidden md:flex gap-4">
+            <div class="bg-slate-100 px-3 py-1.5 rounded-full text-[10px] font-bold text-slate-600">🚗 總里程 ~2,100km</div>
+            <div class="bg-emerald-100 px-3 py-1.5 rounded-full text-[10px] font-bold text-emerald-700">📍 13 個核心景點</div>
+        </div>
     </header>
 
     <div class="flex-grow flex flex-col md:flex-row overflow-hidden">
-      <!-- Sidebar -->
-      <aside
-        class="w-full md:w-96 bg-white border-r overflow-y-auto shrink-0 flex flex-col"
-      >
-        <div class="p-4 bg-slate-50 border-b flex justify-between items-center">
-          <span
-            class="text-xs font-black text-slate-400 uppercase tracking-widest"
-            >遊玩景點順序表</span
-          >
-          <span class="text-[10px] bg-slate-200 px-2 py-1 rounded"
-            >會合後開始</span
-          >
-        </div>
-        <div
-          id="itinerary-container"
-          class="divide-y divide-slate-100 flex-grow"
-        >
-          <!-- JS Populated Items -->
-        </div>
+        
+        <!-- Sidebar -->
+        <aside class="w-full md:w-[400px] bg-white border-r flex flex-col shrink-0 z-20 shadow-xl">
+            
+            <!-- Context Header -->
+            <div id="sidebar-header" class="p-4 bg-slate-50 border-b flex justify-between items-center">
+                <h2 id="list-title" class="font-black text-slate-700 text-xs uppercase tracking-widest">景點探索清單</h2>
+                <button id="back-btn" onclick="showList()" class="hidden text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100">⬅ 回到列表</button>
+            </div>
 
-        <!-- Quick Accommodation Info -->
-        <div class="p-6 bg-slate-900 text-white space-y-4">
-          <h4 class="text-amber-400 font-bold text-sm">
-            🏨 住宿備忘錄 (3人房)
-          </h4>
-          <div class="text-[11px] space-y-2 opacity-90">
-            <p>
-              <strong>雪梨 (3/11-13):</strong> Earlwood EW1 或 Villawood
-              (避開市區高昂停車費)
-            </p>
-            <p>
-              <strong>科夫斯港 (3/14):</strong> Banana Coast Caravan Park
-              (推薦獨立小屋)
-            </p>
-            <p>
-              <strong>布里斯本 (3/15-20):</strong> Sunnybank Hills 整棟住家
-              (好停車、機能強)
-            </p>
-          </div>
-        </div>
-      </aside>
+            <!-- Scrollable Content -->
+            <div id="sidebar-content" class="flex-grow overflow-y-auto">
+                <!-- List View or Detail View will be injected here -->
+            </div>
 
-      <!-- Map Container -->
-      <div class="flex-grow p-4 relative bg-slate-100">
-        <div id="map" class="shadow-2xl"></div>
+            <!-- Footer Meta -->
+            <div class="p-4 bg-slate-900 text-white text-[10px] space-y-2">
+                <p class="opacity-70 font-bold">⚠️ 駕駛叮嚀：雪梨到科夫港路段長達 530km，請每兩小時休息一次。黃金海岸鵜鶘秀請準時於 1:15 PM 抵達找位。</p>
+            </div>
+        </aside>
 
-        <!-- Map Overlay UI -->
-        <div
-          class="absolute top-8 right-8 z-[1000] bg-white/90 backdrop-blur p-4 rounded-2xl shadow-xl border border-white max-w-xs hidden md:block"
-        >
-          <h5 class="font-bold text-slate-800 text-sm mb-2">🚗 駕駛提醒</h5>
-          <ul class="text-[11px] text-slate-600 space-y-2">
-            <li class="flex items-start gap-2">
-              <span class="text-blue-500">●</span>
-              雪梨市區建議搭火車或渡輪，車停住宿點省錢。
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-blue-500">●</span> 3/14
-              雪梨往科夫斯港路途較長，中途建議在 Central Coast 休息。
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-blue-500">●</span> 黃金海岸鵜鶘餵食為 1:30
-              PM，不可遲到。
-            </li>
-          </ul>
+        <!-- Map -->
+        <div class="flex-grow relative">
+            <div id="map"></div>
+            
+            <!-- Floating Navigation Helper -->
+            <div class="absolute bottom-6 left-6 z-[1000] space-y-2 hidden md:block">
+                <div class="bg-white p-3 rounded-2xl shadow-xl border border-slate-100 text-[11px] font-bold text-slate-600">
+                    <div class="flex items-center gap-2 mb-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> 點擊數字查看攻略</div>
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-300"></span> 藍色虛線為建議路線</div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
     <script>
-      // Data focus: Starting from Sydney on March 11th evening
-      const destinations = [
-        {
-          id: 1,
-          name: "雪梨會合 / 免費博物館",
-          lat: -33.8614,
-          lng: 151.2108,
-          date: "3/11-12",
-          city: "Sydney City",
-          desc: "3/11 晚上與朋友會合。3/12 上午參觀雪梨當代藝術館(MCA)或新州美術館(免費)。",
-          icon: "🎨",
-        },
-        {
-          id: 2,
-          name: "屈臣氏灣 Watsons Bay",
-          lat: -33.8441,
-          lng: 151.2825,
-          date: "3/12",
-          city: "Sydney East",
-          desc: "搭乘渡輪前往，欣賞 Gap Bluff 懸崖與絕美海港。吃著名的 Doyles 炸魚薯條。",
-          icon: "⛴️",
-        },
-        {
-          id: 3,
-          name: "Dudley Page Reserve 夕陽",
-          lat: -33.8741,
-          lng: 151.277,
-          date: "3/12",
-          city: "Sydney East",
-          desc: "雪梨看天際線夕陽的隱藏版神點，攝影愛好者必去。",
-          icon: "🌇",
-        },
-        {
-          id: 4,
-          name: "皇家國家公園 Royal NP",
-          lat: -34.1378,
-          lng: 151.056,
-          date: "3/13",
-          city: "South Sydney",
-          desc: "3/13 早上出發。看 Wedding Cake Rock 或 Wattamolla 海灘，享受大自然健行。",
-          icon: "🥾",
-        },
-        {
-          id: 5,
-          name: "Minnehaha Falls 瀑布",
-          lat: -33.6934,
-          lng: 150.315,
-          date: "3/13",
-          city: "Blue Mountains",
-          desc: "藍山的秘境瀑布，適合喜歡安靜景點的朋友，水質清澈。",
-          icon: "💦",
-        },
-        {
-          id: 6,
-          name: "三姊妹岩夕陽 Echo Point",
-          lat: -33.7321,
-          lng: 150.3121,
-          date: "3/13",
-          city: "Blue Mountains",
-          desc: "欣賞三姊妹岩在落日餘暉下的顏色變化。挑戰周邊 Giant Stairway 步道。",
-          icon: "🌄",
-        },
-        {
-          id: 7,
-          name: "科夫斯港 Coffs Harbour",
-          lat: -30.3022,
-          lng: 153.116,
-          date: "3/14",
-          city: "Mid North Coast",
-          desc: "3/14 從雪梨北上。造訪大香蕉(The Big Banana)並在此住宿一晚。",
-          icon: "🍌",
-        },
-        {
-          id: 8,
-          name: "Emerald Beach 袋鼠點",
-          lat: -30.161,
-          lng: 153.189,
-          date: "3/15",
-          city: "Coffs Harbour North",
-          desc: "在 Look At Me Now Headland 可以超近距離看到野生的東部灰袋鼠。",
-          icon: "🦘",
-        },
-        {
-          id: 9,
-          name: "拜倫灣燈塔 Byron Bay",
-          lat: -28.6431,
-          lng: 153.635,
-          date: "3/15",
-          city: "NSW North Coast",
-          desc: "澳洲最東點。幸運的話可以在燈塔下方的海面看到海豚或海龜。",
-          icon: "⚓",
-        },
-        {
-          id: 10,
-          name: "州界地標 Twin Towns",
-          lat: -28.169,
-          lng: 153.548,
-          date: "3/15",
-          city: "NSW/QLD Border",
-          desc: "拍下「一腳跨州」的經典照片。感受昆士蘭與新南威爾斯的時差樂趣。",
-          icon: "🚧",
-        },
-        {
-          id: 11,
-          name: "鵜鶘餵食秀 (Charis Seafood)",
-          lat: -27.915,
-          lng: 153.411,
-          date: "3/16",
-          city: "Gold Coast",
-          desc: "每天 13:30 準時上演。數十隻鵜鶘瘋狂搶食的場面非常壯觀。",
-          icon: "🐦",
-        },
-        {
-          id: 12,
-          name: "Springbrook 國家公園",
-          lat: -28.1925,
-          lng: 153.273,
-          date: "3/17",
-          city: "Gold Coast Hinterland",
-          desc: "看 Natural Bridge (自然橋) 奇觀。晚上可以考慮參加藍光蟲導覽。",
-          icon: "✨",
-        },
-        {
-          id: 13,
-          name: "布里斯本市區 / 送機",
-          lat: -27.4698,
-          lng: 153.0251,
-          date: "3/18-20",
-          city: "Brisbane",
-          desc: "最後一站。帶朋友去南岸公園、庫薩山，最後送機 BNE 機場。",
-          icon: "✈️",
-        },
-      ];
+        // Full Data Integration
+        const spots = [
+            { 
+                id: 1, 
+                name: "雪梨歌劇院 & 市區博物館", 
+                lat: -33.8568, lng: 151.2153, 
+                date: "3/11-12",
+                city: "Sydney",
+                bestTime: "全天 / 傍晚點燈",
+                desc: "旅程起點。建議參觀 MCA 當代藝術館或新州美術館（皆為免費）。夜晚可沿著 Circular Quay 散步觀賞歌劇院夜景。",
+                tips: "市區停車極貴且不便，這兩天建議將車停在 Earlwood 住宿點，搭火車進城。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Sydney+Opera+House"
+            },
+            { 
+                id: 2, 
+                name: "屈臣氏灣 Watsons Bay", 
+                lat: -33.8441, lng: 151.2825, 
+                date: "3/12",
+                city: "Sydney East",
+                bestTime: "下午 1:00 - 4:00",
+                desc: "搭乘渡輪前往，這裡有著名的 Gap Bluff 懸崖與裸體海灘。風景極美，是遠眺雪梨天際線的絕佳視角。",
+                tips: "推薦在海邊吃 Doyles 的 Fish & Chips。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Watsons+Bay+Sydney"
+            },
+            { 
+                id: 3, 
+                name: "Dudley Page Reserve", 
+                lat: -33.8741, lng: 151.2770, 
+                date: "3/12",
+                city: "Sydney East",
+                bestTime: "傍晚 6:00 (看夕陽)",
+                desc: "網紅隱藏版景點。這裡是一片大草坪，可以無遮擋地看到歌劇院與雪梨大橋在夕陽下的剪影。",
+                tips: "帶上一塊野餐墊，在這裡看夕陽非常 chill。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Dudley+Page+Reserve"
+            },
+            { 
+                id: 4, 
+                name: "邦代海灘 Bondi Beach", 
+                lat: -33.8915, lng: 151.2767, 
+                date: "3/12",
+                city: "Sydney East",
+                bestTime: "清晨 5:00 晨跑",
+                desc: "雪梨最著名的海灘。依照計畫可以在清晨 5 點來這裡晨跑，感受澳洲人的戶外運動文化。",
+                tips: "跑完可以去 Bondi Icebergs 拍一張經典的海邊泳池照。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Bondi+Beach"
+            },
+            { 
+                id: 5, 
+                name: "皇家國家公園 Figure 8 Pool", 
+                lat: -34.1378, lng: 151.0560, 
+                date: "3/13",
+                city: "South Sydney",
+                bestTime: "低潮時段 (須先查潮汐表)",
+                desc: "世界著名的天然 8 字型水池。入內需支付 $12 車輛進入費。這是一段具有挑戰性的徒步路徑。",
+                tips: "一定要在 Low Tide (低潮) 抵達，否則水池會被淹沒且具危險性。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Figure+8+Pools+Royal+National+Park"
+            },
+            { 
+                id: 6, 
+                name: "Minnehaha Falls 瀑布", 
+                lat: -33.6934, lng: 150.3150, 
+                date: "3/13",
+                city: "Blue Mountains",
+                desc: "藍山的秘境瀑布。步道清幽，最後可以抵達瀑布底部的潭水，非常適合喜歡避開人群的人。",
+                tips: "步道後半段較窄，建議穿抓地力好的登山鞋。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Minnehaha+Falls+Katoomba"
+            },
+            { 
+                id: 8, 
+                name: "藍山三姊妹岩夕陽", 
+                lat: -33.7321, lng: 150.3121, 
+                date: "3/13",
+                city: "Blue Mountains",
+                bestTime: "傍晚 6:30 (Sunset)",
+                desc: "澳洲指標性景觀。落日時分三姊妹岩會被染成金紅色。推薦走一段 Giant Stairway 步道。",
+                tips: "Echo Point 景觀台是最佳拍攝位，傍晚風大記得帶外套。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Three+Sisters+Echo+Point"
+            },
+            { 
+                id: 9, 
+                name: "Emerald Beach (Kangaroo Point)", 
+                lat: -30.1610, lng: 153.1890, 
+                date: "3/14-15",
+                city: "Coffs Harbour",
+                bestTime: "早晨或傍晚",
+                desc: "你以前住過的地方。在 Look At Me Now Headland 可以看到成群的野生袋鼠在草地上跳躍。",
+                tips: "袋鼠在清晨與傍晚最活躍。請勿餵食野生袋鼠。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Emerald+Beach+Look+At+Me+Now+Headland"
+            },
+            { 
+                id: 10, 
+                name: "拜倫灣燈塔 & 州界地標", 
+                lat: -28.6431, lng: 153.6350, 
+                date: "3/15",
+                city: "NSW/QLD Border",
+                bestTime: "下午 3:00",
+                desc: "澳洲最東點。絕美的白色燈塔配上蔚藍海岸。接著前往 Tweed Heads 拍下腳跨兩州的照片。",
+                tips: "燈塔附近停車非常困難，建議停在山下步道口走上去。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Cape+Byron+Lighthouse"
+            },
+            { 
+                id: 11, 
+                name: "鵜鶘餵食秀 Pelican Feeding", 
+                lat: -27.9150, lng: 153.4110, 
+                date: "3/16",
+                city: "Gold Coast",
+                bestTime: "1:15 PM (餵食 1:30 PM 開始)",
+                desc: "黃金海岸經典項目。Charis Seafoods 每天會將剩餘魚骨餵食給野生鵜鶘，場面壯觀。",
+                tips: "這是必去行程。看完可以順便在旁邊買鮮甜的海鮮午餐。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Charis+Seafoods+Pelican+Feeding"
+            },
+            { 
+                id: 12, 
+                name: "Springbrook 藍光蟲", 
+                lat: -28.1925, lng: 153.2730, 
+                date: "3/17",
+                city: "Gold Coast",
+                bestTime: "晚上 8:00 (看藍光蟲)",
+                desc: "在 Natural Bridge (自然橋) 的洞穴中，可以觀察到神奇的藍光螢火蟲。是澳洲唯一的特有種。",
+                tips: "洞穴內嚴禁閃光燈與手電筒直射，請安靜觀察以免干擾生態。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Natural+Bridge+Springbrook+National+Park"
+            },
+            { 
+                id: 13, 
+                name: "Moogerah Dam (看星星)", 
+                lat: -28.0300, lng: 152.5400, 
+                date: "3/18",
+                city: "Brisbane Outskirts",
+                bestTime: "深夜 9:00 後",
+                desc: "布里斯本周邊最受歡迎的觀星地。湖面平靜如鏡，無光害時可以肉眼看見銀河。",
+                tips: "這裡晚上溫差極大，即便是夏天也要帶厚外套。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Lake+Moogerah+Stargazing"
+            },
+            { 
+                id: 14, 
+                name: "Noosa Main Beach & Fairy Pools", 
+                lat: -26.3800, lng: 153.0900, 
+                date: "3/19-20",
+                city: "Sunshine Coast",
+                desc: "陽光海岸最美的一角。Fairy Pools 是隱藏在礁石間的天然泳池。旅程的完美結尾。",
+                tips: "前往 Fairy Pools 需健行一段路，建議穿好走的涼鞋。",
+                gMap: "https://www.google.com/maps/search/?api=1&query=Fairy+Pools+Noosa+National+Park"
+            }
+        ];
 
-      let map,
-        markers = [],
-        polyline;
+        let map, markers = [], polyline;
 
-      function initApp() {
-        // Setup Map focusing on the Sydney to BNE corridor
-        map = L.map("map", {
-          scrollWheelZoom: true,
-          zoomControl: false,
-        }).setView([-30.8, 151.8], 6);
+        function initMap() {
+            map = L.map('map', {
+                scrollWheelZoom: true,
+                zoomControl: false
+            }).setView([-30.5, 152.0], 6);
 
-        L.control.zoom({ position: "bottomright" }).addTo(map);
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-        // Using Carto Light tiles for a professional look
-        L.tileLayer(
-          "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-          {
-            attribution: "&copy; OpenStreetMap",
-          },
-        ).addTo(map);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
 
-        renderItinerary();
-        drawPath();
+            renderList();
+            renderMarkers();
+            
+            // Auto focus on first spot
+            setTimeout(() => focusSpot(0, false), 1000);
+        }
 
-        // Initial focus on Sydney
-        setTimeout(() => {
-          map.flyTo([destinations[0].lat, destinations[0].lng], 10);
-        }, 1000);
-      }
+        function renderMarkers() {
+            const coords = spots.map(s => [s.lat, s.lng]);
 
-      function renderItinerary() {
-        const container = document.getElementById("itinerary-container");
-        container.innerHTML = destinations
-          .map(
-            (d, i) => `
-                <div onclick="focusLocation(${i})" id="item-${i}" class="p-4 cursor-pointer hover:bg-slate-50 transition-all flex gap-4 group">
-                    <div class="flex flex-col items-center shrink-0">
-                        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-black text-xs text-slate-400 group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
-                            ${d.id}
-                        </div>
-                        <div class="w-px h-full bg-slate-100 mt-2"></div>
+            // Path Line
+            polyline = L.polyline(coords, {
+                color: '#3b82f6',
+                weight: 2,
+                opacity: 0.4,
+                dashArray: '5, 10'
+            }).addTo(map);
+
+            // Markers with sequence numbers
+            spots.forEach((s, i) => {
+                const icon = L.divIcon({
+                    className: 'custom-icon',
+                    html: `<div class="marker-icon" id="marker-${i}">${i + 1}</div>`,
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 16]
+                });
+
+                const marker = L.marker([s.lat, s.lng], { icon: icon })
+                    .on('click', () => focusSpot(i, true))
+                    .addTo(map);
+                
+                markers.push(marker);
+            });
+        }
+
+        function renderList() {
+            const container = document.getElementById('sidebar-content');
+            container.innerHTML = spots.map((s, i) => `
+                <div onclick="focusSpot(${i}, true)" id="spot-card-${i}" class="p-4 cursor-pointer hover:bg-slate-50 transition-all border-b border-slate-100 flex gap-4 group">
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 rounded-full bg-slate-800 text-white text-xs font-black flex items-center justify-center">${i + 1}</div>
+                        <div class="w-px h-full bg-slate-200 mt-2"></div>
                     </div>
-                    <div class="pb-2">
+                    <div>
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="text-sm font-black text-slate-800">${d.name}</span>
-                            <span class="text-[9px] font-bold bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded uppercase">${d.date}</span>
+                            <h3 class="font-bold text-slate-800 text-sm group-hover:text-emerald-600 transition-colors">${s.name}</h3>
                         </div>
-                        <p class="text-[11px] text-slate-400 font-bold mb-2">${d.city}</p>
-                        <p class="text-[11px] text-slate-500 leading-relaxed line-clamp-2 group-hover:line-clamp-none transition-all">${d.desc}</p>
+                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">${s.city}</p>
+                        <div class="mt-2 flex gap-2">
+                            <span class="text-[9px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded font-bold">${s.date}</span>
+                        </div>
                     </div>
                 </div>
-            `,
-          )
-          .join("");
-      }
+            `).join('');
+        }
 
-      function drawPath() {
-        const coords = destinations.map((d) => [d.lat, d.lng]);
+        window.focusSpot = function(index, showDetail) {
+            const s = spots[index];
+            map.flyTo([s.lat, s.lng], showDetail ? 14 : 7, { duration: 1.5 });
 
-        // Draw path line
-        polyline = L.polyline(coords, {
-          color: "#3b82f6",
-          weight: 3,
-          opacity: 0.5,
-          dashArray: "8, 12",
-        }).addTo(map);
+            // Visual feedback on list
+            document.querySelectorAll('[id^="spot-card-"]').forEach(el => el.classList.remove('spot-card-active'));
+            const card = document.getElementById(`spot-card-${index}`);
+            if(card) card.classList.add('spot-card-active');
 
-        // Add Markers
-        destinations.forEach((d, i) => {
-          const icon = L.divIcon({
-            className: "custom-icon",
-            html: `<div class="marker-icon">${d.id}</div>`,
-            iconSize: [28, 28],
-            iconAnchor: [14, 14],
-          });
+            // Visual feedback on marker
+            document.querySelectorAll('.marker-icon').forEach(el => el.classList.remove('marker-active'));
+            const markerDiv = document.getElementById(`marker-${index}`);
+            if(markerDiv) markerDiv.classList.add('marker-active');
 
-          const marker = L.marker([d.lat, d.lng], { icon: icon })
-            .bindPopup(
-              `
-                        <div class="text-center p-2 custom-popup">
-                            <span class="text-2xl">${d.icon}</span>
-                            <h3 class="font-bold text-slate-800 text-sm mt-1">${d.id}. ${d.name}</h3>
-                            <p class="text-[10px] text-slate-500 mt-1">${d.desc}</p>
+            if(showDetail) renderDetail(index);
+        };
+
+        function renderDetail(index) {
+            const s = spots[index];
+            const container = document.getElementById('sidebar-content');
+            const backBtn = document.getElementById('back-btn');
+            const listTitle = document.getElementById('list-title');
+
+            backBtn.classList.remove('hidden');
+            listTitle.innerText = `景點攻略 #${index + 1}`;
+
+            container.innerHTML = `
+                <div class="p-6 animate-in fade-in slide-in-from-left duration-300">
+                    <div class="mb-4">
+                        <span class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">${s.city}</span>
+                        <h2 class="text-2xl font-black text-slate-800 mt-1">${s.name}</h2>
+                    </div>
+
+                    ${s.bestTime ? `
+                        <div class="bg-amber-50 p-3 rounded-xl border border-amber-100 mb-6 flex items-start gap-3">
+                            <span class="text-lg">🕒</span>
+                            <div>
+                                <p class="text-[10px] font-bold text-amber-700 uppercase">建議造訪時間</p>
+                                <p class="text-sm font-bold text-amber-900">${s.bestTime}</p>
+                            </div>
                         </div>
-                    `,
-            )
-            .addTo(map);
+                    ` : ''}
 
-          markers.push(marker);
-        });
-      }
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-xs font-black text-slate-400 uppercase mb-2">景點描述</h4>
+                            <p class="text-sm text-slate-600 leading-relaxed font-medium">${s.desc}</p>
+                        </div>
 
-      window.focusLocation = function (index) {
-        const d = destinations[index];
-        map.flyTo([d.lat, d.lng], 13, { duration: 1.5 });
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <h4 class="text-xs font-black text-slate-400 uppercase mb-2">💡 攻略秘笈</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed italic">${s.tips}</p>
+                        </div>
 
-        // UI Feedback
-        document
-          .querySelectorAll("#itinerary-container > div")
-          .forEach((el) => el.classList.remove("active-card"));
-        document.getElementById(`item-${index}`).classList.add("active-card");
+                        <a href="${s.gMap}" target="_blank" class="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-black text-sm hover:bg-slate-800 transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-200">
+                            導航至此景點 (Google Maps) ↗
+                        </a>
+                    </div>
+                </div>
+            `;
+            container.scrollTop = 0;
+        }
 
-        // Open Popup
-        markers[index].openPopup();
-      };
+        window.showList = function() {
+            const backBtn = document.getElementById('back-btn');
+            const listTitle = document.getElementById('list-title');
+            backBtn.classList.add('hidden');
+            listTitle.innerText = "景點探索清單";
+            renderList();
+            map.flyTo([-30.5, 152.0], 6);
+        };
 
-      window.onload = initApp;
+        window.onload = initMap;
     </script>
-  </body>
+</body>
 </html>
