@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>澳洲行李物流與空間配置 master</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Industrial Safety (Slate, Amber, Safety Orange) -->
+    <!-- Application Structure Plan:
+         - 任務看板：追蹤香港朋友進度、租車修改、Threads 徵人。
+         - 空間配置圖：依照「登機箱、登山包、籃球袋、紙箱」四個實體區塊分配物品。
+         - 特別強化：羽球拍防護建議與 65L 包體積分配。
+    -->
+    <!-- Visualization & Content Choices:
+         - 卡片式佈局，清晰劃分「不可變動」與「可變動」區域。
+         - 時間軸標記關鍵物流節點。
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap');
+        body { font-family: 'Inter', 'Noto Sans TC', sans-serif; background-color: #f1f5f9; }
+        .bag-fixed { border-top: 4px solid #ef4444; } /* 紅色代表不可動 */
+        .bag-flexible { border-top: 4px solid #10b981; } /* 綠色代表可彈性分配 */
+        .checkbox-custom:checked + span { text-decoration: line-through; opacity: 0.5; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="mb-10 flex flex-col md:flex-row justify-between items-end gap-6">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tighter">ROAD TRIP 物流總表</h1>
+                <p class="text-slate-500 font-bold uppercase tracking-widest text-xs mt-1">BNE ⇄ SYD | March 2026</p>
+            </div>
+            <div class="flex gap-2">
+                <div class="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200">
+                    <span class="text-[10px] text-slate-400 block font-bold">目前進度</span>
+                    <span class="text-lg font-black text-orange-500">等待班機確認</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- TODO Tracker -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="md:col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+                <h2 class="font-black text-slate-800 mb-6 flex items-center gap-2 text-lg">
+                    📅 核心代辦事項
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-3">
+                        <label class="flex items-start gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer">
+                            <input type="checkbox" class="checkbox-custom mt-1 w-4 h-4 accent-slate-900">
+                            <span class="text-sm font-medium">確認香港朋友班機 (啟動點)</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer">
+                            <input type="checkbox" class="checkbox-custom mt-1 w-4 h-4 accent-slate-900">
+                            <span class="text-sm font-medium">修改機場取還車日期</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer">
+                            <input type="checkbox" class="checkbox-custom mt-1 w-4 h-4 accent-slate-900">
+                            <span class="text-sm font-medium">預訂雪梨/科夫港/布里斯本住宿</span>
+                        </label>
+                    </div>
+                    <div class="space-y-3">
+                        <label class="flex items-start gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer">
+                            <input type="checkbox" class="checkbox-custom mt-1 w-4 h-4 accent-slate-900">
+                            <span class="text-sm font-medium italic">2 月底：Threads 發文徵共乘</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer">
+                            <input type="checkbox" class="checkbox-custom mt-1 w-4 h-4 accent-slate-900">
+                            <span class="text-sm font-medium font-bold text-orange-600">2/09：行李寄放行動 (核心)</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer">
+                            <input type="checkbox" class="checkbox-custom mt-1 w-4 h-4 accent-slate-900">
+                            <span class="text-sm font-medium">3/20：送機後領回 65L 包銜接集簽</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-slate-900 rounded-3xl p-6 text-white shadow-xl">
+                <h2 class="font-bold text-amber-400 mb-4 text-sm uppercase tracking-widest">⚠️ 重要提醒</h2>
+                <ul class="space-y-4 text-xs leading-relaxed text-slate-300">
+                    <li class="flex gap-2">
+                        <span class="text-amber-400">●</span>
+                        <span><strong>2/09 寄放：</strong> 登山包將在朋友家放一個月，羽球拍需注意擺放角度。</span>
+                    </li>
+                    <li class="flex gap-2">
+                        <span class="text-amber-400">●</span>
+                        <span><strong>3/11 出發：</strong> 你是一個人開長途 (10hrs)，請準備好 Podcast/音樂提神。</span>
+                    </li>
+                    <li class="flex gap-2">
+                        <span class="text-amber-400">●</span>
+                        <span><strong>關於集簽：</strong> 送機完當天一定要規劃好行李搬運，以免沒車後行動困難。</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Physical Manifest -->
+        <h2 class="font-black text-slate-800 mb-6 text-xl px-2 text-center md:text-left">📦 行李實體配置 (Bags Manifest)</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            
+            <!-- Carry-on (Locked) -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm bag-fixed">
+                <h3 class="font-black text-red-600 text-sm mb-4">🧳 登機箱 (9kg / 不可動)</h3>
+                <ul class="text-xs space-y-2 text-slate-600 font-medium">
+                    <li>● 筆記型電腦 (Laptop)</li>
+                    <li>● iPad</li>
+                    <li>● 重要證件 / 澳洲銀行卡</li>
+                    <li>● 電子產品配件 / 充電線</li>
+                    <li>● 貴重或易碎物品</li>
+                </ul>
+            </div>
+
+            <!-- Hiking Pack -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm bag-flexible">
+                <h3 class="font-black text-emerald-600 text-sm mb-2">🎒 65L 登山包 (寄放用)</h3>
+                <p class="text-[10px] text-slate-400 mb-3 font-bold">2/09 封印 ➔ 3/20 領回</p>
+                <ul class="text-xs space-y-2 text-slate-600">
+                    <li class="text-indigo-600 font-bold">● 底層：睡袋</li>
+                    <li class="font-bold">● 中層：羽球拍 (貼背放置)</li>
+                    <li>● 羽球鞋、登山鞋</li>
+                    <li>● 衛生棉、隱形眼鏡備品</li>
+                    <li>● 藥物、備用衛生紙</li>
+                    <li>● 衣櫃收納格、衣架</li>
+                </ul>
+            </div>
+
+            <!-- Basketball Bag -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm bag-flexible">
+                <h3 class="font-black text-emerald-600 text-sm mb-4">🏀 籃球袋 (旅行主力)</h3>
+                <ul class="text-xs space-y-2 text-slate-600 font-medium">
+                    <li>● 10 天份旅行換洗衣物</li>
+                    <li>● 泳衣</li>
+                    <li>● 盥洗用品 / 簡易化妝品</li>
+                    <li>● 毛巾 / 枕頭套</li>
+                </ul>
+            </div>
+
+            <!-- Box / Insulated Bag -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm bag-flexible">
+                <h3 class="font-black text-emerald-600 text-sm mb-4">📦 紙箱 / 超大保冷袋</h3>
+                <ul class="text-xs space-y-2 text-slate-600 font-medium">
+                    <li>● 保鮮盒 (內部填充調料)</li>
+                    <li>● 鋁箔紙 / 烘焙紙 / 保鮮袋</li>
+                    <li>● 油 / 鹽 / 廚房備品</li>
+                    <li>● 垃圾袋 / 防曬乳</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Racket Protection Guide -->
+        <section class="bg-amber-50 rounded-3xl p-8 border border-amber-200">
+            <h3 class="font-black text-amber-900 mb-6 text-lg flex items-center gap-2">🏸 羽球拍防擠壓建議</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-4">
+                    <p class="text-sm text-amber-800 leading-relaxed">
+                        既然羽球拍要放在 65L 包內寄放一個月，且多了羽球鞋，最怕的是<strong>網面受壓變形</strong>。
+                    </p>
+                    <div class="bg-white p-4 rounded-xl border border-amber-100">
+                        <h4 class="font-bold text-amber-900 text-xs mb-2 underline">建議擺放順序：</h4>
+                        <ol class="text-xs text-slate-600 space-y-2">
+                            <li>1. 拍頭朝上，握柄朝下，緊貼包包內部的<strong>支架背板</strong>。</li>
+                            <li>2. 利用<strong>筆記型電腦架 (Laptop Stand)</strong> 或 <strong>Books</strong> 墊在拍面處。</li>
+                            <li>3. <strong>羽球鞋</strong>放在遠離拍面的位置，或用軟衣物隔開。</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-amber-100 flex flex-col justify-center">
+                    <h4 class="text-center font-bold text-slate-400 text-[10px] uppercase mb-4 tracking-widest">模擬配置圖</h4>
+                    <div class="border-2 border-dashed border-slate-200 rounded-lg p-4 text-center">
+                        <div class="text-[10px] text-slate-400 mb-2">[登山包背板]</div>
+                        <div class="bg-slate-100 p-2 rounded mb-2 text-xs font-bold text-slate-700">羽球拍 (緊貼)</div>
+                        <div class="bg-amber-100 p-2 rounded mb-2 text-xs font-bold text-amber-700">硬物保護 (書/支架)</div>
+                        <div class="bg-emerald-50 p-2 rounded text-xs font-bold text-emerald-700">緩衝物 (衛生棉/衣物)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 py-8 border-t border-slate-200 text-center">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Safe Travels & Successful Regional Work Signup</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Australian Car Rental Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Warm Neutrals with Sage Accent -->
+    <!-- Application Structure Plan: A dashboard-style single-page application is used to provide a user-driven exploration experience. The core structure consists of a primary control panel at the top (Location, Duration, Car Type) that acts as the main filter. This allows users to instantly tailor the displayed information to their specific needs. Below the controls, the application is divided into three main sections: 1) A visual "At-a-Glance" price comparison bar chart for quick orientation. 2) A detailed grid of company-specific information cards for in-depth analysis. 3) A static section with expert advice and key takeaways. This top-down structure (filters -> visual summary -> details -> advice) guides the user from broad comparison to specific details, making complex information digestible and easy to navigate. This is more effective than a static report as it empowers users to query the data based on their personal travel plans. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Price Comparison. Goal: Compare. Viz: Bar Chart (Range). Interaction: Filters update chart data. Justification: Provides a rapid visual summary of price tiers across companies, which is the primary user concern. The range (min/max) better reflects market volatility than a single price point. Library: Chart.js/Canvas.
+        - Report Info: Company Details (Cars, Mileage, Insurance). Goal: Inform/Organize. Viz: Responsive Cards. Interaction: Content updates based on filters. Justification: Cards are a modern, mobile-friendly way to present structured, company-specific data clearly. Library: HTML/Tailwind/JS.
+        - Report Info: Filters (Location, Duration, Car Type). Goal: Organize. Viz: Buttons. Interaction: User click sets application state. Justification: Buttons provide a clear, tactile interface for a limited set of high-importance options, superior to dropdowns for discoverability. Library: HTML/Tailwind/JS.
+        - Report Info: Recommendations/Advice. Goal: Inform. Viz: Styled Text Blocks. Interaction: Static. Justification: This is summary content that doesn't require interactivity; clear typography and layout are key. Library: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #fdfbf8; /* Warm off-white */
+        color: #3f3f46; /* Zinc 700 */
+      }
+      .filter-btn {
+        transition: all 0.2s ease-in-out;
+        border: 1px solid #d1d5db;
+      }
+      .filter-btn.active {
+        background-color: #344e41; /* Sage Green */
+        color: #ffffff;
+        border-color: #344e41;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 300px;
+        max-height: 400px;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 400px;
+        }
+      }
+      .card {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <header class="text-center mb-8 md:mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-gray-800">
+          Australian Car Rental Guide
+        </h1>
+        <p class="mt-3 text-lg text-gray-600 max-w-3xl mx-auto">
+          An interactive dashboard to compare short-term and long-term rental
+          options in major Australian cities.
+        </p>
+      </header>
+
+      <main>
+        <div
+          id="controls"
+          class="p-6 rounded-xl bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm mb-8 md:mb-12"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label
+                class="font-semibold text-gray-700 mb-2 block text-center md:text-left"
+                >1. Select a City</label
+              >
+              <div
+                id="location-filters"
+                class="flex flex-wrap justify-center md:justify-start gap-2"
+              >
+                <button
+                  data-filter="location"
+                  data-value="Brisbane"
+                  class="filter-btn active w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md"
+                >
+                  Brisbane
+                </button>
+                <button
+                  data-filter="location"
+                  data-value="Sydney"
+                  class="filter-btn w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md"
+                >
+                  Sydney
+                </button>
+                <button
+                  data-filter="location"
+                  data-value="Melbourne"
+                  class="filter-btn w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md"
+                >
+                  Melbourne
+                </button>
+                <button
+                  data-filter="location"
+                  data-value="Perth"
+                  class="filter-btn w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md"
+                >
+                  Perth
+                </button>
+                <button
+                  data-filter="location"
+                  data-value="Hobart"
+                  class="filter-btn w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md"
+                >
+                  Hobart
+                </button>
+              </div>
+            </div>
+            <div>
+              <label
+                class="font-semibold text-gray-700 mb-2 block text-center md:text-left"
+                >2. Choose Rental Duration</label
+              >
+              <div
+                id="duration-filters"
+                class="flex flex-wrap justify-center md:justify-start gap-2"
+              >
+                <button
+                  data-filter="duration"
+                  data-value="short"
+                  class="filter-btn active w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md"
+                >
+                  Short-Term (1-7 Days)
+                </button>
+                <button
+                  data-filter="duration"
+                  data-value="long"
+                  class="filter-btn w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md"
+                >
+                  Long-Term (28+ Days)
+                </button>
+              </div>
+            </div>
+            <div>
+              <label
+                class="font-semibold text-gray-700 mb-2 block text-center md:text-left"
+                >3. Pick Car Type</label
+              >
+              <div
+                id="car-type-filters"
+                class="flex flex-wrap justify-center md:justify-start gap-2"
+              >
+                <button
+                  data-filter="carType"
+                  data-value="small"
+                  class="filter-btn active w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md"
+                >
+                  Small
+                </button>
+                <button
+                  data-filter="carType"
+                  data-value="medium"
+                  class="filter-btn w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md"
+                >
+                  Medium
+                </button>
+                <button
+                  data-filter="carType"
+                  data-value="suv"
+                  class="filter-btn w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md"
+                >
+                  Small SUV
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section id="visual-comparison" class="mb-12">
+          <h2 class="text-2xl font-bold text-gray-800 mb-2 text-center">
+            At-a-Glance Price Comparison
+          </h2>
+          <p class="text-center text-gray-600 mb-6">
+            Estimated daily price range (AUD) for the selected options. Prices
+            are indicative.
+          </p>
+          <div class="chart-container">
+            <canvas id="priceChart"></canvas>
+          </div>
+        </section>
+
+        <section id="detailed-breakdown">
+          <h2 class="text-2xl font-bold text-gray-800 mb-2 text-center">
+            Detailed Company Breakdown
+          </h2>
+          <p class="text-center text-gray-600 mb-8">
+            Explore specific offerings from popular rental companies based on
+            your selection. Insurance costs are additional daily charges to
+            reduce your financial liability (excess) in case of an accident.
+          </p>
+          <div
+            id="company-grid"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          ></div>
+        </section>
+
+        <section id="key-considerations" class="mt-12">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+            Top Picks & Key Considerations
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="p-6 rounded-lg bg-white border border-gray-200">
+              <h3 class="font-semibold text-lg text-gray-800 mb-3">
+                🏆 Top Provider Tiers
+              </h3>
+              <div class="space-y-4">
+                <div>
+                  <h4 class="font-semibold text-gray-700">
+                    Major International Brands
+                  </h4>
+                  <p class="text-gray-600 text-sm">
+                    Includes
+                    <span class="font-medium"
+                      >Avis, Hertz, Europcar, Sixt, Budget</span
+                    >. Best for newer vehicles, extensive networks (airports &
+                    cities), and comprehensive service. Often have higher base
+                    prices but frequent loyalty deals.
+                  </p>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-gray-700">
+                    Affordable & Local Options
+                  </h4>
+                  <p class="text-gray-600 text-sm">
+                    Includes
+                    <span class="font-medium"
+                      >East Coast Car Rentals, Apex, No Birds</span
+                    >. Excellent for budget-conscious travellers. May have
+                    slightly older vehicles, off-airport locations requiring a
+                    shuttle, or more restrictive mileage policies on certain
+                    deals.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="p-6 rounded-lg bg-white border border-gray-200">
+              <h3 class="font-semibold text-lg text-gray-800 mb-3">
+                💡 Essential Rental Tips
+              </h3>
+              <ul class="space-y-3 text-gray-600 text-sm list-disc list-inside">
+                <li>
+                  <span class="font-semibold">Book in Advance:</span> Prices
+                  increase significantly closer to the rental date, especially
+                  during holidays.
+                </li>
+                <li>
+                  <span class="font-semibold">Understand Insurance:</span> The
+                  default excess is high ($5000+). Reducing it costs extra per
+                  day but provides peace of mind. Check if your travel insurance
+                  or credit card offers rental car cover.
+                </li>
+                <li>
+                  <span class="font-semibold">Age Restrictions:</span> Drivers
+                  under 25 usually face a daily surcharge. Some companies won't
+                  rent to drivers under 21.
+                </li>
+                <li>
+                  <span class="font-semibold">Check Mileage Limits:</span> While
+                  often unlimited for standard cars, some budget deals or
+                  long-term rentals may have daily caps (e.g., 100-200km/day).
+                </li>
+                <li>
+                  <span class="font-semibold">Inspect the Vehicle:</span> Before
+                  driving away, thoroughly inspect the car for any pre-existing
+                  damage and ensure it's noted on your rental agreement.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const rentalData = {
+          Brisbane: [
+            {
+              name: "Hertz",
+              prices: {
+                short: { small: [75, 95], medium: [85, 105], suv: [90, 115] },
+                long: { small: [45, 60], medium: [50, 65], suv: [55, 70] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "Kia Rio, Toyota Corolla, Kia Stonic",
+              insurance: {
+                standard: 5500,
+                mid: { cost: 32, excess: 1000 },
+                premium: { cost: 45, excess: 300 },
+              },
+            },
+            {
+              name: "Avis",
+              prices: {
+                short: { small: [78, 98], medium: [88, 110], suv: [95, 120] },
+                long: { small: [48, 62], medium: [52, 68], suv: [58, 72] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "MG 3, Kia Cerato, Mitsubishi ASX",
+              insurance: {
+                standard: 5800,
+                mid: { cost: 34, excess: 1200 },
+                premium: { cost: 48, excess: 400 },
+              },
+            },
+            {
+              name: "Budget",
+              prices: {
+                short: { small: [70, 90], medium: [80, 100], suv: [85, 110] },
+                long: { small: [42, 58], medium: [48, 62], suv: [52, 68] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "Suzuki Swift, Hyundai i30, Hyundai Kona",
+              insurance: {
+                standard: 5500,
+                mid: { cost: 30, excess: 1000 },
+                premium: { cost: 42, excess: 350 },
+              },
+            },
+            {
+              name: "Sixt",
+              prices: {
+                short: { small: [72, 92], medium: [82, 102], suv: [88, 112] },
+                long: { small: [44, 59], medium: [49, 64], suv: [54, 69] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "BYD Dolphin, Toyota Corolla, MG ZS",
+              insurance: {
+                standard: 6000,
+                mid: { cost: 35, excess: 1500 },
+                premium: { cost: 50, excess: 500 },
+              },
+            },
+            {
+              name: "East Coast",
+              prices: {
+                short: { small: [55, 75], medium: [65, 85], suv: [70, 90] },
+                long: { small: [35, 50], medium: [40, 55], suv: [45, 60] },
+              },
+              mileage: "Unlimited KMs (most plans)",
+              cars: "Kia Picanto, Hyundai Accent, Suzuki Vitara",
+              insurance: {
+                standard: 5000,
+                mid: { cost: 28, excess: 800 },
+                premium: { cost: 38, excess: 200 },
+              },
+            },
+          ],
+          Sydney: [
+            {
+              name: "Hertz",
+              prices: {
+                short: { small: [85, 110], medium: [95, 120], suv: [100, 130] },
+                long: { small: [50, 65], medium: [55, 70], suv: [60, 75] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "Kia Rio, Toyota Corolla, Kia Stonic",
+              insurance: {
+                standard: 5500,
+                mid: { cost: 35, excess: 1000 },
+                premium: { cost: 48, excess: 300 },
+              },
+            },
+            {
+              name: "Avis",
+              prices: {
+                short: { small: [88, 115], medium: [98, 125], suv: [105, 135] },
+                long: { small: [52, 68], medium: [58, 72], suv: [62, 78] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "MG 3, Kia Cerato, Mitsubishi ASX",
+              insurance: {
+                standard: 5800,
+                mid: { cost: 36, excess: 1200 },
+                premium: { cost: 50, excess: 400 },
+              },
+            },
+            {
+              name: "Budget",
+              prices: {
+                short: { small: [80, 105], medium: [90, 115], suv: [95, 125] },
+                long: { small: [48, 62], medium: [52, 68], suv: [58, 72] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "Suzuki Swift, Hyundai i30, Hyundai Kona",
+              insurance: {
+                standard: 5500,
+                mid: { cost: 33, excess: 1000 },
+                premium: { cost: 45, excess: 350 },
+              },
+            },
+            {
+              name: "No Birds",
+              prices: {
+                short: { small: [60, 80], medium: [70, 90], suv: [75, 95] },
+                long: { small: [40, 55], medium: [45, 60], suv: [50, 65] },
+              },
+              mileage: "100 KMs/day, then surcharge",
+              cars: "Older Toyota Yaris/Corolla",
+              insurance: {
+                standard: 4000,
+                mid: { cost: 25, excess: 500 },
+                premium: { cost: 35, excess: 100 },
+              },
+            },
+          ],
+          Melbourne: [
+            {
+              name: "Hertz",
+              prices: {
+                short: { small: [80, 100], medium: [90, 110], suv: [95, 120] },
+                long: { small: [48, 62], medium: [53, 68], suv: [58, 72] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "Kia Rio, Toyota Corolla, Kia Stonic",
+              insurance: {
+                standard: 5500,
+                mid: { cost: 33, excess: 1000 },
+                premium: { cost: 46, excess: 300 },
+              },
+            },
+            {
+              name: "Europcar",
+              prices: {
+                short: { small: [82, 105], medium: [92, 115], suv: [100, 125] },
+                long: { small: [50, 65], medium: [55, 70], suv: [60, 75] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "MG 3, GWM Haval, Mitsubishi ASX",
+              insurance: {
+                standard: 6000,
+                mid: { cost: 38, excess: 1200 },
+                premium: { cost: 52, excess: 400 },
+              },
+            },
+            {
+              name: "Budget",
+              prices: {
+                short: { small: [75, 95], medium: [85, 105], suv: [90, 115] },
+                long: { small: [45, 60], medium: [50, 65], suv: [55, 70] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "Suzuki Swift, Hyundai i30, Hyundai Kona",
+              insurance: {
+                standard: 5500,
+                mid: { cost: 31, excess: 1000 },
+                premium: { cost: 43, excess: 350 },
+              },
+            },
+            {
+              name: "Apex",
+              prices: {
+                short: { small: [60, 80], medium: [70, 90], suv: [75, 95] },
+                long: { small: [40, 55], medium: [45, 60], suv: [50, 65] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "Toyota Yaris, Holden Trax",
+              insurance: {
+                standard: 4500,
+                mid: { cost: 26, excess: 750 },
+                premium: { cost: 36, excess: 250 },
+              },
+            },
+          ],
+          Perth: [
+            {
+              name: "Hertz",
+              prices: {
+                short: { small: [70, 90], medium: [80, 100], suv: [85, 105] },
+                long: { small: [43, 58], medium: [48, 62], suv: [53, 68] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "Kia Rio, Toyota Corolla, Kia Stonic",
+              insurance: {
+                standard: 5000,
+                mid: { cost: 30, excess: 900 },
+                premium: { cost: 42, excess: 300 },
+              },
+            },
+            {
+              name: "Avis",
+              prices: {
+                short: { small: [72, 92], medium: [82, 102], suv: [88, 110] },
+                long: { small: [45, 60], medium: [50, 65], suv: [55, 70] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "MG 3, Kia Cerato, Mitsubishi ASX",
+              insurance: {
+                standard: 5200,
+                mid: { cost: 32, excess: 1000 },
+                premium: { cost: 45, excess: 400 },
+              },
+            },
+            {
+              name: "Budget",
+              prices: {
+                short: { small: [68, 88], medium: [78, 98], suv: [82, 102] },
+                long: { small: [41, 56], medium: [46, 60], suv: [51, 66] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "Suzuki Swift, Hyundai i30, Hyundai Kona",
+              insurance: {
+                standard: 5000,
+                mid: { cost: 29, excess: 900 },
+                premium: { cost: 40, excess: 350 },
+              },
+            },
+            {
+              name: "Bayswater",
+              prices: {
+                short: { small: [50, 70], medium: [60, 80], suv: [65, 85] },
+                long: { small: [35, 50], medium: [40, 55], suv: [45, 60] },
+              },
+              mileage: "100 KMs/day, then surcharge",
+              cars: "Older Hyundai Getz/i30",
+              insurance: {
+                standard: 4000,
+                mid: { cost: 22, excess: 500 },
+                premium: { cost: 32, excess: 100 },
+              },
+            },
+          ],
+          Hobart: [
+            {
+              name: "Hertz",
+              prices: {
+                short: {
+                  small: [90, 115],
+                  medium: [100, 125],
+                  suv: [110, 140],
+                },
+                long: { small: [55, 70], medium: [60, 75], suv: [65, 80] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "Kia Rio, Toyota Corolla, Kia Stonic",
+              insurance: {
+                standard: 6000,
+                mid: { cost: 38, excess: 1500 },
+                premium: { cost: 52, excess: 500 },
+              },
+            },
+            {
+              name: "Avis",
+              prices: {
+                short: {
+                  small: [95, 120],
+                  medium: [105, 130],
+                  suv: [115, 145],
+                },
+                long: { small: [58, 72], medium: [62, 78], suv: [68, 85] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "MG 3, Kia Cerato, Mitsubishi ASX",
+              insurance: {
+                standard: 6200,
+                mid: { cost: 40, excess: 1500 },
+                premium: { cost: 55, excess: 500 },
+              },
+            },
+            {
+              name: "Budget",
+              prices: {
+                short: { small: [88, 110], medium: [98, 120], suv: [105, 135] },
+                long: { small: [53, 68], medium: [58, 72], suv: [63, 78] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "Suzuki Swift, Hyundai i30, Hyundai Kona",
+              insurance: {
+                standard: 6000,
+                mid: { cost: 36, excess: 1200 },
+                premium: { cost: 50, excess: 450 },
+              },
+            },
+            {
+              name: "Bargain Car Rentals",
+              prices: {
+                short: { small: [70, 95], medium: [80, 105], suv: [85, 115] },
+                long: { small: [45, 60], medium: [50, 65], suv: [55, 70] },
+              },
+              mileage: "Unlimited KMs",
+              cars: "Kia Picanto, Hyundai Accent, MG ZS",
+              insurance: {
+                standard: 5000,
+                mid: { cost: 30, excess: 800 },
+                premium: { cost: 40, excess: 300 },
+              },
+            },
+          ],
+        };
+
+        let currentState = {
+          location: "Brisbane",
+          duration: "short",
+          carType: "small",
+        };
+
+        let priceChart = null;
+        const ctx = document.getElementById("priceChart").getContext("2d");
+
+        function updateChart() {
+          const data = rentalData[currentState.location];
+          if (!data) return;
+
+          const labels = data.map((c) => c.name);
+          const chartData = data.map(
+            (c) => c.prices[currentState.duration][currentState.carType]
+          );
+
+          if (priceChart) {
+            priceChart.destroy();
+          }
+
+          priceChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: `Est. Daily Price (AUD) for ${
+                    currentState.carType.charAt(0).toUpperCase() +
+                    currentState.carType.slice(1)
+                  }`,
+                  data: chartData,
+                  backgroundColor: "rgba(52, 78, 65, 0.6)",
+                  borderColor: "rgba(52, 78, 65, 1)",
+                  borderWidth: 1,
+                  borderRadius: 4,
+                  borderSkipped: false,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              parsing: {
+                yAxisKey: "y",
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  title: {
+                    display: true,
+                    text: "Price (AUD per day)",
+                  },
+                },
+              },
+              plugins: {
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      const val = context.raw;
+                      return `${context.dataset.label}: $${val[0]} - $${val[1]}`;
+                    },
+                  },
+                },
+                legend: {
+                  display: false,
+                },
+              },
+            },
+          });
+        }
+
+        function updateCompanyGrid() {
+          const grid = document.getElementById("company-grid");
+          grid.innerHTML = "";
+          const data = rentalData[currentState.location];
+          if (!data) return;
+
+          data.forEach((company) => {
+            const prices =
+              company.prices[currentState.duration][currentState.carType];
+            const cardHTML = `
+                <div class="card p-6 flex flex-col">
+                    <h3 class="text-xl font-bold text-gray-800">${
+                      company.name
+                    }</h3>
+                    <p class="text-sm text-gray-500 mb-4">${company.cars}</p>
+                    
+                    <div class="mt-auto">
+                        <div class="text-center bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                            <p class="text-sm text-green-700">Est. Daily Price</p>
+                            <p class="text-2xl font-bold text-green-800">$${
+                              prices[0]
+                            } - $${prices[1]}</p>
+                        </div>
+                        
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-600">Mileage Policy:</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">${
+                                  company.mileage
+                                }</span>
+                            </div>
+                            <hr/>
+                            <div>
+                                <p class="font-semibold text-gray-600 mb-2">Insurance Options:</p>
+                                <ul class="space-y-2 text-gray-500">
+                                    <li class="flex justify-between"><span>Standard Excess:</span> <span class="font-medium text-gray-700">~$${company.insurance.standard.toLocaleString()}</span></li>
+                                    <li class="flex justify-between"><span>Reduce to ~$${company.insurance.mid.excess.toLocaleString()}:</span> <span class="font-medium text-gray-700">+$${
+              company.insurance.mid.cost
+            }/day</span></li>
+                                    <li class="flex justify-between"><span>Reduce to ~$${company.insurance.premium.excess.toLocaleString()}:</span> <span class="font-medium text-gray-700">+$${
+              company.insurance.premium.cost
+            }/day</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            grid.innerHTML += cardHTML;
+          });
+        }
+
+        function handleFilterClick(e) {
+          if (!e.target.matches(".filter-btn")) return;
+
+          const btn = e.target;
+          const filterType = btn.dataset.filter;
+          const value = btn.dataset.value;
+
+          currentState[filterType] = value;
+
+          document
+            .querySelectorAll(`button[data-filter="${filterType}"]`)
+            .forEach((b) => {
+              b.classList.remove("active");
+            });
+          btn.classList.add("active");
+
+          updateDisplay();
+        }
+
+        function updateDisplay() {
+          updateChart();
+          updateCompanyGrid();
+        }
+
+        document
+          .getElementById("controls")
+          .addEventListener("click", handleFilterClick);
+
+        updateDisplay();
+      });
+    </script>
+  </body>
+</html>

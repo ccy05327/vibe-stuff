@@ -741,6 +741,35 @@
             class="section-content travel-section space-y-2 md:space-y-3 lg:space-y-4"
           >
             <a
+              href="/travel/ST12/index.html"
+              class="search-item block bg-white rounded-xl shadow-md hover:shadow-lg transition p-3 md:p-4 lg:p-5 border border-green-100 hover:border-green-300 relative min-h-[64px] md:min-h-[56px]"
+            >
+              <div class="flex items-start">
+                <span
+                  class="text-lg md:text-xl lg:text-2xl mr-2 md:mr-3 lg:mr-4 mt-0.5"
+                  >🇦🇺</span
+                >
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-start justify-between mb-2">
+                    <h3
+                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
+                    >
+                      ST12
+                    </h3>
+                    <span
+                      class="card-date text-xs rounded px-1.5 py-0.5 shadow-sm whitespace-nowrap"
+                      style="color: #2563eb"
+                    >
+                      2026/01/23
+                    </span>
+                  </div>
+                  <p class="card-description text-xs md:text-sm leading-tight">
+                    雪梨-布里斯本：好友團聚公路旅行地圖
+                  </p>
+                </div>
+              </div>
+            </a>
+            <a
               href="travel/ST9/"
               class="search-item block bg-white rounded-xl shadow-md hover:shadow-lg transition p-3 md:p-4 lg:p-5 border border-green-100 hover:border-green-300 relative min-h-[64px] md:min-h-[56px]"
             >
@@ -899,7 +928,7 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-2xl font-bold leading-tight pr-4"
                     >
                       <span class="text-xs opacity-75">（省到爆的）</span>ST8
                       Trip
@@ -1213,7 +1242,7 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
+                      class="card-title
                     >
                       iPAS AI 應用規劃師認證攻略
                     </h3>
@@ -1242,7 +1271,7 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between mb-2">
                     <h3
-                      class="card-title text-sm md:text-base lg:text-lg font-bold leading-tight pr-4"
+                      class="card-title text-sm md:text-base lg:text-2xl font-bold leading-tight pr-4"
                     >
                       The Magnetic City "黏"性最高的城市
                     </h3>
@@ -1435,6 +1464,54 @@
       </footer>
     </main>
 
+    <script type="module">
+      import Card from "./js/Card.js";
+      import Section from "./js/Section.js";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const sectionsData = [
+          new Section("life", "var(--section-blue)", [
+            new Card("Steps Tracker", "Track and analyze your daily step count with interactive visualizations.", "https://watch-steps.streamlit.app/", "life"),
+            new Card("Sleep Pattern Predictor", "Analyze and predict your sleep patterns with interactive feedback.", "https://sdv-tau.vercel.app/", "life"),
+            new Card("Project Lumora", "Interactive Quest Log - Weekly sprints and task management for thesis project development", "life/lumora.html", "life"),
+            new Card("Questboard Portal", "Personal planner, checklist, and event tracker with countdowns and calendar.", "life/questboard.html", "life"),
+            new Card("My MBTI Journey", "歷年來的MBTI紀錄跟變化", "life/mbti.html", "life"),
+          ]),
+          new Section("travel", "var(--section-green)", [
+            new Card("ST12", "雪梨-布里斯本：好友團聚公路旅行地圖", "/travel/ST12/index.html", "travel", "Actively Updating: January 23, 2026"),
+            new Card("ST9", "挑戰跟一個沒有很熟的人出國六天五夜總預算1萬6?! 有可能嗎", "travel/ST9/", "travel"),
+            new Card("伯斯冬日五日遊", "八月伯斯五日遊互動式行程規劃，包含預算分析、交通攻略、每日行程與美食地圖", "travel/perth_aug.html", "travel"),
+            new Card("霞喀羅古道", "完全依賴大眾運輸的兩天一夜霞喀羅古道橫斷挑戰，包含詳細時程規劃、交通費用與裝備清單", "travel/霞喀羅古道.html", "travel"),
+            new Card("The Hypothetical Trip", "The trip I once researched about", "travel/hypothetical_1.html", "travel"),
+            new Card("淡蘭北路", "詳細規劃三天兩夜的淡蘭古道北路行程", "travel/淡蘭古道.html", "travel"),
+            new Card("ST8 Trip", "從計畫、預算、事後回顧，都詳細記錄了", "travel/ST8.html", "travel"),
+          ]),
+          new Section("whv", "#e11d48", [
+            new Card("Online RSA Certificate Guide (Australia)", "Step-by-step guide for obtaining the RSA (Responsible Service of Alcohol) certificate in Australia, including application process and exam tips.", "whv/aus_rsa_certificate/index.html", "whv"),
+            new Card("White Card Australia Guide", "How to get the White Card for construction work in Australia, with details on the application process and training experience.", "whv/aus_white_card/index.html", "whv"),
+            new Card("First Aid Certificate Guide (Australia)", "Guide to obtaining the First Aid certificate in Australia, including course overview and application steps.", "whv/aus_first_aid/index.html", "whv"),
+            new Card("澳洲銀行指南 | Australian Banking Guide", "專為417打工度假簽證持有者設計的互動式銀行比較工具，包含語音影片導覽、儲蓄利率圖表和詳細銀行分析", "whv/aus_bank_options/index.html", "whv"),
+            new Card("澳洲打工度假 (417簽證) 私人醫療保險比較", "專為打工度假者設計的互動式 OVHC (海外訪客健康保險) 方案分析，包含語音導覽和價格比較工具", "whv/aus_health_insurance/index.html", "whv"),
+          ]),
+          new Section("learning", "var(--section-yellow)", [
+            new Card("Interactive Guide: MBTI vs. 16Personalities", "Interactive guide exploring the critical differences between MBTI and 16Personalities, including scientific critique and responsible use recommendations", "learning/mbti-16personalities/", "learning"),
+            new Card("全球醫療體系互動分析 Global Healthcare Systems: An Interactive Analysis", "全球醫療體系模式的互動式探索，比較台灣健保制度與加拿大醫療保險，分析世界各國排名並提供完整視覺化圖表", "learning/global_healthcare/", "learning"),
+            new Card("數位十字路口：全球行動與支付系統 Digital Crossroads: Global Mobile & Payment Systems", "互動式分析探討為何各國行動數據與數位支付存在巨大差異，深入研究經濟、監管與技術因素，提供完整數據視覺化", "learning/phone_plan_payment/", "learning"),
+            new Card("iPAS AI 應用規劃師認證攻略", "專為倫敦大學電腦科學畢業生打造的iPAS AI應用規劃師認證互動策略藍圖", "learning/iPAS_certification/", "learning"),
+            new Card("The Magnetic City \"黏\"性最高的城市", "IG上 @seasia.news @seasia.stats 發文啟發的研究，英文版比較全面", "learning/urban_stickiness/", "learning"),
+            new Card("全球濕度比較", "互動式儀表板，探索世界主要城市與台灣濕度的比較與氣候知識", "learning/humidity_comparison/", "learning"),
+            new Card("Snap Judgement 速判", "在IG上看到@a_day_mag的發文在講Snap Judgement，想知道背後故事跟學習媒體識讀，就跑去做研究產生了這個網站", "learning/snap_judgement/", "learning"),
+            new Card("香港台灣健檢大比較", "本只是跟朋友聊到她要去做健檢，我問了價格發現比台灣便宜覺得困惑，按照香港物價/薪資所得，應該要比較貴才對，然後就產生這篇研究", "learning/HK-TW_healthcheck/index.html", "learning"),
+          ]),
+        ];
+
+        const mainContainer = document.querySelector("main .space-y-4");
+        sectionsData.forEach((section) => {
+          mainContainer.innerHTML += section.generateHTML();
+        });
+      });
+    </script>
+
     <script>
       function toggleSection(sectionName) {
         const content = document.getElementById(sectionName + "-content");
@@ -1622,6 +1699,7 @@
             } else {
               // When search is cleared, recalculate height for expanded sections
               if (!sectionContent.classList.contains("collapsed")) {
+               
                 sectionContent.style.maxHeight =
                   sectionContent.scrollHeight + "px";
               }
@@ -2103,10 +2181,46 @@
         // Initialize view mode
         initializeView();
 
-        const sections = ["life", "travel", "learning", "miscellaneous"];
+        const sections = ["life", "travel", "whv", "learning", "miscellaneous"];
         sections.forEach((sectionName) => {
           const content = document.getElementById(sectionName + "-content");
           content.style.maxHeight = content.scrollHeight + "px";
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOM fully loaded and parsed.");
+
+        // Check if a previously clicked card ID is stored
+        const savedCardId = localStorage.getItem("clickedCardId");
+        console.log("Saved Card ID from localStorage:", savedCardId);
+
+        if (savedCardId) {
+          const targetElement = document.getElementById(savedCardId);
+          console.log("Target Element:", targetElement);
+
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: "smooth" });
+            console.log("Scrolled to element with ID:", savedCardId);
+          } else {
+            console.log("No element found with the saved ID.");
+          }
+
+          // Clear the saved ID after scrolling
+          localStorage.removeItem("clickedCardId");
+          console.log("Cleared saved Card ID from localStorage.");
+        }
+
+        // Add click event lifsteners to all cards
+        const cards = document.querySelectorAll(".card"); // Adjust the selector to match your card elements
+        console.log("Number of cards found:", cards.length);
+
+        cards.forEach((card) => {
+          console.log("Adding click listener to card with ID:", card.id);
+          card.addEventListener("click", () => {
+            localStorage.setItem("clickedCardId", card.id);
+            console.log("Saved clicked Card ID to localStorage:", card.id);
+          });
         });
       });
     </script>
