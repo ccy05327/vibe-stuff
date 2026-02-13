@@ -1,0 +1,1021 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toyota Aurion 682MO3</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Leaflet CSS (For the Map) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <!-- Leaflet JS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Merriweather:ital,wght@0,300;0,700;1,300&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #fafafa;
+        color: #1f2937;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: "Merriweather", serif;
+      }
+
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Timeline styling */
+      .timeline-line {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 100%;
+        background-color: #e5e7eb;
+        z-index: 0;
+      }
+
+      /* Map Container */
+      #map {
+        height: 400px;
+        width: 100%;
+        border-radius: 12px;
+        z-index: 1;
+      }
+
+      /* Photo Placeholder Pattern */
+      .photo-placeholder {
+        background-image:
+          repeating-linear-gradient(
+            45deg,
+            #f3f4f6 25%,
+            transparent 25%,
+            transparent 75%,
+            #f3f4f6 75%,
+            #f3f4f6
+          ),
+          repeating-linear-gradient(
+            45deg,
+            #f3f4f6 25%,
+            #fafafa 25%,
+            #fafafa 75%,
+            #f3f4f6 75%,
+            #f3f4f6
+          );
+        background-position:
+          0 0,
+          10px 10px;
+        background-size: 20px 20px;
+      }
+
+      /* Chart Card Styles */
+      .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+      }
+      .card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+      }
+
+      /* Tab Styles */
+      .tab-btn {
+        padding: 12px 24px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s ease-in-out;
+        color: #64748b; /* Slate-500 */
+      }
+      .tab-btn.active {
+        color: #0284c7; /* Sky-600 */
+        border-bottom-color: #0284c7;
+        background-color: #f0f9ff; /* Sky-50 */
+        border-radius: 8px 8px 0 0;
+      }
+      .tab-btn:hover:not(.active) {
+        color: #334155;
+        background-color: #f1f5f9;
+      }
+
+      .stat-card {
+        transition: transform 0.2s;
+      }
+      .stat-card:hover {
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HERO SECTION -->
+    <header
+      class="relative h-screen min-h-[600px] flex items-center justify-center bg-slate-900 text-white overflow-hidden"
+    >
+      <!-- Video Background Placeholder -->
+      <div
+        class="absolute inset-0 opacity-40 bg-cover bg-center"
+        style="
+          background-image: url(&quot;https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=2021&q=80&quot;);
+        "
+      >
+        <!-- Replace with video later -->
+      </div>
+
+      <div class="relative z-10 text-center px-4 max-w-4xl">
+        <p class="text-sky-400 font-bold tracking-widest uppercase mb-4">
+          Dec 15, 2025 — Feb 09, 2026
+        </p>
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+          57 Days.<br />6,568 Kilometers.<br />80+ Friends.
+        </h1>
+        <p
+          class="text-lg md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed"
+        >
+          One car changed my entire working holiday. From Noosa to Coffs
+          Harbour, organizing trips, meeting strangers who became friends.
+        </p>
+        <a
+          href="#timeline"
+          class="inline-block bg-white text-slate-900 px-8 py-3 rounded-full font-bold hover:bg-sky-50 transition-colors"
+        >
+          View the Journey
+        </a>
+      </div>
+    </header>
+
+    <!-- INTRO STATS -->
+    <section class="py-12 bg-white border-b border-slate-100">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div>
+            <div class="text-4xl font-bold text-sky-600 mb-1">6,568</div>
+            <div
+              class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+            >
+              Kilometers Driven
+            </div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-orange-500 mb-1">11</div>
+            <div
+              class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+            >
+              Official Trips
+            </div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-purple-600 mb-1">~$948</div>
+            <div
+              class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+            >
+              Fuel Cost
+            </div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-emerald-500 mb-1">80+</div>
+            <div
+              class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+            >
+              New Connections
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE MAP -->
+    <section class="py-16 bg-slate-50">
+      <div class="max-w-5xl mx-auto px-4">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl font-bold text-slate-800 mb-4">The Route</h2>
+          <p class="text-slate-500">
+            From the Sunshine Coast down to Coffs Harbour
+          </p>
+        </div>
+        <div id="map" class="shadow-xl border-4 border-white"></div>
+        <p class="text-center text-xs text-slate-400 mt-4">
+          Map powered by OpenStreetMap & Leaflet
+        </p>
+      </div>
+    </section>
+
+    <!-- TIMELINE SECTION -->
+    <section id="timeline" class="py-20 relative overflow-hidden">
+      <div class="max-w-4xl mx-auto px-4 relative">
+        <!-- Timeline Line -->
+        <div class="hidden md:block timeline-line"></div>
+
+        <!-- EVENT 1: The Beginning -->
+        <div
+          class="relative z-10 mb-20 md:flex items-center justify-between group"
+        >
+          <div class="order-1 w-full md:w-[45%] mb-8 md:mb-0">
+            <div
+              class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 transform transition group-hover:-translate-y-1"
+            >
+              <span class="text-xs font-bold text-sky-500 uppercase"
+                >Dec 15 - 22</span
+              >
+              <h3 class="text-xl font-bold text-slate-800 mb-2">
+                The Start & Solitude
+              </h3>
+              <p class="text-slate-600 text-sm mb-4">
+                Picked up the car. First drive to the beach, first time carrying
+                passengers, and a solo hiking trip to clear my head.
+              </p>
+              <div
+                class="h-48 rounded-lg photo-placeholder flex items-center justify-center text-slate-400 text-sm"
+              >
+                [Insert Photo: Car Pickup / Beach]
+              </div>
+            </div>
+          </div>
+          <div
+            class="order-1 w-8 h-8 bg-sky-500 rounded-full border-4 border-white shadow absolute left-1/2 transform -translate-x-1/2 hidden md:block"
+          ></div>
+          <div class="order-1 w-full md:w-[45%]"></div>
+          <!-- Spacer -->
+        </div>
+
+        <!-- EVENT 2: Group 1 Gold Coast -->
+        <div
+          class="relative z-10 mb-20 md:flex items-center justify-between group"
+        >
+          <div class="order-1 w-full md:w-[45%]"></div>
+          <!-- Spacer -->
+          <div
+            class="order-1 w-8 h-8 bg-purple-500 rounded-full border-4 border-white shadow absolute left-1/2 transform -translate-x-1/2 hidden md:block"
+          ></div>
+          <div class="order-1 w-full md:w-[45%] mb-8 md:mb-0">
+            <div
+              class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 transform transition group-hover:-translate-y-1"
+            >
+              <span class="text-xs font-bold text-purple-500 uppercase"
+                >Dec 26</span
+              >
+              <h3 class="text-xl font-bold text-slate-800 mb-2">
+                Group 1: Gold Coast
+              </h3>
+              <p class="text-slate-600 text-sm mb-4">
+                The first "Little Dragon" group trip! 226km round trip. Visited
+                the Glow Worms.
+              </p>
+              <div
+                class="h-48 rounded-lg photo-placeholder flex items-center justify-center text-slate-400 text-sm"
+              >
+                [Insert Photo: Group Selfie]
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EVENT 3: New Year & Noosa -->
+        <div
+          class="relative z-10 mb-20 md:flex items-center justify-between group"
+        >
+          <div class="order-1 w-full md:w-[45%] mb-8 md:mb-0">
+            <div
+              class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 transform transition group-hover:-translate-y-1"
+            >
+              <span class="text-xs font-bold text-sky-500 uppercase"
+                >Jan 01 - 07</span
+              >
+              <h3 class="text-xl font-bold text-slate-800 mb-2">
+                New Year & Noosa
+              </h3>
+              <p class="text-slate-600 text-sm mb-4">
+                Interviewed by 7News on New Year's! Later, Group 5 went to Noosa
+                Big Pineapple (319km).
+              </p>
+              <div
+                class="h-48 rounded-lg photo-placeholder flex items-center justify-center text-slate-400 text-sm"
+              >
+                [Insert Photo: 7News or Pineapple]
+              </div>
+            </div>
+          </div>
+          <div
+            class="order-1 w-8 h-8 bg-sky-500 rounded-full border-4 border-white shadow absolute left-1/2 transform -translate-x-1/2 hidden md:block"
+          ></div>
+          <div class="order-1 w-full md:w-[45%]"></div>
+          <!-- Spacer -->
+        </div>
+
+        <!-- EVENT 4: Byron Bay Sunrise -->
+        <div
+          class="relative z-10 mb-20 md:flex items-center justify-between group"
+        >
+          <div class="order-1 w-full md:w-[45%]"></div>
+          <!-- Spacer -->
+          <div
+            class="order-1 w-8 h-8 bg-orange-500 rounded-full border-4 border-white shadow absolute left-1/2 transform -translate-x-1/2 hidden md:block"
+          ></div>
+          <div class="order-1 w-full md:w-[45%] mb-8 md:mb-0">
+            <div
+              class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 transform transition group-hover:-translate-y-1"
+            >
+              <span class="text-xs font-bold text-orange-500 uppercase"
+                >Jan 26</span
+              >
+              <h3 class="text-xl font-bold text-slate-800 mb-2">
+                Byron Bay Sunrise
+              </h3>
+              <p class="text-slate-600 text-sm mb-4">
+                A massive 516km day. Chasing the first light at the most
+                easterly point.
+              </p>
+              <div
+                class="h-48 rounded-lg photo-placeholder flex items-center justify-center text-slate-400 text-sm"
+              >
+                [Insert Photo: Sunrise]
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EVENT 5: The Grand Finale -->
+        <div
+          class="relative z-10 mb-20 md:flex items-center justify-between group"
+        >
+          <div class="order-1 w-full md:w-[45%] mb-8 md:mb-0">
+            <div
+              class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 transform transition group-hover:-translate-y-1"
+            >
+              <span class="text-xs font-bold text-sky-500 uppercase"
+                >Feb 09</span
+              >
+              <h3 class="text-xl font-bold text-slate-800 mb-2">
+                The Final Drive
+              </h3>
+              <p class="text-slate-600 text-sm mb-4">
+                Group 11 to Byron Bay. Returning the car after 6,568km. An
+                emotional end to an era.
+              </p>
+              <div
+                class="h-48 rounded-lg photo-placeholder flex items-center justify-center text-slate-400 text-sm"
+              >
+                [Insert Photo: Final Car Shot]
+              </div>
+            </div>
+          </div>
+          <div
+            class="order-1 w-8 h-8 bg-red-500 rounded-full border-4 border-white shadow absolute left-1/2 transform -translate-x-1/2 hidden md:block"
+          ></div>
+          <div class="order-1 w-full md:w-[45%]"></div>
+          <!-- Spacer -->
+        </div>
+      </div>
+    </section>
+
+    <!-- THE DATA SECTION (NERD SECTION) -->
+    <section class="py-16 bg-white border-t border-slate-200">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl font-bold text-slate-800">
+            The Data Behind the Journey
+          </h2>
+          <p class="text-slate-500">Full Statistics & Log (Dec 15 - Feb 09)</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div
+          class="flex border-b border-slate-200 mb-8 bg-white rounded-t-xl px-4 pt-2 shadow-sm justify-center"
+        >
+          <button
+            id="tab-mileage"
+            onclick="switchTab('mileage')"
+            class="tab-btn active"
+          >
+            Mileage Stats
+          </button>
+          <button id="tab-gas" onclick="switchTab('gas')" class="tab-btn">
+            Gas Expenses
+          </button>
+        </div>
+
+        <!-- TAB CONTENT: MILEAGE -->
+        <div id="view-mileage" class="flex flex-col gap-8 mb-10">
+          <!-- Mileage Summary Bar -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div
+              class="stat-card bg-white border border-slate-200 p-6 rounded-xl shadow-sm flex flex-col items-center justify-center text-center"
+            >
+              <span
+                class="text-slate-500 font-bold text-xs uppercase tracking-wider mb-2"
+                >Total Distance</span
+              >
+              <span class="text-3xl font-extrabold text-sky-600"
+                >6,568
+                <span class="text-lg text-slate-400 font-normal">km</span></span
+              >
+            </div>
+            <div
+              class="stat-card bg-white border border-slate-200 p-6 rounded-xl shadow-sm flex flex-col items-center justify-center text-center"
+            >
+              <span
+                class="text-slate-500 font-bold text-xs uppercase tracking-wider mb-2"
+                >Avg. Daily Mileage</span
+              >
+              <span
+                class="text-3xl font-extrabold text-sky-600"
+                id="avg-daily-km"
+                >--</span
+              >
+            </div>
+            <div
+              class="stat-card bg-white border border-slate-200 p-6 rounded-xl shadow-sm flex flex-col items-center justify-center text-center"
+            >
+              <span
+                class="text-slate-500 font-bold text-xs uppercase tracking-wider mb-2"
+                >Avg. Weekly Mileage</span
+              >
+              <span
+                class="text-3xl font-extrabold text-sky-600"
+                id="avg-weekly-km"
+                >--</span
+              >
+            </div>
+          </div>
+
+          <!-- Mileage Charts Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- 1. Daily Mileage -->
+            <div class="card">
+              <h2
+                class="text-lg font-bold mb-6 text-slate-700 flex items-center"
+              >
+                <span class="w-2 h-6 bg-sky-500 rounded-full mr-3"></span> Daily
+                Mileage (km)
+              </h2>
+              <div class="chart-container">
+                <canvas id="dailyChart"></canvas>
+              </div>
+            </div>
+
+            <!-- 2. Weekly Mileage -->
+            <div class="card">
+              <h2
+                class="text-lg font-bold mb-6 text-slate-700 flex items-center"
+              >
+                <span class="w-2 h-6 bg-sky-700 rounded-full mr-3"></span>
+                Weekly Mileage (km)
+              </h2>
+              <div class="chart-container">
+                <canvas id="weeklyChart"></canvas>
+              </div>
+            </div>
+
+            <!-- 3. Accumulated Mileage -->
+            <div class="card md:col-span-2">
+              <h2
+                class="text-lg font-bold mb-6 text-slate-700 flex items-center"
+              >
+                <span class="w-2 h-6 bg-sky-600 rounded-full mr-3"></span>
+                Accumulated Mileage (Total km)
+              </h2>
+              <div class="chart-container">
+                <canvas id="accumulatedChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: GAS -->
+        <div id="view-gas" class="hidden flex-col gap-8 mb-10">
+          <!-- Gas Summary Bar -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div
+              class="stat-card bg-white border border-slate-200 p-6 rounded-xl shadow-sm flex flex-col items-center justify-center text-center"
+            >
+              <span
+                class="text-slate-500 font-bold text-xs uppercase tracking-wider mb-2"
+                >Total Gas Cost</span
+              >
+              <span class="text-3xl font-extrabold text-orange-600"
+                >$948.17</span
+              >
+            </div>
+            <div
+              class="stat-card bg-white border border-slate-200 p-6 rounded-xl shadow-sm flex flex-col items-center justify-center text-center"
+            >
+              <span
+                class="text-slate-500 font-bold text-xs uppercase tracking-wider mb-2"
+                >Avg. Daily Gas Cost</span
+              >
+              <span
+                class="text-3xl font-extrabold text-orange-600"
+                id="avg-daily-gas"
+                >--</span
+              >
+            </div>
+            <div
+              class="stat-card bg-white border border-slate-200 p-6 rounded-xl shadow-sm flex flex-col items-center justify-center text-center"
+            >
+              <span
+                class="text-slate-500 font-bold text-xs uppercase tracking-wider mb-2"
+                >Avg. Weekly Gas Cost</span
+              >
+              <span
+                class="text-3xl font-extrabold text-orange-600"
+                id="avg-weekly-gas"
+                >--</span
+              >
+            </div>
+          </div>
+
+          <!-- Gas Charts Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- 1. Per Refuel Charge -->
+            <div class="card">
+              <h2
+                class="text-lg font-bold mb-6 text-slate-700 flex items-center"
+              >
+                <span class="w-2 h-6 bg-orange-500 rounded-full mr-3"></span>
+                Cost per Refuel ($AUD)
+              </h2>
+              <div class="chart-container">
+                <canvas id="gasChart"></canvas>
+              </div>
+            </div>
+
+            <!-- 2. Weekly Fuel Charge -->
+            <div class="card">
+              <h2
+                class="text-lg font-bold mb-6 text-slate-700 flex items-center"
+              >
+                <span class="w-2 h-6 bg-orange-700 rounded-full mr-3"></span>
+                Weekly Fuel Charge ($AUD)
+              </h2>
+              <div class="chart-container">
+                <canvas id="weeklyGasChart"></canvas>
+              </div>
+            </div>
+
+            <!-- 3. Accumulated Fuel Charge -->
+            <div class="card md:col-span-2">
+              <h2
+                class="text-lg font-bold mb-6 text-slate-700 flex items-center"
+              >
+                <span class="w-2 h-6 bg-red-600 rounded-full mr-3"></span>
+                Cumulative Fuel Cost ($AUD)
+              </h2>
+              <div class="chart-container">
+                <canvas id="accumulatedGasChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Details Table -->
+        <div class="card overflow-hidden">
+          <h2 class="text-lg font-bold mb-6 text-slate-700 flex items-center">
+            <span class="w-2 h-6 bg-slate-500 rounded-full mr-3"></span>
+            Detailed Log
+          </h2>
+          <div class="overflow-x-auto h-96 overflow-y-auto">
+            <table class="min-w-full text-sm text-left relative">
+              <thead class="bg-slate-50 border-b border-slate-200 sticky top-0">
+                <tr>
+                  <th class="px-6 py-4 rounded-tl-lg">Date</th>
+                  <th class="px-6 py-4">Description</th>
+                  <th class="px-6 py-4">Daily (km)</th>
+                  <th class="px-6 py-4">Accumulated (km)</th>
+                  <th class="px-6 py-4 rounded-tr-lg">Gas Cost</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody" class="divide-y divide-slate-100">
+                <!-- Rows will be inserted by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 py-12 text-center">
+      <p class="mb-2">Thank you to everyone who joined the ride.</p>
+      <p class="text-xs opacity-50">2025-2026 Working Holiday Diaries</p>
+    </footer>
+
+    <script>
+      // --- MAP SETUP (Leaflet) ---
+      const locations = [
+        { name: "Rainbow Beach", coords: [-25.9, 153.09] },
+        { name: "Noosa", coords: [-26.39, 153.09] },
+        { name: "Brisbane (Base)", coords: [-27.47, 153.03] },
+        { name: "Gold Coast", coords: [-28.01, 153.4] },
+        { name: "Byron Bay", coords: [-28.64, 153.61] },
+        { name: "Coffs Harbour", coords: [-30.3, 153.1] },
+      ];
+
+      const map = L.map("map").setView([-28.0, 153.2], 7);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(map);
+
+      const latlngs = locations.map((loc) => loc.coords);
+      const polyline = L.polyline(latlngs, {
+        color: "#0ea5e9",
+        weight: 4,
+        opacity: 0.7,
+      }).addTo(map);
+
+      locations.forEach((loc) => {
+        L.circleMarker(loc.coords, {
+          radius: 6,
+          fillColor: "#0ea5e9",
+          color: "#fff",
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.8,
+        })
+          .bindPopup(loc.name)
+          .addTo(map);
+      });
+
+      map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
+
+      // --- GLOBAL SETTINGS ---
+      Chart.defaults.color = "#475569";
+      Chart.defaults.font.family = "'Segoe UI', Roboto, sans-serif";
+
+      // --- TAB LOGIC ---
+      function switchTab(tabName) {
+        const mileageView = document.getElementById("view-mileage");
+        const gasView = document.getElementById("view-gas");
+        const mileageTab = document.getElementById("tab-mileage");
+        const gasTab = document.getElementById("tab-gas");
+
+        if (tabName === "mileage") {
+          mileageView.classList.remove("hidden");
+          mileageView.classList.add("flex");
+          gasView.classList.add("hidden");
+          gasView.classList.remove("flex");
+          mileageTab.classList.add("active");
+          gasTab.classList.remove("active");
+        } else {
+          gasView.classList.remove("hidden");
+          gasView.classList.add("flex");
+          mileageView.classList.add("hidden");
+          mileageView.classList.remove("flex");
+          gasTab.classList.add("active");
+          mileageTab.classList.remove("active");
+        }
+      }
+
+      // --- FULL RAW DATA ---
+      const rawData = [
+        {
+          date: "12/15",
+          desc: "Pick up car, beach",
+          daily: 86,
+          acc: 86,
+          gas: 0,
+        },
+        {
+          date: "12/16",
+          desc: "Mt Coot-tha night",
+          daily: 123,
+          acc: 209,
+          gas: 0,
+        },
+        {
+          date: "12/17",
+          desc: "Beach & Fishing",
+          daily: 97,
+          acc: 306,
+          gas: 50.0,
+        },
+        { date: "12/19", desc: "Sore legs", daily: 45, acc: 351, gas: 0 },
+        { date: "12/20", desc: "-", daily: 3, acc: 354, gas: 0 },
+        { date: "12/21", desc: "Beach breakfast", daily: 68, acc: 422, gas: 0 },
+        { date: "12/22", desc: "Hiking", daily: 185, acc: 607, gas: 0 },
+        { date: "12/23", desc: "Badminton", daily: 31, acc: 638, gas: 0 },
+        {
+          date: "12/25",
+          desc: "Beach Sunrise",
+          daily: 339,
+          acc: 977,
+          gas: 100.76,
+        },
+        { date: "12/26", desc: "Gold Coast", daily: 226, acc: 1203, gas: 0 },
+        { date: "12/27", desc: "-", daily: 48, acc: 1251, gas: 0 },
+        { date: "12/28", desc: "-", daily: 4, acc: 1255, gas: 0 },
+        { date: "12/29", desc: "Mt Coot-tha", daily: 48, acc: 1303, gas: 0 },
+        {
+          date: "12/30",
+          desc: "Cedar Creek Falls",
+          daily: 295,
+          acc: 1598,
+          gas: 68.96,
+        },
+        {
+          date: "12/31",
+          desc: "Gas refill (Full)",
+          daily: 0,
+          acc: 1598,
+          gas: 43.76,
+        },
+        {
+          date: "01/01",
+          desc: "7news interview",
+          daily: 390,
+          acc: 1988,
+          gas: 0,
+        },
+        { date: "01/02", desc: "Trail & Pizza", daily: 57, acc: 2045, gas: 0 },
+        { date: "01/03", desc: "-", daily: 4, acc: 2049, gas: 0 },
+        { date: "01/04", desc: "-", daily: 4, acc: 2053, gas: 0 },
+        { date: "01/05", desc: "-", daily: 20, acc: 2073, gas: 0 },
+        { date: "01/06", desc: "Linkt setup", daily: 8, acc: 2081, gas: 66.76 },
+        { date: "01/07", desc: "Noosa", daily: 319, acc: 2400, gas: 0 },
+        { date: "01/08", desc: "-", daily: 2, acc: 2402, gas: 0 },
+        { date: "01/09", desc: "Costco", daily: 134, acc: 2536, gas: 0 },
+        { date: "01/10", desc: "Board games", daily: 11, acc: 2547, gas: 0 },
+        { date: "01/11", desc: "-", daily: 10, acc: 2557, gas: 0 },
+        { date: "01/12", desc: "Beach walk", daily: 79, acc: 2636, gas: 78.7 },
+        { date: "01/14", desc: "Night view", daily: 55, acc: 2691, gas: 0 },
+        { date: "01/15", desc: "Gas refill", daily: 0, acc: 2691, gas: 16.67 },
+        {
+          date: "01/16",
+          desc: "Camping return",
+          daily: 467,
+          acc: 3158,
+          gas: 66.68,
+        },
+        { date: "01/17", desc: "-", daily: 5, acc: 3163, gas: 0 },
+        {
+          date: "01/18",
+          desc: "Lake Samsonvale",
+          daily: 206,
+          acc: 3369,
+          gas: 0,
+        },
+        { date: "01/19", desc: "Gas refill", daily: 12, acc: 3381, gas: 29.73 },
+        { date: "01/21", desc: "-", daily: 2, acc: 3383, gas: 0 },
+        { date: "01/22", desc: "-", daily: 25, acc: 3408, gas: 0 },
+        { date: "01/23", desc: "-", daily: 40, acc: 3448, gas: 0 },
+        { date: "01/24", desc: "-", daily: 4, acc: 3452, gas: 0 },
+        { date: "01/26", desc: "Byron Bay", daily: 516, acc: 3968, gas: 85.66 },
+        { date: "01/27", desc: "Gas refill", daily: 0, acc: 3968, gas: 38.34 },
+        {
+          date: "01/28",
+          desc: "Byron Bay Stay",
+          daily: 637,
+          acc: 4605,
+          gas: 32.52,
+        },
+        { date: "01/29", desc: "Coffs Harbour", daily: 649, acc: 5254, gas: 0 },
+        { date: "01/30", desc: "Gas refill", daily: 15, acc: 5269, gas: 78.16 },
+        { date: "01/31", desc: "-", daily: 16, acc: 5285, gas: 0 },
+        { date: "02/01", desc: "-", daily: 5, acc: 5290, gas: 0 },
+        { date: "02/02", desc: "Car wash", daily: 32, acc: 5322, gas: 0 },
+        {
+          date: "02/03",
+          desc: "Rainbow Beach",
+          daily: 448,
+          acc: 5770,
+          gas: 20.02,
+        },
+        { date: "02/04", desc: "Hiking", daily: 220, acc: 5990, gas: 35.01 },
+        {
+          date: "02/06",
+          desc: "Last badminton",
+          daily: 21,
+          acc: 6011,
+          gas: 64.87,
+        },
+        { date: "02/07", desc: "Beach", daily: 105, acc: 6116, gas: 0 },
+        { date: "02/08", desc: "Last work day", daily: 69, acc: 6185, gas: 0 },
+        {
+          date: "02/09",
+          desc: "Return Car",
+          daily: 383,
+          acc: 6568,
+          gas: 71.57,
+        },
+      ];
+
+      // --- CALCULATIONS ---
+      const totalDistance = 6568;
+      const totalGas = 948.17;
+      const daysDiff = 57;
+
+      // Averages
+      const avgDailyKm = totalDistance / daysDiff;
+      const avgWeeklyKm = avgDailyKm * 7;
+      const avgDailyGas = totalGas / daysDiff;
+      const avgWeeklyGas = avgDailyGas * 7;
+
+      // Insert Stats
+      document.getElementById("avg-daily-km").innerHTML =
+        Math.round(avgDailyKm) +
+        ' <span class="text-lg text-slate-400 font-normal">km</span>';
+      document.getElementById("avg-weekly-km").innerHTML =
+        Math.round(avgWeeklyKm) +
+        ' <span class="text-lg text-slate-400 font-normal">km</span>';
+      document.getElementById("avg-daily-gas").innerText =
+        "$" + avgDailyGas.toFixed(2);
+      document.getElementById("avg-weekly-gas").innerText =
+        "$" + avgWeeklyGas.toFixed(2);
+
+      // --- CHART GENERATION ---
+
+      // Helper: Get Week Number
+      function getWeekNumber(d) {
+        const start = new Date("2025/12/15");
+        const [month, day] = d.split("/");
+        const year = month == "12" ? 2025 : 2026;
+        const current = new Date(`${year}/${month}/${day}`);
+        start.setHours(0, 0, 0, 0);
+        current.setHours(0, 0, 0, 0);
+        const diffTime = current - start;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        return Math.floor(diffDays / 7) + 1;
+      }
+
+      // 1. Daily
+      new Chart(document.getElementById("dailyChart"), {
+        type: "bar",
+        data: {
+          labels: rawData.map((d) => d.date),
+          datasets: [
+            {
+              label: "KM Driven",
+              data: rawData.map((d) => d.daily),
+              backgroundColor: "#0ea5e9",
+              borderRadius: 3,
+            },
+          ],
+        },
+        options: { responsive: true, maintainAspectRatio: false },
+      });
+
+      // 2. Weekly
+      const weeklyData = {};
+      for (let i = 1; i <= 9; i++) {
+        weeklyData["Week " + i] = 0;
+      }
+
+      rawData.forEach((item) => {
+        const weekNum = "Week " + getWeekNumber(item.date);
+        if (weeklyData[weekNum] !== undefined)
+          weeklyData[weekNum] += item.daily;
+      });
+
+      new Chart(document.getElementById("weeklyChart"), {
+        type: "bar",
+        data: {
+          labels: Object.keys(weeklyData),
+          datasets: [
+            {
+              label: "Total Weekly KM",
+              data: Object.values(weeklyData),
+              backgroundColor: "#0369a1",
+              borderRadius: 6,
+            },
+          ],
+        },
+        options: { responsive: true, maintainAspectRatio: false },
+      });
+
+      // 3. Accumulated
+      new Chart(document.getElementById("accumulatedChart"), {
+        type: "line",
+        data: {
+          labels: rawData.map((d) => d.date),
+          datasets: [
+            {
+              label: "Total KM",
+              data: rawData.map((d) => d.acc),
+              borderColor: "#0284c7",
+              backgroundColor: "rgba(14, 165, 233, 0.15)",
+              fill: true,
+              tension: 0.3,
+              pointRadius: 2,
+            },
+          ],
+        },
+        options: { responsive: true, maintainAspectRatio: false },
+      });
+
+      // 4. Gas: Per Refuel Charge
+      const gasDays = rawData.filter((d) => d.gas > 0);
+      new Chart(document.getElementById("gasChart"), {
+        type: "bar",
+        data: {
+          labels: gasDays.map((d) => d.date),
+          datasets: [
+            {
+              label: "Cost ($AUD)",
+              data: gasDays.map((d) => d.gas),
+              backgroundColor: "#f97316",
+              borderRadius: 4,
+            },
+          ],
+        },
+        options: { responsive: true, maintainAspectRatio: false },
+      });
+
+      // 5. Weekly Gas
+      const weeklyGasData = {};
+      for (let i = 1; i <= 9; i++) {
+        weeklyGasData["Week " + i] = 0;
+      }
+
+      rawData.forEach((item) => {
+        const weekNum = "Week " + getWeekNumber(item.date);
+        if (weeklyGasData[weekNum] !== undefined)
+          weeklyGasData[weekNum] += item.gas;
+      });
+
+      new Chart(document.getElementById("weeklyGasChart"), {
+        type: "bar",
+        data: {
+          labels: Object.keys(weeklyGasData),
+          datasets: [
+            {
+              label: "Weekly Gas Cost ($AUD)",
+              data: Object.values(weeklyGasData),
+              backgroundColor: "#c2410c",
+              borderRadius: 6,
+            },
+          ],
+        },
+        options: { responsive: true, maintainAspectRatio: false },
+      });
+
+      // 6. Accumulated Gas
+      let gasRunningTotal = 0;
+      const accumulatedGasData = rawData.map((item) => {
+        gasRunningTotal += item.gas;
+        return gasRunningTotal;
+      });
+
+      new Chart(document.getElementById("accumulatedGasChart"), {
+        type: "line",
+        data: {
+          labels: rawData.map((d) => d.date),
+          datasets: [
+            {
+              label: "Total Gas Spent ($AUD)",
+              data: accumulatedGasData,
+              borderColor: "#dc2626",
+              backgroundColor: "rgba(220, 38, 38, 0.1)",
+              fill: true,
+              tension: 0.1,
+              pointRadius: 2,
+            },
+          ],
+        },
+        options: { responsive: true, maintainAspectRatio: false },
+      });
+
+      // --- TABLE POPULATION ---
+      const tableBody = document.getElementById("tableBody");
+      rawData.forEach((row) => {
+        const tr = document.createElement("tr");
+        tr.className = "bg-white hover:bg-slate-50 transition-colors";
+        tr.innerHTML = `
+                <td class="px-6 py-4 font-semibold text-slate-700 whitespace-nowrap">${row.date}</td>
+                <td class="px-6 py-4 text-slate-600">${row.desc}</td>
+                <td class="px-6 py-4 text-slate-600">${row.daily > 0 ? row.daily : '<span class="text-slate-300">-</span>'}</td>
+                <td class="px-6 py-4 text-slate-500 font-mono">${row.acc}</td>
+                <td class="px-6 py-4 font-bold ${row.gas > 0 ? "text-orange-600" : "text-slate-300"}">
+                    ${row.gas > 0 ? "$" + row.gas.toFixed(2) : "-"}
+                </td>
+            `;
+        tableBody.appendChild(tr);
+      });
+    </script>
+  </body>
+</html>
