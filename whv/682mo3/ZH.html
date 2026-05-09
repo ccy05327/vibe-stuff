@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>澳洲打工度假公路之旅 | 2025-2026</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Leaflet CSS (地圖用) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <!-- Leaflet JS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Merriweather:ital,wght@0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+        background-color: #fafafa;
+        color: #1f2937;
+      }
+      h1,
+      h2,
+      h3,
+      .serif {
+        font-family: "Merriweather", serif;
+      }
+
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Timeline styling */
+      .timeline-line {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 100%;
+        background-color: #e5e7eb;
+        z-index: 0;
+      }
+
+      /* Map Container */
+      #map {
+        height: 500px;
+        width: 100%;
+        border-radius: 12px;
+        z-index: 1;
+      }
+
+      /* Photo Placeholder Pattern */
+      .photo-placeholder {
+        background-image:
+          repeating-linear-gradient(
+            45deg,
+            #f3f4f6 25%,
+            transparent 25%,
+            transparent 75%,
+            #f3f4f6 75%,
+            #f3f4f6
+          ),
+          repeating-linear-gradient(
+            45deg,
+            #f3f4f6 25%,
+            #fafafa 25%,
+            #fafafa 75%,
+            #f3f4f6 75%,
+            #f3f4f6
+          );
+        background-position:
+          0 0,
+          10px 10px;
+        background-size: 20px 20px;
+      }
+
+      /* Chart Card Styles */
+      .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+      }
+      .card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+      }
+
+      /* Tab Styles */
+      .tab-btn {
+        padding: 12px 24px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s ease-in-out;
+        color: #64748b; /* Slate-500 */
+      }
+      .tab-btn.active {
+        color: #0284c7; /* Sky-600 */
+        border-bottom-color: #0284c7;
+        background-color: #f0f9ff; /* Sky-50 */
+        border-radius: 8px 8px 0 0;
+      }
+      .tab-btn:hover:not(.active) {
+        color: #334155;
+        background-color: #f1f5f9;
+      }
+
+      .stat-card {
+        transition: transform 0.2s;
+      }
+      .stat-card:hover {
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HERO SECTION -->
+    <header
+      class="relative h-screen min-h-[600px] flex items-center justify-center bg-slate-900 text-white overflow-hidden"
+    >
+      <!-- Video Background Placeholder -->
+      <div
+        class="absolute inset-0 opacity-40 bg-cover bg-center"
+        style="
+          background-image: url(&quot;https://images.unsplash.com/photo-1523482580672-01e6f06378c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80&quot;);
+        "
+      >
+        <!-- Replace with your video: <video autoplay muted loop class="absolute inset-0 w-full h-full object-cover"><source src="your-video.mp4"></video> -->
+      </div>
+
+      <div class="relative z-10 text-center px-4 max-w-4xl">
+        <p class="text-sky-400 font-bold tracking-widest uppercase mb-4">
+          2025.12.15 — 2026.02.09
+        </p>
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight serif">
+          57 天。<br />6,568 公里。<br />21 個難忘回憶。
+        </h1>
+        <p
+          class="text-lg md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed"
+        >
+          這台車改變了我的澳洲打工度假之旅。從 Noosa 到 Coffs Harbour，與 11
+          團「小龍」夥伴們的公路記憶。
+        </p>
+        <a
+          href="#map-section"
+          class="inline-block bg-white text-slate-900 px-8 py-3 rounded-full font-bold hover:bg-sky-50 transition-colors"
+        >
+          查看旅程地圖
+        </a>
+      </div>
+    </header>
+
+    <!-- INTRO STATS -->
+    <section class="py-12 bg-white border-b border-slate-100">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div>
+            <div class="text-4xl font-bold text-sky-600 mb-1 serif">6,568</div>
+            <div
+              class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+            >
+              總里程 (KM)
+            </div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-orange-500 mb-1 serif">21</div>
+            <div
+              class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+            >
+              探索景點
+            </div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-purple-600 mb-1 serif">11</div>
+            <div
+              class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+            >
+              出團次數
+            </div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-emerald-500 mb-1 serif">
+              100+
+            </div>
+            <div
+              class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+            >
+              遇見的朋友
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE MAP (UPDATED WITH 21 PLACES) -->
+    <section id="map-section" class="py-16 bg-slate-50">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl font-bold text-slate-800 mb-4 serif">
+            我的澳洲足跡
+          </h2>
+          <p class="text-slate-500">這 57 天，我們一起去過的地方</p>
+        </div>
+        <div id="map" class="shadow-xl border-4 border-white"></div>
+        <div
+          class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 text-sm text-slate-600"
+        >
+          <!-- List for SEO/Access -->
+          <div class="bg-white p-3 rounded shadow-sm border border-slate-100">
+            📍 Noosa 努薩
+          </div>
+          <div class="bg-white p-3 rounded shadow-sm border border-slate-100">
+            📍 Sunshine Coast 陽光海岸
+          </div>
+          <div class="bg-white p-3 rounded shadow-sm border border-slate-100">
+            📍 The Big Pineapple 大鳳梨
+          </div>
+          <div class="bg-white p-3 rounded shadow-sm border border-slate-100">
+            📍 Mt Coot-Tha 庫薩山
+          </div>
+          <div class="bg-white p-3 rounded shadow-sm border border-slate-100">
+            📍 Gold Coast 黃金海岸
+          </div>
+          <div class="bg-white p-3 rounded shadow-sm border border-slate-100">
+            📍 Springbrook National Park
+          </div>
+          <div class="bg-white p-3 rounded shadow-sm border border-slate-100">
+            📍 Byron Bay 拜倫灣
+          </div>
+          <div class="bg-white p-3 rounded shadow-sm border border-slate-100">
+            📍 Coffs Harbour 科夫港
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIMELINE SECTION -->
+    <section id="timeline" class="py-20 relative overflow-hidden">
+      <div class="max-w-4xl mx-auto px-4 relative">
+        <div class="hidden md:block timeline-line"></div>
+
+        <!-- Timeline events placeholder (Same as before, simplified for this view) -->
+        <div
+          class="relative z-10 mb-20 md:flex items-center justify-between group"
+        >
+          <div class="order-1 w-full md:w-[45%] mb-8 md:mb-0">
+            <div
+              class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 transform transition group-hover:-translate-y-1"
+            >
+              <span class="text-xs font-bold text-sky-500 uppercase"
+                >12/15 - Start</span
+              >
+              <h3 class="text-xl font-bold text-slate-800 mb-2">旅程的起點</h3>
+              <p class="text-slate-600 text-sm mb-4">
+                拿到車的第一天。第一次開去海邊，第一次載人，一個人爬山看夜景。
+              </p>
+              <div
+                class="h-48 rounded-lg photo-placeholder flex items-center justify-center text-slate-400 text-sm"
+              >
+                [照片區域]
+              </div>
+            </div>
+          </div>
+          <div
+            class="order-1 w-8 h-8 bg-sky-500 rounded-full border-4 border-white shadow absolute left-1/2 transform -translate-x-1/2 hidden md:block"
+          ></div>
+          <div class="order-1 w-full md:w-[45%]"></div>
+        </div>
+
+        <div
+          class="relative z-10 mb-20 md:flex items-center justify-between group"
+        >
+          <div class="order-1 w-full md:w-[45%]"></div>
+          <div
+            class="order-1 w-8 h-8 bg-purple-500 rounded-full border-4 border-white shadow absolute left-1/2 transform -translate-x-1/2 hidden md:block"
+          ></div>
+          <div class="order-1 w-full md:w-[45%] mb-8 md:mb-0">
+            <div
+              class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 transform transition group-hover:-translate-y-1"
+            >
+              <span class="text-xs font-bold text-purple-500 uppercase"
+                >12/26 - Group 1</span
+              >
+              <h3 class="text-xl font-bold text-slate-800 mb-2">
+                黃金海岸首發團
+              </h3>
+              <p class="text-slate-600 text-sm mb-4">
+                小龍第一團！來回 226 公里，去看藍光蟲。
+              </p>
+              <div
+                class="h-48 rounded-lg photo-placeholder flex items-center justify-center text-slate-400 text-sm"
+              >
+                [照片區域]
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- More events can be added here -->
+      </div>
+    </section>
+
+    <!-- DATA DASHBOARD SECTION -->
+    <section class="py-16 bg-white border-t border-slate-200">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl font-bold text-slate-800 serif">數據紀錄</h2>
+          <p class="text-slate-500">詳細里程與油資分析 (Dec 15 - Feb 09)</p>
+        </div>
+
+        <div
+          class="flex border-b border-slate-200 mb-8 bg-white rounded-t-xl px-4 pt-2 shadow-sm justify-center"
+        >
+          <button
+            id="tab-mileage"
+            onclick="switchTab('mileage')"
+            class="tab-btn active"
+          >
+            里程統計
+          </button>
+          <button id="tab-gas" onclick="switchTab('gas')" class="tab-btn">
+            油資花費
+          </button>
+        </div>
+
+        <!-- MILEAGE TAB -->
+        <div id="view-mileage" class="flex flex-col gap-8 mb-10">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div
+              class="stat-card bg-white border border-slate-200 p-6 rounded-xl shadow-sm text-center"
+            >
+              <span
+                class="text-slate-500 font-bold text-xs uppercase tracking-wider"
+                >總里程</span
+              >
+              <div class="text-3xl font-extrabold text-sky-600 mt-2">
+                6,568 <span class="text-lg text-slate-400 font-normal">km</span>
+              </div>
+            </div>
+            <div
+              class="stat-card bg-white border border-slate-200 p-6 rounded-xl shadow-sm text-center"
+            >
+              <span
+                class="text-slate-500 font-bold text-xs uppercase tracking-wider"
+                >平均每日里程</span
+              >
+              <div
+                class="text-3xl font-extrabold text-sky-600 mt-2"
+                id="avg-daily-km"
+              >
+                --
+              </div>
+            </div>
+            <div
+              class="stat-card bg-white border border-slate-200 p-6 rounded-xl shadow-sm text-center"
+            >
+              <span
+                class="text-slate-500 font-bold text-xs uppercase tracking-wider"
+                >平均每週里程</span
+              >
+              <div
+                class="text-3xl font-extrabold text-sky-600 mt-2"
+                id="avg-weekly-km"
+              >
+                --
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="card">
+              <h3 class="font-bold text-slate-700 mb-4">每日里程 (KM)</h3>
+              <div class="chart-container">
+                <canvas id="dailyChart"></canvas>
+              </div>
+            </div>
+            <div class="card">
+              <h3 class="font-bold text-slate-700 mb-4">每週里程 (KM)</h3>
+              <div class="chart-container">
+                <canvas id="weeklyChart"></canvas>
+              </div>
+            </div>
+            <div class="card md:col-span-2">
+              <h3 class="font-bold text-slate-700 mb-4">累積里程 (Total KM)</h3>
+              <div class="chart-container">
+                <canvas id="accumulatedChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GAS TAB -->
+        <div id="view-gas" class="hidden flex-col gap-8 mb-10">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div
+              class="stat-card bg-white border border-slate-200 p-6 rounded-xl shadow-sm text-center"
+            >
+              <span
+                class="text-slate-500 font-bold text-xs uppercase tracking-wider"
+                >總油資</span
+              >
+              <div class="text-3xl font-extrabold text-orange-600 mt-2">
+                $948.17
+              </div>
+            </div>
+            <div
+              class="stat-card bg-white border border-slate-200 p-6 rounded-xl shadow-sm text-center"
+            >
+              <span
+                class="text-slate-500 font-bold text-xs uppercase tracking-wider"
+                >平均每日油資</span
+              >
+              <div
+                class="text-3xl font-extrabold text-orange-600 mt-2"
+                id="avg-daily-gas"
+              >
+                --
+              </div>
+            </div>
+            <div
+              class="stat-card bg-white border border-slate-200 p-6 rounded-xl shadow-sm text-center"
+            >
+              <span
+                class="text-slate-500 font-bold text-xs uppercase tracking-wider"
+                >平均每週油資</span
+              >
+              <div
+                class="text-3xl font-extrabold text-orange-600 mt-2"
+                id="avg-weekly-gas"
+              >
+                --
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="card">
+              <h3 class="font-bold text-slate-700 mb-4">單次加油金額 ($AUD)</h3>
+              <div class="chart-container"><canvas id="gasChart"></canvas></div>
+            </div>
+            <div class="card">
+              <h3 class="font-bold text-slate-700 mb-4">每週油資 ($AUD)</h3>
+              <div class="chart-container">
+                <canvas id="weeklyGasChart"></canvas>
+              </div>
+            </div>
+            <div class="card md:col-span-2">
+              <h3 class="font-bold text-slate-700 mb-4">累積油資 ($AUD)</h3>
+              <div class="chart-container">
+                <canvas id="accumulatedGasChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DATA TABLE -->
+        <div class="card overflow-hidden">
+          <h3 class="font-bold text-slate-700 mb-4">詳細紀錄</h3>
+          <div class="overflow-x-auto h-96 overflow-y-auto">
+            <table class="min-w-full text-sm text-left relative">
+              <thead class="bg-slate-50 border-b border-slate-200 sticky top-0">
+                <tr>
+                  <th class="px-6 py-4">日期</th>
+                  <th class="px-6 py-4">行程內容</th>
+                  <th class="px-6 py-4">當日里程</th>
+                  <th class="px-6 py-4">累積里程</th>
+                  <th class="px-6 py-4">油資</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="bg-slate-900 text-slate-400 py-12 text-center">
+      <p class="mb-2">感謝所有參與這段旅程的夥伴。</p>
+      <p class="text-xs opacity-50">2025-2026 Working Holiday Diaries</p>
+    </footer>
+
+    <script>
+      // --- 21 PLACES DATA ---
+      // Coordinates estimated for the specific locations
+      const places = [
+        { name: "Noosa 努薩", lat: -26.39, lon: 153.09 },
+        { name: "Redcliffe 赤壁", lat: -27.23, lon: 153.11 },
+        { name: "Sunshine Coast 陽光海岸", lat: -26.65, lon: 153.06 },
+        { name: "Glass House Mountains 玻璃山", lat: -26.9, lon: 152.96 },
+        { name: "The Big Pineapple 大鳳梨", lat: -26.62, lon: 152.93 },
+        { name: "Shorncliffe", lat: -27.32, lon: 153.08 },
+        { name: "Wellington Point", lat: -27.49, lon: 153.24 },
+        { name: "Wynnum Jetty", lat: -27.44, lon: 153.17 },
+        { name: "Mt Coot-Tha 庫薩山", lat: -27.48, lon: 152.95 },
+        { name: "Victoria Point", lat: -27.58, lon: 153.3 },
+        { name: "Mt Gravatt Lookout", lat: -27.54, lon: 153.07 },
+        { name: "Moogerah Dam 木瓜湖", lat: -28.06, lon: 152.55 },
+        { name: "Gold Coast Pelican feeding", lat: -27.94, lon: 153.4 }, // Charis Seafoods
+        { name: "Harbour Town Outlet", lat: -27.93, lon: 153.38 },
+        { name: "Coombabah Conservation Area", lat: -27.88, lon: 153.39 },
+        { name: "Springbrook National Park", lat: -28.19, lon: 153.27 },
+        { name: "QLD/NSW State Border", lat: -28.16, lon: 153.55 },
+        { name: "Byron Bay 拜倫灣", lat: -28.64, lon: 153.61 },
+        { name: "Ulmarra", lat: -29.63, lon: 153.03 },
+        { name: "The Big Banana", lat: -30.27, lon: 153.13 },
+        { name: "Coffs Harbour 科夫港", lat: -30.3, lon: 153.11 },
+      ];
+
+      // --- MAP INITIALIZATION ---
+      const map = L.map("map").setView([-28.0, 153.2], 7);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap",
+      }).addTo(map);
+
+      // Add Markers for the 21 places
+      const markers = L.featureGroup();
+      places.forEach((p) => {
+        const marker = L.circleMarker([p.lat, p.lon], {
+          radius: 8,
+          fillColor: "#0ea5e9", // Sky Blue
+          color: "#fff",
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.9,
+        }).bindPopup(`<b>${p.name}</b>`);
+        marker.addTo(markers);
+      });
+      markers.addTo(map);
+
+      // Connect dots roughly (Just for visual flow, simple sort by latitude)
+      const sortedPlaces = [...places].sort((a, b) => b.lat - a.lat); // North to South
+      const latlngs = sortedPlaces.map((p) => [p.lat, p.lon]);
+      L.polyline(latlngs, {
+        color: "#0ea5e9",
+        weight: 2,
+        opacity: 0.4,
+        dashArray: "5, 10",
+      }).addTo(map);
+
+      map.fitBounds(markers.getBounds(), { padding: [50, 50] });
+
+      // --- CHARTS & DATA (Your Full Data) ---
+      // (Copying the logic from previous simplified dashboard but keeping this structure)
+      const rawData = [
+        {
+          date: "12/15",
+          desc: "Pick up car, beach",
+          daily: 86,
+          acc: 86,
+          gas: 0,
+        },
+        {
+          date: "12/16",
+          desc: "Mt Coot-tha night",
+          daily: 123,
+          acc: 209,
+          gas: 0,
+        },
+        {
+          date: "12/17",
+          desc: "Beach & Fishing",
+          daily: 97,
+          acc: 306,
+          gas: 50.0,
+        },
+        { date: "12/19", desc: "Sore legs", daily: 45, acc: 351, gas: 0 },
+        { date: "12/20", desc: "-", daily: 3, acc: 354, gas: 0 },
+        { date: "12/21", desc: "Beach breakfast", daily: 68, acc: 422, gas: 0 },
+        { date: "12/22", desc: "Hiking", daily: 185, acc: 607, gas: 0 },
+        { date: "12/23", desc: "Badminton", daily: 31, acc: 638, gas: 0 },
+        {
+          date: "12/25",
+          desc: "Beach Sunrise",
+          daily: 339,
+          acc: 977,
+          gas: 100.76,
+        },
+        { date: "12/26", desc: "Gold Coast", daily: 226, acc: 1203, gas: 0 },
+        { date: "12/27", desc: "-", daily: 48, acc: 1251, gas: 0 },
+        { date: "12/28", desc: "-", daily: 4, acc: 1255, gas: 0 },
+        { date: "12/29", desc: "Mt Coot-tha", daily: 48, acc: 1303, gas: 0 },
+        {
+          date: "12/30",
+          desc: "Cedar Creek Falls",
+          daily: 295,
+          acc: 1598,
+          gas: 68.96,
+        },
+        {
+          date: "12/31",
+          desc: "Gas refill (Full)",
+          daily: 0,
+          acc: 1598,
+          gas: 43.76,
+        },
+        {
+          date: "01/01",
+          desc: "7news interview",
+          daily: 390,
+          acc: 1988,
+          gas: 0,
+        },
+        { date: "01/02", desc: "Trail & Pizza", daily: 57, acc: 2045, gas: 0 },
+        { date: "01/03", desc: "-", daily: 4, acc: 2049, gas: 0 },
+        { date: "01/04", desc: "-", daily: 4, acc: 2053, gas: 0 },
+        { date: "01/05", desc: "-", daily: 20, acc: 2073, gas: 0 },
+        { date: "01/06", desc: "Linkt setup", daily: 8, acc: 2081, gas: 66.76 },
+        { date: "01/07", desc: "Noosa", daily: 319, acc: 2400, gas: 0 },
+        { date: "01/08", desc: "-", daily: 2, acc: 2402, gas: 0 },
+        { date: "01/09", desc: "Costco", daily: 134, acc: 2536, gas: 0 },
+        { date: "01/10", desc: "Board games", daily: 11, acc: 2547, gas: 0 },
+        { date: "01/11", desc: "-", daily: 10, acc: 2557, gas: 0 },
+        { date: "01/12", desc: "Beach walk", daily: 79, acc: 2636, gas: 78.7 },
+        { date: "01/14", desc: "Night view", daily: 55, acc: 2691, gas: 0 },
+        { date: "01/15", desc: "Gas refill", daily: 0, acc: 2691, gas: 16.67 },
+        {
+          date: "01/16",
+          desc: "Camping return",
+          daily: 467,
+          acc: 3158,
+          gas: 66.68,
+        },
+        { date: "01/17", desc: "-", daily: 5, acc: 3163, gas: 0 },
+        {
+          date: "01/18",
+          desc: "Lake Samsonvale",
+          daily: 206,
+          acc: 3369,
+          gas: 0,
+        },
+        { date: "01/19", desc: "Gas refill", daily: 12, acc: 3381, gas: 29.73 },
+        { date: "01/21", desc: "-", daily: 2, acc: 3383, gas: 0 },
+        { date: "01/22", desc: "-", daily: 25, acc: 3408, gas: 0 },
+        { date: "01/23", desc: "-", daily: 40, acc: 3448, gas: 0 },
+        { date: "01/24", desc: "-", daily: 4, acc: 3452, gas: 0 },
+        { date: "01/26", desc: "Byron Bay", daily: 516, acc: 3968, gas: 85.66 },
+        { date: "01/27", desc: "Gas refill", daily: 0, acc: 3968, gas: 38.34 },
+        {
+          date: "01/28",
+          desc: "Byron Bay Stay",
+          daily: 637,
+          acc: 4605,
+          gas: 32.52,
+        },
+        { date: "01/29", desc: "Coffs Harbour", daily: 649, acc: 5254, gas: 0 },
+        { date: "01/30", desc: "Gas refill", daily: 15, acc: 5269, gas: 78.16 },
+        { date: "01/31", desc: "-", daily: 16, acc: 5285, gas: 0 },
+        { date: "02/01", desc: "-", daily: 5, acc: 5290, gas: 0 },
+        { date: "02/02", desc: "Car wash", daily: 32, acc: 5322, gas: 0 },
+        {
+          date: "02/03",
+          desc: "Rainbow Beach",
+          daily: 448,
+          acc: 5770,
+          gas: 20.02,
+        },
+        { date: "02/04", desc: "Hiking", daily: 220, acc: 5990, gas: 35.01 },
+        {
+          date: "02/06",
+          desc: "Last badminton",
+          daily: 21,
+          acc: 6011,
+          gas: 64.87,
+        },
+        { date: "02/07", desc: "Beach", daily: 105, acc: 6116, gas: 0 },
+        { date: "02/08", desc: "Last work day", daily: 69, acc: 6185, gas: 0 },
+        {
+          date: "02/09",
+          desc: "Return Car",
+          daily: 383,
+          acc: 6568,
+          gas: 71.57,
+        },
+      ];
+
+      // --- CALCULATIONS ---
+      const totalDistance = 6568;
+      const totalGas = 948.17;
+      const daysDiff = 57;
+      const avgDailyKm = totalDistance / daysDiff;
+      const avgWeeklyKm = avgDailyKm * 7;
+      const avgDailyGas = totalGas / daysDiff;
+      const avgWeeklyGas = avgDailyGas * 7;
+
+      document.getElementById("avg-daily-km").innerHTML =
+        Math.round(avgDailyKm) +
+        ' <span class="text-lg text-slate-400 font-normal">km</span>';
+      document.getElementById("avg-weekly-km").innerHTML =
+        Math.round(avgWeeklyKm) +
+        ' <span class="text-lg text-slate-400 font-normal">km</span>';
+      document.getElementById("avg-daily-gas").innerText =
+        "$" + avgDailyGas.toFixed(2);
+      document.getElementById("avg-weekly-gas").innerText =
+        "$" + avgWeeklyGas.toFixed(2);
+
+      // --- CHART GENERATION (Re-using Chart.js code) ---
+      Chart.defaults.font.family = "'Noto Sans TC', sans-serif";
+      Chart.defaults.color = "#64748b";
+
+      // 1. Daily
+      new Chart(document.getElementById("dailyChart"), {
+        type: "bar",
+        data: {
+          labels: rawData.map((d) => d.date.slice(0, 5)), // shorten date
+          datasets: [
+            {
+              label: "KM",
+              data: rawData.map((d) => d.daily),
+              backgroundColor: "#0ea5e9",
+              borderRadius: 2,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+        },
+      });
+
+      // 2. Weekly
+      function getWeekNumber(d) {
+        const start = new Date("2025/12/15");
+        const [month, day] = d.split("/");
+        const year = month == "12" ? 2025 : 2026;
+        const current = new Date(`${year}/${month}/${day}`);
+        start.setHours(0, 0, 0, 0);
+        current.setHours(0, 0, 0, 0);
+        return Math.floor((current - start) / (1000 * 60 * 60 * 24) / 7) + 1;
+      }
+      const weeklyData = {};
+      rawData.forEach((item) => {
+        const week = "Week " + getWeekNumber(item.date);
+        weeklyData[week] = (weeklyData[week] || 0) + item.daily;
+      });
+      new Chart(document.getElementById("weeklyChart"), {
+        type: "bar",
+        data: {
+          labels: Object.keys(weeklyData),
+          datasets: [
+            {
+              label: "KM",
+              data: Object.values(weeklyData),
+              backgroundColor: "#0369a1",
+              borderRadius: 4,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+        },
+      });
+
+      // 3. Accumulated
+      new Chart(document.getElementById("accumulatedChart"), {
+        type: "line",
+        data: {
+          labels: rawData.map((d) => d.date.slice(0, 5)),
+          datasets: [
+            {
+              label: "Total KM",
+              data: rawData.map((d) => d.acc),
+              borderColor: "#0284c7",
+              fill: true,
+              backgroundColor: "rgba(14, 165, 233, 0.1)",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+        },
+      });
+
+      // 4. Gas
+      const gasDays = rawData.filter((d) => d.gas > 0);
+      new Chart(document.getElementById("gasChart"), {
+        type: "bar",
+        data: {
+          labels: gasDays.map((d) => d.date.slice(0, 5)),
+          datasets: [
+            {
+              label: "$AUD",
+              data: gasDays.map((d) => d.gas),
+              backgroundColor: "#f97316",
+              borderRadius: 4,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+        },
+      });
+
+      // 5. Weekly Gas
+      const weeklyGas = {};
+      rawData.forEach((item) => {
+        const week = "Week " + getWeekNumber(item.date);
+        weeklyGas[week] = (weeklyGas[week] || 0) + item.gas;
+      });
+      new Chart(document.getElementById("weeklyGasChart"), {
+        type: "bar",
+        data: {
+          labels: Object.keys(weeklyGas),
+          datasets: [
+            {
+              label: "$AUD",
+              data: Object.values(weeklyGas),
+              backgroundColor: "#c2410c",
+              borderRadius: 4,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+        },
+      });
+
+      // 6. Acc Gas
+      let runGas = 0;
+      new Chart(document.getElementById("accumulatedGasChart"), {
+        type: "line",
+        data: {
+          labels: rawData.map((d) => d.date.slice(0, 5)),
+          datasets: [
+            {
+              label: "Total $",
+              data: rawData.map((d) => (runGas += d.gas)),
+              borderColor: "#dc2626",
+              fill: true,
+              backgroundColor: "rgba(220, 38, 38, 0.1)",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+        },
+      });
+
+      // --- TABLE ---
+      const tbody = document.getElementById("tableBody");
+      rawData.forEach((row) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td class="px-6 py-4 font-bold text-slate-700">${row.date}</td><td class="px-6 py-4">${row.desc}</td><td class="px-6 py-4">${row.daily}</td><td class="px-6 py-4 text-slate-400">${row.acc}</td><td class="px-6 py-4 font-bold ${row.gas > 0 ? "text-orange-600" : "text-slate-300"}">${row.gas > 0 ? "$" + row.gas.toFixed(2) : "-"}</td>`;
+        tbody.appendChild(tr);
+      });
+
+      // --- TABS ---
+      function switchTab(t) {
+        document.getElementById("view-mileage").className =
+          t === "mileage" ? "flex flex-col gap-8 mb-10" : "hidden";
+        document.getElementById("view-gas").className =
+          t === "gas" ? "flex flex-col gap-8 mb-10" : "hidden";
+        document.getElementById("tab-mileage").className =
+          t === "mileage" ? "tab-btn active" : "tab-btn";
+        document.getElementById("tab-gas").className =
+          t === "gas" ? "tab-btn active" : "tab-btn";
+      }
+    </script>
+  </body>
+</html>
